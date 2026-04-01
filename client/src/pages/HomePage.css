@@ -1,0 +1,219 @@
+/* src/pages/HomePage.css */
+
+.home-page-wrapper {
+  color: #1C1C1E;
+  background-color: transparent;
+  min-height: 100vh;
+  padding-top: 60px; /* Aligned with fixed header */
+  padding-bottom: 100px;
+}
+
+/* General Button Styles */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  border-radius: 24px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 16px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: none;
+}
+
+.btn-primary {
+  background-color: #34C759;
+  color: white;
+}
+
+.btn-primary:hover {
+  opacity: 0.8;
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  background-color: rgba(52, 199, 89, 0.1);
+  color: #34C759;
+  margin-left: 15px;
+}
+
+.btn-secondary:hover {
+  background-color: rgba(52, 199, 89, 0.2);
+}
+
+/* 1. Hero Section (Full Width with Image) */
+.hero-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 95vh;
+  padding: 0;
+  width: 100%;
+  background: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.5) 20%, transparent 80%),
+    url('../assets/HeroPic2.jpg') center right / cover no-repeat;
+  text-align: left;
+}
+
+.hero-section .section-content {
+  background: transparent !important;
+  backdrop-filter: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  max-width: 100% !important;
+  padding: 0 8% !important;
+  margin: 0 !important;
+  display: block;
+}
+
+.hero-content h1 { width: 50%; font-size: 64px; color: #000000; }
+.hero-content p { width: 50%; font-size: 20px; color: #1a1a1a; max-width: 600px; font-weight: 500; }
+
+/* Floating Glass Sections - ROBUST GROWTH */
+section:not(.hero-section) {
+  padding: 80px 0;
+  width: 100%;
+  text-align: center;
+  position: relative;
+  background-color: transparent;
+}
+
+section:not(.hero-section) .section-content {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 80px 40px; /* Increased padding */
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  border-radius: 40px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.05);
+  
+  /* Critical for holding tall children */
+  height: auto;
+  min-height: min-content;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow: visible;
+}
+
+/* Typography */
+section h1 { font-weight: 800; margin-bottom: 24px; line-height: 1.1; color: #000000; }
+section h2 { font-size: 32px; font-weight: 700; margin-bottom: 30px; color: #000000; }
+section p { font-size: 18px; line-height: 1.6; color: #2D2D2E; margin-bottom: 24px; }
+
+.section-tag {
+  display: inline-block;
+  color: #34C759;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 2px;
+  margin-bottom: 16px;
+}
+
+.text-gradient {
+  background-image: linear-gradient(to right, #007AFF, #34C759);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.AI-title-div {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #34C759;
+  background-color: rgba(52, 199, 89, 0.1);
+  padding: 6px 14px;
+  border-radius: 16px;
+  margin-bottom: 24px;
+}
+
+/* Grids and Cards */
+.process-grid, .features-grid, .plans-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+  margin-top: 40px;
+  width: 100%; /* Ensure grid takes full width of section-content */
+}
+
+.process-step, .feature-card, .plan-card {
+  padding: 30px;
+  border-radius: 24px;
+  text-align: left;
+  transition: all 0.3s ease;
+  height: 80%;
+  display: flex;
+  flex-direction: column;
+}
+
+.plan-card{
+  height: 90%;
+}
+
+
+.process-step { background: rgba(255, 255, 255, 0.5); border: 1px solid rgba(255, 255, 255, 0.3); }
+.feature-card { background: rgba(255, 255, 255, 0.4); text-align: center; }
+.plan-card { 
+  background: white; 
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.plan-card.featured { border: 2px solid #34C759; }
+.plan-card:hover, .feature-card:hover, .process-step:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 15px 30px rgba(0,0,0,0.05);
+}
+
+.process-step:hover .step-number {
+  color: rgba(52, 199, 89);
+}
+
+
+.step-number { font-size: 40px; font-weight: 900; color: rgba(52, 199, 89,0.5); margin-bottom: 10px; transition: color 0.3s ease-in-out; }
+.plan-tag { background: #34C759; color: white; padding: 4px 12px; border-radius: 10px; font-size: 12px; align-self: flex-start; margin-bottom: 15px; }
+.plan-features { list-style: none; padding: 0; margin: 20px 0; flex-grow: 1; }
+.plan-features li { padding: 8px 0; border-bottom: 1px solid rgba(0,0,0,0.05); font-size: 15px; color: #2D2D2E; }
+
+/* Dark Sections Fix (Blogs) */
+.blog-snippet-section .section-content {
+  background: rgba(28, 28, 30, 0.95) !important;
+  color: white !important;
+}
+.blog-snippet-section h2, .blog-snippet-section p { color: white !important; }
+
+/* CTA Section Fix */
+.cta-section .section-content {
+  background: linear-gradient(135deg, rgba(52, 199, 89, 0.95), rgba(46, 179, 78, 0.95)) !important;
+  color: white !important;
+}
+.cta-section h2, .cta-section p { color: white !important; }
+.cta-section .btn-primary { background: white; color: #34C759; }
+
+/* Perspective for Tilt */
+.plans-grid { perspective: 1000px; }
+
+/* Responsive Adjustments */
+@media (max-width: 1024px) {
+  .hero-content h1 { font-size: 48px; }
+}
+
+@media (max-height: 650px) {
+  .hero-section { min-height: 70vh; }
+  .hero-content h1 { font-size: 42px; width: 50%; }
+}
+
+@media (max-width: 768px) {
+  .section-content { padding: 60px 20px !important; border-radius: 20px !important; }
+  .hero-section { text-align: center; background: linear-gradient(to bottom, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7)), url('../assets/HeroPic2.jpg') center/cover no-repeat; }
+  .hero-section .section-content { padding: 0 20px !important; }
+  .hero-content h1 { width: 100%; font-size: 40px; }
+  .hero-content p { width: 100%; }
+  .hero-actions { justify-content: center; flex-direction: column; }
+  .btn-secondary { margin-left: 0; margin-top: 12px; }
+}

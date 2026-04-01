@@ -1,0 +1,125 @@
+.contact-page-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 80px);
+  background-color: #F2F2F7;
+  padding: 120px 20px 60px;
+}
+
+.contact-card {
+  background-color: white;
+  padding: 48px;
+  border-radius: 32px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+  width: 100%;
+  max-width: 600px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.contact-card h2 {
+  font-size: 40px;
+  font-weight: 800;
+  margin-bottom: 16px;
+  letter-spacing: -0.8px;
+}
+
+.contact-intro {
+  font-size: 18px;
+  color: #8E8E93;
+  margin-bottom: 40px;
+  max-width: 400px;
+}
+
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  width: 100%;
+}
+
+.form-group {
+  text-align: left;
+  width: 100%;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #3A3A3C;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 12px 16px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  font-size: 17px;
+  background-color: #F2F2F7;
+  transition: all 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  border-color: #34C759;
+  outline: none;
+  background-color: white;
+}
+
+.form-group textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.contact-submit-btn {
+  background-color: #34C759;
+  color: white;
+  border: none;
+  padding: 14px 32px;
+  border-radius: 24px;
+  cursor: pointer;
+  font-size: 17px;
+  font-weight: 600;
+  transition: opacity 0.2s ease;
+  width: auto;
+  min-width: 200px;
+  margin-top: 16px;
+}
+
+.contact-submit-btn:hover:not(:disabled) {
+  opacity: 0.8;
+}
+
+.back-to-home {
+  margin-top: 32px;
+  font-size: 15px;
+  color: #8E8E93;
+}
+
+@media (max-width: 768px) {
+  .contact-page-container {
+    padding: 80px 16px 40px;
+  }
+  .contact-card {
+    padding: 32px 20px;
+    border-radius: 24px;
+  }
+  .contact-card h2 {
+    font-size: 32px;
+  }
+  .contact-intro {
+    font-size: 16px;
+    margin-bottom: 32px;
+  }
+  .contact-submit-btn {
+    width: 100%;
+    min-width: auto;
+  }
+}
