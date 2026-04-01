@@ -48,7 +48,7 @@ function ServicesPage() {
       {/* Hero Section */}
       <section className="services-hero">
         <ScrollReveal>
-          <h1>Elevate Your Health with <span className="text-gradient">Intelligent Solutions</span></h1>
+          <h1>Elevate Your Health with <span className="sv-text-gradient">Intelligent Solutions</span></h1>
           <p className="hero-subtitle">Combining cutting-edge AI technology with professional nutritional expertise to transform your wellness journey.</p>
         </ScrollReveal>
       </section>
@@ -88,7 +88,7 @@ function ServicesPage() {
                 </div>
               </div>
 
-              <NavLink to="/signup" className="btn btn-primary try-ai-btn">Try the AI Tool Free</NavLink>
+              <NavLink to="/signup" className="btn sv-btn-primary try-ai-btn">Try the AI Tool Free</NavLink>
             </div>
           </ScrollReveal>
 
@@ -120,7 +120,7 @@ function ServicesPage() {
         <div className="container">
           <ScrollReveal>
             <h3 className="section-label">How it Works</h3>
-            <h2>Three Steps to <span className="text-gradient">Perfect Tracking</span></h2>
+            <h2>Three Steps to <span className="sv-text-gradient">Perfect Tracking</span></h2>
           </ScrollReveal>
           
           <div className="process-grid">
@@ -200,7 +200,7 @@ function ServicesPage() {
                     <span>Written Summary Report</span>
                   </div>
                 </div>
-                <NavLink to="/contact" className="btn btn-secondary consultation-btn">Book Your Consultation</NavLink>
+                <NavLink to="/contact" className="btn sv-btn-secondary consultation-btn">Book Your Consultation</NavLink>
               </div>
               <div className="consultation-visual">
                 <div className="expert-avatar-circle">
@@ -220,7 +220,7 @@ function ServicesPage() {
             <h2>Ready to Transform Your Health?</h2>
             <p>Join over 50,000+ users tracking their way to a better life.</p>
             <div className="cta-actions">
-              <NavLink to="/signup" className="btn btn-primary btn-lg">Get Started Free</NavLink>
+              <NavLink to="/signup" className="btn sv-btn-primary btn-lg">Get Started Free</NavLink>
               <NavLink to="/about" className="btn btn-outline btn-lg">How We're Different</NavLink>
             </div>
           </div>

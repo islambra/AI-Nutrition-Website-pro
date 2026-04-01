@@ -6,7 +6,7 @@ import * as z from "zod";
 import { toast } from "sonner";
 import { motion } from 'framer-motion';
 import { clsx } from 'clsx';
-import { Mail, Lock, ArrowRight } from 'lucide-react';
+import { Mail, Lock, ArrowRight, ChevronLeft } from 'lucide-react';
 
 import { loginUser } from "../api/userApi";
 import { useAuth } from "../context/AuthContext";
@@ -51,6 +51,16 @@ function LoginPage() {
 
   return (
     <div className="stripe-split-container">
+      {/* Back Button */}
+      <button 
+        className="back-btn-stripe" 
+        onClick={() => navigate(-1)}
+        aria-label="Go Back"
+      >
+        <ChevronLeft size={20} />
+        <span>Back</span>
+      </button>
+
       {/* Left Side: Image */}
       <div className="split-image-side">
         <div className="overlay-content">

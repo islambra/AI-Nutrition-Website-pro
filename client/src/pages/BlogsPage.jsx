@@ -99,7 +99,7 @@ function BlogsPage() {
     <>
       <div className="blogs-page-container">
         <header className="blogs-hero">
-          <h1 className="animate-in">Nutrition <span className="text-gradient">Knowledge Hub</span></h1>
+          <h1 className="animate-in">Nutrition <span className="bl-text-gradient">Knowledge Hub</span></h1>
           <p className="animate-in" style={{ animationDelay: '0.1s' }}>Explore healthy recipes, expert blogs, and wellness tips from our certified nutritionists.</p>
           
           <div className="blogs-filter animate-in" style={{ animationDelay: '0.2s' }}>
@@ -142,7 +142,7 @@ function BlogsPage() {
               <div className="no-posts-icon">📭</div>
               <h3>No posts found</h3>
               <p>Be the first to share your knowledge with the community!</p>
-              <button className="btn btn-primary" onClick={handleCreatePost}>
+              <button className="btn bl-btn-primary" onClick={handleCreatePost}>
                 Create a Post
               </button>
             </div>
@@ -210,7 +210,7 @@ function BlogsPage() {
           <div className="cta-card nutritionist-access">
             <h2>Are you a certified Nutritionist?</h2>
             <p>Share your expertise with our growing community. Post recipes, articles, and help others lead healthier lives.</p>
-            <button className="btn btn-primary" onClick={handleCreatePost}>Create a Post</button>
+            <button className="btn bl-btn-primary" onClick={handleCreatePost}>Create a Post</button>
           </div>
         </section>
       </div>

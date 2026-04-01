@@ -386,14 +386,14 @@ const CreateBlog = () => {
           <button
             type="button"
             onClick={handleCancel}
-            className="btn btn-secondary"
+            className="btn cb-btn-secondary"
           >
             Clear All
           </button>
           <button
             type="submit"
             disabled={loading}
-            className="btn btn-primary"
+            className="btn cb-btn-primary"
           >
             {loading ? (
               <>

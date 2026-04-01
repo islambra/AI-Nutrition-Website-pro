@@ -4,6 +4,36 @@
   width: 100%;
   background-color: #ffffff;
   overflow: hidden;
+  position: relative;
+}
+
+.back-btn-stripe {
+  position: absolute;
+  top: 32px;
+  left: 32px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: none;
+  padding: 8px 18px;
+  border-radius: 100px;
+  font-weight: 700;
+  font-size: 14px;
+  color: #ffffff;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+}
+
+.back-btn-stripe:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateX(-4px);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.25);
+  border-color: rgba(255, 255, 255, 0.5);
 }
 
 /* Left Side */

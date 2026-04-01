@@ -247,27 +247,27 @@
   gap: 8px;
 }
 
-.btn-primary {
+.cb-btn-primary {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
 }
 
-.btn-primary:hover:not(:disabled) {
+.cb-btn-primary:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
 }
 
-.btn-primary:disabled {
+.cb-btn-primary:disabled {
   opacity: 0.6;
   cursor: not-allowed;
 }
 
-.btn-secondary {
+.cb-btn-secondary {
   background: #f3f4f6;
   color: #374151;
 }
 
-.btn-secondary:hover {
+.cb-btn-secondary:hover {
   background: #e5e7eb;
   transform: translateY(-2px);
 }

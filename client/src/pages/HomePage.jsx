@@ -23,7 +23,7 @@ function HomePage() {
             </ScrollReveal>
 
             <ScrollReveal delay={0.2}>
-              <h1>Fuel Your Body. Empower <span className='text-gradient'>Your Life.</span></h1>
+              <h1>Fuel Your Body. Empower <span className='hp-text-gradient'>Your Life.</span></h1>
             </ScrollReveal>
 
             <ScrollReveal delay={0.3}>
@@ -32,8 +32,8 @@ function HomePage() {
 
             <ScrollReveal delay={0.4}>
               <div className="hero-actions">
-                <NavLink to="/signup" className="btn btn-primary">Start Your Journey <ArrowRight size={18} style={{ marginLeft: '8px' }} /></NavLink>
-                <NavLink to="/services" className="btn btn-secondary">Explore Features</NavLink>
+                <NavLink to="/signup" className="btn hp-btn-primary">Start Your Journey <ArrowRight size={18} style={{ marginLeft: '8px' }} /></NavLink>
+                <NavLink to="/services" className="btn hp-btn-secondary">Explore Features</NavLink>
               </div>
             </ScrollReveal>
           </div>
@@ -146,7 +146,7 @@ function HomePage() {
             <div className="section-header">
               <h2>Nutrition Science & Tips</h2>
               <p>Stay informed with the latest research-backed dietary insights.</p>
-              <NavLink to="/blogs" className="btn btn-secondary">Read All Articles</NavLink>
+              <NavLink to="/blogs" className="btn hp-btn-secondary">Read All Articles</NavLink>
             </div>
           </ScrollReveal>
         </div>
@@ -174,7 +174,7 @@ function HomePage() {
                     <li>Weekly reports</li>
                     <li>Community access</li>
                   </ul>
-                  <NavLink to="/signup" className="btn btn-primary">Select Plan</NavLink>
+                  <NavLink to="/signup" className="btn hp-btn-primary">Select Plan</NavLink>
                 </div>
               </TiltCard>
             </ScrollReveal>
@@ -190,7 +190,7 @@ function HomePage() {
                     <li>Recipe library</li>
                     <li>Advanced AI breakdown</li>
                   </ul>
-                  <NavLink to="/signup" className="btn btn-primary">Select Plan</NavLink>
+                  <NavLink to="/signup" className="btn hp-btn-primary">Select Plan</NavLink>
                 </div>
               </TiltCard>
             </ScrollReveal>
@@ -206,7 +206,7 @@ function HomePage() {
                     <li>Condition-specific plans</li>
                     <li>Priority support</li>
                   </ul>
-                  <NavLink to="/contact" className="btn btn-secondary">Inquire Now</NavLink>
+                  <NavLink to="/contact" className="btn hp-btn-secondary">Inquire Now</NavLink>
                 </div>
               </TiltCard>
             </ScrollReveal>
@@ -221,7 +221,7 @@ function HomePage() {
             <div className="cta-content">
               <h2>Start Your Transformation Today</h2>
               <p>Join thousands of users who have mastered their nutrition with AI.</p>
-              <NavLink to="/signup" className="btn btn-primary btn-large">Join Now - It's Free to Start</NavLink>
+              <NavLink to="/signup" className="btn hp-btn-primary btn-large">Join Now - It's Free to Start</NavLink>
             </div>
           </ScrollReveal>
         </div>

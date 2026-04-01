@@ -41,7 +41,7 @@
   background-clip: text;
 }
 
-.text-gradient {
+.bl-text-gradient {
   background: linear-gradient(135deg, #34C759 0%, #30B0C0 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -424,18 +424,18 @@
   font-family: inherit;
 }
 
-.btn-primary {
+.bl-btn-primary {
   background: linear-gradient(135deg, #34C759 0%, #30B0C0 100%);
   color: white;
   box-shadow: 0 4px 12px rgba(52, 199, 89, 0.3);
 }
 
-.btn-primary:hover {
+.bl-btn-primary:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 24px rgba(52, 199, 89, 0.4);
 }
 
-.btn-primary:active {
+.bl-btn-primary:active {
   transform: translateY(0);
 }
 
