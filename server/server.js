@@ -4,6 +4,7 @@ import cors from "cors";
 import connectDB from "./configs/db.js";
 import userRouter from "./routes/userRoutes.js";
 import blogRouter from "./routes/blogRoutes.js";
+import contactRouter from "./routes/contactRoutes.js";
 
 await connectDB();
 
@@ -13,6 +14,7 @@ app.use(express.json());
 
 app.use("/api/user", userRouter);
 app.use("/api/blog", blogRouter);
+app.use("/api", contactRouter);
 
 const PORT = 5000;
 

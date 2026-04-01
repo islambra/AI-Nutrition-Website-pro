@@ -9,4 +9,5 @@ export const assets = {
 }
 export const adminMenuLinks = [
   { name: "Create Blog", path: "/nutritionist/create-blog", icon: addIcon },
+  { name: "Contact Messages", path: "/nutritionist/contact-messages", icon: listIcon }
 ];

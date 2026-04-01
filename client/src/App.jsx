@@ -17,6 +17,7 @@ import ProgressBar from './components/ProgressBar.jsx'
 import SmoothScroll from './components/SmoothScroll.jsx'
 import CreateBlog from './pages/nutritionistDashboard/CreateBlog.jsx'
 import Layout from './pages/nutritionistDashboard/Layout.jsx'
+import ContactMessages from './pages/nutritionistDashboard/ContactMessages.jsx'
 import './App.css'
 
 function App() {
@@ -42,6 +43,7 @@ function App() {
 
           <Route path="/nutritionist" element={<Layout />}>
               <Route path="/nutritionist/create-blog" element={<CreateBlog />} />
+              <Route path="/nutritionist/contact-messages" element={<ContactMessages />} />
           </Route>
         </Routes>
       </AnimatePresence>
