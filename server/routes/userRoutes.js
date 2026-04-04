@@ -1,14 +1,29 @@
 import express from "express";
-import {loginUser,registerUser, getUserdata,getAllUsers } from "../controllers/userControllers.js"
-import {protect} from "../middleware/auth.js"
-import { adminOnly } from "../middleware/adminOnly.js";
+import {
+  registerUser,
+  createBasicUser,
+  loginUser,
+  getAllUsers,
+  getAllPatients,
+  updateUser,
+  deleteUser,
+} from "../controllers/userControllers.js";
+import upload from "../middleware/multer.js";
 
-const userRouter = express.Router()
+const userRouter = express.Router();
 
-userRouter.post("/register",registerUser)
-userRouter.post("/login",loginUser)
-userRouter.get("/data", protect, getUserdata)
-userRouter.get("/all", protect, adminOnly, getAllUsers);
+// Auth routes
+userRouter.post("/register", registerUser);
+userRouter.post("/register-basic", createBasicUser); 
+userRouter.post("/login", loginUser);  
 
+// Get routes
+userRouter.get("/all-user", getAllUsers);
+userRouter.get("/patients", getAllPatients);
 
-export default userRouter
+userRouter.put("/:id", upload.single('profilePicture'), updateUser);
+
+// Delete route
+userRouter.delete("/:id", deleteUser);
+
+export default userRouter;

@@ -33,16 +33,28 @@ function LoginPage() {
   const onSubmit = async (values) => {
     setLoading(true);
     try {
-      const data = await loginUser(values);
-      if (data.success) {
-        localStorage.setItem("token", data.token);
-        setUser({ email: values.email, role: data.user.role });
-        toast.success(`Welcome back, ${data.user.name || 'User'}!`);
-        setTimeout(() => navigate("/"), 1000);
+      const response = await loginUser(values);
+      
+      // The loginUser function already stores token in localStorage
+      // and returns { message, token, user }
+      if (response.token && response.user) {
+        // Update auth context with user data
+        setUser(response.user);
+        
+        toast.success(`Welcome back, ${response.user.fullName || 'User'}!`, {
+          duration: 3000,
+        });
+        
+        // Redirect to home page after successful login
+        setTimeout(() => navigate("/"), 1500);
+      } else {
+        throw new Error("Invalid response from server");
       }
     } catch (err) {
+      console.error("Login error:", err);
       toast.error("Login failed", {
-        description: err.response?.data?.message || "Invalid credentials.",
+        description: err.response?.data?.message || "Invalid email or password. Please try again.",
+        duration: 4000,
       });
     } finally {
       setLoading(false);
@@ -54,27 +66,35 @@ function LoginPage() {
       {/* Back Button */}
       <button 
         className="back-btn-stripe" 
-        onClick={() => navigate(-1)}
+        onClick={() => navigate('/')}
         aria-label="Go Back"
       >
         <ChevronLeft size={20} />
-        <span>Back</span>
+        <span>Back to Home</span>
       </button>
 
       {/* Left Side: Image */}
-      <div className="split-image-side">
+      <div className="split-image-side login-visual">
         <div className="overlay-content">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+            className="brand-badge-login"
+          >
+            AI Nutrition Pro
+          </motion.div>
           <motion.h1 
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.3 }}
+            transition={{ delay: 0.3, duration: 0.5 }}
           >
-            Nourish Your <br /><span>Body & Soul</span>
+            Welcome Back to <br /><span>Your Health Journey</span>
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.5 }}
+            transition={{ delay: 0.5, duration: 0.5 }}
           >
             Experience the future of personalized nutrition with our AI-powered tracking and expert guidance.
           </motion.p>
@@ -101,8 +121,10 @@ function LoginPage() {
                 <Mail className="input-icon-stripe" size={18} />
                 <input 
                   {...register("email")} 
+                  type="email"
                   placeholder="name@example.com"
                   disabled={loading}
+                  autoComplete="email"
                 />
               </div>
               {errors.email && <span className="error-message-stripe">{errors.email.message}</span>}
@@ -111,7 +133,7 @@ function LoginPage() {
             <div className="input-group-stripe">
               <div className="label-flex-stripe">
                 <label>Password</label>
-                <NavLink to="/forgot" className="forgot-link-stripe">Forgot Password?</NavLink>
+                <NavLink to="/forgot-password" className="forgot-link-stripe">Forgot Password?</NavLink>
               </div>
               <div className={clsx("input-container-stripe", errors.password && "error")}>
                 <Lock className="input-icon-stripe" size={18} />
@@ -120,14 +142,24 @@ function LoginPage() {
                   {...register("password")} 
                   placeholder="••••••••"
                   disabled={loading}
+                  autoComplete="current-password"
                 />
               </div>
               {errors.password && <span className="error-message-stripe">{errors.password.message}</span>}
             </div>
 
             <button type="submit" className="btn-stripe-primary" disabled={loading}>
-              {loading ? "Authenticating..." : "Sign In"}
-              {!loading && <ArrowRight size={18} />}
+              {loading ? (
+                <>
+                  <span className="spinner"></span>
+                  Authenticating...
+                </>
+              ) : (
+                <>
+                  Sign In
+                  <ArrowRight size={18} />
+                </>
+              )}
             </button>
 
             <div className="footer-stripe">

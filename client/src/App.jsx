@@ -17,7 +17,12 @@ import ProgressBar from './components/ProgressBar.jsx'
 import SmoothScroll from './components/SmoothScroll.jsx'
 import CreateBlog from './pages/nutritionistDashboard/CreateBlog.jsx'
 import Layout from './pages/nutritionistDashboard/Layout.jsx'
+import AdminLayout from './pages/AdminDasboard/AdminLayout.jsx'
 import ContactMessages from './pages/nutritionistDashboard/ContactMessages.jsx'
+import EditProfile from './pages/nutritionistDashboard/EditProfile.jsx'
+import AddAdminNutritionist from './pages/AdminDasboard/AddAdminNutritionist.jsx'
+import AllUsers from './pages/AdminDasboard/AllUsers.jsx'
+import EditUserProfile from './pages/AdminDasboard/EditUserProfile.jsx'
 import './App.css'
 
 function App() {
@@ -44,6 +49,12 @@ function App() {
           <Route path="/nutritionist" element={<Layout />}>
               <Route path="/nutritionist/create-blog" element={<CreateBlog />} />
               <Route path="/nutritionist/contact-messages" element={<ContactMessages />} />
+              <Route path="/nutritionist/my-Profile" element={<EditProfile />} />
+          </Route>
+          <Route path="/admin" element={<AdminLayout />}>
+              <Route path="/admin/add-admin-nutritionist" element={<AddAdminNutritionist />} />
+              <Route path="/admin/all-users" element={<AllUsers />} />
+              <Route path="/admin/my-Profile" element={<EditUserProfile />} />
           </Route>
         </Routes>
       </AnimatePresence>

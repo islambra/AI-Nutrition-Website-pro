@@ -1,13 +1,13 @@
 import { useLocation, NavLink } from "react-router-dom";
-import { nutritionistMenuLinks } from "../../assets/assets";
-import "./SideBar.css";
+import { adminMenuLinks } from "../../assets/assets";
+import "./AdminSideBar.css";
 
-const SideBar = () => {
+const AdminSideBar = () => {
   const location = useLocation();
 
   return (
     <div className="sidebar">
-      {nutritionistMenuLinks.map((link, i) => (
+      {adminMenuLinks.map((link, i) => (
         <NavLink
           key={i}
           to={link.path}
@@ -24,4 +24,4 @@ const SideBar = () => {
   );
 };
 
-export default SideBar;
+export default AdminSideBar;

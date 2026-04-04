@@ -1,6 +1,6 @@
 // src/components/Header.jsx
 import { useState, useEffect } from "react";
-import { NavLink, useLocation } from "react-router-dom"; // Import useLocation
+import { NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { UserCircle, Menu, LogOut, Apple, LayoutDashboard, User } from "lucide-react";
 import toast from "react-hot-toast";
@@ -61,6 +61,26 @@ function Header() {
     });
   };
 
+  // Function to get dashboard path based on user role
+  const getDashboardPath = () => {
+    if (user?.role === "Admin") {
+      return "/admin/add-admin-nutritionist";
+    } else if (user?.role === "Nutritionist") {
+      return "/nutritionist/create-blog";
+    }
+    return "/dashboard"; // fallback
+  };
+
+  // Get user profile picture URL
+  const getUserPhoto = () => {
+    return user?.photo || user?.profilePicture || null;
+  };
+
+  // Check if user is a patient
+  const isPatient = () => {
+    return user?.role === "Patient";
+  };
+
   useEffect(() => {
     setIsMenuOpen(false);
   }, [location.pathname]);
@@ -88,16 +108,35 @@ function Header() {
           ) : (
             <div className="user-menu">
               <button className="user-icon">
-                <UserCircle size={32} />
+                {getUserPhoto() ? (
+                  <img 
+                    src={getUserPhoto()} 
+                    alt={user?.fullName || user?.name || "User"}
+                    className="user-avatar-img"
+                  />
+                ) : (
+                  <UserCircle size={32} className="default-avatar-icon" />
+                )}
               </button>
               <div className="dropdown">
-                {user?.role === "Admin" && (
-                  <NavLink to="/nutritionist/create-blog" className="dropdown-item">
+                {/* Dashboard link based on role */}
+                {(user?.role === "Admin" || user?.role === "Nutritionist") && (
+                  <NavLink to={getDashboardPath()} className="dropdown-item">
+                    <LayoutDashboard size={16} />
                     Dashboard
                   </NavLink>
                 )}
-                <NavLink to="/profile" className="dropdown-item">Profile</NavLink>
-                <button className="logout-btn" onClick={handleLogout}>Logout</button>
+                {/* Profile link - Only show for Patient role */}
+                {isPatient() && (
+                  <NavLink to="/profile" className="dropdown-item">
+                    <User size={16} />
+                    Profile
+                  </NavLink>
+                )}
+                <button className="logout-btn" onClick={handleLogout}>
+                  <LogOut size={16} />
+                  Logout
+                </button>
               </div>
             </div>
           )}
@@ -120,14 +159,35 @@ function Header() {
         ) : (
           <div className="mobile-auth-section">
             <div className="mobile-user-info">
-              <UserCircle size={24} />
-              <span>{user.email || "User"}</span>
+              {getUserPhoto() ? (
+                <img 
+                  src={getUserPhoto()} 
+                  alt={user?.fullName || user?.name || "User"}
+                  className="mobile-user-avatar"
+                />
+              ) : (
+                <UserCircle size={24} className="mobile-default-avatar" />
+              )}
+              <span>{user?.fullName || user?.name || user?.email || "User"}</span>
             </div>
-            {user?.role === "Admin" && (
-              <NavLink to="/admin/dashboard" className="mobile-nav-item">Dashboard</NavLink>
+            {/* Dashboard link based on role for mobile */}
+            {(user?.role === "Admin" || user?.role === "Nutritionist") && (
+              <NavLink to={getDashboardPath()} className="mobile-nav-item">
+                <LayoutDashboard size={16} />
+                Dashboard
+              </NavLink>
             )}
-            <NavLink to="/profile" className="mobile-nav-item">Profile</NavLink>
-            <button className="mobile-nav-item mobile-logout-btn" onClick={handleLogout}>Logout</button>
+            {/* Profile link - Only show for Patient role on mobile */}
+            {isPatient() && (
+              <NavLink to="/profile" className="mobile-nav-item">
+                <User size={16} />
+                Profile
+              </NavLink>
+            )}
+            <button className="mobile-nav-item mobile-logout-btn" onClick={handleLogout}>
+              <LogOut size={16} />
+              Logout
+            </button>
           </div>
         )}
       </nav>

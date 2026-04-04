@@ -235,3 +235,48 @@
     padding: 24px;
   }
 }
+.password-toggle-btn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+  transition: color 0.2s;
+}
+
+.password-toggle-btn:hover {
+  color: #374151;
+}
+
+.checkbox-label-stripe {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #4b5563;
+  user-select: none;
+}
+
+.checkbox-label-stripe input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  margin: 0;
+}
+
+.input-container-stripe {
+  position: relative;
+}
+
+.input-container-stripe input {
+  width: 100%;
+  padding-right: 40px; /* Make room for password toggle */
+}
