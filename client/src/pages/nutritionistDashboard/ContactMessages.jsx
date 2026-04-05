@@ -14,7 +14,12 @@ import {
   Loader,
   X,
   Inbox,
-  RefreshCw
+  RefreshCw,
+  Filter,
+  CheckCircle2,
+  Clock,
+  Sparkles,
+  Users
 } from "lucide-react";
 import toast from "react-hot-toast";
 import { getAllContacts, deleteContact } from "../../api/contactApi";
@@ -29,6 +34,7 @@ const ContactMessages = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
   const [refreshing, setRefreshing] = useState(false);
+  const [viewMode, setViewMode] = useState("table"); // table or grid
 
   // Fetch all contacts
   useEffect(() => {
@@ -118,7 +124,8 @@ const ContactMessages = () => {
     const matchesSearch = 
       contact.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       contact.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      contact.subject.toLowerCase().includes(searchTerm.toLowerCase());
+      contact.subject.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      contact.message.toLowerCase().includes(searchTerm.toLowerCase());
     
     return matchesSearch;
   });
@@ -153,11 +160,32 @@ const ContactMessages = () => {
     }
   };
 
+  // Stats
+  const stats = {
+    total: contacts.length,
+    month: contacts.filter(c => {
+      const date = new Date(c.createdAt);
+      const now = new Date();
+      return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
+    }).length,
+    week: contacts.filter(c => {
+      const date = new Date(c.createdAt);
+      const now = new Date();
+      const weekAgo = new Date(now.setDate(now.getDate() - 7));
+      return date >= weekAgo;
+    }).length,
+    today: contacts.filter(c => {
+      const today = new Date().toDateString();
+      return new Date(c.createdAt).toDateString() === today;
+    }).length
+  };
+
   if (loading) {
     return (
       <div className="contact-messages-loading">
         <div className="loading-spinner">
-          <Loader className="spinner-icon" size={48} />
+          <div className="spinner-ring"></div>
+          <Sparkles className="spinner-icon" size={32} />
         </div>
         <p>Loading messages...</p>
       </div>
@@ -168,38 +196,124 @@ const ContactMessages = () => {
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      transition={{ duration: 0.4 }}
+      transition={{ duration: 0.5 }}
       className="contact-messages-page"
     >
+      {/* Animated Background */}
+      <div className="animated-bg">
+        <div className="gradient-orb orb-1"></div>
+        <div className="gradient-orb orb-2"></div>
+        <div className="gradient-orb orb-3"></div>
+      </div>
+
       {/* Header Section */}
       <div className="messages-header-section">
         <div className="header-left">
-          <h1 className="page-title">Contact Messages</h1>
-          <p className="page-description">View and manage all customer inquiries and messages</p>
+          <motion.div
+            initial={{ x: -20, opacity: 0 }}
+            animate={{ x: 0, opacity: 1 }}
+            transition={{ delay: 0.1 }}
+          >
+            <div className="page-badge">
+              <Mail size={14} />
+              <span>Inbox Management</span>
+            </div>
+            <h1 className="page-title">Contact Messages</h1>
+            <p className="page-description">View and manage all customer inquiries and messages</p>
+          </motion.div>
         </div>
-        <div className="header-right">
+        <motion.div 
+          className="header-right"
+          initial={{ x: 20, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+          transition={{ delay: 0.2 }}
+        >
+          <div className="view-toggle">
+            <button 
+              className={`view-btn ${viewMode === 'table' ? 'active' : ''}`}
+              onClick={() => setViewMode('table')}
+            >
+              Table View
+            </button>
+            <button 
+              className={`view-btn ${viewMode === 'grid' ? 'active' : ''}`}
+              onClick={() => setViewMode('grid')}
+            >
+              Grid View
+            </button>
+          </div>
           <button 
             onClick={refreshContacts} 
             className="refresh-btn"
             disabled={refreshing}
           >
-            <RefreshCw size={18} className={refreshing ? 'spinning' : ''} />
+            <RefreshCw size={16} className={refreshing ? 'spinning' : ''} />
             Refresh
           </button>
-          <div className="total-badge">
-            <Mail size={16} />
-            <span>{contacts.length} Total</span>
-          </div>
-        </div>
+        </motion.div>
       </div>
 
+      {/* Stats Cards */}
+      <motion.div 
+        className="stats-grid"
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.15 }}
+      >
+        <div className="stat-card">
+          <div className="stat-icon total-icon">
+            <Mail size={20} />
+          </div>
+          <div className="stat-info">
+            <span className="stat-value">{stats.total}</span>
+            <span className="stat-label">Total Messages</span>
+          </div>
+          <div className="stat-trend">All time</div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-icon month-icon">
+            <Calendar size={20} />
+          </div>
+          <div className="stat-info">
+            <span className="stat-value">{stats.month}</span>
+            <span className="stat-label">This Month</span>
+          </div>
+          <div className="stat-trend">New inquiries</div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-icon week-icon">
+            <Clock size={20} />
+          </div>
+          <div className="stat-info">
+            <span className="stat-value">{stats.week}</span>
+            <span className="stat-label">Last 7 Days</span>
+          </div>
+          <div className="stat-trend">Recent activity</div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-icon today-icon">
+            <Sparkles size={20} />
+          </div>
+          <div className="stat-info">
+            <span className="stat-value">{stats.today}</span>
+            <span className="stat-label">Today</span>
+          </div>
+          <div className="stat-trend">New today</div>
+        </div>
+      </motion.div>
+
       {/* Search Section */}
-      <div className="search-section">
+      <motion.div 
+        className="search-section"
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.2 }}
+      >
         <div className="search-wrapper">
-          <Search size={20} className="search-icon" />
+          <Search size={18} className="search-icon" />
           <input
             type="text"
-            placeholder="Search by name, email, or subject..."
+            placeholder="Search by name, email, subject, or message..."
             value={searchTerm}
             onChange={(e) => {
               setSearchTerm(e.target.value);
@@ -212,24 +326,30 @@ const ContactMessages = () => {
               onClick={() => setSearchTerm("")}
               className="clear-search"
             >
-              <X size={16} />
+              <X size={14} />
             </button>
           )}
         </div>
-        <div className="search-info">
-          {filteredContacts.length} message{filteredContacts.length !== 1 ? 's' : ''} found
-        </div>
-      </div>
 
-      {/* Messages Table */}
+        <div className="search-info">
+          <Users size={14} />
+          <span>{filteredContacts.length} message{filteredContacts.length !== 1 ? 's' : ''} found</span>
+        </div>
+      </motion.div>
+
+      {/* Messages Content */}
       {currentContacts.length === 0 ? (
-        <div className="empty-state">
+        <motion.div 
+          className="empty-state"
+          initial={{ scale: 0.95, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+        >
           <div className="empty-icon">
-            <Inbox size={64} />
+            <Inbox size={48} />
           </div>
           <h3>No messages found</h3>
           <p>
-            {searchTerm 
+            {searchTerm
               ? `No results found for "${searchTerm}"` 
               : "No contact messages have been submitted yet"}
           </p>
@@ -238,17 +358,17 @@ const ContactMessages = () => {
               Clear search
             </button>
           )}
-        </div>
-      ) : (
+        </motion.div>
+      ) : viewMode === "table" ? (
         <>
           <div className="table-wrapper">
             <table className="messages-table">
               <thead>
                 <tr>
-                  <th>Name</th>
-                  <th>Email</th>
+                  <th>Customer</th>
                   <th>Subject</th>
-                  <th>Date</th>
+                  <th>Message Preview</th>
+                  <th>Received</th>
                   <th>Actions</th>
                 </tr>
               </thead>
@@ -259,28 +379,32 @@ const ContactMessages = () => {
                       key={contact._id}
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, x: -20 }}
                       transition={{ delay: index * 0.03 }}
                       className="message-row"
                     >
-                      <td className="name-cell">
-                        <div className="cell-content">
-                          <User size={14} className="cell-icon" />
-                          <span>{contact.name}</span>
+                      <td className="customer-cell">
+                        <div className="customer-avatar">
+                          {contact.name.charAt(0).toUpperCase()}
                         </div>
-                      </td>
-                      <td className="email-cell">
-                        <div className="cell-content">
-                          <Mail size={14} className="cell-icon" />
-                          <span className="email-text">{contact.email}</span>
+                        <div className="customer-info">
+                          <span className="customer-name">{contact.name}</span>
+                          <span className="customer-email">{contact.email}</span>
                         </div>
                       </td>
                       <td className="subject-cell">
-                        <span className="subject-badge">{contact.subject}</span>
+                        <span className="subject-text">{contact.subject}</span>
+                      </td>
+                      <td className="preview-cell">
+                        <span className="preview-text">
+                          {contact.message.substring(0, 60)}
+                          {contact.message.length > 60 && "..."}
+                        </span>
                       </td>
                       <td className="date-cell">
-                        <div className="cell-content">
-                          <Calendar size={14} className="cell-icon" />
-                          <span>{formatDate(contact.createdAt)}</span>
+                        <div className="date-wrapper">
+                          <Calendar size={12} />
+                          <span className="date-text">{formatDate(contact.createdAt)}</span>
                         </div>
                       </td>
                       <td className="actions-cell">
@@ -305,52 +429,103 @@ const ContactMessages = () => {
               </tbody>
             </table>
           </div>
-
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="pagination-section">
-              <div className="pagination-info">
-                Showing {indexOfFirstItem + 1} to {Math.min(indexOfLastItem, filteredContacts.length)} of {filteredContacts.length} messages
-              </div>
-              <div className="pagination-controls">
-                <button
-                  onClick={() => paginate(currentPage - 1)}
-                  disabled={currentPage === 1}
-                  className="page-btn"
-                >
-                  <ChevronLeft size={16} />
-                </button>
-                {[...Array(totalPages)].map((_, index) => {
-                  if (
-                    index === 0 ||
-                    index === totalPages - 1 ||
-                    (index >= currentPage - 2 && index <= currentPage + 1)
-                  ) {
-                    return (
-                      <button
-                        key={index}
-                        onClick={() => paginate(index + 1)}
-                        className={`page-btn ${currentPage === index + 1 ? 'active' : ''}`}
-                      >
-                        {index + 1}
-                      </button>
-                    );
-                  } else if (index === currentPage - 3 || index === currentPage + 2) {
-                    return <span key={index} className="page-dots">...</span>;
-                  }
-                  return null;
-                })}
-                <button
-                  onClick={() => paginate(currentPage + 1)}
-                  disabled={currentPage === totalPages}
-                  className="page-btn"
-                >
-                  <ChevronRight size={16} />
-                </button>
-              </div>
-            </div>
-          )}
         </>
+      ) : (
+        <div className="grid-view">
+          <AnimatePresence>
+            {currentContacts.map((contact, index) => (
+              <motion.div
+                key={contact._id}
+                className="message-card"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ delay: index * 0.05 }}
+              >
+                <div className="card-header">
+                  <div className="customer-avatar large">
+                    {contact.name.charAt(0).toUpperCase()}
+                  </div>
+                  <div className="card-header-info">
+                    <h4>{contact.name}</h4>
+                    <p>{contact.email}</p>
+                  </div>
+                </div>
+                <div className="card-body">
+                  <div className="card-subject">
+                    <strong>Subject:</strong> {contact.subject}
+                  </div>
+                  <div className="card-message">
+                    {contact.message.substring(0, 120)}
+                    {contact.message.length > 120 && "..."}
+                  </div>
+                  <div className="card-date">
+                    <Calendar size={12} />
+                    {formatDate(contact.createdAt)}
+                  </div>
+                </div>
+                <div className="card-actions">
+                  <button onClick={() => handleView(contact)} className="card-view-btn">
+                    <Eye size={14} /> View Details
+                  </button>
+                  <button onClick={() => handleDelete(contact._id, contact.name)} className="card-delete-btn">
+                    <Trash2 size={14} /> Delete
+                  </button>
+                </div>
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </div>
+      )}
+
+      {/* Pagination */}
+      {totalPages > 1 && (
+        <motion.div 
+          className="pagination-section"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.3 }}
+        >
+          <div className="pagination-info">
+            Showing {indexOfFirstItem + 1} to {Math.min(indexOfLastItem, filteredContacts.length)} of {filteredContacts.length} messages
+          </div>
+          <div className="pagination-controls">
+            <button
+              onClick={() => paginate(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="page-btn"
+            >
+              <ChevronLeft size={16} />
+            </button>
+            {[...Array(totalPages)].map((_, index) => {
+              if (
+                index === 0 ||
+                index === totalPages - 1 ||
+                (index >= currentPage - 2 && index <= currentPage + 1)
+              ) {
+                return (
+                  <button
+                    key={index}
+                    onClick={() => paginate(index + 1)}
+                    className={`page-btn ${currentPage === index + 1 ? 'active' : ''}`}
+                  >
+                    {index + 1}
+                  </button>
+                );
+              } else if (index === currentPage - 3 || index === currentPage + 2) {
+                return <span key={index} className="page-dots">...</span>;
+              }
+              return null;
+            })}
+            <button
+              onClick={() => paginate(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="page-btn"
+            >
+              <ChevronRight size={16} />
+            </button>
+          </div>
+        </motion.div>
       )}
 
       {/* Message Details Modal */}
@@ -364,15 +539,18 @@ const ContactMessages = () => {
             onClick={() => setShowModal(false)}
           >
             <motion.div
-              initial={{ scale: 0.95, opacity: 0, y: 20 }}
+              initial={{ scale: 0.95, opacity: 0, y: 30 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
-              exit={{ scale: 0.95, opacity: 0, y: 20 }}
+              exit={{ scale: 0.95, opacity: 0, y: 30 }}
+              transition={{ type: "spring", damping: 25, stiffness: 300 }}
               className="modal-container"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="modal-header">
                 <div className="modal-title">
-                  <Mail size={20} />
+                  <div className="title-icon">
+                    <Mail size={18} />
+                  </div>
                   <h2>Message Details</h2>
                 </div>
                 <button onClick={() => setShowModal(false)} className="modal-close">
@@ -381,33 +559,35 @@ const ContactMessages = () => {
               </div>
               
               <div className="modal-body">
-                <div className="info-section">
-                  <div className="info-row">
-                    <div className="info-label">From:</div>
+                <div className="info-grid">
+                  <div className="info-item">
+                    <div className="info-label">From</div>
                     <div className="info-value">
                       <User size={14} />
                       <span>{selectedContact.name}</span>
                     </div>
                   </div>
                   
-                  <div className="info-row">
-                    <div className="info-label">Email:</div>
+                  <div className="info-item">
+                    <div className="info-label">Email</div>
                     <div className="info-value">
                       <Mail size={14} />
-                      <span className="email-text">{selectedContact.email}</span>
+                      <a href={`mailto:${selectedContact.email}`} className="email-link">
+                        {selectedContact.email}
+                      </a>
                     </div>
                   </div>
                   
-                  <div className="info-row">
-                    <div className="info-label">Subject:</div>
+                  <div className="info-item full-width">
+                    <div className="info-label">Subject</div>
                     <div className="info-value subject-value">
                       <MessageSquare size={14} />
                       <span>{selectedContact.subject}</span>
                     </div>
                   </div>
                   
-                  <div className="info-row">
-                    <div className="info-label">Received:</div>
+                  <div className="info-item">
+                    <div className="info-label">Received</div>
                     <div className="info-value">
                       <Calendar size={14} />
                       <span>{formatDate(selectedContact.createdAt)}</span>
@@ -416,7 +596,7 @@ const ContactMessages = () => {
                 </div>
                 
                 <div className="message-section">
-                  <div className="message-label">Message:</div>
+                  <div className="message-label">Message Content</div>
                   <div className="message-content">
                     {selectedContact.message}
                   </div>
