@@ -1,3 +1,4 @@
+// SignUpPage.jsx
 import React, { useState, useEffect, useMemo } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useForm, useWatch } from 'react-hook-form';
@@ -13,10 +14,11 @@ import {
 } from 'lucide-react';
 import { clsx } from 'clsx';
 
-import { registerUser } from "../api/userApi";
+// Updated import - using registerPatient instead of registerUser
+import { registerPatient } from "../api/userApi";
 import './SignUpPage.css';
 
-// Updated Schema - BMI removed, gender only Male/Female
+// Updated Schema - Health Details are now optional
 const signupSchema = z.object({
   // Account Information (Required)
   fullName: z.string().min(2, "Full name is required"),
@@ -31,14 +33,14 @@ const signupSchema = z.object({
   }),
   heightCm: z.coerce.number().min(40, "Height must be between 40-300cm").max(300),
   weightKg: z.coerce.number().min(2, "Weight must be between 2-500kg").max(500),
-  activityLevel: z.enum(["Sedentary", "Light", "Moderate", "Active", "Very Active"], {
+  activityLevel: z.enum(["Sedentary", "Lightly Active", "Moderate", "Active", "Very Active"], {
     required_error: "Activity level is required"
   }),
   
-  // Health Details (Required)
-  medicalConditions: z.string().min(1, "Medical conditions are required"),
-  allergies: z.string().min(1, "Allergies information is required"),
-  goals: z.string().min(1, "Goals are required"),
+  // Health Details (Optional)
+  medicalConditions: z.string().optional(),
+  allergies: z.string().optional(),
+  goals: z.string().optional(),
 }).refine((data) => data.password === data.confirmPassword, {
   message: "Passwords don't match",
   path: ["confirmPassword"],
@@ -93,7 +95,7 @@ function SignUpPage() {
       // Calculate TDEE
       const activityMultipliers = {
         "Sedentary": 1.2,
-        "Light": 1.375,
+        "Lightly Active": 1.375,
         "Moderate": 1.55,
         "Active": 1.725,
         "Very Active": 1.9
@@ -144,7 +146,7 @@ function SignUpPage() {
 
   const activityOptions = [
     { value: "Sedentary", label: "Sedentary — Office work, no exercise", calories: "Low", multiplier: "1.2" },
-    { value: "Light", label: "Light — 1–3 workouts/week", calories: "Moderate", multiplier: "1.375" },
+    { value: "Lightly Active", label: "Lightly Active — 1–3 workouts/week", calories: "Moderate", multiplier: "1.375" },
     { value: "Moderate", label: "Moderate — 3–5 workouts/week", calories: "Active", multiplier: "1.55" },
     { value: "Active", label: "Active — Daily workouts", calories: "High", multiplier: "1.725" },
     { value: "Very Active", label: "Very Active — Physical job + training", calories: "Very High", multiplier: "1.9" }
@@ -153,6 +155,7 @@ function SignUpPage() {
   const onSubmit = async (values) => {
     setLoading(true);
     try {
+      // Prepare payload matching the registerPatient API
       const payload = {
         fullName: values.fullName,
         email: values.email,
@@ -162,12 +165,20 @@ function SignUpPage() {
         heightCm: values.heightCm,
         weightKg: values.weightKg,
         activityLevel: values.activityLevel,
-        medicalConditions: values.medicalConditions ? values.medicalConditions.split(',').map(item => item.trim()).filter(item => item) : [],
-        allergies: values.allergies ? values.allergies.split(',').map(item => item.trim()).filter(item => item) : [],
+        // Health details - optional, send empty array if not provided
+        medicalConditions: values.medicalConditions ? 
+          values.medicalConditions.split(',').map(item => item.trim()).filter(item => item) : [],
+        allergies: values.allergies ? 
+          values.allergies.split(',').map(item => item.trim()).filter(item => item) : [],
         goals: values.goals || ""
       };
       
-      const response = await registerUser(payload);
+      console.log('Sending payload:', payload);
+      
+      // Use registerPatient instead of registerUser
+      const response = await registerPatient(payload);
+      
+      console.log('Registration response:', response);
       
       // Trigger confetti animation
       confetti({
@@ -189,10 +200,11 @@ function SignUpPage() {
 
       // Show success toast with health metrics
       toast.success('Account created successfully!', {
-        description: `Welcome to AI Nutrition Pro! Your BMR: ${response.healthMetrics?.bmr} cal/day | BMI: ${response.healthMetrics?.bmi}`,
+        description: `Welcome ${response.user?.fullName || values.fullName}! Your BMR: ${response.healthMetrics?.bmr || previewMetrics?.bmr} cal/day | BMI: ${response.healthMetrics?.bmi || previewMetrics?.bmi}`,
         duration: 5000,
       });
       
+      // Redirect to login page after 2 seconds
       setTimeout(() => navigate('/login'), 2000);
     } catch (err) {
       console.error('Registration error:', err);
@@ -463,11 +475,11 @@ function SignUpPage() {
               </motion.div>
             )}
 
-            {/* Health Details Section - Required */}
-            <div className="form-section-title required">Health Details *</div>
+            {/* Health Details Section - Optional */}
+            <div className="form-section-title">Health Details (Optional)</div>
 
             <div className="input-group-stripe">
-              <label>Medical Conditions *</label>
+              <label>Medical Conditions</label>
               <div className={clsx("input-container-stripe", errors.medicalConditions && "error")}>
                 <AlertCircle className="input-icon-stripe" size={18} />
                 <input 
@@ -477,11 +489,11 @@ function SignUpPage() {
                 />
               </div>
               {errors.medicalConditions && <span className="error-message-stripe">{errors.medicalConditions.message}</span>}
-              <small className="helper-text">Separate multiple conditions with commas</small>
+              <small className="helper-text">Optional - Separate multiple conditions with commas</small>
             </div>
 
             <div className="input-group-stripe">
-              <label>Allergies *</label>
+              <label>Allergies</label>
               <div className={clsx("input-container-stripe", errors.allergies && "error")}>
                 <AlertCircle className="input-icon-stripe" size={18} />
                 <input 
@@ -491,11 +503,11 @@ function SignUpPage() {
                 />
               </div>
               {errors.allergies && <span className="error-message-stripe">{errors.allergies.message}</span>}
-              <small className="helper-text">Separate multiple allergies with commas</small>
+              <small className="helper-text">Optional - Separate multiple allergies with commas</small>
             </div>
 
             <div className="input-group-stripe">
-              <label>Your Goals *</label>
+              <label>Your Goals</label>
               <div className={clsx("input-container-stripe", errors.goals && "error")}>
                 <Target className="input-icon-stripe" size={18} />
                 <textarea 
@@ -506,6 +518,7 @@ function SignUpPage() {
                 />
               </div>
               {errors.goals && <span className="error-message-stripe">{errors.goals.message}</span>}
+              <small className="helper-text">Optional - Tell us about your health and fitness goals</small>
             </div>
 
             <button type="submit" className="btn-stripe-primary" disabled={loading}>

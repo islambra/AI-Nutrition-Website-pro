@@ -1,3 +1,4 @@
+// AllUsers.jsx
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAllUsers, deleteUser } from "../../api/userApi";
@@ -30,8 +31,10 @@ const AllUsers = () => {
     try {
       setLoading(true);
       const response = await getAllUsers();
-      console.log("All users:", response);
+      console.log("All users from API:", response);
       
+      // The API returns an array of users with userType field
+      // Each user object has either 'role' (for staff) or is a patient
       setUsers(response);
       setFilteredUsers(response);
     } catch (error) {
@@ -46,7 +49,14 @@ const AllUsers = () => {
     let filtered = [...users];
 
     if (selectedRole !== "All") {
-      filtered = filtered.filter(user => user && user.role === selectedRole);
+      filtered = filtered.filter(user => {
+        // For staff users, check the role field
+        if (user.userType === "staff") {
+          return user.role === selectedRole;
+        }
+        // For patients, check if selectedRole is "Patient"
+        return selectedRole === "Patient";
+      });
     }
 
     if (searchTerm) {
@@ -65,11 +75,20 @@ const AllUsers = () => {
     try {
       await deleteUser(userId);
       showNotification("User deleted successfully", "success");
-      fetchUsers();
+      fetchUsers(); // Refresh the list
       setDeleteConfirm(null);
     } catch (error) {
       showNotification(error.response?.data?.message || "Failed to delete user", "error");
     }
+  };
+
+  const getUserRole = (user) => {
+    // For staff users (Admin/Nutritionist), use the role field
+    if (user.role) {
+      return user.role;
+    }
+    // For patients, return "Patient"
+    return "Patient";
   };
 
   const getInitials = (fullName) => {
@@ -173,6 +192,16 @@ const AllUsers = () => {
     }
   };
 
+  // Calculate stats based on users
+  const getStats = () => {
+    const admins = users.filter(u => u.role === "Admin").length;
+    const nutritionists = users.filter(u => u.role === "Nutritionist").length;
+    const patients = users.filter(u => !u.role || u.userType === "patient").length;
+    return { admins, nutritionists, patients, total: users.length };
+  };
+
+  const stats = getStats();
+
   return (
     <div className="all-users-container">
       {/* Notification Toast */}
@@ -236,7 +265,7 @@ const AllUsers = () => {
             {getStatIcon("admin")}
           </div>
           <div className="stat-info">
-            <h3>{users.filter(u => u.role === "Admin").length}</h3>
+            <h3>{stats.admins}</h3>
             <p>Administrators</p>
           </div>
         </div>
@@ -245,7 +274,7 @@ const AllUsers = () => {
             {getStatIcon("nutritionist")}
           </div>
           <div className="stat-info">
-            <h3>{users.filter(u => u.role === "Nutritionist").length}</h3>
+            <h3>{stats.nutritionists}</h3>
             <p>Nutritionists</p>
           </div>
         </div>
@@ -254,7 +283,7 @@ const AllUsers = () => {
             {getStatIcon("patient")}
           </div>
           <div className="stat-info">
-            <h3>{users.filter(u => u.role === "Patient").length}</h3>
+            <h3>{stats.patients}</h3>
             <p>Patients</p>
           </div>
         </div>
@@ -263,7 +292,7 @@ const AllUsers = () => {
             {getStatIcon("total")}
           </div>
           <div className="stat-info">
-            <h3>{users.length}</h3>
+            <h3>{stats.total}</h3>
             <p>Total Users</p>
           </div>
         </div>
@@ -366,10 +395,17 @@ const AllUsers = () => {
               <div className="user-card-body">
                 <h3>{getDisplayName(user)}</h3>
                 <p className="user-email">{user.email || "No email provided"}</p>
-                <div className={`role-badge ${getRoleBadgeClass(user.role)}`}>
-                  {getRoleIcon(user.role)}
-                  <span>{user.role || "Unknown"}</span>
+                <div className={`role-badge ${getRoleBadgeClass(getUserRole(user))}`}>
+                  {getRoleIcon(getUserRole(user))}
+                  <span>{getUserRole(user)}</span>
                 </div>
+                {/* Show additional patient info if available */}
+                {!user.role && user.bmi && (
+                  <div className="patient-metrics">
+                    <span>BMI: {user.bmi}</span>
+                    <span>Age: {user.age}</span>
+                  </div>
+                )}
               </div>
               
               <div className="user-card-footer">

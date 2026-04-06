@@ -1,6 +1,7 @@
+// AddAdminNutritionist.jsx
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { registerBasicUser } from "../../api/userApi";
+import { createStaffUser } from "../../api/userApi";
 import "./AddAdminNutritionist.css";
 
 const AddUser = () => {
@@ -47,16 +48,26 @@ const AddUser = () => {
     
     setLoading(true);
     try {
-      await registerBasicUser({
+      // Use createStaffUser instead of registerBasicUser
+      const response = await createStaffUser({
         fullName: formData.fullName.trim(),
         email: formData.email.trim().toLowerCase(),
         password: formData.password,
         role: formData.role
       });
       
+      console.log('Staff user created:', response);
+      
       showNotification(`${formData.role} account created successfully!`, "success");
       
-      setFormData({ fullName: "", email: "", password: "", confirmPassword: "", role: "Nutritionist" });
+      // Reset form
+      setFormData({ 
+        fullName: "", 
+        email: "", 
+        password: "", 
+        confirmPassword: "", 
+        role: "Nutritionist" 
+      });
       
       // Navigate after 1.5 seconds
       setTimeout(() => {
@@ -64,7 +75,9 @@ const AddUser = () => {
       }, 1500);
       
     } catch (error) {
-      showNotification(error.response?.data?.message || "Failed to create user account", "error");
+      console.error('Error creating staff user:', error);
+      const errorMessage = error.response?.data?.message || "Failed to create user account";
+      showNotification(errorMessage, "error");
     } finally {
       setLoading(false);
     }

@@ -1,3 +1,4 @@
+// LoginPage.jsx
 import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
@@ -7,8 +8,6 @@ import { toast } from "sonner";
 import { motion } from 'framer-motion';
 import { clsx } from 'clsx';
 import { Mail, Lock, ArrowRight, ChevronLeft } from 'lucide-react';
-
-import { loginUser } from "../api/userApi";
 import { useAuth } from "../context/AuthContext";
 import "./LoginPage.css";
 
@@ -19,7 +18,7 @@ const loginSchema = z.object({
 
 function LoginPage() {
   const [loading, setLoading] = useState(false);
-  const { setUser } = useAuth();
+  const { login } = useAuth();
   const navigate = useNavigate();
 
   const {
@@ -33,27 +32,26 @@ function LoginPage() {
   const onSubmit = async (values) => {
     setLoading(true);
     try {
-      const response = await loginUser(values);
+      const result = await login(values.email, values.password);
       
-      // The loginUser function already stores token in localStorage
-      // and returns { message, token, user }
-      if (response.token && response.user) {
-        // Update auth context with user data
-        setUser(response.user);
+      if (result.success) {
+        const user = result.user;
+        const userRole = user.role || "Patient";
         
-        toast.success(`Welcome back, ${response.user.fullName || 'User'}!`, {
+        toast.success(`Welcome back, ${user.fullName || 'User'}!`, {
+          description: `Logged in as ${userRole}`,
           duration: 3000,
         });
         
-        // Redirect to home page after successful login
+        // Navigate to home page only
         setTimeout(() => navigate("/"), 1500);
       } else {
-        throw new Error("Invalid response from server");
+        throw new Error(result.error || "Login failed");
       }
     } catch (err) {
       console.error("Login error:", err);
       toast.error("Login failed", {
-        description: err.response?.data?.message || "Invalid email or password. Please try again.",
+        description: err.message || "Invalid email or password. Please try again.",
         duration: 4000,
       });
     } finally {

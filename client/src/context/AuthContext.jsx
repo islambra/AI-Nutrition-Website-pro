@@ -1,5 +1,11 @@
+// contexts/AuthContext.jsx
 import { createContext, useContext, useState, useEffect } from "react";
-import { getUserData } from "../api/userApi";
+import { 
+  loginUser as apiLoginUser, 
+  getCurrentUser, 
+  getCurrentUserFromStorage,
+  logoutUser 
+} from "../api/userApi";
 
 const AuthContext = createContext();
 
@@ -19,24 +25,28 @@ export const AuthProvider = ({ children }) => {
       }
       
       try {
-        const data = await getUserData();
+        // Try to get user from localStorage first for faster loading
+        const storedUser = getCurrentUserFromStorage();
+        if (storedUser) {
+          setUser(storedUser);
+        }
         
-        if (data.success && data.user) {
-          setUser(data.user);
-          // Sync user data with localStorage
-          localStorage.setItem("user", JSON.stringify(data.user));
+        // Then verify with API
+        const result = await getCurrentUser();
+        
+        if (result.success && result.user) {
+          setUser(result.user);
+          localStorage.setItem("user", JSON.stringify(result.user));
           setAuthError(null);
         } else {
-          // Token exists but is invalid
-          localStorage.removeItem("token");
-          localStorage.removeItem("user");
+          // Token is invalid or expired
+          logoutUser();
           setUser(null);
-          setAuthError("Session expired. Please login again.");
+          setAuthError(result.error || "Session expired. Please login again.");
         }
       } catch (error) {
         console.error("Failed to fetch user data:", error);
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
+        logoutUser();
         setUser(null);
         setAuthError(error.message || "Authentication failed");
       } finally {
@@ -47,31 +57,106 @@ export const AuthProvider = ({ children }) => {
     fetchUser();
   }, []);
 
+  // Login function
+  const login = async (email, password) => {
+    try {
+      setAuthError(null);
+      setLoading(true);
+      
+      const response = await apiLoginUser({ email, password });
+      
+      if (response.token && response.user) {
+        setUser(response.user);
+        setAuthError(null);
+        return { success: true, user: response.user };
+      } else {
+        setAuthError(response.message || "Login failed");
+        return { success: false, error: response.message };
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      const errorMessage = error.response?.data?.message || "Login failed";
+      setAuthError(errorMessage);
+      return { success: false, error: errorMessage };
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Logout function
   const logout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    logoutUser();
     setUser(null);
     setAuthError(null);
   };
 
+  // Update user in state and storage
   const updateUser = (updatedUser) => {
     setUser(updatedUser);
     localStorage.setItem("user", JSON.stringify(updatedUser));
   };
 
+  // Check if user has specific role
+  const hasRole = (roles) => {
+    if (!user) return false;
+    
+    // Get user role (for staff) or default to "Patient"
+    const userRole = user.role || "Patient";
+    
+    if (Array.isArray(roles)) {
+      return roles.includes(userRole);
+    }
+    return userRole === roles;
+  };
+
+  // Check if user is admin
+  const isAdmin = () => {
+    return user?.role === "Admin";
+  };
+
+  // Check if user is nutritionist
+  const isNutritionist = () => {
+    return user?.role === "Nutritionist";
+  };
+
+  // Check if user is patient
+  const isPatient = () => {
+    return !user?.role || user?.role === "Patient" || user?.userType === "patient";
+  };
+
+  // Check if user is staff (Admin or Nutritionist)
+  const isStaff = () => {
+    return user?.role === "Admin" || user?.role === "Nutritionist";
+  };
+
+  // Get user type for display
+  const getUserType = () => {
+    if (!user) return null;
+    if (user.role === "Admin") return "Admin";
+    if (user.role === "Nutritionist") return "Nutritionist";
+    return "Patient";
+  };
+
   const value = {
     user,
     setUser,
+    login,
     logout,
     loading,
     authError,
     updateUser,
     isAuthenticated: !!user,
+    hasRole,
+    isAdmin,
+    isNutritionist,
+    isPatient,
+    isStaff,
+    userType: getUserType(),
   };
 
   return (
     <AuthContext.Provider value={value}>
-      {!loading && children}
+      {children}
     </AuthContext.Provider>
   );
 };

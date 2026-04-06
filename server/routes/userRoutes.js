@@ -1,29 +1,31 @@
+// routes/userRoutes.js
 import express from "express";
 import {
-  registerUser,
-  createBasicUser,
+  registerPatient,
+  createStaffUser,
   loginUser,
   getAllUsers,
-  getAllPatients,
   updateUser,
   deleteUser,
+  getAllStaffUsers,
+  getAllPatients,
 } from "../controllers/userControllers.js";
 import upload from "../middleware/multer.js";
 
 const userRouter = express.Router();
 
-// Auth routes
-userRouter.post("/register", registerUser);
-userRouter.post("/register-basic", createBasicUser); 
-userRouter.post("/login", loginUser);  
 
-// Get routes
-userRouter.get("/all-user", getAllUsers);
-userRouter.get("/patients", getAllPatients);
+userRouter.post("/register-patient", registerPatient);
+userRouter.post("/create-staff", createStaffUser);
+userRouter.post("/login", loginUser);
 
+
+userRouter.get("/all", getAllUsers);           
+userRouter.get("/staff", getAllStaffUsers);   
+userRouter.get("/patients", getAllPatients);   
+
+// Update and Delete routes
 userRouter.put("/:id", upload.single('profilePicture'), updateUser);
-
-// Delete route
 userRouter.delete("/:id", deleteUser);
 
 export default userRouter;
