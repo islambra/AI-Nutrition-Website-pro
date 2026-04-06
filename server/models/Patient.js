@@ -42,7 +42,7 @@ const patientSchema = new mongoose.Schema({
   },
   activityLevel: {
     type: String,
-    enum: ["Sedentary", "Lightly Active", "Moderately Active", "Very Active", "Extremely Active"],
+    enum: ["Sedentary", "Lightly Active", "Moderate", "Active", "Very Active"],
     required: true
   },
   
@@ -81,13 +81,11 @@ const patientSchema = new mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     default: null
-  },
-  
-  createdAt: {
-    type: Date,
-    default: Date.now
   }
+}, {
+  timestamps: true 
 });
+
 
 const Patient = mongoose.model("Patient", patientSchema);
 export default Patient;
