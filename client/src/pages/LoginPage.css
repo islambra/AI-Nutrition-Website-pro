@@ -150,7 +150,7 @@
 
 .input-icon-stripe {
   position: absolute;
-  left: 16px;
+  right: 5px;
   color: #999;
   pointer-events: none;
 }
@@ -165,12 +165,7 @@
   background-color: #f9f9f9;
 }
 
-.input-container-stripe input:focus {
-  outline: none;
-  border-color: #34C759;
-  background-color: #fff;
-  box-shadow: 0 0 0 4px rgba(52, 199, 89, 0.1);
-}
+
 
 .input-container-stripe.error input {
   border-color: #ff4d4f;

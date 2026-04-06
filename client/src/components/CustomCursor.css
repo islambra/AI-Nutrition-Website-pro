@@ -1,0 +1,35 @@
+.cursor-dot-main {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  background-color: #14532D; /* Forest Deep */
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 10000;
+}
+
+.cursor-trail {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 40px;
+  height: 40px;
+  border: 1.5px solid rgba(20, 83, 45, 0.4);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+}
+
+.cursor-trail.hovered {
+  border-color: #22C55E;
+  background-color: rgba(34, 197, 94, 0.05);
+  backdrop-filter: blur(2px);
+}
+
+@media (max-width: 768px) {
+  .cursor-dot-main, .cursor-trail {
+    display: none;
+  }
+}
