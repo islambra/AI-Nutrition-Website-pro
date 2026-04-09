@@ -1,6 +1,5 @@
-// controllers/userControllers.js
 import User from "../models/User.js";
-import Patient from "../models/Patient.js";
+import Client from "../models/Client.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import imagekit from "../configs/imageKit.js";
@@ -59,9 +58,11 @@ const calculateHealthMetrics = (age, gender, heightCm, weightKg, activityLevel) 
     bodyFatPercentage: Math.round(bodyFatPercentage * 10) / 10
   };
 };
-export const registerPatient = async (req, res) => {
+
+// Register a new client
+export const registerClient = async (req, res) => {
   try {
-    console.log('=== PATIENT REGISTRATION START ===');
+    console.log('=== CLIENT REGISTRATION START ===');
     
     const {
       fullName,
@@ -77,27 +78,33 @@ export const registerPatient = async (req, res) => {
       goals
     } = req.body;
 
-    if (!fullName || !email || !password) {
-      return res.status(400).json({ 
-        message: "Missing required fields: fullName, email, and password are required" 
-      });
+    // Check if user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: "User already exists with this email" });
     }
 
-    const existingPatient = await Patient.findOne({ email });
-    if (existingPatient) {
-      return res.status(400).json({ message: "Patient already exists with this email" });
-    }
-
+    // Calculate health metrics
     const healthMetrics = calculateHealthMetrics(age, gender, heightCm, weightKg, activityLevel);
-    
     console.log('Calculated health metrics:', healthMetrics);
 
+    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    const newPatient = new Patient({
+    // Create User first
+    const newUser = new User({
       fullName: fullName.trim(),
       email: email.toLowerCase().trim(),
       password: hashedPassword,
+      role: "Client"
+    });
+
+    await newUser.save();
+    console.log('User saved successfully, ID:', newUser._id);
+
+    // Create Client profile
+    const newClient = new Client({
+      user: newUser._id,
       age: age,
       gender: gender,
       heightCm: heightCm,
@@ -114,22 +121,28 @@ export const registerPatient = async (req, res) => {
       bodyFatPercentage: healthMetrics?.bodyFatPercentage
     });
 
-    await newPatient.save();
-    console.log('Patient saved successfully, ID:', newPatient._id);
+    await newClient.save();
+    console.log('Client profile saved successfully, ID:', newClient._id);
 
-    const patientObject = newPatient.toObject();
-    delete patientObject.password;
+    // Prepare response
+    const userObject = newUser.toObject();
+    delete userObject.password;
+    
+    const clientObject = newClient.toObject();
     
     res.status(201).json({ 
-      message: "Patient registered successfully", 
-      user: patientObject,
+      message: "Client registered successfully", 
+      user: {
+        ...userObject,
+        clientProfile: clientObject
+      },
       healthMetrics: {
-        bmr: newPatient.bmr,
-        tdee: newPatient.tdee,
-        bmi: newPatient.bmi,
-        bmiCategory: newPatient.bmiCategory,
-        idealWeightKg: newPatient.idealWeightKg,
-        bodyFatPercentage: newPatient.bodyFatPercentage
+        bmr: newClient.bmr,
+        tdee: newClient.tdee,
+        bmi: newClient.bmi,
+        bmiCategory: newClient.bmiCategory,
+        idealWeightKg: newClient.idealWeightKg,
+        bodyFatPercentage: newClient.bodyFatPercentage
       }
     });
   } catch (error) {
@@ -145,6 +158,7 @@ export const registerPatient = async (req, res) => {
   }
 };
 
+// Create staff user (Admin or Nutritionist)
 export const createStaffUser = async (req, res) => {
   try {
     const { fullName, email, password, role } = req.body;
@@ -184,19 +198,13 @@ export const createStaffUser = async (req, res) => {
   }
 };
 
+// Login user (works for all roles)
 export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    let user = await User.findOne({ email });
-    let userType = "staff";
-    let sourceModel = "User";
-    
-    if (!user) {
-      user = await Patient.findOne({ email });
-      userType = "patient";
-      sourceModel = "Patient";
-    }
+    // Find user in User model (all users are now in User model)
+    const user = await User.findOne({ email });
     
     if (!user) {
       return res.status(401).json({ message: "Invalid email or password" });
@@ -207,8 +215,19 @@ export const loginUser = async (req, res) => {
       return res.status(401).json({ message: "Invalid email or password" });
     }
 
+    // If user is a Client, fetch client profile
+    let clientProfile = null;
+    if (user.role === "Client") {
+      clientProfile = await Client.findOne({ user: user._id });
+    }
+
     const token = jwt.sign(
-      { id: user._id, email: user.email, role: user.role || "Patient", userType, sourceModel },
+      { 
+        id: user._id, 
+        email: user.email, 
+        role: user.role,
+        clientId: clientProfile?._id 
+      },
       process.env.JWT_SECRET,
       { expiresIn: "7d" }
     );
@@ -218,52 +237,34 @@ export const loginUser = async (req, res) => {
     res.status(200).json({
       message: "Login successful",
       token,
-      user: { ...userWithoutPassword, userType }
+      user: { 
+        ...userWithoutPassword,
+        clientProfile: clientProfile || null
+      }
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
+// Get all users with basic info only
 export const getAllUsers = async (req, res) => {
   try {
-    const [staffUsers, patients] = await Promise.all([
-      User.find().select("-password").lean(),
-      Patient.find().select("-password").lean()
-    ]);
+    const users = await User.find().select("-password").lean();
     
-    const staffWithType = staffUsers.map(user => ({
-      ...user,
-      userType: "staff"
-    }));
-    
-    const patientsWithType = patients.map(patient => ({
-      ...patient,
-      userType: "patient"
-    }));
-    
-    const allUsers = [...staffWithType, ...patientsWithType];
-    
-    res.status(200).json(allUsers);
+    res.status(200).json(users);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
-
-
+// Update user
 export const updateUser = async (req, res) => {
   try {
     const { id } = req.params;
     const updateData = { ...req.body };
     
-    // Try to find in User model first
-    let user = await User.findById(id);
-    let userModel = "User";
-    
-    if (!user) {
-      user = await Patient.findById(id);
-      userModel = "Patient";
-    }
+    // Find user
+    const user = await User.findById(id);
     
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -271,10 +272,10 @@ export const updateUser = async (req, res) => {
     
     // Handle profile picture if uploaded
     if (req.file) {
-      const folder = userModel === "Patient" ? "/patient-profiles" : "/staff-profiles";
+      const folder = user.role === "Client" ? "/client-profiles" : "/staff-profiles";
       const result = await imagekit.upload({
         file: req.file.buffer.toString('base64'),
-        fileName: `${userModel.toLowerCase()}-${id}-${Date.now()}.jpg`,
+        fileName: `user-${id}-${Date.now()}.jpg`,
         folder: folder,
       });
       updateData.photo = result.url;
@@ -285,98 +286,135 @@ export const updateUser = async (req, res) => {
       updateData.password = await bcrypt.hash(updateData.password, 10);
     }
     
-    // Update user fields
-    Object.keys(updateData).forEach(key => {
-      if (key !== 'createdAt' && key !== '_id') {
-        user[key] = updateData[key];
+    // Update user fields (only allowed fields)
+    const allowedUserFields = ['fullName', 'email', 'password', 'photo'];
+    allowedUserFields.forEach(field => {
+      if (updateData[field] !== undefined) {
+        user[field] = updateData[field];
       }
     });
     
-    // Recalculate health metrics for patients if relevant fields changed
-    if (userModel === "Patient" && (updateData.age !== undefined || updateData.gender !== undefined || 
-        updateData.heightCm !== undefined || updateData.weightKg !== undefined || 
-        updateData.activityLevel !== undefined)) {
+    await user.save();
+    
+    // If user is a Client, update client profile
+    let clientProfile = null;
+    let healthMetrics = null;
+    
+    if (user.role === "Client") {
+      clientProfile = await Client.findOne({ user: user._id });
       
-      const healthMetrics = calculateHealthMetrics(
-        user.age,
-        user.gender,
-        user.heightCm,
-        user.weightKg,
-        user.activityLevel
-      );
-      
-      if (healthMetrics) {
-        user.bmr = healthMetrics.bmr;
-        user.tdee = healthMetrics.tdee;
-        user.bmi = healthMetrics.bmi;
-        user.bmiCategory = healthMetrics.bmiCategory;
-        user.idealWeightKg = healthMetrics.idealWeightKg;
-        user.bodyFatPercentage = healthMetrics.bodyFatPercentage;
+      if (clientProfile) {
+        // Update client-specific fields
+        const allowedClientFields = [
+          'age', 'gender', 'heightCm', 'weightKg', 'activityLevel',
+          'medicalConditions', 'allergies', 'goals'
+        ];
+        
+        allowedClientFields.forEach(field => {
+          if (updateData[field] !== undefined) {
+            clientProfile[field] = updateData[field];
+          }
+        });
+        
+        // Recalculate health metrics if relevant fields changed
+        const metricsFieldsChanged = ['age', 'gender', 'heightCm', 'weightKg', 'activityLevel']
+          .some(field => updateData[field] !== undefined);
+        
+        if (metricsFieldsChanged) {
+          healthMetrics = calculateHealthMetrics(
+            clientProfile.age,
+            clientProfile.gender,
+            clientProfile.heightCm,
+            clientProfile.weightKg,
+            clientProfile.activityLevel
+          );
+          
+          if (healthMetrics) {
+            clientProfile.bmr = healthMetrics.bmr;
+            clientProfile.tdee = healthMetrics.tdee;
+            clientProfile.bmi = healthMetrics.bmi;
+            clientProfile.bmiCategory = healthMetrics.bmiCategory;
+            clientProfile.idealWeightKg = healthMetrics.idealWeightKg;
+            clientProfile.bodyFatPercentage = healthMetrics.bodyFatPercentage;
+          }
+        }
+        
+        await clientProfile.save();
       }
     }
     
-    await user.save();
-    
     const { password: _, ...userWithoutPassword } = user.toObject();
-    const userType = userModel === "Patient" ? "patient" : "staff";
 
     res.status(200).json({ 
       message: "User updated successfully", 
-      user: { ...userWithoutPassword, userType },
-      healthMetrics: userModel === "Patient" ? {
-        bmr: user.bmr,
-        tdee: user.tdee,
-        bmi: user.bmi,
-        bmiCategory: user.bmiCategory,
-        idealWeightKg: user.idealWeightKg,
-        bodyFatPercentage: user.bodyFatPercentage
-      } : null
+      user: { 
+        ...userWithoutPassword, 
+        clientProfile 
+      },
+      healthMetrics
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
+// Delete user
 export const deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
     
-    // Try to delete from User model first
-    let deletedUser = await User.findByIdAndDelete(id);
-    let deletedFrom = "User";
+    // Find user
+    const user = await User.findById(id);
     
-    if (!deletedUser) {
-      deletedUser = await Patient.findByIdAndDelete(id);
-      deletedFrom = "Patient";
-    }
-    
-    if (!deletedUser) {
+    if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
+    // If user is a Client, delete client profile first
+    if (user.role === "Client") {
+      await Client.findOneAndDelete({ user: user._id });
+    }
+    
+    // Delete user
+    await User.findByIdAndDelete(id);
+
     res.status(200).json({ 
-      message: `User deleted successfully from ${deletedFrom}` 
+      message: "User deleted successfully" 
     });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-
+// Get all staff users (Admin and Nutritionist)
 export const getAllStaffUsers = async (req, res) => {
   try {
-    const users = await User.find().select("-password");
+    const users = await User.find({ 
+      role: { $in: ["Admin", "Nutritionist"] } 
+    }).select("-password");
+    
     res.status(200).json(users);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 };
 
-
-export const getAllPatients = async (req, res) => {
+// Get all clients
+export const getAllClients = async (req, res) => {
   try {
-    const patients = await Patient.find().select("-password").populate('assignedNutritionist', 'fullName email');
-    res.status(200).json(patients);
+    // Find all users with role "Client"
+    const clientUsers = await User.find({ role: "Client" }).select("-password").lean();
+    
+    // Fetch client profiles for each user
+    const clients = await Promise.all(clientUsers.map(async (user) => {
+      const clientProfile = await Client.findOne({ user: user._id }).lean();
+      return {
+        ...user,
+        clientProfile
+      };
+    }));
+    
+    res.status(200).json(clients);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

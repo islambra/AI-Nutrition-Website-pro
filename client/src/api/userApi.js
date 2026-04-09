@@ -1,8 +1,8 @@
 import axiosInstance from './axiosInstance';
 
-// Register patient with all info
-export const registerPatient = async (userData) => {
-  const response = await axiosInstance.post("/user/register-patient", userData);
+// Register client (replaces registerPatient)
+export const registerClient = async (userData) => {
+  const response = await axiosInstance.post("/user/register-client", userData);
   return response.data;
 };
 
@@ -24,7 +24,7 @@ export const loginUser = async (userData) => {
   return response.data;
 };
 
-// GET ALL USERS (both Staff and Patients together)
+// GET ALL USERS (basic info only)
 export const getAllUsers = async () => {
   const response = await axiosInstance.get("/user/all");
   return response.data;
@@ -36,9 +36,15 @@ export const getAllStaffUsers = async () => {
   return response.data;
 };
 
-// Get all patients only
-export const getAllPatients = async () => {
-  const response = await axiosInstance.get("/user/patients");
+// Get all clients only (replaces getAllPatients)
+export const getAllClients = async () => {
+  const response = await axiosInstance.get("/user/clients");
+  return response.data;
+};
+
+// Get single client by ID (optional - if you have this endpoint)
+export const getClientById = async (clientId) => {
+  const response = await axiosInstance.get(`/user/clients/${clientId}`);
   return response.data;
 };
 
@@ -81,7 +87,13 @@ export const updateUser = async (userId, userData = {}, profilePicture = null) =
   if (response.data.user) {
     const currentUser = getCurrentUserFromStorage();
     if (currentUser && currentUser._id === userId) {
-      localStorage.setItem("user", JSON.stringify(response.data.user));
+      // Merge with existing client profile if needed
+      const updatedUser = {
+        ...currentUser,
+        ...response.data.user,
+        clientProfile: response.data.user.clientProfile || currentUser.clientProfile
+      };
+      localStorage.setItem("user", JSON.stringify(updatedUser));
     }
   }
   
@@ -114,22 +126,57 @@ export const getCurrentUserFromStorage = () => {
   return user ? JSON.parse(user) : null;
 };
 
-// Get current user data from API (using token)
+// Get current user from API (if you add /me endpoint)
 export const getCurrentUser = async () => {
   try {
-    const token = getAuthToken();
-    if (!token) {
-      return { success: false, error: 'No token found' };
-    }
-    
-    // You need to add this endpoint in your backend if not exists
     const response = await axiosInstance.get("/user/me");
+    localStorage.setItem("user", JSON.stringify(response.data));
     return { success: true, user: response.data };
   } catch (error) {
-    console.error("Get user data error:", error);
     return { 
       success: false, 
       error: error.response?.data?.message || 'Failed to fetch user data' 
     };
   }
 };
+
+// Helper functions for role checks
+export const isClient = (user) => {
+  return user?.role === "Client";
+};
+
+export const isStaff = (user) => {
+  return user?.role === "Admin" || user?.role === "Nutritionist";
+};
+
+export const isAdmin = (user) => {
+  return user?.role === "Admin";
+};
+
+export const isNutritionist = (user) => {
+  return user?.role === "Nutritionist";
+};
+
+// Get client profile from user object
+export const getClientProfile = (user) => {
+  return user?.clientProfile || null;
+};
+
+// Get user display name
+export const getUserDisplayName = (user) => {
+  return user?.fullName || user?.email || 'User';
+};
+
+// Get user role display text
+export const getUserRoleDisplay = (user) => {
+  const roleMap = {
+    'Admin': 'Administrator',
+    'Nutritionist': 'Nutritionist',
+    'Client': 'Client'
+  };
+  return roleMap[user?.role] || user?.role || 'User';
+};
+
+// For backward compatibility (deprecated)
+export const registerPatient = registerClient;
+export const getAllPatients = getAllClients;

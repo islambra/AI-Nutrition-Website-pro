@@ -1,28 +1,15 @@
 import mongoose from "mongoose";
 
-const patientSchema = new mongoose.Schema({
-  // Basic info
-  fullName: {
-    type: String,
+const clientSchema = new mongoose.Schema({
+  // Reference to User model for basic info
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
     required: true,
-    trim: true
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    lowercase: true,
-    trim: true
-  },
-  password: {
-    type: String,
-    required: true
-  },
-  photo: {
-    type: String,
-    default: null
+    unique: true // One client profile per user
   },
   
+  // Client-specific fields
   age: {
     type: Number,
     required: true
@@ -46,26 +33,27 @@ const patientSchema = new mongoose.Schema({
     required: true
   },
   
+  // Calculated fields
   bmr: {
-    type: Number,
+    type: Number
   },
   tdee: {
-    type: Number,
+    type: Number
   },
   bmi: {
-    type: Number,
-
+    type: Number
   },
   bmiCategory: {
-    type: String,
+    type: String
   },
   idealWeightKg: {
-    type: Number,
+    type: Number
   },
   bodyFatPercentage: {
-    type: Number,
+    type: Number
   },
   
+  // Additional info
   medicalConditions: [{
     type: String
   }],
@@ -75,17 +63,10 @@ const patientSchema = new mongoose.Schema({
   goals: {
     type: String,
     default: null
-  },
-  
-  assignedNutritionist: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    default: null
   }
 }, {
-  timestamps: true 
+  timestamps: true
 });
 
-
-const Patient = mongoose.model("Patient", patientSchema);
-export default Patient;
+const Client = mongoose.model("Client", clientSchema);
+export default Client;

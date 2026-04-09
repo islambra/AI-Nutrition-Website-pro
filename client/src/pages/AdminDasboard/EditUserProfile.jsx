@@ -10,19 +10,20 @@ const EditUserProfile = () => {
   const { user, updateUser: updateAuthUser } = useAuth();
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
-    fullName: "", // Changed from name to fullName
+    fullName: "",
     email: "",
     password: "",
     confirmPassword: "",
     photo: null
   });
   const [originalData, setOriginalData] = useState({
-    fullName: "", // Changed from name to fullName
+    fullName: "",
     email: ""
   });
   const [currentPhoto, setCurrentPhoto] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
   const [errors, setErrors] = useState({});
+  const [userRole, setUserRole] = useState("");
   const topRef = useRef(null);
 
   useEffect(() => {
@@ -31,12 +32,14 @@ const EditUserProfile = () => {
     if (storedUser) {
       try {
         const parsedUser = JSON.parse(storedUser);
-        console.log("Loaded user data:", parsedUser); // Debug log
+        console.log("Loaded user data:", parsedUser);
+        setUserRole(parsedUser.role || "");
         loadUserData(parsedUser);
       } catch (error) {
         console.error("Error parsing user data:", error);
       }
     } else if (user) {
+      setUserRole(user.role || "");
       loadUserData(user);
     } else {
       toast.error("Please login to access this page", {
@@ -50,12 +53,11 @@ const EditUserProfile = () => {
   const loadUserData = (userData) => {
     if (!userData) return;
     
-    // Use fullName consistently
     const userName = userData.fullName || userData.name || "";
     const userEmail = userData.email || "";
     
-    console.log("Loading - FullName:", userName); // Debug log
-    console.log("Loading - Email:", userEmail); // Debug log
+    console.log("Loading - FullName:", userName);
+    console.log("Loading - Email:", userEmail);
     
     setFormData({
       fullName: userName,
@@ -134,7 +136,6 @@ const EditUserProfile = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  // Scroll to top function
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
@@ -166,7 +167,7 @@ const EditUserProfile = () => {
       
       // Prepare user data with fullName field
       const userData = {
-        fullName: formData.fullName, // Use fullName instead of name
+        fullName: formData.fullName,
         email: formData.email,
       };
       
@@ -174,16 +175,17 @@ const EditUserProfile = () => {
         userData.password = formData.password;
       }
       
-      console.log("Updating user with data:", userData); // Debug log
+      console.log("Updating user with data:", userData);
       
+      // API call - works for both staff and clients
       const response = await updateUser(userId, userData, formData.photo);
       
-      console.log("Update response:", response); // Debug log
+      console.log("Update response:", response);
       
       // Update localStorage with new user data preserving all fields
       const updatedUserData = {
         ...currentUser,
-        fullName: formData.fullName, // Keep fullName
+        fullName: formData.fullName,
         email: formData.email,
       };
       
@@ -212,14 +214,12 @@ const EditUserProfile = () => {
         photo: null
       }));
       
-      // Scroll to top
       scrollToTop();
       
-      // Show success notification
       toast.success("Profile updated successfully!", {
         duration: 4000,
         position: "top-center",
-        icon: "✅",
+        icon: "",
         style: {
           background: "linear-gradient(135deg, #2e7d32, #43a047)",
           color: "#fff",
@@ -235,7 +235,7 @@ const EditUserProfile = () => {
       toast.error(error.response?.data?.message || "Failed to update profile", {
         duration: 4000,
         position: "top-center",
-        icon: "❌",
+        icon: "",
         style: {
           background: "linear-gradient(135deg, #d32f2f, #f44336)",
           color: "#fff",
@@ -256,6 +256,14 @@ const EditUserProfile = () => {
            formData.photo !== null;
   };
 
+  const getRoleDisplay = () => {
+    const roleMap = {
+      'Admin': 'Administrator',
+      'Nutritionist': 'Nutritionist'
+    };
+    return roleMap[userRole] || userRole;
+  };
+
   return (
     <div className="edit-profile-container" ref={topRef}>
       <div className="edit-profile-background">
@@ -273,6 +281,11 @@ const EditUserProfile = () => {
         </div>
         <h1>Edit Profile</h1>
         <p>Update your personal information and profile picture</p>
+        {userRole && (
+          <div className="staff-badge">
+            <span>{getRoleDisplay()} Account</span>
+          </div>
+        )}
       </div>
 
       <div className="edit-profile-card">

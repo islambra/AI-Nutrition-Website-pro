@@ -1,31 +1,29 @@
-// routes/userRoutes.js
 import express from "express";
 import {
-  registerPatient,
+  registerClient,
   createStaffUser,
   loginUser,
   getAllUsers,
   updateUser,
   deleteUser,
   getAllStaffUsers,
-  getAllPatients,
+  getAllClients,
 } from "../controllers/userControllers.js";
 import upload from "../middleware/multer.js";
+import { protect } from "../middleware/auth.js";
 
 const userRouter = express.Router();
 
-
-userRouter.post("/register-patient", registerPatient);
-userRouter.post("/create-staff", createStaffUser);
+// Public routes (no authentication required)
+userRouter.post("/register-client", registerClient);
 userRouter.post("/login", loginUser);
 
-
-userRouter.get("/all", getAllUsers);           
-userRouter.get("/staff", getAllStaffUsers);   
-userRouter.get("/patients", getAllPatients);   
-
-// Update and Delete routes
-userRouter.put("/:id", upload.single('profilePicture'), updateUser);
-userRouter.delete("/:id", deleteUser);
+// Protected routes (authentication required)
+userRouter.post("/create-staff", protect, createStaffUser);
+userRouter.get("/all", protect, getAllUsers);           
+userRouter.get("/staff", protect, getAllStaffUsers);   
+userRouter.get("/clients", protect, getAllClients);     
+userRouter.put("/:id", protect, upload.single('profilePicture'), updateUser);
+userRouter.delete("/:id", protect, deleteUser);
 
 export default userRouter;

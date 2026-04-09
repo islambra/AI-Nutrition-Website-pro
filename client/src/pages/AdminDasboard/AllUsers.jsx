@@ -33,8 +33,8 @@ const AllUsers = () => {
       const response = await getAllUsers();
       console.log("All users from API:", response);
       
-      // The API returns an array of users with userType field
-      // Each user object has either 'role' (for staff) or is a patient
+      // The API returns an array of users with role field
+      // Roles: "Admin", "Nutritionist", "Client"
       setUsers(response);
       setFilteredUsers(response);
     } catch (error) {
@@ -49,14 +49,7 @@ const AllUsers = () => {
     let filtered = [...users];
 
     if (selectedRole !== "All") {
-      filtered = filtered.filter(user => {
-        // For staff users, check the role field
-        if (user.userType === "staff") {
-          return user.role === selectedRole;
-        }
-        // For patients, check if selectedRole is "Patient"
-        return selectedRole === "Patient";
-      });
+      filtered = filtered.filter(user => user.role === selectedRole);
     }
 
     if (searchTerm) {
@@ -83,12 +76,8 @@ const AllUsers = () => {
   };
 
   const getUserRole = (user) => {
-    // For staff users (Admin/Nutritionist), use the role field
-    if (user.role) {
-      return user.role;
-    }
-    // For patients, return "Patient"
-    return "Patient";
+    // Role is now consistently stored in user.role
+    return user.role || "Client";
   };
 
   const getInitials = (fullName) => {
@@ -109,8 +98,8 @@ const AllUsers = () => {
         return "role-badge-admin";
       case "Nutritionist":
         return "role-badge-nutritionist";
-      case "Patient":
-        return "role-badge-patient";
+      case "Client":
+        return "role-badge-client";
       default:
         return "role-badge-default";
     }
@@ -141,7 +130,7 @@ const AllUsers = () => {
             <path d="M2 12L12 17L22 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         );
-      case "Patient":
+      case "Client":
         return (
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
             <circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="2"/>
@@ -171,7 +160,7 @@ const AllUsers = () => {
             <path d="M2 12L12 17L22 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         );
-      case "patient":
+      case "client":
         return (
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
             <circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="2"/>
@@ -196,11 +185,22 @@ const AllUsers = () => {
   const getStats = () => {
     const admins = users.filter(u => u.role === "Admin").length;
     const nutritionists = users.filter(u => u.role === "Nutritionist").length;
-    const patients = users.filter(u => !u.role || u.userType === "patient").length;
-    return { admins, nutritionists, patients, total: users.length };
+    const clients = users.filter(u => u.role === "Client").length;
+    return { admins, nutritionists, clients, total: users.length };
   };
 
   const stats = getStats();
+
+  // Get client metrics from clientProfile
+  const getClientMetrics = (user) => {
+    if (user.role === "Client" && user.clientProfile) {
+      return {
+        bmi: user.clientProfile.bmi,
+        age: user.clientProfile.age
+      };
+    }
+    return null;
+  };
 
   return (
     <div className="all-users-container">
@@ -247,7 +247,7 @@ const AllUsers = () => {
       <div className="users-header">
         <div>
           <h1>Manage Users</h1>
-          <p>View and manage all administrators, nutritionists, and patients</p>
+          <p>View and manage all administrators, nutritionists, and clients</p>
         </div>
         <button onClick={() => navigate("/admin/add-admin-nutritionist")} className="add-user-btn">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -279,12 +279,12 @@ const AllUsers = () => {
           </div>
         </div>
         <div className="stat-card">
-          <div className="stat-icon patient-stat">
-            {getStatIcon("patient")}
+          <div className="stat-icon client-stat">
+            {getStatIcon("client")}
           </div>
           <div className="stat-info">
-            <h3>{stats.patients}</h3>
-            <p>Patients</p>
+            <h3>{stats.clients}</h3>
+            <p>Clients</p>
           </div>
         </div>
         <div className="stat-card">
@@ -333,10 +333,10 @@ const AllUsers = () => {
             Nutritionists
           </button>
           <button
-            className={`filter-btn ${selectedRole === "Patient" ? "active" : ""}`}
-            onClick={() => setSelectedRole("Patient")}
+            className={`filter-btn ${selectedRole === "Client" ? "active" : ""}`}
+            onClick={() => setSelectedRole("Client")}
           >
-            Patients
+            Clients
           </button>
         </div>
       </div>
@@ -363,58 +363,61 @@ const AllUsers = () => {
         </div>
       ) : (
         <div className="users-grid">
-          {filteredUsers.map((user) => (
-            <div key={user._id} className="user-card">
-              <div className="user-card-header">
-                <div className="user-avatar">
-                  {user.photo ? (
-                    <img src={user.photo} alt={getDisplayName(user)} />
-                  ) : (
-                    <div className="avatar-placeholder">
-                      {getInitials(user.fullName)}
+          {filteredUsers.map((user) => {
+            const clientMetrics = getClientMetrics(user);
+            return (
+              <div key={user._id} className="user-card">
+                <div className="user-card-header">
+                  <div className="user-avatar">
+                    {user.photo ? (
+                      <img src={user.photo} alt={getDisplayName(user)} />
+                    ) : (
+                      <div className="avatar-placeholder">
+                        {getInitials(user.fullName)}
+                      </div>
+                    )}
+                  </div>
+                  <button
+                    onClick={() => setDeleteConfirm({ 
+                      id: user._id, 
+                      fullName: getDisplayName(user) 
+                    })}
+                    className="delete-btn"
+                  >
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
+                      <path d="M4 7H20" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                      <path d="M10 11V16" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                      <path d="M14 11V16" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                      <path d="M5 7L6 19C6 20.1 6.9 21 8 21H16C17.1 21 18 20.1 18 19L19 7" stroke="currentColor" strokeWidth="2"/>
+                      <path d="M9 7V4C9 3.4 9.4 3 10 3H14C14.6 3 15 3.4 15 4V7" stroke="currentColor" strokeWidth="2"/>
+                    </svg>
+                  </button>
+                </div>
+                
+                <div className="user-card-body">
+                  <h3>{getDisplayName(user)}</h3>
+                  <p className="user-email">{user.email || "No email provided"}</p>
+                  <div className={`role-badge ${getRoleBadgeClass(getUserRole(user))}`}>
+                    {getRoleIcon(getUserRole(user))}
+                    <span>{getUserRole(user)}</span>
+                  </div>
+                  {/* Show client metrics if available */}
+                  {user.role === "Client" && clientMetrics && (
+                    <div className="client-metrics">
+                      {clientMetrics.bmi && <span>BMI: {clientMetrics.bmi}</span>}
+                      {clientMetrics.age && <span>Age: {clientMetrics.age}</span>}
                     </div>
                   )}
                 </div>
-                <button
-                  onClick={() => setDeleteConfirm({ 
-                    id: user._id, 
-                    fullName: getDisplayName(user) 
-                  })}
-                  className="delete-btn"
-                >
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                    <path d="M4 7H20" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                    <path d="M10 11V16" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                    <path d="M14 11V16" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                    <path d="M5 7L6 19C6 20.1 6.9 21 8 21H16C17.1 21 18 20.1 18 19L19 7" stroke="currentColor" strokeWidth="2"/>
-                    <path d="M9 7V4C9 3.4 9.4 3 10 3H14C14.6 3 15 3.4 15 4V7" stroke="currentColor" strokeWidth="2"/>
-                  </svg>
-                </button>
-              </div>
-              
-              <div className="user-card-body">
-                <h3>{getDisplayName(user)}</h3>
-                <p className="user-email">{user.email || "No email provided"}</p>
-                <div className={`role-badge ${getRoleBadgeClass(getUserRole(user))}`}>
-                  {getRoleIcon(getUserRole(user))}
-                  <span>{getUserRole(user)}</span>
+                
+                <div className="user-card-footer">
+                  <span className="user-date">
+                    Joined {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "Recently"}
+                  </span>
                 </div>
-                {/* Show additional patient info if available */}
-                {!user.role && user.bmi && (
-                  <div className="patient-metrics">
-                    <span>BMI: {user.bmi}</span>
-                    <span>Age: {user.age}</span>
-                  </div>
-                )}
               </div>
-              
-              <div className="user-card-footer">
-                <span className="user-date">
-                  Joined {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "Recently"}
-                </span>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>

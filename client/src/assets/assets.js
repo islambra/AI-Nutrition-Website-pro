@@ -16,7 +16,7 @@ export const assets = {
 export const nutritionistMenuLinks = [
   { name: "Create Blog", path: "/nutritionist/create-blog", icon: addIcon },
   { name: "Contact Messages", path: "/nutritionist/contact-messages", icon: messagesicon },
-  { name: "All Patient", path: "/nutritionist/all-patient", icon: allUsers },
+  { name: "All Clients", path: "/nutritionist/all-clients", icon: allUsers },
   { name: "My Profile", path: "/nutritionist/my-Profile", icon: userInfo },
 ];
 export const adminMenuLinks = [

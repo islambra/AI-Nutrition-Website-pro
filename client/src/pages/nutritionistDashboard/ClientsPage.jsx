@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { getAllPatients } from '../../api/userApi';
-import './PatientsPage.css';
+import { getAllClients } from '../../api/userApi';
+import './ClientsPage.css';
 
 // Icon components (using SVG instead of emojis)
 const Icons = {
@@ -28,7 +28,7 @@ const Icons = {
   Minus: () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="5" y1="12" x2="19" y2="12"/></svg>
 };
 
-const PatientsPage = () => {
+const ClientsPage = () => {
   const [patients, setPatients] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -43,8 +43,35 @@ const PatientsPage = () => {
   const fetchPatients = async () => {
     try {
       setLoading(true);
-      const data = await getAllPatients();
-      setPatients(data);
+      const data = await getAllClients();
+      
+      // TRANSFORM THE DATA: Flatten the nested structure
+      const transformedData = data.map(client => {
+        const profile = client.clientProfile || {};
+        return {
+          ...client,                    // User fields (fullName, email, photo, role, createdAt)
+          ...profile,                   // Client profile fields (age, gender, bmi, etc.)
+          // Ensure all expected fields exist with fallback values
+          age: profile.age ?? null,
+          gender: profile.gender ?? null,
+          heightCm: profile.heightCm ?? null,
+          weightKg: profile.weightKg ?? null,
+          activityLevel: profile.activityLevel ?? null,
+          bmr: profile.bmr ?? null,
+          tdee: profile.tdee ?? null,
+          bmi: profile.bmi ?? null,
+          bmiCategory: profile.bmiCategory ?? null,
+          idealWeightKg: profile.idealWeightKg ?? null,
+          bodyFatPercentage: profile.bodyFatPercentage ?? null,
+          medicalConditions: profile.medicalConditions ?? [],
+          allergies: profile.allergies ?? [],
+          goals: profile.goals ?? null,
+          updatedAt: profile.updatedAt || client.updatedAt || null
+        };
+      });
+      
+      console.log('Transformed clients:', transformedData);
+      setPatients(transformedData);
       setError(null);
     } catch (err) {
       console.error('Error fetching patients:', err);
@@ -66,6 +93,7 @@ const PatientsPage = () => {
       case 'normal': return '#10b981';
       case 'overweight': return '#f59e0b';
       case 'obese': return '#ef4444';
+      case 'obesity': return '#ef4444';
       default: return '#6b7280';
     }
   };
@@ -76,6 +104,7 @@ const PatientsPage = () => {
       case 'normal': return 'linear-gradient(135deg, #10b981, #059669)';
       case 'overweight': return 'linear-gradient(135deg, #f59e0b, #d97706)';
       case 'obese': return 'linear-gradient(135deg, #ef4444, #dc2626)';
+      case 'obesity': return 'linear-gradient(135deg, #ef4444, #dc2626)';
       default: return 'linear-gradient(135deg, #6b7280, #4b5563)';
     }
   };
@@ -83,6 +112,7 @@ const PatientsPage = () => {
   const getActivityLabel = (level) => {
     const levels = {
       'sedentary': 'Sedentary',
+      'lightly active': 'Lightly Active',
       'light': 'Light',
       'moderate': 'Moderate',
       'active': 'Active',
@@ -116,12 +146,12 @@ const PatientsPage = () => {
       <div className="page-header">
         <div className="header-content">
           <div>
-            <h1 className="page-title">Patient Management</h1>
-            <p className="page-subtitle">View and manage all registered patients</p>
+            <h1 className="page-title">Client Management</h1>
+            <p className="page-subtitle">View and manage all registered clients</p>
           </div>
           <div className="stats-badge">
             <span className="stats-number">{patients.length}</span>
-            <span className="stats-label">Total Patients</span>
+            <span className="stats-label">Total Clients</span>
           </div>
         </div>
       </div>
@@ -158,13 +188,13 @@ const PatientsPage = () => {
       </div>
 
       <div className="results-count">
-        Showing {filteredPatients.length} of {patients.length} patients
+        Showing {filteredPatients.length} of {patients.length} clients
       </div>
 
       {filteredPatients.length === 0 ? (
         <div className="empty-state">
           <div className="empty-icon"><Icons.User /></div>
-          <h3>No patients found</h3>
+          <h3>No clients found</h3>
           <p>Try adjusting your search</p>
         </div>
       ) : viewMode === 'grid' ? (
@@ -339,7 +369,7 @@ const ModernPatientModal = ({ patient, onClose, getBMIColor, getBMIGradient, get
           </div>
           <div className="hero-content">
             <h1 className="hero-name">{patient.fullName}</h1>
-            <p className="hero-role">{patient.role || 'Patient'}</p>
+            <p className="hero-role">{patient.role || 'Client'}</p>
             <div className="hero-badge-group">
               <span className="hero-badge"><Icons.Mail /> {patient.email}</span>
               <span className="hero-badge"><Icons.Calendar /> Member since {patient.createdAt ? new Date(patient.createdAt).toLocaleDateString() : 'N/A'}</span>
@@ -516,4 +546,4 @@ const ModernPatientModal = ({ patient, onClose, getBMIColor, getBMIGradient, get
   );
 };
 
-export default PatientsPage;
+export default ClientsPage;

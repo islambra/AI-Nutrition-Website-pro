@@ -4,7 +4,12 @@ import {
   loginUser as apiLoginUser, 
   getCurrentUser, 
   getCurrentUserFromStorage,
-  logoutUser 
+  logoutUser,
+  isClient,
+  isStaff,
+  isAdmin,
+  isNutritionist,
+  getClientProfile
 } from "../api/userApi";
 
 const AuthContext = createContext();
@@ -100,8 +105,7 @@ export const AuthProvider = ({ children }) => {
   const hasRole = (roles) => {
     if (!user) return false;
     
-    // Get user role (for staff) or default to "Patient"
-    const userRole = user.role || "Patient";
+    const userRole = user.role;
     
     if (Array.isArray(roles)) {
       return roles.includes(userRole);
@@ -110,32 +114,39 @@ export const AuthProvider = ({ children }) => {
   };
 
   // Check if user is admin
-  const isAdmin = () => {
-    return user?.role === "Admin";
+  const checkIsAdmin = () => {
+    return isAdmin(user);
   };
 
   // Check if user is nutritionist
-  const isNutritionist = () => {
-    return user?.role === "Nutritionist";
+  const checkIsNutritionist = () => {
+    return isNutritionist(user);
   };
 
-  // Check if user is patient
-  const isPatient = () => {
-    return !user?.role || user?.role === "Patient" || user?.userType === "patient";
+  // Check if user is client
+  const checkIsClient = () => {
+    return isClient(user);
   };
 
   // Check if user is staff (Admin or Nutritionist)
-  const isStaff = () => {
-    return user?.role === "Admin" || user?.role === "Nutritionist";
+  const checkIsStaff = () => {
+    return isStaff(user);
+  };
+
+  // Get client profile if user is client
+  const clientProfile = () => {
+    return getClientProfile(user);
   };
 
   // Get user type for display
   const getUserType = () => {
     if (!user) return null;
-    if (user.role === "Admin") return "Admin";
-    if (user.role === "Nutritionist") return "Nutritionist";
-    return "Patient";
+    return user.role || "Client";
   };
+
+  // For backward compatibility
+  const isPatient = checkIsClient;
+  const patientProfile = clientProfile;
 
   const value = {
     user,
@@ -147,10 +158,14 @@ export const AuthProvider = ({ children }) => {
     updateUser,
     isAuthenticated: !!user,
     hasRole,
-    isAdmin,
-    isNutritionist,
+    isAdmin: checkIsAdmin,
+    isNutritionist: checkIsNutritionist,
+    isClient: checkIsClient,
+    isStaff: checkIsStaff,
+    clientProfile,
+    // Backward compatibility
     isPatient,
-    isStaff,
+    patientProfile,
     userType: getUserType(),
   };
 

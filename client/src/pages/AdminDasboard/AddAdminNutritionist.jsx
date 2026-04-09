@@ -48,7 +48,7 @@ const AddUser = () => {
     
     setLoading(true);
     try {
-      // Use createStaffUser instead of registerBasicUser
+      // Use createStaffUser - works with Admin and Nutritionist roles
       const response = await createStaffUser({
         fullName: formData.fullName.trim(),
         email: formData.email.trim().toLowerCase(),
@@ -196,9 +196,11 @@ const AddUser = () => {
                       <h3>Nutritionist</h3>
                       <span className="role-badge">Professional Access</span>
                     </div>
-                    <p>Manage patients, create meal plans, and track nutritional progress</p>
+                    {/* UPDATED: Changed "patients" to "clients" */}
+                    <p>Manage clients, create meal plans, and track nutritional progress</p>
                     <div className="role-features">
-                      <span>✓ Patient Management</span>
+                      {/* UPDATED: Changed "Patient" to "Client" */}
+                      <span>✓ Client Management</span>
                       <span>✓ Meal Planning</span>
                       <span>✓ Nutrition Tracking</span>
                     </div>

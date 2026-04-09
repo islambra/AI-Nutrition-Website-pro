@@ -36,10 +36,18 @@ function LoginPage() {
       
       if (result.success) {
         const user = result.user;
-        const userRole = user.role || "Patient";
+        // CHANGED: Role is now "Client" instead of "Patient"
+        const userRole = user.role || "Client";
+        
+        // CHANGED: Get display role text
+        const roleDisplay = {
+          'Admin': 'Administrator',
+          'Nutritionist': 'Nutritionist',
+          'Client': 'Client'
+        }[userRole] || userRole;
         
         toast.success(`Welcome back, ${user.fullName || 'User'}!`, {
-          description: `Logged in as ${userRole}`,
+          description: `Logged in as ${roleDisplay}`,
           duration: 3000,
         });
         

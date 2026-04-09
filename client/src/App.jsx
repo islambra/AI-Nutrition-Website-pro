@@ -20,7 +20,7 @@ import Layout from './pages/nutritionistDashboard/Layout.jsx'
 import AdminLayout from './pages/AdminDasboard/AdminLayout.jsx'
 import ContactMessages from './pages/nutritionistDashboard/ContactMessages.jsx'
 import AddAdminNutritionist from './pages/AdminDasboard/AddAdminNutritionist.jsx'
-import PatientsPage from './pages/nutritionistDashboard/PatientsPage.jsx'
+import ClientsPage from './pages/nutritionistDashboard/ClientsPage.jsx'
 import AllUsers from './pages/AdminDasboard/AllUsers.jsx'
 import EditUserProfile from './pages/AdminDasboard/EditUserProfile.jsx'
 import './App.css'
@@ -50,7 +50,7 @@ function App() {
               <Route path="/nutritionist/create-blog" element={<CreateBlog />} />
               <Route path="/nutritionist/contact-messages" element={<ContactMessages />} />
               <Route path="/nutritionist/my-Profile" element={<EditUserProfile />} />
-              <Route path="/nutritionist/all-patient" element={<PatientsPage />} />
+              <Route path="/nutritionist/all-clients" element={<ClientsPage />} />
           </Route>
           <Route path="/admin" element={<AdminLayout />}>
               <Route path="/admin/add-admin-nutritionist" element={<AddAdminNutritionist />} />

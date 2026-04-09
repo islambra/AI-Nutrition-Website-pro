@@ -13,9 +13,7 @@ import {
   Flame, Activity as ActivityIcon, Weight, Brain
 } from 'lucide-react';
 import { clsx } from 'clsx';
-
-// Updated import - using registerPatient instead of registerUser
-import { registerPatient } from "../api/userApi";
+import { registerClient } from "../api/userApi";
 import './SignUpPage.css';
 
 // Updated Schema - Health Details are now optional
@@ -155,7 +153,7 @@ function SignUpPage() {
   const onSubmit = async (values) => {
     setLoading(true);
     try {
-      // Prepare payload matching the registerPatient API
+      // Prepare payload matching the registerClient API
       const payload = {
         fullName: values.fullName,
         email: values.email,
@@ -175,8 +173,8 @@ function SignUpPage() {
       
       console.log('Sending payload:', payload);
       
-      // Use registerPatient instead of registerUser
-      const response = await registerPatient(payload);
+      // CHANGED: Use registerClient instead of registerPatient
+      const response = await registerClient(payload);
       
       console.log('Registration response:', response);
       
@@ -199,6 +197,7 @@ function SignUpPage() {
       }, 150);
 
       // Show success toast with health metrics
+      // CHANGED: response.user structure now has clientProfile nested
       toast.success('Account created successfully!', {
         description: `Welcome ${response.user?.fullName || values.fullName}! Your BMR: ${response.healthMetrics?.bmr || previewMetrics?.bmr} cal/day | BMI: ${response.healthMetrics?.bmi || previewMetrics?.bmi}`,
         duration: 5000,
