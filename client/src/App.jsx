@@ -6,6 +6,7 @@ import ContactPage from './pages/ContactPage.jsx'
 import AboutUsPage from './pages/AboutUsPage.jsx' 
 import ServicesPage from './pages/ServicesPage.jsx' 
 import BlogsPage from './pages/BlogsPage.jsx'
+import BlogDetailsPage  from './pages/BlogDetailsPage.jsx'
 import Header from './components/Header.jsx' 
 import Footer from './components/Footer.jsx' 
 import ScrollToTop from './utils/ScrollToTop.jsx'
@@ -45,6 +46,7 @@ function App() {
           <Route path='/about' element={<PageTransition><AboutUsPage /></PageTransition>} /> 
           <Route path='/services' element={<PageTransition><ServicesPage /></PageTransition>} /> 
           <Route path='/blogs' element={<PageTransition><BlogsPage /></PageTransition>} /> 
+          <Route path="/blog/:id" element={<PageTransition><BlogDetailsPage  /></PageTransition>} />
 
           <Route path="/nutritionist" element={<Layout />}>
               <Route path="/nutritionist/create-blog" element={<CreateBlog />} />

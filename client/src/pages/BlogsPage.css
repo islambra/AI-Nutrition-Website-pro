@@ -233,11 +233,11 @@
 }
 
 .blog-type-tag.article {
-  color: #34C759; /* Changed from #007AFF to green */
+  color: #34C759;
 }
 
 .blog-type-tag.community {
-  color: #34C759; /* Changed from #AF52DE to green */
+  color: #34C759;
 }
 
 .blog-card-content {
@@ -599,61 +599,6 @@
   }
 }
 
-/* Dark Mode Support */
-@media (prefers-color-scheme: dark) {
-  .blogs-page-container {
-    background: linear-gradient(135deg, #000000 0%, #1C1C1E 100%);
-  }
-  
-  .blog-card {
-    background: #1C1C1E;
-    border-color: rgba(255, 255, 255, 0.1);
-  }
-  
-  .blog-card-content h3 {
-    color: #FFFFFF;
-  }
-  
-  .blog-card-content p {
-    color: #8E8E93;
-  }
-  
-  .filter-btn {
-    background: #1C1C1E;
-    color: #FFFFFF;
-  }
-  
-  .filter-btn.active, .filter-btn:hover {
-    background-color: #34C759;
-  }
-  
-  .cta-card.nutritionist-access {
-    background: linear-gradient(135deg, #1C1C1E 0%, #2C2C2E 100%);
-  }
-  
-  .cta-card h2 {
-    background: linear-gradient(135deg, #FFFFFF 0%, #34C759 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-  }
-  
-  .no-posts {
-    background: #1C1C1E;
-  }
-  
-  .no-posts h3 {
-    color: #FFFFFF;
-  }
-  
-  .tag {
-    background: #2C2C2E;
-  }
-  
-  .tag:hover {
-    background: #34C759;
-  }
-}
-
 /* Hover Effects for Interactive Elements */
 .blog-card {
   cursor: pointer;
@@ -670,4 +615,81 @@ html {
 .btn:focus-visible {
   outline: 2px solid #34C759;
   outline-offset: 2px;
+}
+
+/* Share Notification Styles */
+.share-notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  animation: slideInRight 0.3s ease, fadeOut 0.3s ease 2.7s;
+  animation-fill-mode: forwards;
+}
+
+.notification-content {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  padding: 12px 24px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 10px 25px rgba(16, 185, 129, 0.2);
+  font-size: 14px;
+  font-weight: 500;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.notification-content svg {
+  animation: checkmark 0.5s ease;
+  stroke: white;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+    visibility: visible;
+  }
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+@keyframes checkmark {
+  0% {
+    transform: scale(0);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Make notification responsive */
+@media (max-width: 768px) {
+  .share-notification {
+    top: 10px;
+    right: 10px;
+    left: 10px;
+  }
+  
+  .notification-content {
+    padding: 10px 16px;
+    font-size: 12px;
+  }
 }

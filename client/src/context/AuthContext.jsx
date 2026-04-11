@@ -44,16 +44,32 @@ export const AuthProvider = ({ children }) => {
           localStorage.setItem("user", JSON.stringify(result.user));
           setAuthError(null);
         } else {
-          // Token is invalid or expired
-          logoutUser();
-          setUser(null);
-          setAuthError(result.error || "Session expired. Please login again.");
+          // Don't logout immediately if API fails - keep the stored user
+          // Only logout if the API explicitly says token is invalid
+          if (result.error && result.error.includes("invalid") || result.error?.includes("expired")) {
+            console.warn("Token invalid/expired, logging out");
+            logoutUser();
+            setUser(null);
+            setAuthError(result.error || "Session expired. Please login again.");
+          } else {
+            // API might be temporarily unavailable, keep the stored user
+            console.warn("API verification failed, but keeping stored user:", result.error);
+            setAuthError(null); // Clear error to not block user
+          }
         }
       } catch (error) {
         console.error("Failed to fetch user data:", error);
-        logoutUser();
-        setUser(null);
-        setAuthError(error.message || "Authentication failed");
+        // Don't logout on network errors - keep the stored user
+        // Only clear if it's an authentication error
+        if (error.response?.status === 401) {
+          logoutUser();
+          setUser(null);
+          setAuthError(error.message || "Authentication failed");
+        } else {
+          // Keep the user from localStorage on network errors
+          console.log("Network error, using cached user data");
+          setAuthError(null);
+        }
       } finally {
         setLoading(false);
       }

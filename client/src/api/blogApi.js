@@ -1,4 +1,7 @@
+// services/blogService.js
 import axiosInstance from './axiosInstance';
+
+// ==================== BLOG CRUD OPERATIONS ====================
 
 export const createBlog = async (blogData) => {
   const formData = new FormData();
@@ -26,13 +29,20 @@ export const updateBlog = async (blogId, blogData) => {
   if (blogData.tags) formData.append('tags', JSON.stringify(blogData.tags));
   if (blogData.image) formData.append('image', blogData.image);
   
-  const response = await axiosInstance.put(`/blogs/${blogId}`, formData, {
+  const response = await axiosInstance.put(`/blog/blogs/${blogId}`, formData, {
     headers: {
       'Content-Type': 'multipart/form-data',
     },
   });
   return response.data;
 };
+
+export const deleteBlog = async (blogId) => {
+  const response = await axiosInstance.delete(`/blog/blogs/${blogId}`);
+  return response.data;
+};
+
+// ==================== FETCH BLOGS ====================
 
 export const getAllBlogs = async () => {
   const response = await axiosInstance.get("/blog/blogs");
@@ -44,37 +54,63 @@ export const getMyBlogs = async () => {
   return response.data;
 };
 
-// Get blogs by specific author name (public)
-export const getBlogsByAuthor = async (authorName) => {
-  const response = await axiosInstance.get(`/blog/blogs/author/${authorName}`);
+export const getBlogsByAuthor = async (authorId) => {
+  const response = await axiosInstance.get(`/blog/blogs/author/${authorId}`);
   return response.data;
 };
 
-// Get single blog by ID (public)
 export const getBlogById = async (blogId) => {
   const response = await axiosInstance.get(`/blog/blogs/${blogId}`);
   return response.data;
 };
 
-// Delete blog (protected - only author)
-export const deleteBlog = async (blogId) => {
-  const response = await axiosInstance.delete(`/blog/blogs/${blogId}`);
+// ==================== COMMENT OPERATIONS ====================
+
+export const addComment = async (blogId, content) => {
+  const response = await axiosInstance.post(`/blog/blogs/${blogId}/comments`, { content });
   return response.data;
 };
 
-// Add comment to blog (protected)
-export const addComment = async (blogId, commentData) => {
-  const response = await axiosInstance.post(`/blog/blogs/${blogId}/comments`, commentData);
+export const getComments = async (blogId) => {
+  const response = await axiosInstance.get(`/blog/blogs/${blogId}/comments`);
   return response.data;
 };
 
-// Like blog (public)
+export const deleteComment = async (blogId, commentId) => {
+  const response = await axiosInstance.delete(`/blog/blogs/${blogId}/comments/${commentId}`);
+  return response.data;
+};
+
+// ==================== LIKE OPERATIONS ====================
+
 export const likeBlog = async (blogId) => {
-  const response = await axiosInstance.put(`/blog/blogs/${blogId}/like`);
+  const response = await axiosInstance.post(`/blog/blogs/${blogId}/like`);
   return response.data;
 };
 
-export const dislikeBlog = async (blogId) => {
-  const response = await axiosInstance.put(`/blog/blogs/${blogId}/dislike`);
+export const unlikeBlog = async (blogId) => {
+  const response = await axiosInstance.delete(`/blog/blogs/${blogId}/like`);
+  return response.data;
+};
+
+export const getLikeStatus = async (blogId) => {
+  const response = await axiosInstance.get(`/blog/blogs/${blogId}/like/status`);
+  return response.data;
+};
+
+// ==================== HELPER FUNCTIONS FOR UI ====================
+
+// Toggle like (if liked then unlike, if not liked then like)
+export const toggleLike = async (blogId, currentLikedStatus) => {
+  if (currentLikedStatus) {
+    return await unlikeBlog(blogId);
+  } else {
+    return await likeBlog(blogId);
+  }
+};
+
+// Get blog with full details (including likes and comments)
+export const getBlogWithDetails = async (blogId) => {
+  const response = await getBlogById(blogId);
   return response.data;
 };

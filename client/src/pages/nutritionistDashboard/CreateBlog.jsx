@@ -3,18 +3,19 @@ import { useNavigate } from "react-router-dom";
 import { createBlog } from "../../api/blogApi";
 import "./CreateBlog.css";
 
-// SVG Icon Components
+// SVG Icon Components - Modern Minimalist
 const Icons = {
-  Camera: () => <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>,
-  Trash: () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>,
+  Camera: () => <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>,
+  Trash: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>,
   Check: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>,
   Alert: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>,
-  X: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>,
-  Upload: () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>,
+  X: () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>,
+  Upload: () => <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>,
   Tag: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>,
   Sparkles: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 3L14 8L19 9L15.5 12.5L17 18L12 15L7 18L8.5 12.5L5 9L10 8L12 3Z"/></svg>,
   ArrowRight: () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 18 15 12 9 6"/></svg>,
-  ImageIcon: () => <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="2.5"/><polyline points="21 15 16 10 5 21"/></svg>
+  ImageIcon: () => <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="2.5"/><polyline points="21 15 16 10 5 21"/></svg>,
+  Edit: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4Z"/></svg>
 };
 
 const CreateBlog = () => {
@@ -34,7 +35,7 @@ const CreateBlog = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  const resizeImage = (file, maxWidth = 800, maxHeight = 800, quality = 0.5) => {
+  const resizeImage = (file, maxWidth = 1200, maxHeight = 800, quality = 0.7) => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.readAsDataURL(file);
@@ -44,18 +45,15 @@ const CreateBlog = () => {
         img.onload = () => {
           let width = img.width;
           let height = img.height;
-          const MAX_SIZE = 600;
           
-          if (width > height) {
-            if (width > MAX_SIZE) {
-              height = (height * MAX_SIZE) / width;
-              width = MAX_SIZE;
-            }
-          } else {
-            if (height > MAX_SIZE) {
-              width = (width * MAX_SIZE) / height;
-              height = MAX_SIZE;
-            }
+          // Calculate new dimensions maintaining aspect ratio
+          if (width > maxWidth) {
+            height = (height * maxWidth) / width;
+            width = maxWidth;
+          }
+          if (height > maxHeight) {
+            width = (width * maxHeight) / height;
+            height = maxHeight;
           }
           
           const canvas = document.createElement('canvas');
@@ -73,7 +71,7 @@ const CreateBlog = () => {
               resolve(resizedFile);
             },
             'image/jpeg',
-            0.4
+            quality
           );
         };
         img.onerror = reject;
@@ -113,8 +111,8 @@ const CreateBlog = () => {
   const handleImageChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
-      if (file.size > 5 * 1024 * 1024) {
-        setError("Image size should be less than 5MB");
+      if (file.size > 10 * 1024 * 1024) {
+        setError("Image size should be less than 10MB");
         return;
       }
       if (!file.type.startsWith("image/")) {
@@ -124,7 +122,7 @@ const CreateBlog = () => {
       
       try {
         setLoading(true);
-        const resizedImage = await resizeImage(file);
+        const resizedImage = await resizeImage(file, 1200, 800, 0.75);
         const originalSizeKB = (file.size / 1024).toFixed(2);
         const resizedSizeKB = (resizedImage.size / 1024).toFixed(2);
         console.log(`Image optimized: ${originalSizeKB}KB → ${resizedSizeKB}KB`);
@@ -280,9 +278,11 @@ const CreateBlog = () => {
           </div>
         </div>
         
-        {/* Image Upload - Modern Design */}
+        {/* Image Upload - Perfect Size */}
         <div className="form-group-modern">
-          <label className="form-label-modern">Featured Image</label>
+          <label className="form-label-modern">
+            <Icons.Camera /> Featured Image
+          </label>
           <div 
             className="modern-image-upload"
             onClick={handleImageClick}
@@ -291,7 +291,7 @@ const CreateBlog = () => {
               <div className="upload-loading">
                 <div className="upload-spinner"></div>
                 <p>Optimizing image...</p>
-                <small>Making it smaller for faster loading</small>
+                <small>Making it perfect for your blog</small>
               </div>
             ) : imagePreview ? (
               <div className="upload-preview">
@@ -306,15 +306,19 @@ const CreateBlog = () => {
                 >
                   <Icons.Trash />
                 </button>
+                <div className="preview-overlay">
+                  <Icons.Edit />
+                  <span>Click to change</span>
+                </div>
               </div>
             ) : (
               <div className="upload-placeholder">
                 <div className="upload-icon-wrapper">
                   <Icons.Upload />
                 </div>
-                <h4>Upload an image</h4>
+                <h4>Upload a cover image</h4>
                 <p>Click or drag and drop</p>
-                <small>JPEG, PNG up to 5MB • Will be optimized for web</small>
+                <small>Recommended: 1200 x 800px • Max 10MB</small>
               </div>
             )}
           </div>
@@ -355,7 +359,7 @@ const CreateBlog = () => {
             name="tags"
             value={formData.tags}
             onChange={handleInputChange}
-            placeholder="Healthy, Quick, Vegan, Breakfast"
+            placeholder="e.g., Healthy, Quick, Vegan, Breakfast"
             className="modern-input"
           />
           <small className="form-hint-modern">
@@ -374,7 +378,7 @@ const CreateBlog = () => {
             rows="12"
             value={formData.content}
             onChange={handleInputChange}
-            placeholder="Write your blog content here..."
+            placeholder="Write your blog content here... Markdown supported"
             className="modern-textarea"
           />
         </div>
