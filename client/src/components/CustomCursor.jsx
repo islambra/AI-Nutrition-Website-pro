@@ -1,15 +1,15 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { motion, useSpring, useMotionValue } from 'framer-motion';
+import React, { useEffect, useState } from 'react';
+import { motion, useMotionValue, useSpring } from 'framer-motion';
 import './CustomCursor.css';
 
 const CustomCursor = () => {
   const cursorX = useMotionValue(-100);
   const cursorY = useMotionValue(-100);
   
-  // Spring physics for that "jelly" feel
-  const springConfig = { damping: 25, stiffness: 250, mass: 0.5 };
-  const trailX = useSpring(cursorX, springConfig);
-  const trailY = useSpring(cursorY, springConfig);
+  // Outer ring follows with a slight spring delay for a "fluid" feel
+  const springConfig = { damping: 20, stiffness: 250, mass: 0.5 };
+  const ringX = useSpring(cursorX, springConfig);
+  const ringY = useSpring(cursorY, springConfig);
 
   const [isHovered, setIsHovered] = useState(false);
   const [isClicking, setIsClicking] = useState(false);
@@ -21,7 +21,7 @@ const CustomCursor = () => {
     };
 
     const handleMouseOver = (e) => {
-      if (e.target.closest('a, button, .interactive, .bento-item')) {
+      if (e.target.closest('a, button, .interactive, .hyper-card, .btn-cyber-pill')) {
         setIsHovered(true);
       } else {
         setIsHovered(false);
@@ -46,29 +46,33 @@ const CustomCursor = () => {
 
   return (
     <>
-      {/* Main Dot */}
+      {/* Outer Ring */}
       <motion.div
-        className="cursor-dot-main"
-        style={{ x: cursorX, y: cursorY, x: '-50%', y: '-50%' }}
+        className="cursor-ring"
+        style={{ 
+          left: ringX, 
+          top: ringY, 
+          x: '-50%', 
+          y: '-50%' 
+        }}
         animate={{
-          scale: isClicking ? 0.8 : isHovered ? 1.5 : 1,
-          backgroundColor: isHovered ? '#34C759' : '#111'
+          scale: isClicking ? 0.5 : isHovered ? 1.8 : 1,
+          borderColor: isHovered ? '#22C55E' : 'rgba(15, 23, 42, 0.2)',
+          borderWidth: isHovered ? '1px' : '1.5px',
         }}
       />
-      
-      {/* The Jelly Trail */}
+      {/* Center Dot */}
       <motion.div
-        className={`cursor-trail ${isHovered ? 'hovered' : ''}`}
+        className="cursor-dot-main"
         style={{ 
-          x: trailX, 
-          y: trailY,
-          translateX: '-50%',
-          translateY: '-50%'
+          left: cursorX, 
+          top: cursorY, 
+          x: '-50%', 
+          y: '-50%'
         }}
         animate={{
-          width: isHovered ? 80 : 40,
-          height: isHovered ? 80 : 40,
-          opacity: isClicking ? 0.5 : 1,
+          scale: isClicking ? 1.5 : isHovered ? 0.4 : 1,
+          backgroundColor: isHovered ? '#22C55E' : '#0F172A'
         }}
       />
     </>

@@ -55,15 +55,28 @@
   pointer-events: none;
 }
 
-.neural-node {
+.neural-node-css {
   position: absolute;
   background: #34C759;
   border-radius: 50%;
   box-shadow: 0 0 10px rgba(52, 199, 89, 0.5);
   filter: blur(1px);
+  opacity: 0.2;
+  animation: floatNode ease-in-out infinite;
 }
 
-.scanning-line-horizontal {
+@keyframes floatNode {
+  0%, 100% {
+    opacity: 0.2;
+    transform: scale(1) translateY(0);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.5) translateY(-30px);
+  }
+}
+
+.scanning-line-horizontal-css {
   position: absolute;
   left: 0;
   width: 100%;
@@ -71,6 +84,12 @@
   background: linear-gradient(90deg, transparent, rgba(34, 197, 94, 0.2), transparent);
   box-shadow: 0 0 20px rgba(34, 197, 94, 0.1);
   z-index: 1;
+  animation: scanLine 15s linear infinite;
+}
+
+@keyframes scanLine {
+  0% { top: -10%; }
+  100% { top: 110%; }
 }
 
 .bg-noise-overlay {

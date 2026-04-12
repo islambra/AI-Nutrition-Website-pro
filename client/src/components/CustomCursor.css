@@ -4,32 +4,27 @@
   left: 0;
   width: 8px;
   height: 8px;
-  background-color: #14532D; /* Forest Deep */
+  background-color: #0F172A;
   border-radius: 50%;
   pointer-events: none;
-  z-index: 10000;
+  z-index: 10001;
 }
 
-.cursor-trail {
+.cursor-ring {
   position: fixed;
   top: 0;
   left: 0;
   width: 40px;
   height: 40px;
-  border: 1.5px solid rgba(20, 83, 45, 0.4);
+  border: 1.5px solid rgba(15, 23, 42, 0.2);
   border-radius: 50%;
   pointer-events: none;
-  z-index: 9999;
+  z-index: 10000;
+  transition: border-color 0.3s ease, border-width 0.3s ease;
 }
 
-.cursor-trail.hovered {
-  border-color: #22C55E;
-  background-color: rgba(34, 197, 94, 0.05);
-  backdrop-filter: blur(2px);
-}
-
-@media (max-width: 768px) {
-  .cursor-dot-main, .cursor-trail {
+@media (max-width: 1024px) {
+  .cursor-dot-main, .cursor-ring {
     display: none;
   }
 }
