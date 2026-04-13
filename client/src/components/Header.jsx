@@ -76,9 +76,9 @@ function Header() {
     return user?.photo || user?.profilePicture || null;
   };
 
-  // Check if user is a patient
-  const isPatient = () => {
-    return user?.role === "Patient";
+  // Check if user is a client
+  const isClient = () => {
+    return user?.role === "Client";
   };
 
   useEffect(() => {
@@ -126,8 +126,8 @@ function Header() {
                     Dashboard
                   </NavLink>
                 )}
-                {/* Profile link - Only show for Patient role */}
-                {isPatient() && (
+                {/* Profile link - Only show for Client role */}
+                {isClient() && (
                   <NavLink to="/profile" className="dropdown-item">
                     <User size={16} />
                     Profile
@@ -177,8 +177,8 @@ function Header() {
                 Dashboard
               </NavLink>
             )}
-            {/* Profile link - Only show for Patient role on mobile */}
-            {isPatient() && (
+            {/* Profile link - Only show for Client role on mobile */}
+            {isClient() && (
               <NavLink to="/profile" className="mobile-nav-item">
                 <User size={16} />
                 Profile

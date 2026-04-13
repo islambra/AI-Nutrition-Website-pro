@@ -1,30 +1,48 @@
-.cursor-dot-main {
+.cursor-main-organic {
   position: fixed;
   top: 0;
   left: 0;
-  width: 8px;
-  height: 8px;
-  background-color: #0F172A;
+  width: 32px;
+  height: 32px;
+  border: 1.5px solid rgba(45, 90, 39, 0.3);
   border-radius: 50%;
   pointer-events: none;
   z-index: 10001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.3s;
 }
 
-.cursor-ring {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 40px;
-  height: 40px;
-  border: 1.5px solid rgba(15, 23, 42, 0.2);
+.cursor-inner-vitality {
+  width: 4px;
+  height: 4px;
+  background: #34C759;
   border-radius: 50%;
+  box-shadow: 0 0 10px rgba(52, 199, 89, 0.8);
+}
+
+.cursor-glass-blob {
+  position: fixed;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(52, 199, 89, 0.05) 0%, transparent 70%);
   pointer-events: none;
   z-index: 10000;
-  transition: border-color 0.3s ease, border-width 0.3s ease;
+  transform: translate(-50%, -50%);
+  filter: blur(40px);
+}
+
+.star-trail-node {
+  position: fixed;
+  pointer-events: none;
+  z-index: 10002;
+  transform: translate(-50%, -50%);
+  filter: drop-shadow(0 0 5px rgba(52, 199, 89, 0.3));
 }
 
 @media (max-width: 1024px) {
-  .cursor-dot-main, .cursor-ring {
+  .cursor-main-organic, .cursor-glass-blob, .star-trail-node {
     display: none;
   }
 }

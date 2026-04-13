@@ -225,7 +225,6 @@
 
 .section-header {
   display: flex;
-  align-items: flex-start;
   gap: 1rem;
   margin-bottom: 1.75rem;
 }

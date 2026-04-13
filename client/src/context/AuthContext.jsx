@@ -113,8 +113,14 @@ export const AuthProvider = ({ children }) => {
 
   // Update user in state and storage
   const updateUser = (updatedUser) => {
-    setUser(updatedUser);
-    localStorage.setItem("user", JSON.stringify(updatedUser));
+    // Ensure we preserve the clientProfile if it's missing in the update but exists in current state
+    const mergedUser = {
+      ...user,
+      ...updatedUser,
+      clientProfile: updatedUser.clientProfile || user?.clientProfile
+    };
+    setUser(mergedUser);
+    localStorage.setItem("user", JSON.stringify(mergedUser));
   };
 
   // Check if user has specific role

@@ -7,8 +7,10 @@ import AboutUsPage from './pages/AboutUsPage.jsx'
 import ServicesPage from './pages/ServicesPage.jsx' 
 import BlogsPage from './pages/BlogsPage.jsx'
 import BlogDetailsPage  from './pages/BlogDetailsPage.jsx'
+import ProfilePage from './pages/ProfilePage.jsx'
 import Header from './components/Header.jsx' 
 import Footer from './components/Footer.jsx' 
+import CustomCursor from './components/CustomCursor.jsx'
 import ScrollToTop from './utils/ScrollToTop.jsx'
 import { Routes, Route, useLocation } from 'react-router-dom' 
 import { Toaster } from 'react-hot-toast';
@@ -32,6 +34,7 @@ function App() {
  const isSignupRoute = location.pathname.startsWith('/signup');
   return (
     <>
+      <CustomCursor />
       <SmoothScroll />
       <ProgressBar />
       <ScrollToTop />
@@ -39,6 +42,7 @@ function App() {
       {(!isLoginRoute && !isSignupRoute) && <Header />}
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
+          {/* ... existing routes ... */}
           <Route index element={<PageTransition><HomePage /></PageTransition>} />
           <Route path='/contact' element={<PageTransition><ContactPage /></PageTransition>} />
           <Route path='/login' element={<PageTransition><LoginPage /></PageTransition>} />
@@ -46,6 +50,7 @@ function App() {
           <Route path='/about' element={<PageTransition><AboutUsPage /></PageTransition>} /> 
           <Route path='/services' element={<PageTransition><ServicesPage /></PageTransition>} /> 
           <Route path='/blogs' element={<PageTransition><BlogsPage /></PageTransition>} /> 
+          <Route path='/profile' element={<PageTransition><ProfilePage /></PageTransition>} /> 
           <Route path="/blog/:id" element={<PageTransition><BlogDetailsPage  /></PageTransition>} />
 
           <Route path="/nutritionist" element={<Layout />}>

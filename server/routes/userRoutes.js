@@ -3,6 +3,7 @@ import {
   registerClient,
   createStaffUser,
   loginUser,
+  getCurrentUser,
   getAllUsers,
   updateUser,
   deleteUser,
@@ -19,6 +20,7 @@ userRouter.post("/register-client", registerClient);
 userRouter.post("/login", loginUser);
 
 // Protected routes (authentication required)
+userRouter.get("/me", protect, getCurrentUser);
 userRouter.post("/create-staff", protect, createStaffUser);
 userRouter.get("/all", protect, getAllUsers);           
 userRouter.get("/staff", protect, getAllStaffUsers);   

@@ -1,0 +1,424 @@
+/* ProfilePage.css */
+
+.ProfilePage-Wrapper {
+  background-color: #F9FBF9;
+  color: #1C1C1E;
+  padding: 140px 5% 100px;
+  min-height: 100vh;
+  font-family: 'Outfit', sans-serif;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.ProfilePage-Organic-Container {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.ProfilePage-Floater {
+  position: absolute;
+  color: #2D5A27;
+  opacity: 0.1;
+}
+
+.ProfilePage-Container {
+  max-width: 1300px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 10;
+}
+
+.ProfilePage-Header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.ProfilePage-Badge {
+  display: inline-block;
+  background: #E8F5E9;
+  color: #2D5A27;
+  padding: 8px 16px;
+  border-radius: 100px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 800;
+  margin-bottom: 24px;
+  letter-spacing: 0.2em;
+  border: 1px solid rgba(45, 90, 39, 0.1);
+}
+
+.ProfilePage-Title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(32px, 5vw, 56px);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -0.02em;
+}
+
+.ProfilePage-Highlight {
+  color: #34C759;
+}
+
+.ProfilePage-Content {
+  display: grid;
+  grid-template-columns: 350px 1fr;
+  gap: 40px;
+  align-items: start;
+}
+
+/* Sidebar Styling */
+.ProfilePage-Sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.ProfilePage-Avatar-Card {
+  background: #fff;
+  padding: 48px 32px;
+  border-radius: 40px;
+  border: 1px solid rgba(45, 90, 39, 0.05);
+  text-align: center;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.02);
+}
+
+.ProfilePage-Avatar-Wrapper {
+  width: 160px;
+  height: 160px;
+  margin: 0 auto 24px;
+  position: relative;
+  border-radius: 56px;
+  padding: 8px;
+  background: linear-gradient(135deg, #E8F5E9, #fff);
+  border: 1px solid rgba(45, 90, 39, 0.1);
+}
+
+.ProfilePage-Avatar-Img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 48px;
+}
+
+.ProfilePage-Avatar-Placeholder {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border-radius: 48px;
+  color: #2D5A27;
+  opacity: 0.2;
+}
+
+.ProfilePage-Avatar-Edit {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 44px;
+  height: 44px;
+  background: #2D5A27;
+  color: #fff;
+  border: 4px solid #fff;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.ProfilePage-Avatar-Edit:hover {
+  background: #34C759;
+  transform: scale(1.1);
+}
+
+.animate-spin {
+  animation: ProfilePage-Spin 1s linear infinite;
+}
+
+@keyframes ProfilePage-Spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.ProfilePage-User-Name {
+  font-family: 'Syne', sans-serif;
+  font-size: 24px;
+  font-weight: 800;
+  color: #2D5A27;
+  margin-bottom: 8px;
+}
+
+.ProfilePage-User-Role {
+  display: inline-block;
+  padding: 4px 12px;
+  background: #F3F4F6;
+  color: #6B7280;
+  border-radius: 100px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  margin-bottom: 32px;
+}
+
+.ProfilePage-Quick-Stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  padding-top: 32px;
+  border-top: 1px solid rgba(45, 90, 39, 0.05);
+}
+
+.ProfilePage-Quick-Stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.ProfilePage-Quick-Stat svg {
+  color: #34C759;
+}
+
+.ProfilePage-Quick-Stat .stat-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9px;
+  color: #9CA3AF;
+  font-weight: 700;
+}
+
+.ProfilePage-Quick-Stat .stat-value {
+  font-size: 12px;
+  font-weight: 800;
+  color: #2D5A27;
+}
+
+.ProfilePage-Health-Metrics {
+  background: #fff;
+  padding: 32px;
+  border-radius: 32px;
+  border: 1px solid rgba(45, 90, 39, 0.05);
+}
+
+.ProfilePage-Health-Metrics h3 {
+  font-family: 'Syne', sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  color: #2D5A27;
+  margin-bottom: 24px;
+  letter-spacing: 0.05em;
+}
+
+.ProfilePage-Metrics-Grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+.ProfilePage-Metric {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: #F9FBF9;
+  border-radius: 12px;
+  border: 1px solid rgba(45, 90, 39, 0.03);
+}
+
+.metric-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #6B7280;
+}
+
+.metric-value {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 800;
+  color: #34C759;
+}
+
+/* Main Form Card */
+.ProfilePage-Form-Card {
+  background: #fff;
+  padding: 48px;
+  border-radius: 48px;
+  border: 1px solid rgba(45, 90, 39, 0.05);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.02);
+}
+
+.ProfilePage-Form-Header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 48px;
+}
+
+.ProfilePage-Form-Header h3 {
+  font-family: 'Syne', sans-serif;
+  font-size: 18px;
+  font-weight: 800;
+  color: #2D5A27;
+  letter-spacing: 0.05em;
+}
+
+.ProfilePage-Edit-Btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #F9FBF9;
+  color: #2D5A27;
+  border: 1px solid rgba(45, 90, 39, 0.1);
+  padding: 10px 20px;
+  border-radius: 100px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.ProfilePage-Edit-Btn:hover {
+  background: #2D5A27;
+  color: #fff;
+}
+
+.ProfilePage-Edit-Btn.active {
+  background: #ef4444;
+  color: #fff;
+  border-color: #ef4444;
+}
+
+.ProfilePage-Form-Grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+}
+
+.ProfilePage-Form-Group.full {
+  grid-column: span 2;
+}
+
+.ProfilePage-Form-Group label {
+  display: block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 800;
+  color: #9CA3AF;
+  margin-bottom: 12px;
+  letter-spacing: 0.1em;
+}
+
+.ProfilePage-Input-Wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.ProfilePage-Input-Wrapper .input-icon {
+  position: absolute;
+  left: 16px;
+  color: #2D5A27;
+  opacity: 0.4;
+}
+
+.ProfilePage-Input-Wrapper .input-icon.top {
+  top: 18px;
+}
+
+.ProfilePage-Input-Wrapper input,
+.ProfilePage-Input-Wrapper textarea,
+.ProfilePage-Input-Wrapper select {
+  width: 100%;
+  padding: 16px 20px 16px 48px;
+  background: #F9FBF9;
+  border: 1px solid rgba(45, 90, 39, 0.08);
+  border-radius: 16px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 15px;
+  color: #1C1C1E;
+  transition: all 0.3s ease;
+}
+
+.ProfilePage-Input-Wrapper input:focus,
+.ProfilePage-Input-Wrapper textarea:focus,
+.ProfilePage-Input-Wrapper select:focus {
+  outline: none;
+  border-color: #34C759;
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(52, 199, 89, 0.05);
+}
+
+.ProfilePage-Input-Wrapper input:disabled,
+.ProfilePage-Input-Wrapper textarea:disabled,
+.ProfilePage-Input-Wrapper select:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: #F3F4F6;
+  border-color: transparent;
+}
+
+.ProfilePage-Form-Actions {
+  margin-top: 48px;
+  padding-top: 32px;
+  border-top: 1px solid rgba(45, 90, 39, 0.05);
+}
+
+.ProfilePage-Save-Btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  padding: 20px;
+  background: #2D5A27;
+  color: #fff;
+  border: none;
+  border-radius: 100px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.ProfilePage-Save-Btn:hover {
+  background: #34C759;
+  transform: translateY(-3px);
+  box-shadow: 0 15px 30px rgba(52, 199, 89, 0.2);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .ProfilePage-Content {
+    grid-template-columns: 1fr;
+  }
+  .ProfilePage-Sidebar {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
+  .ProfilePage-Avatar-Card, .ProfilePage-Health-Metrics {
+    flex: 1;
+    min-width: 300px;
+  }
+}
+
+@media (max-width: 768px) {
+  .ProfilePage-Form-Grid {
+    grid-template-columns: 1fr;
+  }
+  .ProfilePage-Form-Group.full {
+    grid-column: span 1;
+  }
+  .ProfilePage-Sidebar {
+    flex-direction: column;
+  }
+  .ProfilePage-Wrapper {
+    padding-top: 100px;
+  }
+}

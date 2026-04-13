@@ -18,7 +18,7 @@
   padding:24px;
   flex:1;
 
-  background:#f3f4f6;
+  background: transparent;
 
   min-height:calc(100vh - 56px);
 

@@ -1,31 +1,31 @@
 /* src/components/Header.css */
 
-.header-container { /* Corrected class name */
+.header-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 25px;
-    background-color: rgba(255, 255, 255, 0.7); /* iOS glass effect */
-    -webkit-backdrop-filter: blur(20px);
-    backdrop-filter: blur(20px);
-    color: #1C1C1E;
-    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.05); /* Subtle hairline border */
+    padding: 12px 40px;
+    background-color: rgba(249, 251, 249, 0.8); /* --health-cream with opacity */
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border-bottom: 1px solid rgba(45, 90, 39, 0.08); /* --health-border */
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     z-index: 1000;
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
 }
 
 .nutrition-logo-icon {
-    width: 32px;
-    height: 32px;
-    color: #34C759; /* iOS Green */
-    transition: opacity 0.3s ease;
+    color: #2D5A27; /* --health-green */
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .logo-btn:hover .nutrition-logo-icon {
-    opacity: 0.7;
+    transform: scale(1.15) rotate(5deg);
+    color: #34C759; /* --health-accent */
 }
 
 /* Desktop Navigation Links */
@@ -35,130 +35,155 @@
 }
 
 .desktop-nav-links .nav-item {
-    color: #1C1C1E;
+    color: #1C1C1E; /* --health-dark */
     text-decoration: none;
-    font-size: 15px; /* iOS standard nav size */
-    font-weight: 500;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: 'Outfit', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
     padding: 8px 0;
-    transition: color 0.3s ease;
+    transition: all 0.3s ease;
     position: relative;
+    opacity: 0.7;
 }
 
 .desktop-nav-links .nav-item::after {
     content: '';
     position: absolute;
-    left: 0;
+    left: 50%;
     bottom: 0;
     width: 0;
     height: 2px;
-    background-color: #34C759;
-    transition: width 0.3s ease;
+    background-color: #34C759; /* --health-accent */
+    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+    transform: translateX(-50%);
+    border-radius: 2px;
 }
 
 .desktop-nav-links .nav-item:hover::after,
 .desktop-nav-links .nav-item.active::after {
-    width: 100%;
+    width: 20px;
 }
 
 .desktop-nav-links .nav-item:hover,
 .desktop-nav-links .nav-item.active {
-    color: #34C759;
+    color: #2D5A27; /* --health-green */
+    opacity: 1;
 }
 
 .sign-in-btn {
-    background-color: #34C759;
-    color: white;
-    padding: 8px 16px;
-    font-size: 14px;
-    border-radius: 20px; /* iOS pill button */
+    background-color: #2D5A27; /* --health-green */
+    color: #fff;
+    padding: 12px 28px;
+    font-size: 12px;
+    font-weight: 700;
+    border-radius: 100px;
     text-decoration: none;
-    transition: all 0.3s ease;
-    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+    box-shadow: 0 8px 20px rgba(45, 90, 39, 0.15);
 }
 
 .sign-in-btn:hover {
-    background-color: #30B753;
-    transform: none;
+    background-color: #34C759; /* --health-accent */
+    transform: translateY(-2px);
+    box-shadow: 0 12px 25px rgba(52, 199, 89, 0.2);
 }
 
 .menu-icon-btn {
     background: none;
     border: none;
     cursor: pointer;
-    color: #333; /* Darker icon for contrast */
-    padding: 5px;
-    display: flex;
+    color: #2D5A27; /* --health-green */
+    display: none;
     align-items: center;
     justify-content: center;
-    transition: color 0.3s ease;
-}
-
-.menu-icon-btn:hover {
-    color: #4FA806;
-}
-
-.menu-icon-btn svg {
-    width: 28px; /* Slightly larger icon */
-    height: 28px;
 }
 
 /* Mobile Menu Styles */
 .mobile-menu {
     position: fixed;
-    top: 60px; /* Adjust based on header height */
-    right: -100%; /* Start off-screen */
-    width: 75%; /* Slightly wider */
-    max-width: 300px;
-    height: calc(100% - 60px); /* Fill remaining height */
-    background-color: rgba(255, 255, 255, 0.85); /* iOS Glass White */
-    -webkit-backdrop-filter: blur(15px);
-    backdrop-filter: blur(15px);
-    box-shadow: -4px 0 15px rgba(0, 0, 0, 0.05);
-    border-left: 1px solid rgba(0, 0, 0, 0.05);
-    padding: 25px;
+    top: 0;
+    right: -100%;
+    width: 100%;
+    height: 100vh;
+    background-color: #F9FBF9; /* --health-cream */
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
     gap: 20px;
-    transition: right 0.4s cubic-bezier(0.16, 1, 0.3, 1); /* Smoother iOS-like transition */
-    z-index: 999;
+    transition: all 0.6s cubic-bezier(0.76, 0, 0.24, 1);
+    z-index: 2000;
+    padding: 40px;
+    visibility: hidden; /* Hide entirely when not open */
 }
 
 .mobile-menu.is-open {
-    right: 0; /* Slide into view */
+    right: 0;
+    visibility: visible;
 }
 
 .mobile-nav-item {
-    color: #1C1C1E;
+    color: #2D5A27; /* --health-green */
     text-decoration: none;
-    font-size: 1.2em;
-    font-weight: 500;
-    padding: 12px 0;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05); /* Very subtle divider */
-    transition: color 0.2s ease;
-}
-
-.mobile-nav-item:last-child {
-    border-bottom: none;
-}
-
-.mobile-nav-item:hover,
-.mobile-nav-item.active {
-    color: #34C759;
-}
-
-.mobile-login-btn {
-    background-color: #34C759;
+    font-size: 24px;
+    font-weight: 800;
+    font-family: 'Syne', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: -0.02em;
+    transition: all 0.3s ease;
     text-align: center;
-    border-radius: 24px; /* iOS pill button */
-    margin-top: 15px;
-    padding: 12px;
-    font-weight: 600;
-    color: white;
-    transition: opacity 0.3s ease;
 }
 
-.mobile-login-btn:hover {
-    opacity: 0.8;
+.mobile-nav-item:hover {
+    color: #34C759; /* --health-accent */
+}
+
+.mobile-auth-section {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(45, 90, 39, 0.1);
+}
+
+.mobile-user-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.mobile-user-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+    object-fit: cover;
+    border: 2px solid #34C759;
+}
+
+.mobile-default-avatar {
+    color: #2D5A27;
+    opacity: 0.5;
+}
+
+.mobile-user-info span {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px;
+    font-weight: 700;
+    color: #2D5A27;
+}
+
+.mobile-logout-btn {
+    color: #ef4444 !important;
+    font-size: 18px !important;
 }
 
 .user-menu {
@@ -168,32 +193,59 @@
 }
 
 .user-icon {
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-    color: #1C1C1E;
-    display: flex;
-    align-items: center;
-    transition: color 0.3s ease;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1.5px solid rgba(45, 90, 39, 0.1);
+    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .user-icon:hover {
-    color: #34C759;
+    border-color: #34C759;
+    transform: scale(1.05);
+}
+
+.user-avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.default-avatar-icon {
+    color: #2D5A27;
+    opacity: 0.5;
 }
 
 .dropdown {
     position: absolute;
     top: 100%;
     right: 0;
-    background-color: white;
-    min-width: 150px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    padding: 10px 0;
+    background-color: #fff;
+    min-width: 220px;
+    border: 1px solid rgba(45, 90, 39, 0.08);
+    border-radius: 16px;
+    padding: 10px;
     display: none;
     flex-direction: column;
-    z-index: 1001;
-    border: 1px solid rgba(0, 0, 0, 0.05);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08);
+    margin-top: 0;
+}
+
+.user-menu {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.dropdown::before {
+    content: '';
+    position: absolute;
+    top: -15px;
+    left: 0;
+    right: 0;
+    height: 15px;
+    background: transparent;
 }
 
 .user-menu:hover .dropdown {
@@ -201,227 +253,45 @@
 }
 
 .dropdown-item, .logout-btn {
-    padding: 10px 20px;
-    text-decoration: none;
-    color: #1C1C1E;
+    padding: 12px 16px;
+    color: #6B7280; /* --health-gray */
     font-size: 14px;
-    text-align: left;
-    background: none;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
     border: none;
+    background: transparent;
     cursor: pointer;
-    transition: background-color 0.2s ease, color 0.2s ease;
-    font-weight: 500;
+    width: 100%;
+    text-align: left;
 }
 
 .dropdown-item:hover, .logout-btn:hover {
-    background-color: #f5f5f7;
-    color: #34C759;
+    background-color: #E8F5E9; /* --health-mint */
+    color: #2D5A27; /* --health-green */
 }
 
 .logout-btn {
-    color: #FF3B30; /* iOS Red */
-    border-top: 1px solid rgba(0, 0, 0, 0.05);
+    color: #ef4444;
+    border-top: 1px solid rgba(45, 90, 39, 0.05) !important;
+    margin-top: 4px;
+    border-radius: 0 0 8px 8px;
 }
 
-.logout-btn:hover {
-    background-color: #FFF2F2;
-    color: #FF3B30;
-}
-
-.management-box{
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-
-.mobile-auth-section {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    margin-top: 15px;
-    padding-top: 15px;
-    border-top: 1px solid rgba(0, 0, 0, 0.05);
-}
-
-.mobile-user-info {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    color: #1C1C1E;
-    font-size: 0.9em;
-    padding: 10px 0;
-    font-weight: 600;
-}
-
-.mobile-logout-btn {
-    text-align: left;
-    background: none;
-    border: none;
-    cursor: pointer;
-    color: #FF3B30 !important; /* iOS Red */
-    width: 100%;
-}
-
-/* Media Queries for Responsiveness */
-@media (max-width: 768px) {
-    .desktop-nav-links {
-        display: none; /* Hide desktop links on small screens */
-    }
-    .sign-in-btn, .user-menu { /* Hide the desktop auth buttons on small screens */
+@media (max-width: 1024px) {
+    .sign-in-btn{
         display: none;
     }
-    .management-box { /* Adjust to ensure hamburger is at the edge */
-        gap: 0;
+    .header-container {
+        padding: 12px 24px;
     }
-}
-
-@media (min-width: 769px) {
+    .desktop-nav-links {
+        display: none;
+    }
     .menu-icon-btn {
-        display: none; /* Hide hamburger icon on large screens */
+        display: flex;
     }
-    .mobile-menu {
-        display: none; /* Hide mobile menu on large screens */
-    }
-    .sign-in-btn {
-        display: block; /* Ensure sign-in button is visible on desktop */
-    }
-}
-
-.user-icon {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: transparent;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.2s ease;
-}
-
-.user-icon:hover {
-  transform: scale(1.05);
-}
-
-.user-avatar-img {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid #4CAF50;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.user-avatar-initials {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #4CAF50, #45a049);
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  font-weight: 600;
-  text-transform: uppercase;
-  border: 2px solid rgba(76, 175, 80, 0.3);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-/* Dropdown items with icons */
-.dropdown-item, .logout-btn {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 16px;
-  text-decoration: none;
-  color: #333;
-  transition: background 0.2s ease;
-  width: 100%;
-  text-align: left;
-  font-size: 14px;
-}
-
-.dropdown-item svg, .logout-btn svg {
-  flex-shrink: 0;
-}
-
-/* Mobile menu user avatar */
-.mobile-user-info {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 20px;
-  background: rgba(76, 175, 80, 0.1);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-  margin-bottom: 8px;
-}
-
-.mobile-user-avatar {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid #4CAF50;
-}
-
-.mobile-user-info span {
-  font-weight: 600;
-  color: #333;
-  font-size: 14px;
-  flex: 1;
-}
-
-/* Mobile nav items with icons */
-.mobile-nav-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 20px;
-  text-decoration: none;
-  color: #333;
-  font-size: 16px;
-  transition: background 0.2s ease;
-}
-
-.mobile-nav-item svg {
-  flex-shrink: 0;
-}
-
-.mobile-logout-btn {
-  background: none;
-  border: none;
-  width: 100%;
-  text-align: left;
-  cursor: pointer;
-  font-family: inherit;
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
-  margin-top: 8px;
-  color: #f44336;
-}
-
-.mobile-logout-btn:hover {
-  background: rgba(244, 67, 54, 0.1);
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .user-avatar-img,
-  .user-avatar-initials,
-  .user-icon {
-    width: 36px;
-    height: 36px;
-  }
-  
-  .user-avatar-initials {
-    font-size: 16px;
-  }
-  
-  .mobile-user-avatar {
-    width: 36px;
-    height: 36px;
-  }
 }

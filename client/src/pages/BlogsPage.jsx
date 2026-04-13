@@ -1,8 +1,45 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, memo } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  Search, 
+  Filter, 
+  Heart, 
+  MessageCircle, 
+  Share2, 
+  ChevronRight, 
+  Clock, 
+  User, 
+  Tag, 
+  Leaf,
+  Sparkles,
+  Zap,
+  ArrowUpRight,
+  Plus
+} from 'lucide-react';
 import { getAllBlogs, likeBlog, unlikeBlog, getLikeStatus } from '../api/blogApi';
 import './BlogsPage.css';
-import Footer from '../components/Footer';
+
+// --- ORGANIC FLOATERS ---
+const BlogsOrganicFloaters = memo(() => (
+  <div className="BlogsPage-Organic-Container">
+    {[...Array(6)].map((_, i) => (
+      <motion.div
+        key={i}
+        className="BlogsPage-Floater"
+        initial={{ opacity: 0 }}
+        animate={{ 
+          opacity: [0, 0.15, 0], 
+          x: [Math.random() * 100 + 'vw', Math.random() * 100 + 'vw'],
+          y: [Math.random() * 100 + 'vh', Math.random() * 100 + 'vh']
+        }}
+        transition={{ duration: 20 + i * 5, repeat: Infinity, ease: "linear" }}
+      >
+        <Leaf size={40 + i * 20} strokeWidth={1} />
+      </motion.div>
+    ))}
+  </div>
+));
 
 function BlogsPage() {
   const navigate = useNavigate();
@@ -12,6 +49,7 @@ function BlogsPage() {
   const [activeFilter, setActiveFilter] = useState('All Posts');
   const [likesStates, setLikesStates] = useState({});
   const [showNotification, setShowNotification] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     fetchBlogs();
@@ -26,7 +64,7 @@ function BlogsPage() {
       await fetchAllLikesStatus(response.data);
     } catch (err) {
       console.error('Error fetching blogs:', err);
-      setError('Failed to load blogs. Please try again later.');
+      setError('Failed to load the knowledge base. Connection interrupted.');
     } finally {
       setLoading(false);
     }
@@ -58,7 +96,8 @@ function BlogsPage() {
     }
   };
 
-  const handleLike = async (blogId, isCurrentlyLiked) => {
+  const handleLike = async (e, blogId, isCurrentlyLiked) => {
+    e.stopPropagation();
     try {
       if (isCurrentlyLiked) {
         const response = await unlikeBlog(blogId);
@@ -84,11 +123,8 @@ function BlogsPage() {
     }
   };
 
-  const handleCreatePost = () => {
-    navigate('/dashboard/blogs/create');
-  };
-
-  const handleShare = async (blog) => {
+  const handleShare = async (e, blog) => {
+    e.stopPropagation();
     try {
       await navigator.clipboard.writeText(`${window.location.origin}/blog/${blog._id}`);
       setShowNotification(true);
@@ -105,8 +141,10 @@ function BlogsPage() {
   };
 
   const filteredPosts = posts.filter(post => {
-    if (activeFilter === 'All Posts') return true;
-    return post.type === activeFilter;
+    const matchesFilter = activeFilter === 'All Posts' || post.type === activeFilter;
+    const matchesSearch = post.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                         post.content.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesFilter && matchesSearch;
   });
 
   const formatDate = (dateString) => {
@@ -114,174 +152,217 @@ function BlogsPage() {
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
-  const getTypeEmoji = (type) => {
+  const getTypeIcon = (type) => {
     switch(type) {
-      case 'Recipe':
-        return '🍳';
-      case 'Article':
-        return '📝';
-      case 'Community':
-        return '👥';
-      default:
-        return '📄';
+      case 'Recipe': return <Zap size={14} />;
+      case 'Article': return <FileText size={14} />;
+      case 'Community': return <Users size={14} />;
+      default: return <Sparkles size={14} />;
     }
   };
 
   if (loading) {
     return (
-      <div className="blogs-page-container">
-        <div className="loading-container">
-          <div className="spinner"></div>
-          <p>Loading amazing content...</p>
-        </div>
+      <div className="BlogsPage-Loader-Wrapper">
+        <motion.div 
+          animate={{ scale: [1, 1.1, 1], rotate: [0, 90, 0] }}
+          transition={{ duration: 2, repeat: Infinity }}
+          className="BlogsPage-Loader-Icon"
+        >
+          <Leaf size={60} color="#2D5A27" />
+        </motion.div>
+        <p>CALIBRATING_KNOWLEDGE_BASE...</p>
       </div>
     );
   }
 
   return (
-    <>
-      <div className="blogs-page-container">
-        {/* Custom Notification */}
-          {showNotification && (
-            <div className="share-notification">
-              <div className="notification-content">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M20 6L9 17l-5-5"/>
-                </svg>
-                <span>Link copied to clipboard</span>
-              </div>
-            </div>
-          )}
+    <div className="BlogsPage-Main-Wrapper">
+      <BlogsOrganicFloaters />
+      <div className="BlogsPage-Grid-Overlay" />
 
-        <header className="blogs-hero">
-          <h1 className="animate-in">Nutrition <span className="bl-text-gradient">Knowledge Hub</span></h1>
-          <p className="animate-in" style={{ animationDelay: '0.1s' }}>Explore healthy recipes, expert blogs, and wellness tips from our certified nutritionists.</p>
+      {/* Share Notification */}
+      <AnimatePresence>
+        {showNotification && (
+          <motion.div 
+            initial={{ opacity: 0, y: 20, x: '-50%' }}
+            animate={{ opacity: 1, y: 0, x: '-50%' }}
+            exit={{ opacity: 0, y: 20, x: '-50%' }}
+            className="BlogsPage-Notification"
+          >
+            <Share2 size={16} />
+            <span>KNOWLEDGE_LINK_COPIED</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <header className="BlogsPage-Hero">
+        <div className="BlogsPage-Hero-Content">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="BlogsPage-Badge"
+          >
+            VITAL_INTELLIGENCE
+          </motion.div>
           
-          <div className="blogs-filter animate-in" style={{ animationDelay: '0.2s' }}>
-            <button 
-              className={`filter-btn ${activeFilter === 'All Posts' ? 'active' : ''}`}
-              onClick={() => setActiveFilter('All Posts')}
-            >
-              All Posts
-            </button>
-            <button 
-              className={`filter-btn ${activeFilter === 'Recipe' ? 'active' : ''}`}
-              onClick={() => setActiveFilter('Recipe')}
-            >
-              Recipes
-            </button>
-            <button 
-              className={`filter-btn ${activeFilter === 'Article' ? 'active' : ''}`}
-              onClick={() => setActiveFilter('Article')}
-            >
-              Articles
-            </button>
-            <button 
-              className={`filter-btn ${activeFilter === 'Community' ? 'active' : ''}`}
-              onClick={() => setActiveFilter('Community')}
-            >
-              Community
-            </button>
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="BlogsPage-Title"
+          >
+            THE VITALITY <br /> <span className="BlogsPage-Gradient-Text">KNOWLEDGE HUB.</span>
+          </motion.h1>
+
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="BlogsPage-Controls"
+          >
+            <div className="BlogsPage-Search-Box">
+              <Search size={20} className="BlogsPage-Search-Icon" />
+              <input 
+                type="text" 
+                placeholder="SEARCH_BIOLOGICAL_RESOURCES..." 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+            
+            <div className="BlogsPage-Filters">
+              {['All Posts', 'Recipe', 'Article', 'Community'].map((filter) => (
+                <button 
+                  key={filter}
+                  onClick={() => setActiveFilter(filter)}
+                  className={`BlogsPage-Filter-Btn ${activeFilter === filter ? 'active' : ''}`}
+                >
+                  {filter.toUpperCase()}
+                </button>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+      </header>
+
+      <main className="BlogsPage-Content">
+        {error ? (
+          <div className="BlogsPage-Error">
+            <Zap size={40} />
+            <h3>SYSTEM_ERROR</h3>
+            <p>{error}</p>
+            <button onClick={fetchBlogs}>REBOOT_CONNECTION</button>
           </div>
-        </header>
-
-        <main className="blogs-grid-section">
-          {error && (
-            <div className="error-message">
-              <span>⚠️</span> {error}
-            </div>
-          )}
-
-          {filteredPosts.length === 0 && !error ? (
-            <div className="no-posts">
-              <div className="no-posts-icon">📭</div>
-              <h3>No posts found</h3>
-              <p>Be the first to share your knowledge with the community!</p>
-              <button className="btn bl-btn-primary" onClick={handleCreatePost}>
-                Create a Post
-              </button>
-            </div>
-          ) : (
-            <div className="blogs-grid">
-              {filteredPosts.map((post, index) => {
-                const likeState = likesStates[post._id] || { 
-                  liked: false, 
-                  likesCount: post.likesCount || 0 
-                };
-                
-                return (
-                  <article key={post._id} className="blog-card animate-in" style={{ animationDelay: `${0.05 * index}s` }}>
-                    <div className="blog-card-image">
-                      {post.photo ? (
-                        <img src={post.photo} alt={post.title} className="blog-image" />
-                      ) : (
-                        <span className="blog-emoji">{getTypeEmoji(post.type)}</span>
-                      )}
-                      <span className={`blog-type-tag ${post.type.toLowerCase()}`}>{post.type}</span>
+        ) : filteredPosts.length === 0 ? (
+          <div className="BlogsPage-Empty">
+            <Sparkles size={60} opacity={0.3} />
+            <h3>ZERO_MATCHES_FOUND</h3>
+            <p>Your search query did not sync with any current biological records.</p>
+          </div>
+        ) : (
+          <div className="BlogsPage-Grid">
+            {filteredPosts.map((post, index) => {
+              const likeState = likesStates[post._id] || { 
+                liked: false, 
+                likesCount: post.likesCount || 0 
+              };
+              
+              return (
+                <motion.article 
+                  key={post._id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.05 }}
+                  onClick={() => handleReadMore(post._id)}
+                  className="BlogsPage-Card"
+                >
+                  <div className="BlogsPage-Card-Image-Wrapper">
+                    {post.photo ? (
+                      <img src={post.photo} alt={post.title} className="BlogsPage-Card-Image" />
+                    ) : (
+                      <div className="BlogsPage-Card-Placeholder">
+                        <Leaf size={60} strokeWidth={1} />
+                      </div>
+                    )}
+                    <div className="BlogsPage-Card-Tag">
+                      {getTypeIcon(post.type)}
+                      <span>{post.type.toUpperCase()}</span>
                     </div>
-                    <div className="blog-card-content">
-                      <div className="blog-meta">
-                        <span className="author-name">{post.author?.fullName || post.author}</span> • 
-                        <span className="blog-date">{formatDate(post.createdAt)}</span>
+                  </div>
+
+                  <div className="BlogsPage-Card-Body">
+                    <div className="BlogsPage-Card-Meta">
+                      <div className="BlogsPage-Author">
+                        <User size={14} />
+                        <span>{post.author?.fullName || post.author || 'VITAL_EXPERT'}</span>
                       </div>
-                      <h3>{post.title}</h3>
-                      <p>{post.content.length > 120 ? `${post.content.substring(0, 120)}...` : post.content}</p>
-                      <div className="blog-tags">
-                        {post.tags && post.tags.map((tag, idx) => (
-                          <span key={idx} className="tag">#{tag}</span>
-                        ))}
-                      </div>
-                      <div className="blog-actions">
-                        <button 
-                          className={`action-btn ${likeState.liked ? 'liked' : ''}`}
-                          onClick={() => handleLike(post._id, likeState.liked)}
-                        >
-                          <svg width="18" height="18" viewBox="0 0 24 24" fill={likeState.liked ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-                          </svg>
-                          {likeState.likesCount}
-                        </button>
-                        <button 
-                          className="action-btn"
-                          onClick={() => handleReadMore(post._id)}
-                        >
-                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
-                          </svg>
-                          {post.commentsCount || 0}
-                        </button>
-                        <button 
-                          className="action-btn"
-                          onClick={() => handleShare(post)}
-                        >
-                          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                            <circle cx="18" cy="5" r="3"></circle>
-                            <circle cx="6" cy="12" r="3"></circle>
-                            <circle cx="18" cy="19" r="3"></circle>
-                            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
-                            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
-                          </svg>
-                        </button>
+                      <div className="BlogsPage-Date">
+                        <Clock size={14} />
+                        <span>{formatDate(post.createdAt)}</span>
                       </div>
                     </div>
-                  </article>
-                );
-              })}
-            </div>
-          )}
-        </main>
 
-        <section className="create-blog-cta animate-in">
-          <div className="cta-card nutritionist-access">
-            <h2>Are you a certified Nutritionist?</h2>
-            <p>Share your expertise with our growing community. Post recipes, articles, and help others lead healthier lives.</p>
-            <button className="btn bl-btn-primary" onClick={handleCreatePost}>Create a Post</button>
+                    <h3 className="BlogsPage-Card-Title">{post.title}</h3>
+                    <p className="BlogsPage-Card-Excerpt">
+                      {post.content.length > 100 ? `${post.content.substring(0, 100)}...` : post.content}
+                    </p>
+
+                    <div className="BlogsPage-Card-Tags">
+                      {post.tags && post.tags.slice(0, 3).map((tag, idx) => (
+                        <span key={idx} className="BlogsPage-Tag-Pill">#{tag.toUpperCase()}</span>
+                      ))}
+                    </div>
+
+                    <div className="BlogsPage-Card-Footer">
+                      <div className="BlogsPage-Stats">
+                        <button 
+                          className={`BlogsPage-Stat-Btn ${likeState.liked ? 'liked' : ''}`}
+                          onClick={(e) => handleLike(e, post._id, likeState.liked)}
+                        >
+                          <Heart size={18} fill={likeState.liked ? "currentColor" : "none"} />
+                          <span>{likeState.likesCount}</span>
+                        </button>
+                        <button className="BlogsPage-Stat-Btn">
+                          <MessageCircle size={18} />
+                          <span>{post.commentsCount || 0}</span>
+                        </button>
+                      </div>
+                      <button 
+                        className="BlogsPage-Share-Btn"
+                        onClick={(e) => handleShare(e, post)}
+                      >
+                        <Share2 size={18} />
+                      </button>
+                    </div>
+                  </div>
+
+                  <div className="BlogsPage-Card-Hover-Indicator">
+                    <ArrowUpRight size={20} />
+                  </div>
+                </motion.article>
+              );
+            })}
           </div>
-        </section>
-      </div>
-      <Footer />
-    </>
+        )}
+      </main>
+
+      {/* Create Post Floating Action Button - Only if needed, otherwise removed for cleaner look */}
+    </div>
   );
 }
+
+const FileText = ({ size }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/>
+  </svg>
+);
+
+const Users = ({ size }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+  </svg>
+);
 
 export default BlogsPage;

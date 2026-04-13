@@ -1,12 +1,32 @@
-import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
-import { motion } from 'framer-motion';
-import { Mail, Phone, MapPin, Send, User, MessageSquare, Globe } from 'lucide-react';
-import toast from 'react-hot-toast'; // Change this import
+import React, { useState, memo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Mail, Phone, MapPin, Send, User, MessageSquare, Globe, Leaf, ArrowUpRight, Copy, CheckCircle } from 'lucide-react';
+import toast from 'react-hot-toast';
 import PageTransition from '../components/PageTransition';
 import ScrollReveal from '../components/ScrollReveal';
 import { submitContact } from '../api/contactApi';
 import './ContactPage.css';
+
+// --- ORGANIC FLOATERS ---
+const ContactOrganicFloaters = memo(() => (
+  <div className="ContactPage-Organic-Container">
+    {[...Array(5)].map((_, i) => (
+      <motion.div
+        key={i}
+        className="ContactPage-Floater"
+        initial={{ opacity: 0 }}
+        animate={{ 
+          opacity: [0, 0.1, 0], 
+          x: [Math.random() * 100 + 'vw', Math.random() * 100 + 'vw'],
+          y: [Math.random() * 100 + 'vh', Math.random() * 100 + 'vh']
+        }}
+        transition={{ duration: 25 + i * 5, repeat: Infinity, ease: "linear" }}
+      >
+        <Leaf size={40 + i * 20} strokeWidth={1} />
+      </motion.div>
+    ))}
+  </div>
+));
 
 function ContactPage() {
   const [formData, setFormData] = useState({
@@ -25,58 +45,37 @@ function ContactPage() {
     event.preventDefault();
     setLoading(true);
 
-    // Show loading toast
-    const loadingToast = toast.loading('Sending your message...', {
+    const loadingToast = toast.loading('Establishing connection...', {
       position: 'top-center',
+      style: { fontFamily: 'JetBrains Mono', fontSize: '12px' }
     });
 
     try {
       const response = await submitContact(formData);
-      
-      // Dismiss loading toast
       toast.dismiss(loadingToast);
       
       if (response.success) {
-        // Success toast
-        toast.success(response.message || 'Message sent successfully!', {
+        toast.success('TRANSMISSION_SUCCESSFUL', {
           duration: 4000,
           position: 'top-center',
-          icon: '📧',
+          icon: '🛰️',
+          style: { fontFamily: 'JetBrains Mono', fontSize: '12px' }
         });
-        
-        // Reset form
         setFormData({ name: '', email: '', subject: '', message: '' });
       } else {
-        // Error toast from server
-        toast.error(response.message || 'Failed to send message.', {
+        toast.error(response.message || 'TRANSMISSION_FAILED', {
           duration: 5000,
           position: 'top-center',
+          style: { fontFamily: 'JetBrains Mono', fontSize: '12px' }
         });
       }
     } catch (err) {
-      console.error('Error sending message:', err);
-      
-      // Dismiss loading toast
       toast.dismiss(loadingToast);
-      
-      // Handle different error responses
-      if (err.response) {
-        toast.error(err.response.data?.message || 'Failed to send message.', {
-          duration: 5000,
-          position: 'top-center',
-        });
-      } else if (err.request) {
-        toast.error('Network error. Please check your connection.', {
-          duration: 5000,
-          position: 'top-center',
-          icon: '🌐',
-        });
-      } else {
-        toast.error('Failed to send message. Please try again.', {
-          duration: 5000,
-          position: 'top-center',
-        });
-      }
+      toast.error('BIO_LINK_INTERRUPTED', {
+        duration: 5000,
+        position: 'top-center',
+        style: { fontFamily: 'JetBrains Mono', fontSize: '12px' }
+      });
     } finally {
       setLoading(false);
     }
@@ -84,133 +83,137 @@ function ContactPage() {
 
   const copyToClipboard = (text, type) => {
     navigator.clipboard.writeText(text);
-    toast.success(`${type} copied to clipboard!`, {
+    toast.success(`${type.toUpperCase()}_COPIED`, {
       duration: 2000,
-      icon: '📋',
+      icon: <Copy size={14} />,
       position: 'top-center',
+      style: { fontFamily: 'JetBrains Mono', fontSize: '12px' }
     });
   };
 
   return (
     <PageTransition>
-      <div className="contact-v2-wrapper">
-        <div className="contact-v2-container">
-          <div className="contact-v2-header">
+      <div className="ContactPage-Wrapper">
+        <ContactOrganicFloaters />
+        <div className="ContactPage-Grid-Overlay" />
+
+        <div className="ContactPage-Container">
+          <div className="ContactPage-Header">
             <ScrollReveal direction="down">
-              <span className="contact-v2-badge">Contact Us</span>
+              <span className="ContactPage-Badge">COMMUNICATION_LINK</span>
             </ScrollReveal>
             <ScrollReveal delay={0.1}>
-              <h1 className="contact-v2-title">Get in Touch with <span className="contact-v2-highlight">Our Experts</span></h1>
+              <h1 className="ContactPage-Title">CONNECT WITH <span className="ContactPage-Highlight">VITAL_EXPERTS.</span></h1>
             </ScrollReveal>
             <ScrollReveal delay={0.2}>
-              <p className="contact-v2-subtitle">Have questions or want to start your journey? We're here to help.</p>
+              <p className="ContactPage-Subtitle">Initiate a direct dialogue with our nutritional architects to optimize your biological trajectory.</p>
             </ScrollReveal>
           </div>
 
-          <div className="contact-v2-content">
+          <div className="ContactPage-Content">
             {/* Info Cards */}
-            <div className="contact-v2-info-grid">
+            <div className="ContactPage-Info-Grid">
               <ScrollReveal direction="left" delay={0.3}>
-                <div className="contact-v2-info-card">
-                  <div className="contact-v2-icon-box"><Mail size={24} /></div>
-                  <h3>Email Us</h3>
+                <div className="ContactPage-Info-Card">
+                  <div className="ContactPage-Icon-Box"><Mail size={24} /></div>
+                  <h3>EMAIL_ENDPOINT</h3>
                   <p>support@ainutrition.pro</p>
                   <button 
                     onClick={() => copyToClipboard('support@ainutrition.pro', 'Email')}
-                    className="copy-btn"
+                    className="ContactPage-Copy-Btn"
                   >
-                    Copy Email
+                    COPY_ADDRESS
                   </button>
                 </div>
               </ScrollReveal>
               <ScrollReveal direction="left" delay={0.4}>
-                <div className="contact-v2-info-card">
-                  <div className="contact-v2-icon-box"><Phone size={24} /></div>
-                  <h3>Call Us</h3>
+                <div className="ContactPage-Info-Card">
+                  <div className="ContactPage-Icon-Box"><Phone size={24} /></div>
+                  <h3>VOICE_CHANNEL</h3>
                   <p>+1 (555) 000-HEALTH</p>
                   <button 
-                    onClick={() => copyToClipboard('+1 (555) 000-HEALTH', 'Phone number')}
-                    className="copy-btn"
+                    onClick={() => copyToClipboard('+1 (555) 000-HEALTH', 'Phone')}
+                    className="ContactPage-Copy-Btn"
                   >
-                    Copy Number
+                    COPY_NUMBER
                   </button>
                 </div>
               </ScrollReveal>
               <ScrollReveal direction="left" delay={0.5}>
-                <div className="contact-v2-info-card">
-                  <div className="contact-v2-icon-box"><MapPin size={24} /></div>
-                  <h3>Visit Us</h3>
+                <div className="ContactPage-Info-Card">
+                  <div className="ContactPage-Icon-Box"><MapPin size={24} /></div>
+                  <h3>CORE_LOCATION</h3>
                   <p>Innovation Hub, Tech District, NY</p>
                   <button 
-                    onClick={() => copyToClipboard('Innovation Hub, Tech District, NY', 'Address')}
-                    className="copy-btn"
+                    onClick={() => copyToClipboard('Innovation Hub, Tech District, NY', 'Location')}
+                    className="ContactPage-Copy-Btn"
                   >
-                    Copy Address
+                    COPY_COORDS
                   </button>
                 </div>
               </ScrollReveal>
             </div>
 
             {/* Form Section */}
-            <ScrollReveal direction="right" delay={0.3} className="contact-v2-form-wrapper">
-              <form onSubmit={handleSubmit} className="contact-v2-form">
-                <div className="contact-v2-form-group">
-                  <label htmlFor="name">Full Name</label>
-                  <div className="contact-v2-input-wrapper">
-                    <User className="contact-v2-input-icon" size={18} />
+            <ScrollReveal direction="right" delay={0.3} className="ContactPage-Form-Wrapper">
+              <form onSubmit={handleSubmit} className="ContactPage-Form">
+                <div className="ContactPage-Form-Group">
+                  <label htmlFor="name">FULL_NAME</label>
+                  <div className="ContactPage-Input-Wrapper">
+                    <User className="ContactPage-Input-Icon" size={18} />
                     <input
                       type="text"
                       id="name"
                       value={formData.name}
                       onChange={handleChange}
-                      placeholder="John Doe"
+                      placeholder="IDENTIFY_YOURSELF"
                       required
                       disabled={loading}
                     />
                   </div>
                 </div>
 
-                <div className="contact-v2-form-group">
-                  <label htmlFor="email">Email Address</label>
-                  <div className="contact-v2-input-wrapper">
-                    <Mail className="contact-v2-input-icon" size={18} />
+                <div className="ContactPage-Form-Group">
+                  <label htmlFor="email">EMAIL_ADDRESS</label>
+                  <div className="ContactPage-Input-Wrapper">
+                    <Mail className="ContactPage-Input-Icon" size={18} />
                     <input
                       type="email"
                       id="email"
                       value={formData.email}
                       onChange={handleChange}
-                      placeholder="you@example.com"
+                      placeholder="CONTACT_ENDPOINT"
                       required
                       disabled={loading}
                     />
                   </div>
                 </div>
 
-                <div className="contact-v2-form-group">
-                  <label htmlFor="subject">Subject</label>
-                  <div className="contact-v2-input-wrapper">
-                    <Globe className="contact-v2-input-icon" size={18} />
+                <div className="ContactPage-Form-Group">
+                  <label htmlFor="subject">SUBJECT_VECTOR</label>
+                  <div className="ContactPage-Input-Wrapper">
+                    <Globe className="ContactPage-Input-Icon" size={18} />
                     <input
                       type="text"
                       id="subject"
                       value={formData.subject}
                       onChange={handleChange}
-                      placeholder="How can we help?"
+                      placeholder="INQUIRY_TYPE"
                       required
                       disabled={loading}
                     />
                   </div>
                 </div>
 
-                <div className="contact-v2-form-group">
-                  <label htmlFor="message">Message</label>
-                  <div className="contact-v2-input-wrapper contact-v2-textarea-wrapper">
-                    <MessageSquare className="contact-v2-input-icon top" size={18} />
+                <div className="ContactPage-Form-Group">
+                  <label htmlFor="message">MESSAGE_BODY</label>
+                  <div className="ContactPage-Input-Wrapper ContactPage-Textarea-Wrapper">
+                    <MessageSquare className="ContactPage-Input-Icon top" size={18} />
                     <textarea
                       id="message"
                       value={formData.message}
                       onChange={handleChange}
-                      placeholder="Your message here..."
+                      placeholder="TRANSMIT_YOUR_THOUGHTS..."
                       rows="5"
                       required
                       disabled={loading}
@@ -218,15 +221,15 @@ function ContactPage() {
                   </div>
                 </div>
 
-                <button type="submit" className="contact-v2-submit-btn" disabled={loading}>
+                <button type="submit" className="ContactPage-Submit-Btn" disabled={loading}>
                   {loading ? (
                     <>
-                      <span className="spinner"></span>
-                      Sending...
+                      <span className="ContactPage-Spinner"></span>
+                      SYNCING...
                     </>
                   ) : (
                     <>
-                      Send Message
+                      INITIATE_TRANSMISSION
                       <Send size={18} />
                     </>
                   )}

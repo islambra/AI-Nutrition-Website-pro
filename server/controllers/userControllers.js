@@ -257,6 +257,29 @@ export const getAllUsers = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+// Get current user profile
+export const getCurrentUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select("-password");
+    
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    let clientProfile = null;
+    if (user.role === "Client") {
+      clientProfile = await Client.findOne({ user: user._id });
+    }
+
+    res.status(200).json({
+      ...user.toObject(),
+      clientProfile
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 // Update user
 export const updateUser = async (req, res) => {
   try {

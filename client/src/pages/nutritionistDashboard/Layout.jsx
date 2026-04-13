@@ -1,13 +1,14 @@
 import React from "react";
 import Navbar from "../../components/dashboardComp/Navbar";
 import SideBar from "../../components/dashboardComp/SideBar";
+import AnimatedBackground from "../../components/AnimatedBackground";
 import { Outlet } from "react-router-dom";
 import "./Layout.css";
 
 const Layout = () => {
   return (
     <div className="dashboard">
-
+      <AnimatedBackground />
       <Navbar />
 
       <div className="dashboard-body">

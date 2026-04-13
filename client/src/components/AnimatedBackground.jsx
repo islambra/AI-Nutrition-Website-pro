@@ -12,10 +12,10 @@ const AnimatedBackground = () => {
   const y2 = useTransform(scrollYProgress, [0, 1], [0, -300]);
 
   return (
-    <div className="mesh-bg-container" style={{ backgroundColor: '#FAFAFA' }}>
-      <div className="bg-noise-overlay" style={{ opacity: 0.03 }} />
+    <div className="mesh-bg-container" style={{ backgroundColor: '#FAFAFA', position: 'fixed', inset: 0, zIndex: -1, pointerEvents: 'none', overflow: 'hidden' }}>
+      <div className="bg-noise-overlay" style={{ opacity: 0.03, position: 'absolute', inset: 0 }} />
       
-      <div className="mesh-gradient-wrapper">
+      <div className="mesh-gradient-wrapper" style={{ position: 'relative', width: '100%', height: '100%' }}>
         <motion.div 
           className="mesh-ball"
           style={{ 
@@ -27,7 +27,8 @@ const AnimatedBackground = () => {
             top: '-10%',
             position: 'absolute',
             opacity: 0.6,
-            filter: 'blur(80px)'
+            filter: 'blur(80px)',
+            pointerEvents: 'none'
           }}
           animate={{ x: [0, 100, 0] }}
           transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
@@ -43,7 +44,8 @@ const AnimatedBackground = () => {
             bottom: '-10%',
             position: 'absolute',
             opacity: 0.4,
-            filter: 'blur(100px)'
+            filter: 'blur(100px)',
+            pointerEvents: 'none'
           }}
           animate={{ x: [0, -150, 0] }}
           transition={{ duration: 25, repeat: Infinity, ease: "linear" }}

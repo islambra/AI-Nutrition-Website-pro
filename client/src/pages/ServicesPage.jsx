@@ -1,229 +1,224 @@
-import React from 'react';
+import React, { memo } from 'react';
 import './ServicesPage.css';
 import { NavLink } from 'react-router-dom';
-import ScrollReveal from '../components/ScrollReveal';
-import TiltCard from '../components/TiltCard';
-import BioTechBackground from '../components/BioTechBackground';
+import { motion } from 'framer-motion';
+import { 
+  Calendar, 
+  Users, 
+  MessageSquare, 
+  Scan, 
+  PieChart, 
+  Check, 
+  Video, 
+  FileText, 
+  ArrowRight,
+  Leaf,
+  Brain,
+  Activity,
+  Zap
+} from 'lucide-react';
+import ScrollReveal from '../components/ScrollReveal';       
+
+// --- ORGANIC FLOATERS ---
+const ServicesOrganicFloaters = memo(() => (
+  <div className="ServicesPage-Organic-Container">
+    {[...Array(5)].map((_, i) => (
+      <motion.div
+        key={i}
+        className="ServicesPage-Floater"
+        initial={{ opacity: 0 }}
+        animate={{ 
+          opacity: [0, 0.15, 0], 
+          x: [Math.random() * 100 + 'vw', Math.random() * 100 + 'vw'],
+          y: [Math.random() * 100 + 'vh', Math.random() * 100 + 'vh']
+        }}
+        transition={{ duration: 25 + i, repeat: Infinity, ease: "linear" }}
+      >
+        <Leaf size={30 + i * 15} strokeWidth={1} />
+      </motion.div>
+    ))}
+  </div>
+));
+
+// --- VITALITY MARQUEE ---
+const ServicesMarquee = () => (
+  <div className="ServicesPage-Marquee">
+    <motion.div
+      animate={{ x: [0, -1000] }}
+      transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+      className="ServicesPage-Marquee-Content"
+    >
+      {[...Array(10)].map((_, i) => (
+        <span key={i}>✦ Biological Excellence ✦ Neural Precision ✦ Vitality Optimized ✦</span>
+      ))}
+    </motion.div>
+  </div>
+);
 
 function ServicesPage() {
   const coreServices = [
     {
-      title: "Standard Subscription Plans",
-      icon: "📅",
-      description: "Accessible, structured plans for sustainable health. These plans provide a solid framework for your dietary journey with AI-assisted tools and professional resources.",
-      features: [
-        "Monthly Basic (seasonal options)",
-        "Standard 3-month Transformation plans",
-        "Weekly progress reports and insights",
-        "Full recipe library and knowledge hub access"
-      ]
+      title: "VITAL ESSENTIALS",
+      icon: <Calendar size={32} />,
+      price: "$19",
+      description: "Foundational nutrition for sustainable longevity. Our standard plans provide the biological framework needed for daily excellence.",
+      features: ["Monthly Vitality Tracking", "AI Nutrition Hub Access", "Weekly Insights", "Seasonal Blueprints"],        
+      featured: false
     },
     {
-      title: "Nutritionist-Led Special Plans",
-      icon: "🧑‍⚕️",
-      description: "For those with specific health needs like insulin resistance, PCOS, or thyroid disorders. These plans are developed through direct consultation with our certified nutritionists.",
-      features: [
-        "Personalized assessment of health history",
-        "Custom plan created after 1-on-1 interaction",
-        "Direct communication with nutritionists",
-        "Dynamic adjustments based on progress"
-      ]
+      title: "PRECISION CARE",
+      icon: <Activity size={32} />,
+      price: "$49",
+      description: "Direct-action plans for complex biological needs. Specialized support for insulin resistance and metabolic health.",
+      features: ["1-on-1 Clinical Consult", "Health History Analysis", "Real-time Synchronization", "Priority Messaging"], 
+      featured: true,
+      badge: "MOST_POPULAR"
     },
     {
-      title: "Content & Community Resources",
-      icon: "🤝",
-      description: "Empower yourself with knowledge and community support. Access professional advice, success stories, and specialized health forums.",
-      features: [
-        "Expert blogs and nutritional news",
-        "Success story sharing and user testimonials",
-        "Specialized health and wellness forums",
-        "Interactive workshops and Q&A sessions"
-      ]
+      title: "BIO COMMUNITY",
+      icon: <MessageSquare size={32} />,
+      price: "$29",
+      description: "Collaborative wellness through shared intelligence. Connect with experts and peers in a high-performance network.",
+      features: ["Verified Network Access", "Expert Research Feed", "Bio-Wellness Forums", "Weekly Live Q&As"],
+      featured: false
     }
   ];
 
   return (
-    <div className="services-page-container">
-      <BioTechBackground />
-      {/* Hero Section */}
-      <section className="services-hero">
-        <ScrollReveal>
-          <h1>Elevate Your Health with <span className="sv-text-gradient">Intelligent Solutions</span></h1>
-          <p className="hero-subtitle">Combining cutting-edge AI technology with professional nutritional expertise to transform your wellness journey.</p>
+    <div className="ServicesPage-Wrapper">
+      <div className="ServicesPage-Mesh-Bg" />
+      <ServicesOrganicFloaters />
+
+      {/* 1. HERO */}
+      <section className="ServicesPage-Hero">
+        <ScrollReveal direction="down" className="ServicesPage-Hero-Inner">
+          <h1 className="ServicesPage-Hero-Title">SYSTEM <br /> <span className="ServicesPage-Accent-Text">OPTIMIZATION.</span></h1>
+          <p className="ServicesPage-Hero-Subtitle">High-precision nutritional architecture designed to sync with your unique biological signature.</p>
         </ScrollReveal>
       </section>
 
-      {/* Featured AI Service Section */}
-      <section className="featured-ai-service">
-        <div className="container">
-          <ScrollReveal direction="left">
-            <div className="ai-service-content">
-              <div className="badge">Next-Gen Technology</div>
-              <h2>AI Calorie & Nutrition <span className="text-highlight">Calculator</span></h2>
-              <p className="main-description">
-                Our core technology revolutionizes how you track your meals. No more manual entry—just snap a photo, and our advanced computer vision handles the rest.
-              </p>
-              
-              <div className="ai-features-grid">
-                <div className="ai-feature-item">
-                  <div className="ai-feature-icon">🔍</div>
-                  <div>
-                    <h4>Instant Recognition</h4>
-                    <p>Identify thousands of food types and complex recipes instantly.</p>
-                  </div>
-                </div>
-                <div className="ai-feature-item">
-                  <div className="ai-feature-icon">⚖️</div>
-                  <div>
-                    <h4>Portion Estimation</h4>
-                    <p>Automated volume and portion size calculation using spatial depth.</p>
-                  </div>
-                </div>
-                <div className="ai-feature-item">
-                  <div className="ai-feature-icon">🧪</div>
-                  <div>
-                    <h4>Macro Breakdown</h4>
-                    <p>Detailed analysis of carbs, proteins, fats, and micronutrients.</p>
-                  </div>
+      <ServicesMarquee />
+
+      {/* 2. AI PRODUCT SHOWCASE */}
+      <section className="ServicesPage-AI-Showcase">
+        <div className="ServicesPage-AI-Grid">
+          <ScrollReveal direction="left" className="ServicesPage-AI-Content">
+            <h2>SNAP. SYNC. <br /> <span className="ServicesPage-Accent-Text">THRIVE.</span></h2>      
+            <p className="ServicesPage-AI-Description">Our neural networks eliminate the friction of data entry. Transform any meal into a high-fidelity metabolic readout instantly.</p>
+
+            <div className="ServicesPage-AI-Feature-List">
+              <div className="ServicesPage-AI-Feature-Item">
+                <div className="ServicesPage-AI-Feature-Icon"><Scan size={24} /></div>
+                <div>
+                  <h4>NEURAL RECOGNITION</h4>
+                  <p>98.4% Accuracy in complex ingredient analysis.</p>       
                 </div>
               </div>
-
-              <NavLink to="/signup" className="btn sv-btn-primary try-ai-btn">Try the AI Tool Free</NavLink>
+              <div className="ServicesPage-AI-Feature-Item">
+                <div className="ServicesPage-AI-Feature-Icon"><PieChart size={24} /></div>
+                <div>
+                  <h4>MACRO DYNAMICS</h4>
+                  <p>Real-time protein, fat, and nutrient breakdown.</p>      
+                </div>
+              </div>
             </div>
           </ScrollReveal>
 
-          <ScrollReveal direction="right" className="ai-service-visual">
-            <div className="mockup-container">
-              <div className="phone-mockup">
-                <div className="screen-content">
-                  <div className="scan-animation"></div>
-                  <div className="food-overlay">
-                    <span className="label">🥗 Greek Salad</span>
-                    <span className="calories">~340 kcal</span>
+          <ScrollReveal direction="right" className="ServicesPage-AI-Visual">
+            <div className="ServicesPage-Mockup-Container">
+              <div className="ServicesPage-Phone-Mockup">
+                <div className="ServicesPage-Screen-Content">
+                  <div className="ServicesPage-Scan-Animation" />
+                  <div className="ServicesPage-Food-Overlay">
+                    <span className="ServicesPage-Overlay-Label">VITAL_BOWL.OBJ</span>
+                    <span className="ServicesPage-Overlay-Calories">~420 KCAL</span>
                   </div>
-                  <div className="macros-preview">
-                    <div className="macro"><span>P:</span> 12g</div>
-                    <div className="macro"><span>C:</span> 15g</div>
-                    <div className="macro"><span>F:</span> 24g</div>
-                  </div>
-                </div>
-              </div>
-              <div className="floating-stat stat-1">98% Accuracy</div>
-              <div className="floating-stat stat-2">1,000+ Foods</div>
-            </div>
-          </ScrollReveal>
-        </div>
-      </section>
-
-      {/* AI Process Steps */}
-      <section className="ai-process">
-        <div className="container">
-          <ScrollReveal>
-            <h3 className="section-label">How it Works</h3>
-            <h2>Three Steps to <span className="sv-text-gradient">Perfect Tracking</span></h2>
-          </ScrollReveal>
-          
-          <div className="process-grid">
-            <ScrollReveal delay={0.1} className="process-step">
-              <div className="step-number">01</div>
-              <h4>Capture</h4>
-              <p>Snap a photo of your meal through the app from any angle.</p>
-            </ScrollReveal>
-            <ScrollReveal delay={0.2} className="process-step">
-              <div className="step-number">02</div>
-              <h4>Analyze</h4>
-              <p>Our neural networks identify ingredients and portion sizes.</p>
-            </ScrollReveal>
-            <ScrollReveal delay={0.3} className="process-step">
-              <div className="step-number">03</div>
-              <h4>Log</h4>
-              <p>Calories and macros are automatically added to your daily diary.</p>
-            </ScrollReveal>
-          </div>
-        </div>
-      </section>
-
-      {/* Core Services Section */}
-      <section className="core-services-section">
-        <div className="container">
-          <ScrollReveal>
-            <h2 className="center-text">Tailored Nutrition <span className="text-highlight">Plans</span></h2>
-            <p className="center-text section-subtitle">Whether you're looking for structure or specialized medical support, we have a plan for you.</p>
-          </ScrollReveal>
-          
-          <div className="services-grid">
-            {coreServices.map((service, index) => (
-              <ScrollReveal key={index} delay={index * 0.1}>
-                <TiltCard className="service-tilt-wrapper">
-                  <div className="service-detail-card">
-                    <div className="service-icon-large">{service.icon}</div>
-                    <h3>{service.title}</h3>
-                    <p className="service-description">{service.description}</p>
-                    <ul className="service-features-list">
-                      {service.features.map((feature, fIndex) => (
-                        <li key={fIndex}>
-                          <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" strokeWidth="3" fill="none" strokeLinecap="round" strokeLinejoin="round" className="check-icon">
-                            <polyline points="20 6 9 17 4 12"></polyline>
-                          </svg>
-                          {feature}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </TiltCard>
-              </ScrollReveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Consultation CTA Section */}
-      <section className="consultation-section">
-        <div className="container">
-          <ScrollReveal>
-            <div className="consultation-card-wrapper">
-              <div className="consultation-info">
-                <div className="badge secondary">Specialist Support</div>
-                <h2>Professional 1-on-1 Consultations</h2>
-                <p>Schedule a personalized session with our certified nutritionists for in-depth health assessment and custom goal setting.</p>
-                <div className="consultation-features-grid">
-                  <div className="c-feature">
-                    <span className="c-icon">📅</span>
-                    <span>Flexible Booking</span>
-                  </div>
-                  <div className="c-feature">
-                    <span className="c-icon">💻</span>
-                    <span>HD Video Calls (Zoom/Meet)</span>
-                  </div>
-                  <div className="c-feature">
-                    <span className="c-icon">📝</span>
-                    <span>Written Summary Report</span>
+                  <div className="ServicesPage-Macros-Preview">
+                    <div className="ServicesPage-Macro-Pill"><span>P:</span> 24g</div>
+                    <div className="ServicesPage-Macro-Pill"><span>C:</span> 32g</div>
+                    <div className="ServicesPage-Macro-Pill"><span>F:</span> 18g</div>
                   </div>
                 </div>
-                <NavLink to="/contact" className="btn sv-btn-secondary consultation-btn">Book Your Consultation</NavLink>
-              </div>
-              <div className="consultation-visual">
-                <div className="expert-avatar-circle">
-                  <span className="expert-icon">🧑‍⚕️</span>
-                </div>
-                <div className="active-meeting-pulse"></div>
               </div>
             </div>
           </ScrollReveal>
         </div>
       </section>
 
-      {/* Bottom Final CTA */}
-      <section className="services-final-cta">
+      {/* 3. PLANS SECTION */}
+      <section className="ServicesPage-Plans-Section">
+        <div className="ServicesPage-Section-Header">
+          <ScrollReveal>
+            <div className="ServicesPage-Badge">SUBSCRIPTIONS</div>
+            <h2 className="ServicesPage-Section-Title">VITALITY <span className="ServicesPage-Accent-Text">PLANS</span></h2>
+            <p className="ServicesPage-Section-Subtitle">Select the tier that aligns with your current metabolic objectives.</p>
+          </ScrollReveal>
+        </div>
+
+        <div className="ServicesPage-Plans-Grid">
+          {coreServices.map((plan, i) => (
+            <ScrollReveal key={i} delay={i * 0.1}>
+              <div className={`ServicesPage-Plan-Card ${plan.featured ? 'featured' : ''}`}>
+                {plan.badge && <div className="ServicesPage-Plan-Badge">{plan.badge}</div>}
+                <div className="ServicesPage-Plan-Icon">{plan.icon}</div>      
+                <h3>{plan.title}</h3>
+                <div className="ServicesPage-Plan-Price">{plan.price}<span>/mo</span></div>
+                <p className="ServicesPage-Plan-Desc">{plan.description}</p>
+
+                <ul className="ServicesPage-Plan-Features">
+                  {plan.features.map((feat, fi) => (
+                    <li key={fi}>
+                      <Check size={16} /> {feat}
+                    </li>
+                  ))}
+                </ul>
+
+                <NavLink to="/signup" className="ServicesPage-Plan-Btn">  
+                  SELECT_PLAN
+                </NavLink>
+              </div>
+            </ScrollReveal>
+          ))}
+        </div>
+      </section>
+
+      {/* 4. CONSULTATION BANNER */}
+      <section className="ServicesPage-Consult-Section">
         <ScrollReveal>
-          <div className="cta-content">
-            <h2>Ready to Transform Your Health?</h2>
-            <p>Join over 50,000+ users tracking their way to a better life.</p>
-            <div className="cta-actions">
-              <NavLink to="/signup" className="btn sv-btn-primary btn-lg">Get Started Free</NavLink>
-              <NavLink to="/about" className="btn btn-outline btn-lg">How We're Different</NavLink>
+          <div className="ServicesPage-Consult-Banner">
+            <div className="ServicesPage-Consult-Info">
+              <h2>CLINICAL <br /> OVERRIDE.</h2>
+              <p>Direct access to certified clinical nutritionists for advanced health assessment and objective calibration.</p>
+
+              <div className="ServicesPage-Consult-Stats">
+                <div>
+                  <h4>HD VIDEO</h4>
+                  <p>Bio-Consults</p>
+                </div>
+                <div>
+                  <h4>WRITTEN</h4>
+                  <p>Vital Reports</p>
+                </div>
+              </div>
+
+              <NavLink to="/contact" className="ServicesPage-Consult-Btn">
+                BOOK_SESSION
+              </NavLink>
+            </div>
+            <div className="ServicesPage-Consult-Visual">
+              <Brain size={240} strokeWidth={0.5} opacity={0.3} color="#fff" />
             </div>
           </div>
+        </ScrollReveal>
+      </section>
+
+      {/* 5. FINAL CTA */}
+      <section className="ServicesPage-CTA-Section">
+        <ScrollReveal>
+          <h2 className="ServicesPage-Section-Title">READY TO <br /> <span className="ServicesPage-Accent-Text">OPTIMIZE?</span></h2>
+          <NavLink to="/signup" className="ServicesPage-Join-Btn">
+            JOIN_THE_NETWORK
+          </NavLink>
         </ScrollReveal>
       </section>
     </div>

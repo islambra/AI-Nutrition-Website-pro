@@ -1,80 +1,74 @@
 import React, { useEffect, useState } from 'react';
-import { motion, useMotionValue, useSpring } from 'framer-motion';
+import { motion, useMotionValue, useSpring, AnimatePresence } from 'framer-motion';
+import { Leaf } from 'lucide-react';
 import './CustomCursor.css';
 
-const CustomCursor = () => {
-  const cursorX = useMotionValue(-100);
-  const cursorY = useMotionValue(-100);
-  
-  // Outer ring follows with a slight spring delay for a "fluid" feel
-  const springConfig = { damping: 20, stiffness: 250, mass: 0.5 };
-  const ringX = useSpring(cursorX, springConfig);
-  const ringY = useSpring(cursorY, springConfig);
+const LeafNode = ({ x, y }) => (
+  <motion.div
+    initial={{ scale: 0, rotate: 0, opacity: 0.6 }}
+    animate={{ scale: [0, 1, 0], rotate: 45, opacity: 0, y: y + 20 }}
+    exit={{ opacity: 0 }}
+    transition={{ duration: 1.2, ease: "easeOut" }}
+    className="star-trail-node"
+    style={{ left: x, top: y, color: '#34C759' }}
+  >
+    <Leaf size={14} fill="currentColor" opacity={0.3} />
+  </motion.div>
+);
 
+const CustomCursor = () => {
+  const mouseX = useMotionValue(-100);
+  const mouseY = useMotionValue(-100);
+  
+  const springConfig = { damping: 40, stiffness: 400, mass: 0.3 };
+  const smoothX = useSpring(mouseX, springConfig);
+  const smoothY = useSpring(mouseY, springConfig);
+
+  const [trail, setTrail] = useState([]);
   const [isHovered, setIsHovered] = useState(false);
-  const [isClicking, setIsClicking] = useState(false);
 
   useEffect(() => {
-    const moveCursor = (e) => {
-      cursorX.set(e.clientX);
-      cursorY.set(e.clientY);
-    };
-
-    const handleMouseOver = (e) => {
-      if (e.target.closest('a, button, .interactive, .hyper-card, .btn-cyber-pill')) {
-        setIsHovered(true);
-      } else {
-        setIsHovered(false);
+    const handleMove = (e) => {
+      mouseX.set(e.clientX);
+      mouseY.set(e.clientY);
+      
+      if (Math.random() > 0.85) {
+        const id = Math.random();
+        setTrail(prev => [...prev.slice(-10), { id, x: e.clientX, y: e.clientY }]);
+        setTimeout(() => {
+          setTrail(prev => prev.filter(t => t.id !== id));
+        }, 1200);
       }
     };
 
-    const handleMouseDown = () => setIsClicking(true);
-    const handleMouseUp = () => setIsClicking(false);
-
-    window.addEventListener('mousemove', moveCursor);
-    window.addEventListener('mouseover', handleMouseOver);
-    window.addEventListener('mousedown', handleMouseDown);
-    window.addEventListener('mouseup', handleMouseUp);
-
-    return () => {
-      window.removeEventListener('mousemove', moveCursor);
-      window.removeEventListener('mouseover', handleMouseOver);
-      window.removeEventListener('mousedown', handleMouseDown);
-      window.removeEventListener('mouseup', handleMouseUp);
+    const handleOver = (e) => {
+      if (e.target.closest('a, button, .hyper-card, .btn-y2k')) setIsHovered(true);
+      else setIsHovered(false);
     };
-  }, [cursorX, cursorY]);
+
+    window.addEventListener('mousemove', handleMove);
+    window.addEventListener('mouseover', handleOver);
+    return () => {
+      window.removeEventListener('mousemove', handleMove);
+      window.removeEventListener('mouseover', handleOver);
+    };
+  }, [mouseX, mouseY]);
 
   return (
     <>
-      {/* Outer Ring */}
+      <div className="cursor-glass-blob" style={{ left: smoothX, top: smoothY }} />
+      
+      <AnimatePresence>
+        {trail.map(t => <LeafNode key={t.id} x={t.x} y={t.y} />)}
+      </AnimatePresence>
+
       <motion.div
-        className="cursor-ring"
-        style={{ 
-          left: ringX, 
-          top: ringY, 
-          x: '-50%', 
-          y: '-50%' 
-        }}
-        animate={{
-          scale: isClicking ? 0.5 : isHovered ? 1.8 : 1,
-          borderColor: isHovered ? '#22C55E' : 'rgba(15, 23, 42, 0.2)',
-          borderWidth: isHovered ? '1px' : '1.5px',
-        }}
-      />
-      {/* Center Dot */}
-      <motion.div
-        className="cursor-dot-main"
-        style={{ 
-          left: cursorX, 
-          top: cursorY, 
-          x: '-50%', 
-          y: '-50%'
-        }}
-        animate={{
-          scale: isClicking ? 1.5 : isHovered ? 0.4 : 1,
-          backgroundColor: isHovered ? '#22C55E' : '#0F172A'
-        }}
-      />
+        className="cursor-main-organic"
+        style={{ left: smoothX, top: smoothY, x: '-50%', y: '-50%' }}
+        animate={{ scale: isHovered ? 1.8 : 1 }}
+      >
+        <div className="cursor-inner-vitality" />
+      </motion.div>
     </>
   );
 };
