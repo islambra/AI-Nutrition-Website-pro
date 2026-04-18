@@ -1,4 +1,3 @@
-// AllUsers.jsx
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { getAllUsers, deleteUser } from "../../api/userApi";
@@ -31,10 +30,6 @@ const AllUsers = () => {
     try {
       setLoading(true);
       const response = await getAllUsers();
-      console.log("All users from API:", response);
-      
-      // The API returns an array of users with role field
-      // Roles: "Admin", "Nutritionist", "Client"
       setUsers(response);
       setFilteredUsers(response);
     } catch (error) {
@@ -68,7 +63,7 @@ const AllUsers = () => {
     try {
       await deleteUser(userId);
       showNotification("User deleted successfully", "success");
-      fetchUsers(); // Refresh the list
+      fetchUsers();
       setDeleteConfirm(null);
     } catch (error) {
       showNotification(error.response?.data?.message || "Failed to delete user", "error");
@@ -76,7 +71,6 @@ const AllUsers = () => {
   };
 
   const getUserRole = (user) => {
-    // Role is now consistently stored in user.role
     return user.role || "Client";
   };
 
@@ -94,14 +88,10 @@ const AllUsers = () => {
 
   const getRoleBadgeClass = (role) => {
     switch(role) {
-      case "Admin":
-        return "role-badge-admin";
-      case "Nutritionist":
-        return "role-badge-nutritionist";
-      case "Client":
-        return "role-badge-client";
-      default:
-        return "role-badge-default";
+      case "Admin": return "role-badge-admin";
+      case "Nutritionist": return "role-badge-nutritionist";
+      case "Client": return "role-badge-client";
+      default: return "role-badge-default";
     }
   };
 
@@ -137,8 +127,7 @@ const AllUsers = () => {
             <path d="M5 20V19C5 15.7 7.7 13 11 13H13C16.3 13 19 15.7 19 19V20" stroke="currentColor" strokeWidth="2"/>
           </svg>
         );
-      default:
-        return null;
+      default: return null;
     }
   };
 
@@ -176,12 +165,10 @@ const AllUsers = () => {
             <path d="M16 3.13C18.2 3.51 19.8 5.4 20 7.63" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
           </svg>
         );
-      default:
-        return null;
+      default: return null;
     }
   };
 
-  // Calculate stats based on users
   const getStats = () => {
     const admins = users.filter(u => u.role === "Admin").length;
     const nutritionists = users.filter(u => u.role === "Nutritionist").length;
@@ -191,7 +178,6 @@ const AllUsers = () => {
 
   const stats = getStats();
 
-  // Get client metrics from clientProfile
   const getClientMetrics = (user) => {
     if (user.role === "Client" && user.clientProfile) {
       return {
@@ -204,6 +190,12 @@ const AllUsers = () => {
 
   return (
     <div className="all-users-container">
+      {/* Animated Background */}
+      <div className="all-users-background">
+        <div className="bg-blob-1"></div>
+        <div className="bg-blob-2"></div>
+      </div>
+
       {/* Notification Toast */}
       {notification && (
         <div className={`notification-toast ${notification.type}`}>
@@ -246,6 +238,13 @@ const AllUsers = () => {
       {/* Header */}
       <div className="users-header">
         <div>
+          <div className="header-badge">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+              <circle cx="12" cy="7" r="4" />
+            </svg>
+            <span>User Management</span>
+          </div>
           <h1>Manage Users</h1>
           <p>View and manage all administrators, nutritionists, and clients</p>
         </div>
@@ -401,7 +400,6 @@ const AllUsers = () => {
                     {getRoleIcon(getUserRole(user))}
                     <span>{getUserRole(user)}</span>
                   </div>
-                  {/* Show client metrics if available */}
                   {user.role === "Client" && clientMetrics && (
                     <div className="client-metrics">
                       {clientMetrics.bmi && <span>BMI: {clientMetrics.bmi}</span>}
