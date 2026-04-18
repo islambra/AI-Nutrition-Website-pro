@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
 import { updateUser } from "../../api/userApi";
 import { useAuth } from "../../context/AuthContext";
 import "./EditUserProfile.css";
@@ -9,6 +8,7 @@ const EditUserProfile = () => {
   const navigate = useNavigate();
   const { user, updateUser: updateAuthUser } = useAuth();
   const [loading, setLoading] = useState(false);
+  const [notification, setNotification] = useState(null);
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -42,13 +42,15 @@ const EditUserProfile = () => {
       setUserRole(user.role || "");
       loadUserData(user);
     } else {
-      toast.error("Please login to access this page", {
-        duration: 3000,
-        position: "top-center",
-      });
+      showNotification("Please login to access this page", "error");
       navigate("/login");
     }
   }, [user]);
+
+  const showNotification = (message, type = "success") => {
+    setNotification({ message, type });
+    setTimeout(() => setNotification(null), 3000);
+  };
 
   const loadUserData = (userData) => {
     if (!userData) return;
@@ -85,18 +87,12 @@ const EditUserProfile = () => {
     if (file) {
       const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
       if (!allowedTypes.includes(file.type)) {
-        toast.error("Only image files are allowed (JPEG, PNG, GIF, WEBP)", {
-          duration: 3000,
-          position: "top-center",
-        });
+        showNotification("Only image files are allowed (JPEG, PNG, GIF, WEBP)", "error");
         return;
       }
       
       if (file.size > 5 * 1024 * 1024) {
-        toast.error("File size must be less than 5MB", {
-          duration: 3000,
-          position: "top-center",
-        });
+        showNotification("File size must be less than 5MB", "error");
         return;
       }
       
@@ -154,10 +150,7 @@ const EditUserProfile = () => {
     try {
       const storedUser = localStorage.getItem("user");
       if (!storedUser) {
-        toast.error("User data not found", {
-          duration: 3000,
-          position: "top-center",
-        });
+        showNotification("User data not found", "error");
         navigate("/login");
         return;
       }
@@ -165,7 +158,6 @@ const EditUserProfile = () => {
       const currentUser = JSON.parse(storedUser);
       const userId = currentUser._id || currentUser.id;
       
-      // Prepare user data with fullName field
       const userData = {
         fullName: formData.fullName,
         email: formData.email,
@@ -177,19 +169,16 @@ const EditUserProfile = () => {
       
       console.log("Updating user with data:", userData);
       
-      // API call - works for both staff and clients
       const response = await updateUser(userId, userData, formData.photo);
       
       console.log("Update response:", response);
       
-      // Update localStorage with new user data preserving all fields
       const updatedUserData = {
         ...currentUser,
         fullName: formData.fullName,
         email: formData.email,
       };
       
-      // Handle photo update from response
       if (response.user) {
         updateAuthUser(response.user);
         localStorage.setItem("user", JSON.stringify(response.user));
@@ -201,7 +190,6 @@ const EditUserProfile = () => {
         localStorage.setItem("user", JSON.stringify(updatedUserData));
       }
       
-      // Reset form data to current values after successful update
       setOriginalData({
         fullName: formData.fullName,
         email: formData.email
@@ -215,35 +203,11 @@ const EditUserProfile = () => {
       }));
       
       scrollToTop();
-      
-      toast.success("Profile updated successfully!", {
-        duration: 4000,
-        position: "top-center",
-        icon: "",
-        style: {
-          background: "linear-gradient(135deg, #2e7d32, #43a047)",
-          color: "#fff",
-          fontWeight: "600",
-          padding: "12px 20px",
-          borderRadius: "12px",
-          boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)",
-        },
-      });
+      showNotification("Profile updated successfully!", "success");
       
     } catch (error) {
       console.error("Update error:", error);
-      toast.error(error.response?.data?.message || "Failed to update profile", {
-        duration: 4000,
-        position: "top-center",
-        icon: "",
-        style: {
-          background: "linear-gradient(135deg, #d32f2f, #f44336)",
-          color: "#fff",
-          fontWeight: "600",
-          padding: "12px 20px",
-          borderRadius: "12px",
-        },
-      });
+      showNotification(error.response?.data?.message || "Failed to update profile", "error");
     } finally {
       setLoading(false);
     }
@@ -259,13 +223,35 @@ const EditUserProfile = () => {
   const getRoleDisplay = () => {
     const roleMap = {
       'Admin': 'Administrator',
-      'Nutritionist': 'Nutritionist'
+      'Nutritionist': 'Nutritionist',
+      'Client': 'Client'
     };
     return roleMap[userRole] || userRole;
   };
 
   return (
     <div className="edit-profile-container" ref={topRef}>
+      {/* Notification Toast */}
+      {notification && (
+        <div className={`notification-toast ${notification.type}`}>
+          <div className="notification-content">
+            {notification.type === "success" ? (
+              <svg className="notification-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <path d="M20 6L9 17L4 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+            ) : (
+              <svg className="notification-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
+                <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
+                <line x1="12" y1="8" x2="12" y2="12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                <circle cx="12" cy="16" r="0.5" fill="currentColor" stroke="currentColor"/>
+              </svg>
+            )}
+            <span>{notification.message}</span>
+          </div>
+          <button className="notification-close" onClick={() => setNotification(null)}>×</button>
+        </div>
+      )}
+
       <div className="edit-profile-background">
         <div className="bg-blob-1"></div>
         <div className="bg-blob-2"></div>

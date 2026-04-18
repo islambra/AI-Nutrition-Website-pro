@@ -25,7 +25,12 @@ const Icons = {
   CheckCircle: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>,
   Clock: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
   Plus: () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>,
-  Minus: () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+  Minus: () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><line x1="5" y1="12" x2="19" y2="12"/></svg>,
+  ChevronDown: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="6 9 12 15 18 9"/></svg>,
+  ChevronUp: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="18 15 12 9 6 15"/></svg>,
+  Filter: () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="22 3 2 3 10 13 10 21 14 18 14 13 22 3"/></svg>,
+  Download: () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>,
+  Refresh: () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"/><path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14"/></svg>
 };
 
 const ClientsPage = () => {
@@ -35,6 +40,12 @@ const ClientsPage = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [viewMode, setViewMode] = useState('grid');
+  const [filterOpen, setFilterOpen] = useState(false);
+  const [filters, setFilters] = useState({
+    bmiCategory: '',
+    gender: '',
+    activityLevel: ''
+  });
 
   useEffect(() => {
     fetchPatients();
@@ -45,13 +56,11 @@ const ClientsPage = () => {
       setLoading(true);
       const data = await getAllClients();
       
-      // TRANSFORM THE DATA: Flatten the nested structure
       const transformedData = data.map(client => {
         const profile = client.clientProfile || {};
         return {
-          ...client,                    // User fields (fullName, email, photo, role, createdAt)
-          ...profile,                   // Client profile fields (age, gender, bmi, etc.)
-          // Ensure all expected fields exist with fallback values
+          ...client,
+          ...profile,
           age: profile.age ?? null,
           gender: profile.gender ?? null,
           heightCm: profile.heightCm ?? null,
@@ -70,7 +79,6 @@ const ClientsPage = () => {
         };
       });
       
-      console.log('Transformed clients:', transformedData);
       setPatients(transformedData);
       setError(null);
     } catch (err) {
@@ -84,7 +92,12 @@ const ClientsPage = () => {
   const filteredPatients = patients.filter(patient => {
     const matchesSearch = patient.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                           patient.email?.toLowerCase().includes(searchTerm.toLowerCase());
-    return matchesSearch;
+    
+    const matchesBMI = !filters.bmiCategory || patient.bmiCategory === filters.bmiCategory;
+    const matchesGender = !filters.gender || patient.gender === filters.gender;
+    const matchesActivity = !filters.activityLevel || patient.activityLevel === filters.activityLevel;
+    
+    return matchesSearch && matchesBMI && matchesGender && matchesActivity;
   });
 
   const getBMIColor = (category) => {
@@ -121,6 +134,14 @@ const ClientsPage = () => {
     return levels[level?.toLowerCase()] || level || 'Not set';
   };
 
+  const clearFilters = () => {
+    setFilters({
+      bmiCategory: '',
+      gender: '',
+      activityLevel: ''
+    });
+  };
+
   if (loading) {
     return (
       <div className="loading-container">
@@ -149,9 +170,14 @@ const ClientsPage = () => {
             <h1 className="page-title">Client Management</h1>
             <p className="page-subtitle">View and manage all registered clients</p>
           </div>
-          <div className="stats-badge">
-            <span className="stats-number">{patients.length}</span>
-            <span className="stats-label">Total Clients</span>
+          <div className="header-actions">
+            <button onClick={fetchPatients} className="action-btn" title="Refresh">
+              <Icons.Refresh />
+            </button>
+            <div className="stats-badge">
+              <span className="stats-number">{patients.length}</span>
+              <span className="stats-label">Total Clients</span>
+            </div>
           </div>
         </div>
       </div>
@@ -168,6 +194,51 @@ const ClientsPage = () => {
           />
           {searchTerm && (
             <button onClick={() => setSearchTerm('')} className="clear-search"><Icons.Close /></button>
+          )}
+        </div>
+
+        <div className="filter-group">
+          <button 
+            className={`filter-trigger ${filterOpen ? 'active' : ''}`}
+            onClick={() => setFilterOpen(!filterOpen)}
+          >
+            <Icons.Filter /> Filter
+          </button>
+          
+          {filterOpen && (
+            <div className="filter-dropdown">
+              <div className="filter-item">
+                <label>BMI Category</label>
+                <select value={filters.bmiCategory} onChange={(e) => setFilters({...filters, bmiCategory: e.target.value})}>
+                  <option value="">All</option>
+                  <option value="underweight">Underweight</option>
+                  <option value="normal">Normal</option>
+                  <option value="overweight">Overweight</option>
+                  <option value="obese">Obese</option>
+                </select>
+              </div>
+              <div className="filter-item">
+                <label>Gender</label>
+                <select value={filters.gender} onChange={(e) => setFilters({...filters, gender: e.target.value})}>
+                  <option value="">All</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+              <div className="filter-item">
+                <label>Activity Level</label>
+                <select value={filters.activityLevel} onChange={(e) => setFilters({...filters, activityLevel: e.target.value})}>
+                  <option value="">All</option>
+                  <option value="sedentary">Sedentary</option>
+                  <option value="lightly active">Lightly Active</option>
+                  <option value="moderate">Moderate</option>
+                  <option value="active">Active</option>
+                  <option value="very active">Very Active</option>
+                </select>
+              </div>
+              <button onClick={clearFilters} className="clear-filters-btn">Clear All</button>
+            </div>
           )}
         </div>
 
@@ -195,7 +266,7 @@ const ClientsPage = () => {
         <div className="empty-state">
           <div className="empty-icon"><Icons.User /></div>
           <h3>No clients found</h3>
-          <p>Try adjusting your search</p>
+          <p>Try adjusting your search or filters</p>
         </div>
       ) : viewMode === 'grid' ? (
         <div className="patients-grid">
@@ -281,14 +352,14 @@ const PatientCard = ({ patient, onClick, getBMIColor, getActivityLabel }) => {
             <div className="stat-icon"><Icons.Flame /></div>
             <div>
               <div className="stat-value">{patient.bmr || '—'}</div>
-              <div className="stat-label">BMR (kcal)</div>
+              <div className="stat-label">BMR</div>
             </div>
           </div>
           <div className="stat">
             <div className="stat-icon"><Icons.Zap /></div>
             <div>
               <div className="stat-value">{patient.tdee || '—'}</div>
-              <div className="stat-label">TDEE (kcal)</div>
+              <div className="stat-label">TDEE</div>
             </div>
           </div>
         </div>
@@ -332,11 +403,11 @@ const PatientListItem = ({ patient, onClick, getBMIColor }) => {
         </div>
         <p className="list-email"><Icons.Mail /> {patient.email}</p>
         <div className="list-details">
-          <span><Icons.Calendar /> Age: {patient.age || '—'} yrs</span>
+          <span><Icons.Calendar /> {patient.age || '—'} yrs</span>
           <span><Icons.User /> {patient.gender || '—'}</span>
-          <span><Icons.Flame /> BMR: {patient.bmr || '—'}</span>
-          <span><Icons.Zap /> TDEE: {patient.tdee || '—'}</span>
-          <span><Icons.Target /> {patient.goals || 'No goal'}</span>
+          <span><Icons.Flame /> {patient.bmr || '—'} kcal</span>
+          <span><Icons.Zap /> {patient.tdee || '—'} kcal</span>
+          <span><Icons.Target /> {patient.goals?.substring(0, 30) || 'No goal'}</span>
         </div>
       </div>
 
@@ -372,7 +443,7 @@ const ModernPatientModal = ({ patient, onClose, getBMIColor, getBMIGradient, get
             <p className="hero-role">{patient.role || 'Client'}</p>
             <div className="hero-badge-group">
               <span className="hero-badge"><Icons.Mail /> {patient.email}</span>
-              <span className="hero-badge"><Icons.Calendar /> Member since {patient.createdAt ? new Date(patient.createdAt).toLocaleDateString() : 'N/A'}</span>
+              <span className="hero-badge"><Icons.Calendar /> Joined {patient.createdAt ? new Date(patient.createdAt).toLocaleDateString() : 'N/A'}</span>
             </div>
           </div>
         </div>

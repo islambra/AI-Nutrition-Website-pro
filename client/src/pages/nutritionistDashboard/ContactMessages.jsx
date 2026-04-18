@@ -11,15 +11,14 @@ import {
   MessageSquare,
   ChevronLeft,
   ChevronRight,
-  Loader,
   X,
   Inbox,
   RefreshCw,
-  Filter,
-  CheckCircle2,
-  Clock,
   Sparkles,
-  Users
+  Users,
+  Clock,
+  TrendingUp,
+  MessageCircle
 } from "lucide-react";
 import toast from "react-hot-toast";
 import { getAllContacts, deleteContact } from "../../api/contactApi";
@@ -34,7 +33,7 @@ const ContactMessages = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
   const [refreshing, setRefreshing] = useState(false);
-  const [viewMode, setViewMode] = useState("table"); // table or grid
+  const [viewMode, setViewMode] = useState("table");
 
   // Fetch all contacts
   useEffect(() => {
@@ -153,9 +152,7 @@ const ContactMessages = () => {
       return d.toLocaleDateString('en-US', {
         month: 'short',
         day: 'numeric',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
+        year: 'numeric'
       });
     }
   };
@@ -199,13 +196,6 @@ const ContactMessages = () => {
       transition={{ duration: 0.5 }}
       className="contact-messages-page"
     >
-      {/* Animated Background */}
-      <div className="animated-bg">
-        <div className="gradient-orb orb-1"></div>
-        <div className="gradient-orb orb-2"></div>
-        <div className="gradient-orb orb-3"></div>
-      </div>
-
       {/* Header Section */}
       <div className="messages-header-section">
         <div className="header-left">
@@ -261,44 +251,57 @@ const ContactMessages = () => {
         transition={{ delay: 0.15 }}
       >
         <div className="stat-card">
-          <div className="stat-icon total-icon">
-            <Mail size={20} />
+          <div className="stat-icon-wrapper total-icon">
+            <Mail size={22} />
           </div>
           <div className="stat-info">
             <span className="stat-value">{stats.total}</span>
             <span className="stat-label">Total Messages</span>
           </div>
-          <div className="stat-trend">All time</div>
+          <div className="stat-trend">
+            <span>All time</span>
+          </div>
         </div>
+
         <div className="stat-card">
-          <div className="stat-icon month-icon">
-            <Calendar size={20} />
+          <div className="stat-icon-wrapper month-icon">
+            <Calendar size={22} />
           </div>
           <div className="stat-info">
             <span className="stat-value">{stats.month}</span>
             <span className="stat-label">This Month</span>
           </div>
-          <div className="stat-trend">New inquiries</div>
+          <div className="stat-trend">
+            <TrendingUp size={12} />
+            <span>New inquiries</span>
+          </div>
         </div>
+
         <div className="stat-card">
-          <div className="stat-icon week-icon">
-            <Clock size={20} />
+          <div className="stat-icon-wrapper week-icon">
+            <Clock size={22} />
           </div>
           <div className="stat-info">
             <span className="stat-value">{stats.week}</span>
             <span className="stat-label">Last 7 Days</span>
           </div>
-          <div className="stat-trend">Recent activity</div>
+          <div className="stat-trend">
+            <MessageCircle size={12} />
+            <span>Recent activity</span>
+          </div>
         </div>
+
         <div className="stat-card">
-          <div className="stat-icon today-icon">
-            <Sparkles size={20} />
+          <div className="stat-icon-wrapper today-icon">
+            <Sparkles size={22} />
           </div>
           <div className="stat-info">
             <span className="stat-value">{stats.today}</span>
             <span className="stat-label">Today</span>
           </div>
-          <div className="stat-trend">New today</div>
+          <div className="stat-trend">
+            <span>New today</span>
+          </div>
         </div>
       </motion.div>
 
@@ -337,7 +340,7 @@ const ContactMessages = () => {
         </div>
       </motion.div>
 
-      {/* Messages Content */}
+      {/* Messages Content - Table View */}
       {currentContacts.length === 0 ? (
         <motion.div 
           className="empty-state"
@@ -368,8 +371,7 @@ const ContactMessages = () => {
                   <th>Customer</th>
                   <th>Subject</th>
                   <th>Message Preview</th>
-                  <th>Received</th>
-                  <th>Actions</th>
+                  <th className="actions-header">Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -401,27 +403,25 @@ const ContactMessages = () => {
                           {contact.message.length > 60 && "..."}
                         </span>
                       </td>
-                      <td className="date-cell">
-                        <div className="date-wrapper">
-                          <Calendar size={12} />
-                          <span className="date-text">{formatDate(contact.createdAt)}</span>
-                        </div>
-                      </td>
                       <td className="actions-cell">
-                        <button
-                          onClick={() => handleView(contact)}
-                          className="action-btn view-btn"
-                          title="View Details"
-                        >
-                          <Eye size={16} />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(contact._id, contact.name)}
-                          className="action-btn delete-btn"
-                          title="Delete Message"
-                        >
-                          <Trash2 size={16} />
-                        </button>
+                        <div className="action-buttons">
+                          <button
+                            onClick={() => handleView(contact)}
+                            className="action-btn view-btn"
+                            title="View Details"
+                          >
+                            <Eye size={16} />
+                            <span>View</span>
+                          </button>
+                          <button
+                            onClick={() => handleDelete(contact._id, contact.name)}
+                            className="action-btn delete-btn"
+                            title="Delete Message"
+                          >
+                            <Trash2 size={16} />
+                            <span>Delete</span>
+                          </button>
+                        </div>
                       </td>
                     </motion.tr>
                   ))}
@@ -456,12 +456,8 @@ const ContactMessages = () => {
                     <strong>Subject:</strong> {contact.subject}
                   </div>
                   <div className="card-message">
-                    {contact.message.substring(0, 120)}
-                    {contact.message.length > 120 && "..."}
-                  </div>
-                  <div className="card-date">
-                    <Calendar size={12} />
-                    {formatDate(contact.createdAt)}
+                    {contact.message.substring(0, 100)}
+                    {contact.message.length > 100 && "..."}
                   </div>
                 </div>
                 <div className="card-actions">

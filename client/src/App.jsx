@@ -19,6 +19,8 @@ import PageTransition from './components/PageTransition.jsx'
 import ProgressBar from './components/ProgressBar.jsx'
 import SmoothScroll from './components/SmoothScroll.jsx'
 import CreateBlog from './pages/nutritionistDashboard/CreateBlog.jsx'
+import CreatePlan from './pages/nutritionistDashboard/CreatePlan.jsx'
+import MyPlans from './pages/nutritionistDashboard/MyPlans.jsx'
 import Layout from './pages/nutritionistDashboard/Layout.jsx'
 import AdminLayout from './pages/AdminDasboard/AdminLayout.jsx'
 import ContactMessages from './pages/nutritionistDashboard/ContactMessages.jsx'
@@ -55,6 +57,8 @@ function App() {
 
           <Route path="/nutritionist" element={<Layout />}>
               <Route path="/nutritionist/create-blog" element={<CreateBlog />} />
+              <Route path="/nutritionist/create-plan" element={<CreatePlan />} />
+              <Route path="/nutritionist/MyPlans" element={<MyPlans />} />
               <Route path="/nutritionist/contact-messages" element={<ContactMessages />} />
               <Route path="/nutritionist/my-Profile" element={<EditUserProfile />} />
               <Route path="/nutritionist/all-clients" element={<ClientsPage />} />

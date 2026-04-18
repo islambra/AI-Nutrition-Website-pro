@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { createBlog } from "../../api/blogApi";
 import "./CreateBlog.css";
@@ -15,7 +15,11 @@ const Icons = {
   Sparkles: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 3L14 8L19 9L15.5 12.5L17 18L12 15L7 18L8.5 12.5L5 9L10 8L12 3Z"/></svg>,
   ArrowRight: () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="9 18 15 12 9 6"/></svg>,
   ImageIcon: () => <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="2.5"/><polyline points="21 15 16 10 5 21"/></svg>,
-  Edit: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4Z"/></svg>
+  Edit: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.12 2.12 0 0 1 3 3L12 15l-4 1 1-4Z"/></svg>,
+  Save: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>,
+  ChefHat: () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M6 13.5V9.5a3.5 3.5 0 0 1 7 0v4"/><path d="M13 9.5v4a3.5 3.5 0 0 0 7 0v-4"/><path d="M6 13.5a3.5 3.5 0 0 0 7 0"/><path d="M9 3.5v6"/><path d="M12 3.5v6"/><path d="M15 3.5v6"/></svg>,
+  Article: () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M4 4h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="12" y2="16"/></svg>,
+  Community: () => <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
 };
 
 const CreateBlog = () => {
@@ -34,6 +38,16 @@ const CreateBlog = () => {
   const [imagePreview, setImagePreview] = useState(null);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [charCount, setCharCount] = useState(0);
+  const [suggestedTags, setSuggestedTags] = useState([
+    "Healthy", "Quick", "Vegan", "Vegetarian", "Gluten-Free", 
+    "Dairy-Free", "High Protein", "Low Carb", "Breakfast", 
+    "Lunch", "Dinner", "Snack", "Dessert"
+  ]);
+
+  useEffect(() => {
+    setCharCount(formData.title.length);
+  }, [formData.title]);
 
   const resizeImage = (file, maxWidth = 1200, maxHeight = 800, quality = 0.7) => {
     return new Promise((resolve, reject) => {
@@ -46,7 +60,6 @@ const CreateBlog = () => {
           let width = img.width;
           let height = img.height;
           
-          // Calculate new dimensions maintaining aspect ratio
           if (width > maxWidth) {
             height = (height * maxWidth) / width;
             width = maxWidth;
@@ -123,9 +136,6 @@ const CreateBlog = () => {
       try {
         setLoading(true);
         const resizedImage = await resizeImage(file, 1200, 800, 0.75);
-        const originalSizeKB = (file.size / 1024).toFixed(2);
-        const resizedSizeKB = (resizedImage.size / 1024).toFixed(2);
-        console.log(`Image optimized: ${originalSizeKB}KB → ${resizedSizeKB}KB`);
         
         setFormData({ ...formData, image: resizedImage });
         
@@ -148,6 +158,20 @@ const CreateBlog = () => {
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
     }
+  };
+
+  const addSuggestedTag = (tag) => {
+    const currentTags = formData.tags ? formData.tags.split(",").map(t => t.trim()) : [];
+    if (!currentTags.includes(tag)) {
+      const newTags = currentTags.length > 0 ? [...currentTags, tag] : [tag];
+      setFormData({ ...formData, tags: newTags.join(", ") });
+    }
+  };
+
+  const removeTag = (tagToRemove) => {
+    const currentTags = formData.tags.split(",").map(t => t.trim());
+    const newTags = currentTags.filter(tag => tag !== tagToRemove);
+    setFormData({ ...formData, tags: newTags.join(", ") });
   };
 
   const handleSubmit = async (e) => {
@@ -189,8 +213,11 @@ const CreateBlog = () => {
       await createBlog(blogData);
       setSuccess("Blog created successfully!");
       scrollToTop();
-      resetForm();
-      setTimeout(() => setSuccess(""), 3000);
+      setTimeout(() => {
+        resetForm();
+        setSuccess("");
+        navigate("/dashboard/blogs");
+      }, 2000);
     } catch (err) {
       setError(err.response?.data?.message || "Error creating blog. Please try again.");
       scrollToTop();
@@ -200,10 +227,16 @@ const CreateBlog = () => {
   };
 
   const handleCancel = () => {
-    resetForm();
-    scrollToTop();
-    setError("");
-    setSuccess("");
+    navigate("/dashboard/blogs");
+  };
+
+  const getTypeIcon = (type) => {
+    switch(type) {
+      case 'Recipe': return <Icons.ChefHat />;
+      case 'Article': return <Icons.Article />;
+      case 'Community': return <Icons.Community />;
+      default: return <Icons.Sparkles />;
+    }
   };
 
   return (
@@ -253,32 +286,38 @@ const CreateBlog = () => {
               className={`type-card ${formData.type === "Recipe" ? "active" : ""}`}
               onClick={() => setFormData({...formData, type: "Recipe"})}
             >
-              <span className="type-card-emoji">🍳</span>
-              <span className="type-card-title">Recipe</span>
-              <span className="type-card-desc">Share your culinary creations</span>
+              <div className="type-card-icon"><Icons.ChefHat /></div>
+              <div className="type-card-content">
+                <span className="type-card-title">Recipe</span>
+                <span className="type-card-desc">Share your culinary creations</span>
+              </div>
             </button>
             <button
               type="button"
               className={`type-card ${formData.type === "Article" ? "active" : ""}`}
               onClick={() => setFormData({...formData, type: "Article"})}
             >
-              <span className="type-card-emoji">📝</span>
-              <span className="type-card-title">Article</span>
-              <span className="type-card-desc">Write informative content</span>
+              <div className="type-card-icon"><Icons.Article /></div>
+              <div className="type-card-content">
+                <span className="type-card-title">Article</span>
+                <span className="type-card-desc">Write informative content</span>
+              </div>
             </button>
             <button
               type="button"
               className={`type-card ${formData.type === "Community" ? "active" : ""}`}
               onClick={() => setFormData({...formData, type: "Community"})}
             >
-              <span className="type-card-emoji">👥</span>
-              <span className="type-card-title">Community</span>
-              <span className="type-card-desc">Engage with the community</span>
+              <div className="type-card-icon"><Icons.Community /></div>
+              <div className="type-card-content">
+                <span className="type-card-title">Community</span>
+                <span className="type-card-desc">Engage with the community</span>
+              </div>
             </button>
           </div>
         </div>
         
-        {/* Image Upload - Perfect Size */}
+        {/* Image Upload */}
         <div className="form-group-modern">
           <label className="form-label-modern">
             <Icons.Camera /> Featured Image
@@ -344,8 +383,11 @@ const CreateBlog = () => {
             onChange={handleInputChange}
             placeholder="Enter a catchy title..."
             className="modern-input"
+            maxLength="100"
           />
-          <div className="input-character-count">{formData.title.length}/100</div>
+          <div className={`input-character-count ${charCount > 90 ? 'warning' : ''}`}>
+            {charCount}/100 characters
+          </div>
         </div>
         
         {/* Tags */}
@@ -362,6 +404,40 @@ const CreateBlog = () => {
             placeholder="e.g., Healthy, Quick, Vegan, Breakfast"
             className="modern-input"
           />
+          
+          {/* Display tags as chips */}
+          {formData.tags && (
+            <div className="tags-chips">
+              {formData.tags.split(",").map((tag, idx) => {
+                const trimmedTag = tag.trim();
+                if (trimmedTag) {
+                  return (
+                    <span key={idx} className="tag-chip">
+                      {trimmedTag}
+                      <button type="button" onClick={() => removeTag(trimmedTag)} className="tag-chip-remove">
+                        <Icons.X />
+                      </button>
+                    </span>
+                  );
+                }
+                return null;
+              })}
+            </div>
+          )}
+          
+          <div className="suggested-tags">
+            <span className="suggested-label">Suggested:</span>
+            {suggestedTags.slice(0, 8).map((tag, idx) => (
+              <button
+                key={idx}
+                type="button"
+                className="suggested-tag"
+                onClick={() => addSuggestedTag(tag)}
+              >
+                {tag}
+              </button>
+            ))}
+          </div>
           <small className="form-hint-modern">
             Separate tags with commas for better discoverability
           </small>
@@ -381,6 +457,10 @@ const CreateBlog = () => {
             placeholder="Write your blog content here... Markdown supported"
             className="modern-textarea"
           />
+          <div className="content-stats">
+            <span>{formData.content.split(/\s+/).filter(w => w.length > 0).length} words</span>
+            <span>{formData.content.length} characters</span>
+          </div>
         </div>
         
         {/* Form Actions */}
@@ -390,7 +470,7 @@ const CreateBlog = () => {
             onClick={handleCancel}
             className="modern-btn modern-btn-secondary"
           >
-            Clear All
+            Cancel
           </button>
           <button
             type="submit"
@@ -404,6 +484,7 @@ const CreateBlog = () => {
               </>
             ) : (
               <>
+                <Icons.Save />
                 Publish Blog
                 <Icons.ArrowRight />
               </>

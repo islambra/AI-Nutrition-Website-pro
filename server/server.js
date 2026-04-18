@@ -5,6 +5,7 @@ import connectDB from "./configs/db.js";
 import userRouter from "./routes/userRoutes.js";
 import blogRouter from "./routes/blogRoutes.js";
 import contactRouter from "./routes/contactRoutes.js";
+import planRouter from "./routes/planRoutes.js";
 
 await connectDB();
 
@@ -15,6 +16,7 @@ app.use(express.json());
 app.use("/api/user", userRouter);
 app.use("/api/blog", blogRouter);
 app.use("/api", contactRouter);
+app.use("/api/plans", planRouter);
 
 const PORT = 5000;
 

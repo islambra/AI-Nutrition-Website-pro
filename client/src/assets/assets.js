@@ -4,6 +4,7 @@ import listIcon from "./list.svg"
 import addUsers from "./user-plus.svg"
 import allUsers from "./users.svg"
 import userInfo from "./file-user.svg"
+import updateIcon from "./file-pen.svg"
 
 export const assets = {
   addIcon,
@@ -15,6 +16,8 @@ export const assets = {
 }
 export const nutritionistMenuLinks = [
   { name: "Create Blog", path: "/nutritionist/create-blog", icon: addIcon },
+  { name: "Create Plan", path: "/nutritionist/create-plan", icon: addIcon },
+  { name: "My Plans", path: "/nutritionist/MyPlans", icon: updateIcon },
   { name: "Contact Messages", path: "/nutritionist/contact-messages", icon: messagesicon },
   { name: "All Clients", path: "/nutritionist/all-clients", icon: allUsers },
   { name: "My Profile", path: "/nutritionist/my-Profile", icon: userInfo },

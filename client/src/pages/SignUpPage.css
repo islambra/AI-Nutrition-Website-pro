@@ -62,6 +62,11 @@
   gap: 16px;
 }
 
+.overlay-content h1 {
+  font-size: clamp(32px, 3.5vw, 56px);
+  color: rgb(87, 229, 5);
+}
+
 .signup-benefits li {
   display: flex;
   align-items: center;
