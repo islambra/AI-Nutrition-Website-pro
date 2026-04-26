@@ -1,0 +1,476 @@
+/* AITrackerPage.css - Prefixed with AIT- */
+
+.AIT-Wrapper {
+  background-color: #050a05;
+  color: #e0e7e0;
+  min-height: 100vh;
+  padding: 140px 5% 100px;
+  position: relative;
+  overflow-x: hidden;
+}
+
+.AIT-OrganicContainer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.AIT-Floater {
+  position: absolute;
+  color: #2d5a27;
+  opacity: 0.1;
+}
+
+.AIT-Container {
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 10;
+}
+
+.AIT-Header {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.AIT-Badge {
+  display: inline-block;
+  background: rgba(45, 90, 39, 0.2);
+  color: #4caf50;
+  padding: 8px 20px;
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.3em;
+  margin-bottom: 24px;
+  border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+.AIT-Title {
+  font-family: 'Syne', sans-serif;
+  font-size: clamp(40px, 8vw, 80px);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 0.9;
+  margin-bottom: 20px;
+}
+
+.AIT-Highlight {
+  background: linear-gradient(90deg, #4caf50, #8bc34a);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.AIT-Subtitle {
+  font-size: clamp(16px, 2vw, 20px);
+  color: #88a088;
+  max-width: 600px;
+  margin: 0 auto;
+  font-weight: 500;
+}
+
+.AIT-Grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 40px;
+  align-items: start;
+}
+
+/* Glass Card */
+.AIT-GlassCard {
+  background: rgba(15, 25, 15, 0.8);
+  border: 1px solid rgba(76, 175, 80, 0.15);
+  border-radius: 30px;
+  padding: 40px;
+  backdrop-filter: blur(10px);
+}
+
+.AIT-CardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.AIT-CardTitle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #4caf50;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+
+.AIT-ResetBtn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #88a088;
+  padding: 6px 14px;
+  border-radius: 100px;
+  font-size: 10px;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.3s ease;
+}
+
+.AIT-ResetBtn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+}
+
+/* Upload Area */
+.AIT-UploadArea {
+  width: 100%;
+  aspect-ratio: 4/3;
+  background: rgba(45, 90, 39, 0.05);
+  border: 2px dashed rgba(76, 175, 80, 0.2);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.AIT-UploadArea:hover {
+  background: rgba(45, 90, 39, 0.1);
+  border-color: #4caf50;
+}
+
+.AIT-UploadArea.has-preview {
+  border-style: solid;
+  border-color: rgba(76, 175, 80, 0.4);
+}
+
+.AIT-UploadPrompt {
+  text-align: center;
+  padding: 40px;
+}
+
+.AIT-IconCircle {
+  width: 80px;
+  height: 80px;
+  background: rgba(76, 175, 80, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  color: #4caf50;
+}
+
+.AIT-UploadPrompt h3 {
+  font-family: 'Syne', sans-serif;
+  font-size: 20px;
+  margin-bottom: 8px;
+}
+
+.AIT-UploadPrompt p {
+  color: #88a088;
+  font-size: 14px;
+  margin-bottom: 15px;
+}
+
+.AIT-TechDetail {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: #4caf50;
+  opacity: 0.6;
+}
+
+.AIT-PreviewContainer {
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.AIT-MainPreview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.AIT-ScanBar {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, transparent, #4caf50, transparent);
+  box-shadow: 0 0 20px #4caf50;
+  z-index: 5;
+}
+
+/* Action Area */
+.AIT-ActionWrapper {
+  margin-top: 30px;
+}
+
+.AIT-ProcessBtn {
+  width: 100%;
+  padding: 20px;
+  background: #4caf50;
+  color: #050a05;
+  border: none;
+  border-radius: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.AIT-ProcessBtn:hover:not(:disabled) {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(76, 175, 80, 0.3);
+}
+
+.AIT-ProcessBtn:disabled {
+  background: #1a2a1a;
+  color: #2d5a27;
+  cursor: not-allowed;
+}
+
+.AIT-StatusDone {
+  width: 100%;
+  padding: 20px;
+  background: rgba(76, 175, 80, 0.1);
+  color: #4caf50;
+  border: 1px solid rgba(76, 175, 80, 0.3);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 800;
+  font-size: 13px;
+}
+
+.AIT-InfoBox {
+  margin-top: 30px;
+  padding: 25px;
+  background: rgba(45, 90, 39, 0.1);
+  border-radius: 20px;
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+}
+
+.AIT-InfoBox svg { color: #4caf50; }
+.AIT-InfoBox h4 { font-family: 'JetBrains Mono', monospace; font-size: 11px; margin-bottom: 5px; color: #4caf50; }
+.AIT-InfoBox p { font-size: 13px; color: #88a088; line-height: 1.4; }
+
+/* Results Output */
+.AIT-WaitingState {
+  height: 100%;
+  min-height: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  border: 1px solid rgba(76, 175, 80, 0.1);
+  border-radius: 30px;
+  padding: 40px;
+}
+
+.AIT-PulseIcon {
+  width: 100px;
+  height: 100px;
+  background: rgba(45, 90, 39, 0.05);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #2d5a27;
+  margin-bottom: 30px;
+  animation: AIT-Pulse 2s infinite;
+}
+
+@keyframes AIT-Pulse {
+  0% { transform: scale(1); opacity: 0.5; }
+  50% { transform: scale(1.1); opacity: 1; }
+  100% { transform: scale(1); opacity: 0.5; }
+}
+
+.AIT-ResultsCard {
+  background: #fff;
+  color: #050a05;
+  border-radius: 30px;
+  padding: 50px;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+}
+
+.AIT-ResultHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 40px;
+}
+
+.AIT-Category {
+  display: block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  font-weight: 800;
+  color: #4caf50;
+  margin-bottom: 8px;
+}
+
+.AIT-FoodName {
+  font-family: 'Syne', sans-serif;
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.AIT-Confidence {
+  text-align: right;
+}
+
+.c-label { display: block; font-family: 'JetBrains Mono', monospace; font-size: 9px; color: #9CA3AF; }
+.c-value { font-size: 20px; font-weight: 900; color: #34C759; }
+
+.AIT-MainMetrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 40px;
+}
+
+.AIT-MetricLarge {
+  background: #F9FBF9;
+  padding: 25px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.AIT-MetricLarge svg { color: #34C759; }
+.m-label { display: block; font-family: 'JetBrains Mono', monospace; font-size: 9px; color: #6B7280; margin-bottom: 5px; }
+.m-value { font-size: 28px; font-weight: 900; color: #1A1D1A; }
+.m-unit { font-size: 12px; color: #9CA3AF; margin-left: 4px; }
+
+.AIT-MacrosGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 15px;
+  margin-bottom: 40px;
+}
+
+.AIT-MacroItem .macro-info {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 800;
+  margin-bottom: 8px;
+}
+
+.macro-bar {
+  height: 6px;
+  background: #E8F5E9;
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.bar-fill { height: 100%; border-radius: 3px; }
+.bar-fill.protein { background: #4caf50; }
+.bar-fill.carbs { background: #8bc34a; }
+.bar-fill.fats { background: #2e7d32; }
+
+.AIT-IngredientsSection h4 {
+  font-family: 'Syne', sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  margin-bottom: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.AIT-TagCloud {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 40px;
+}
+
+.AIT-Tag {
+  padding: 6px 16px;
+  background: #F0F4F0;
+  color: #2D5A27;
+  border-radius: 100px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.AIT-InsightBox {
+  background: #F0F9F0;
+  padding: 20px;
+  border-radius: 15px;
+  display: flex;
+  gap: 15px;
+  margin-bottom: 40px;
+  border-left: 4px solid #34C759;
+}
+
+.AIT-InsightBox svg { color: #34C759; flex-shrink: 0; }
+.AIT-InsightBox p { font-size: 14px; color: #2D5A27; font-weight: 600; line-height: 1.5; }
+
+.AIT-SaveRecordBtn {
+  width: 100%;
+  padding: 22px;
+  background: #050a05;
+  color: #fff;
+  border: none;
+  border-radius: 100px;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 800;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  transition: all 0.3s ease;
+}
+
+.AIT-SaveRecordBtn:hover {
+  background: #1a2a1a;
+  transform: scale(1.02);
+}
+
+/* Animations */
+.AIT-Spin {
+  animation: AIT-SpinAnim 1s linear infinite;
+}
+
+@keyframes AIT-SpinAnim {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .AIT-Grid { grid-template-columns: 1fr; }
+  .AIT-Wrapper { padding-top: 100px; }
+}
+
+@media (max-width: 768px) {
+  .AIT-ResultsCard { padding: 30px; }
+  .AIT-MainMetrics { grid-template-columns: 1fr; }
+}

@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { UserCircle, Menu, LogOut, Apple, LayoutDashboard, User } from "lucide-react";
+import { UserCircle, Menu, LogOut, Apple, LayoutDashboard, User, Zap } from "lucide-react";
 import toast from "react-hot-toast";
 import "./Header.css";
 
@@ -95,6 +95,7 @@ function Header() {
         <nav className="desktop-nav-links">
           <NavLink to="/" className="nav-item">Home</NavLink>
           <NavLink to="/services" className="nav-item">Services</NavLink>
+          <NavLink to="/ai-tracker" className="nav-item">AI Tracker</NavLink>
           <NavLink to="/blogs" className="nav-item">Blogs</NavLink>
           <NavLink to="/about" className="nav-item">About Us</NavLink>
           <NavLink to="/contact" className="nav-item">Contact Us</NavLink>
@@ -128,10 +129,20 @@ function Header() {
                 )}
                 {/* Profile link - Only show for Client role */}
                 {isClient() && (
-                  <NavLink to="/profile" className="dropdown-item">
-                    <User size={16} />
-                    Profile
-                  </NavLink>
+                  <>
+                    <NavLink to="/profile" className="dropdown-item">
+                      <User size={16} />
+                      Profile
+                    </NavLink>
+                    <NavLink to="/my-plans" className="dropdown-item">
+                      <Apple size={16} />
+                      My Plans
+                    </NavLink>
+                    <NavLink to="/ai-tracker" className="dropdown-item">
+                      <Zap size={16} />
+                      AI Tracker
+                    </NavLink>
+                  </>
                 )}
                 <button className="logout-btn" onClick={handleLogout}>
                   <LogOut size={16} />
@@ -150,6 +161,7 @@ function Header() {
       <nav className={`mobile-menu ${isMenuOpen ? "is-open" : ""}`}>
         <NavLink to="/" className="mobile-nav-item">Home</NavLink>
         <NavLink to="/services" className="mobile-nav-item">Services</NavLink>
+        <NavLink to="/ai-tracker" className="mobile-nav-item">AI Tracker</NavLink>
         <NavLink to="/blogs" className="mobile-nav-item">Blogs</NavLink>
         <NavLink to="/about" className="mobile-nav-item">About Us</NavLink>
         <NavLink to="/contact" className="mobile-nav-item">Contact Us</NavLink>
@@ -179,10 +191,20 @@ function Header() {
             )}
             {/* Profile link - Only show for Client role on mobile */}
             {isClient() && (
-              <NavLink to="/profile" className="mobile-nav-item">
-                <User size={16} />
-                Profile
-              </NavLink>
+              <>
+                <NavLink to="/profile" className="mobile-nav-item">
+                  <User size={16} />
+                  Profile
+                </NavLink>
+                <NavLink to="/my-plans" className="mobile-nav-item">
+                  <Apple size={16} />
+                  My Plans
+                </NavLink>
+                <NavLink to="/ai-tracker" className="mobile-nav-item">
+                  <Zap size={16} />
+                  AI Tracker
+                </NavLink>
+              </>
             )}
             <button className="mobile-nav-item mobile-logout-btn" onClick={handleLogout}>
               <LogOut size={16} />

@@ -1,6 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { User, Mail, Phone, MapPin, Calendar, Shield, Edit3, Camera, Save, X, Leaf, Activity, Target, Heart, Loader2 } from 'lucide-react';
+import { 
+  User, Mail, Shield, Edit3, Camera, Save, X, Leaf, 
+  Activity, Target, Heart, Loader2, Info, AlertTriangle, 
+  Thermometer, TrendingUp, Zap, ChevronRight, Award,
+  Scale, Ruler, Calendar, Fingerprint, MapPin
+} from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { updateUser as updateUserService } from '../api/userApi';
 import toast from 'react-hot-toast';
@@ -16,15 +21,14 @@ function ProfilePage() {
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
-    phone: '',
-    address: '',
-    bio: '',
     age: '',
     weightKg: '',
     heightCm: '',
-    goal: '',
+    goals: '',
     gender: '',
-    activityLevel: ''
+    activityLevel: '',
+    medicalConditions: '',
+    allergies: ''
   });
 
   useEffect(() => {
@@ -33,15 +37,14 @@ function ProfilePage() {
       setFormData({
         fullName: user.fullName || user.name || '',
         email: user.email || '',
-        phone: user.phone || '',
-        address: user.address || '',
-        bio: user.bio || '',
         age: client.age || '',
         weightKg: client.weightKg || '',
         heightCm: client.heightCm || '',
-        goal: client.goals || 'Weight Loss',
+        goals: client.goals || '',
         gender: client.gender || 'Male',
-        activityLevel: client.activityLevel || 'Moderate'
+        activityLevel: client.activityLevel || 'Moderate',
+        medicalConditions: Array.isArray(client.medicalConditions) ? client.medicalConditions.join(', ') : '',
+        allergies: Array.isArray(client.allergies) ? client.allergies.join(', ') : ''
       });
     }
   }, [user]);
@@ -58,28 +61,21 @@ function ProfilePage() {
     const file = e.target.files[0];
     if (!file) return;
 
-    // Validate file type
     if (!file.type.startsWith('image/')) {
       toast.error('INVALID_FILE_TYPE: Please select an image.');
       return;
     }
 
     setIsUploading(true);
-    const loadingToast = toast.loading('Uploading biometric visual...', {
+    const loadingToast = toast.loading('Syncing biometric visual...', {
       style: { fontFamily: 'JetBrains Mono', fontSize: '12px' }
     });
 
     try {
-      // Use the existing updateUserService which handles FormData
       const result = await updateUserService(user._id, {}, file);
-      
       if (updateUser) updateUser(result.user);
-      
       toast.dismiss(loadingToast);
-      toast.success('AVATAR_SYNCHRONIZED', {
-        icon: '📸',
-        style: { fontFamily: 'JetBrains Mono', fontSize: '12px' }
-      });
+      toast.success('AVATAR_SYNCHRONIZED');
     } catch (err) {
       console.error('Upload error:', err);
       toast.dismiss(loadingToast);
@@ -91,25 +87,27 @@ function ProfilePage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const loadingToast = toast.loading('Syncing biological data...', {
+    const loadingToast = toast.loading('Processing biological sync...', {
       style: { fontFamily: 'JetBrains Mono', fontSize: '12px' }
     });
 
     try {
-      const result = await updateUserService(user._id, formData);
-      
+      const submissionData = {
+        ...formData,
+        medicalConditions: formData.medicalConditions.split(',').map(s => s.trim()).filter(s => s),
+        allergies: formData.allergies.split(',').map(s => s.trim()).filter(s => s)
+      };
+
+      const result = await updateUserService(user._id, submissionData);
       if (updateUser) updateUser(result.user);
       
       toast.dismiss(loadingToast);
-      toast.success('PROFILE_SYNCHRONIZED', {
-        icon: '🧬',
-        style: { fontFamily: 'JetBrains Mono', fontSize: '12px' }
-      });
+      toast.success('DATA_INTEGRATED', { icon: '🧬' });
       setIsEditing(false);
     } catch (err) {
       console.error('Update error:', err);
       toast.dismiss(loadingToast);
-      toast.error(err.response?.data?.message || 'SYNC_INTERRUPTED');
+      toast.error(err.response?.data?.message || 'SYNC_ERROR');
     }
   };
 
@@ -117,247 +115,252 @@ function ProfilePage() {
     return user?.photo || user?.profilePicture || null;
   };
 
+  const clientProfile = user?.clientProfile || {};
+
   return (
     <PageTransition>
-      <div className="ProfilePage-Wrapper">
-        <div className="ProfilePage-Organic-Container">
+      <div className="VPR-Wrapper">
+        <div className="VPR-OrganicContainer">
           <motion.div 
-            animate={{ opacity: [0, 0.1, 0], scale: [0.8, 1.2, 0.8] }}
-            transition={{ duration: 15, repeat: Infinity }}
-            className="ProfilePage-Floater"
-            style={{ top: '10%', right: '15%' }}
+            animate={{ opacity: [0, 0.08, 0], scale: [1, 1.1, 1], rotate: [0, 5, 0] }}
+            transition={{ duration: 20, repeat: Infinity }}
+            className="VPR-Floater"
+            style={{ top: '5%', right: '10%' }}
           >
-            <Leaf size={120} strokeWidth={0.5} />
+            <Leaf size={180} strokeWidth={0.5} />
           </motion.div>
         </div>
 
-        <div className="ProfilePage-Container">
-          <header className="ProfilePage-Header">
-            <ScrollReveal direction="down">
-              <span className="ProfilePage-Badge">BIO_IDENTIFICATION</span>
-            </ScrollReveal>
+        <div className="VPR-Container">
+          <header className="VPR-Header">
+            
             <ScrollReveal delay={0.1}>
-              <h1 className="ProfilePage-Title">USER <span className="ProfilePage-Highlight">PROFILE_</span></h1>
+              <h1 className="VPR-Title">CORE <span className="VPR-Highlight">RECORDS_</span></h1>
             </ScrollReveal>
           </header>
 
-          <div className="ProfilePage-Content">
-            {/* Left Column: Avatar & Quick Stats */}
-            <div className="ProfilePage-Sidebar">
-              <ScrollReveal direction="left" className="ProfilePage-Avatar-Card">
-                <div className="ProfilePage-Avatar-Wrapper">
+          <div className="VPR-Content">
+            {/* Sidebar Section */}
+            <aside className="VPR-Sidebar">
+              <ScrollReveal direction="left" className="VPR-AvatarCard">
+                <div className="VPR-AvatarWrapper">
                   {getAvatar() ? (
-                    <img src={getAvatar()} alt="Profile" className="ProfilePage-Avatar-Img" />
+                    <img src={getAvatar()} alt="Profile" className="VPR-AvatarImg" />
                   ) : (
-                    <div className="ProfilePage-Avatar-Placeholder">
-                      <User size={80} strokeWidth={1} />
+                    <div className="VPR-AvatarPlaceholder">
+                      <Fingerprint size={80} strokeWidth={0.5} />
                     </div>
                   )}
-                  
-                  {/* Hidden File Input */}
-                  <input 
-                    type="file" 
-                    ref={fileInputRef} 
-                    onChange={handleImageChange} 
-                    style={{ display: 'none' }} 
-                    accept="image/*"
-                  />
-                  
-                  <button 
-                    className="ProfilePage-Avatar-Edit" 
-                    onClick={handleImageClick}
-                    disabled={isUploading}
-                  >
-                    {isUploading ? <Loader2 size={18} className="animate-spin" /> : <Camera size={18} />}
+                  <input type="file" ref={fileInputRef} onChange={handleImageChange} style={{ display: 'none' }} accept="image/*" />
+                  <button className="VPR-AvatarEdit" onClick={handleImageClick} disabled={isUploading}>
+                    {isUploading ? <Loader2 size={18} className="VPR-Spin" /> : <Camera size={18} />}
                   </button>
                 </div>
-                <h2 className="ProfilePage-User-Name">{formData.fullName || 'VITAL_USER'}</h2>
-                <span className="ProfilePage-User-Role">{user?.role?.toUpperCase() || 'CLIENT'}</span>
+                <h2 className="VPR-UserName">{user?.fullName || 'UNREGISTERED_ENTITY'}</h2>
+                <div className="VPR-UserRoleBadge">
+                  <span className="VPR-RoleText">{user?.role?.toUpperCase()}</span>
+                </div>
                 
-                <div className="ProfilePage-Quick-Stats">
-                  <div className="ProfilePage-Quick-Stat">
+                <div className="VPR-QuickStats">
+                  <div className="VPR-QuickStat">
                     <Activity size={16} />
-                    <div>
-                      <span className="stat-label">STATUS</span>
-                      <span className="stat-value">ACTIVE</span>
+                    <div className="VPR-StatContent">
+                      <span className="VPR-StatLabel">HEALTH_INDEX</span>
+                      <span className="VPR-StatValue">{clientProfile.bmiCategory?.toUpperCase() || 'PNDG'}</span>
                     </div>
                   </div>
-                  <div className="ProfilePage-Quick-Stat">
-                    <Shield size={16} />
-                    <div>
-                      <span className="stat-label">SECURITY</span>
-                      <span className="stat-value">VERIFIED</span>
+                  <div className="VPR-QuickStat">
+                    <Award size={16} />
+                    <div className="VPR-StatContent">
+                      <span className="VPR-StatLabel">LOG_YEAR</span>
+                      <span className="VPR-StatValue">{new Date(user?.createdAt).getFullYear()}</span>
                     </div>
                   </div>
                 </div>
               </ScrollReveal>
 
-              <ScrollReveal direction="left" delay={0.2} className="ProfilePage-Health-Metrics">
-                <h3>VITAL_METRICS</h3>
-                <div className="ProfilePage-Metrics-Grid">
-                  <div className="ProfilePage-Metric">
-                    <span className="metric-label">WEIGHT</span>
-                    <span className="metric-value">{formData.weightKg || '--'} kg</span>
-                  </div>
-                  <div className="ProfilePage-Metric">
-                    <span className="metric-label">HEIGHT</span>
-                    <span className="metric-value">{formData.heightCm || '--'} cm</span>
-                  </div>
-                  <div className="ProfilePage-Metric">
-                    <span className="metric-label">AGE</span>
-                    <span className="metric-value">{formData.age || '--'} yrs</span>
-                  </div>
-                </div>
-              </ScrollReveal>
-            </div>
+              {user?.role === "Client" && (
+                <>
+                  <ScrollReveal direction="left" delay={0.2} className="VPR-HealthMetrics">
+                    <h3 className="VPR-SidebarHeading">SYNTHESIZED_METRICS</h3>
+                    <div className="VPR-MetricsFullGrid">
+                      <div className="VPR-MetricCard">
+                        <Scale size={20} />
+                        <span className="v-m-label">BMI_INDEX</span>
+                        <span className="v-m-value">{clientProfile.bmi || '--'}</span>
+                        <span className="v-m-sub">{clientProfile.bmiCategory || 'Wait...'}</span>
+                      </div>
+                      <div className="VPR-MetricCard">
+                        <Zap size={20} />
+                        <span className="v-m-label">BMR_RATE</span>
+                        <span className="v-m-value">{clientProfile.bmr || '--'}</span>
+                        <span className="v-m-sub">kcal/d</span>
+                      </div>
+                      <div className="VPR-MetricCard">
+                        <Activity size={20} />
+                        <span className="v-m-label">TDEE_ENERGY</span>
+                        <span className="v-m-value">{clientProfile.tdee || '--'}</span>
+                        <span className="v-m-sub">Active Burn</span>
+                      </div>
+                      <div className="VPR-MetricCard">
+                        <Target size={20} />
+                        <span className="v-m-label">TARGET_MASS</span>
+                        <span className="v-m-value">{clientProfile.idealWeightKg || '--'}</span>
+                        <span className="v-m-sub">kg (Optimum)</span>
+                      </div>
+                    </div>
+                  </ScrollReveal>
 
-            {/* Right Column: Information Form */}
-            <div className="ProfilePage-Main">
-              <ScrollReveal direction="right" className="ProfilePage-Form-Card">
-                <div className="ProfilePage-Form-Header">
-                  <h3>BIOLOGICAL_RECORDS</h3>
+                  <ScrollReveal direction="left" delay={0.3} className="VPR-VitalWarning">
+                    <h3 className="VPR-SidebarHeading">RISK_SENSITIVITY</h3>
+                    <div className="VPR-WarningBox is-alert">
+                      <AlertTriangle size={20} className="VPR-WarningIcon" />
+                      <div className="VPR-WarningContent">
+                        <strong className="VPR-WarningLabel">ALLERGIES_DETECTED</strong>
+                        <p className="VPR-WarningText">{clientProfile.allergies?.length > 0 ? clientProfile.allergies.join(', ') : 'ZERO_RECORDS'}</p>
+                      </div>
+                    </div>
+                    <div className="VPR-WarningBox is-info">
+                      <Thermometer size={20} className="VPR-WarningIcon" />
+                      <div className="VPR-WarningContent">
+                        <strong className="VPR-WarningLabel">MEDICAL_HISTORY</strong>
+                        <p className="VPR-WarningText">{clientProfile.medicalConditions?.length > 0 ? clientProfile.medicalConditions.join(', ') : 'STABLE_STATUS'}</p>
+                      </div>
+                    </div>
+                  </ScrollReveal>
+                </>
+              )}
+            </aside>
+
+            {/* Main Records Section */}
+            <main className="VPR-Main">
+              <ScrollReveal direction="right" className="VPR-FormCard">
+                <div className="VPR-FormHeader">
+                  <div className="VPR-FormHeaderTitle">
+                    <Info size={20} />
+                    <h3>BIO_CORE_RECORDS</h3>
+                  </div>
                   <button 
-                    className={`ProfilePage-Edit-Btn ${isEditing ? 'active' : ''}`}
+                    className={`VPR-EditBtn ${isEditing ? 'is-editing' : ''}`}
                     onClick={() => setIsEditing(!isEditing)}
                   >
-                    {isEditing ? <><X size={16} /> CANCEL</> : <><Edit3 size={16} /> EDIT_RECORDS</>}
+                    {isEditing ? <><X size={16} /> CANCEL</> : <><Edit3 size={16} /> MODIFY_DATA</>}
                   </button>
                 </div>
 
-                <form onSubmit={handleSubmit} className="ProfilePage-Form">
-                  <div className="ProfilePage-Form-Grid">
-                    <div className="ProfilePage-Form-Group">
-                      <label htmlFor="fullName">FULL_NAME</label>
-                      <div className="ProfilePage-Input-Wrapper">
-                        <User className="input-icon" size={16} />
-                        <input 
-                          type="text" 
-                          id="fullName" 
-                          value={formData.fullName}
-                          onChange={handleChange}
-                          disabled={!isEditing}
-                          placeholder="Legal Identity"
-                        />
+                <form onSubmit={handleSubmit} className="VPR-Form">
+                  <div className="VPR-FormGrid">
+                    <div className="VPR-FormGroup">
+                      <label htmlFor="fullName">LEGAL_IDENTITY</label>
+                      <div className="VPR-InputWrapper">
+                        <User className="input-icon" size={18} />
+                        <input type="text" id="fullName" value={formData.fullName} onChange={handleChange} disabled={!isEditing} placeholder="John Doe" />
                       </div>
                     </div>
 
-                    <div className="ProfilePage-Form-Group">
-                      <label htmlFor="email">EMAIL_ENDPOINT</label>
-                      <div className="ProfilePage-Input-Wrapper">
-                        <Mail className="input-icon" size={16} />
-                        <input 
-                          type="email" 
-                          id="email" 
-                          value={formData.email}
-                          onChange={handleChange}
-                          disabled={!isEditing}
-                          placeholder="Primary Communication Link"
-                        />
+                    <div className="VPR-FormGroup">
+                      <label htmlFor="email">COMMS_ENDPOINT</label>
+                      <div className="VPR-InputWrapper">
+                        <Mail className="input-icon" size={18} />
+                        <input type="email" id="email" value={formData.email} onChange={handleChange} disabled={!isEditing} placeholder="entity@vital.com" />
                       </div>
                     </div>
 
                     {user?.role === "Client" && (
                       <>
-                        <div className="ProfilePage-Form-Group">
-                          <label htmlFor="age">AGE_VAL</label>
-                          <div className="ProfilePage-Input-Wrapper">
-                            <Calendar className="input-icon" size={16} />
-                            <input 
-                              type="number" 
-                              id="age" 
-                              value={formData.age}
-                              onChange={handleChange}
-                              disabled={!isEditing}
-                              placeholder="Biological Age"
-                            />
+                        <div className="VPR-FormGroup">
+                          <label htmlFor="age">TEMPORAL_AGE</label>
+                          <div className="VPR-InputWrapper">
+                            <Calendar className="input-icon" size={18} />
+                            <input type="number" id="age" value={formData.age} onChange={handleChange} disabled={!isEditing} placeholder="25" />
                           </div>
                         </div>
 
-                        <div className="ProfilePage-Form-Group">
-                          <label htmlFor="heightCm">HEIGHT_CM</label>
-                          <div className="ProfilePage-Input-Wrapper">
-                            <ArrowRight className="input-icon" size={16} style={{transform: 'rotate(-90deg)'}} />
-                            <input 
-                              type="number" 
-                              id="heightCm" 
-                              value={formData.heightCm}
-                              onChange={handleChange}
-                              disabled={!isEditing}
-                              placeholder="Stature in CM"
-                            />
+                        <div className="VPR-FormGroup">
+                          <label htmlFor="gender">GENETIC_BIOTYPE</label>
+                          <div className="VPR-InputWrapper">
+                            <Activity className="input-icon" size={18} />
+                            <select id="gender" value={formData.gender} onChange={handleChange} disabled={!isEditing}>
+                              <option value="Male">XY_MALE</option>
+                              <option value="Female">XX_FEMALE</option>
+                            </select>
                           </div>
                         </div>
 
-                        <div className="ProfilePage-Form-Group">
-                          <label htmlFor="weightKg">WEIGHT_KG</label>
-                          <div className="ProfilePage-Input-Wrapper">
-                            <Activity className="input-icon" size={16} />
-                            <input 
-                              type="number" 
-                              id="weightKg" 
-                              value={formData.weightKg}
-                              onChange={handleChange}
-                              disabled={!isEditing}
-                              placeholder="Mass in KG"
-                            />
+                        <div className="VPR-FormGroup">
+                          <label htmlFor="heightCm">HEIGHT_STATURE (CM)</label>
+                          <div className="VPR-InputWrapper">
+                            <Ruler className="input-icon" size={18} />
+                            <input type="number" id="heightCm" value={formData.heightCm} onChange={handleChange} disabled={!isEditing} placeholder="180" />
+                          </div>
+                        </div>
+
+                        <div className="VPR-FormGroup">
+                          <label htmlFor="weightKg">TOTAL_MASS (KG)</label>
+                          <div className="VPR-InputWrapper">
+                            <Scale className="input-icon" size={18} />
+                            <input type="number" id="weightKg" value={formData.weightKg} onChange={handleChange} disabled={!isEditing} placeholder="75" />
+                          </div>
+                        </div>
+
+                        <div className="VPR-FormGroup">
+                          <label htmlFor="activityLevel">METABOLIC_OUTPUT</label>
+                          <div className="VPR-InputWrapper">
+                            <Zap className="input-icon" size={18} />
+                            <select id="activityLevel" value={formData.activityLevel} onChange={handleChange} disabled={!isEditing}>
+                              <option value="Sedentary">MIN_OUTPUT</option>
+                              <option value="Lightly Active">LOW_OUTPUT</option>
+                              <option value="Moderate">MOD_OUTPUT</option>
+                              <option value="Active">HIGH_OUTPUT</option>
+                              <option value="Very Active">MAX_OUTPUT</option>
+                            </select>
+                          </div>
+                        </div>
+
+                        <div className="VPR-FormGroup">
+                          <label htmlFor="goals">EVOLUTION_GOAL</label>
+                          <div className="VPR-InputWrapper">
+                            <Target className="input-icon" size={18} />
+                            <input type="text" id="goals" value={formData.goals} onChange={handleChange} disabled={!isEditing} placeholder="Optimize mass" />
+                          </div>
+                        </div>
+
+                        <div className="VPR-FormGroup is-full">
+                          <label htmlFor="medicalConditions">PATHOLOGICAL_HISTORY (LIST)</label>
+                          <div className="VPR-InputWrapper">
+                            <Thermometer className="input-icon" size={18} />
+                            <input type="text" id="medicalConditions" value={formData.medicalConditions} onChange={handleChange} disabled={!isEditing} placeholder="Asthma, Diabetes..." />
+                          </div>
+                        </div>
+
+                        <div className="VPR-FormGroup is-full">
+                          <label htmlFor="allergies">IMMUNE_SENSITIVITIES (LIST)</label>
+                          <div className="VPR-InputWrapper">
+                            <AlertTriangle className="input-icon" size={18} />
+                            <input type="text" id="allergies" value={formData.allergies} onChange={handleChange} disabled={!isEditing} placeholder="Gluten, Peanuts..." />
                           </div>
                         </div>
                       </>
-                    )}
-
-                    <div className="ProfilePage-Form-Group full">
-                      <label htmlFor="bio">BIOGRAPHY_DATA</label>
-                      <div className="ProfilePage-Input-Wrapper">
-                        <Edit3 className="input-icon top" size={16} />
-                        <textarea 
-                          id="bio" 
-                          value={formData.bio}
-                          onChange={handleChange}
-                          disabled={!isEditing}
-                          placeholder="Brief biological summary..."
-                          rows="4"
-                        ></textarea>
-                      </div>
-                    </div>
-
-                    {user?.role === "Client" && (
-                      <div className="ProfilePage-Form-Group">
-                        <label htmlFor="goal">PRIMARY_HEALTH_GOAL</label>
-                        <div className="ProfilePage-Input-Wrapper">
-                          <Target className="input-icon" size={16} />
-                          <select 
-                            id="goal" 
-                            value={formData.goal}
-                            onChange={handleChange}
-                            disabled={!isEditing}
-                          >
-                            <option value="Weight Loss">WEIGHT_LOSS</option>
-                            <option value="Muscle Gain">MUSCLE_GAIN</option>
-                            <option value="Energy Optimization">ENERGY_OPTIMIZATION</option>
-                            <option value="Longevity">LONGEVITY_EXTENSION</option>
-                          </select>
-                        </div>
-                      </div>
                     )}
                   </div>
 
                   <AnimatePresence>
                     {isEditing && (
                       <motion.div 
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: 'auto' }}
-                        exit={{ opacity: 0, height: 0 }}
-                        className="ProfilePage-Form-Actions"
+                        initial={{ opacity: 0, y: 15 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 15 }}
+                        className="VPR-FormActions"
                       >
-                        <button type="submit" className="ProfilePage-Save-Btn">
-                          <Save size={18} /> SYNCHRONIZE_CHANGES
+                        <button type="submit" className="VPR-SaveBtn">
+                          <Save size={18} /> EXECUTE_BIO_SYNC
                         </button>
                       </motion.div>
                     )}
                   </AnimatePresence>
                 </form>
               </ScrollReveal>
-            </div>
+            </main>
           </div>
         </div>
       </div>
@@ -365,22 +368,4 @@ function ProfilePage() {
   );
 }
 
-const ArrowRight = ({ size, className, style }) => (
-  <svg 
-    width={size} 
-    height={size} 
-    viewBox="0 0 24 24" 
-    fill="none" 
-    stroke="currentColor" 
-    strokeWidth="2" 
-    strokeLinecap="round" 
-    strokeLinejoin="round"
-    className={className}
-    style={style}
-  >
-    <line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/>
-  </svg>
-);
-
 export default ProfilePage;
-

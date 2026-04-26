@@ -6,8 +6,10 @@ import ContactPage from './pages/ContactPage.jsx'
 import AboutUsPage from './pages/AboutUsPage.jsx' 
 import ServicesPage from './pages/ServicesPage.jsx' 
 import BlogsPage from './pages/BlogsPage.jsx'
-import BlogDetailsPage  from './pages/BlogDetailsPage.jsx'
+import BlogDetailsPage from './pages/BlogDetailsPage.jsx'
 import ProfilePage from './pages/ProfilePage.jsx'
+import MyPlansPage from './pages/MyPlansPage.jsx'
+import AITrackerPage from './pages/AITrackerPage.jsx'
 import Header from './components/Header.jsx' 
 import Footer from './components/Footer.jsx' 
 import CustomCursor from './components/CustomCursor.jsx'
@@ -32,8 +34,9 @@ import './App.css'
 
 function App() {
   const location = useLocation();
- const isLoginRoute = location.pathname.startsWith('/login');
- const isSignupRoute = location.pathname.startsWith('/signup');
+  const isLoginRoute = location.pathname.startsWith('/login');
+  const isSignupRoute = location.pathname.startsWith('/signup');
+  
   return (
     <>
       <CustomCursor />
@@ -44,7 +47,6 @@ function App() {
       {(!isLoginRoute && !isSignupRoute) && <Header />}
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
-          {/* ... existing routes ... */}
           <Route index element={<PageTransition><HomePage /></PageTransition>} />
           <Route path='/contact' element={<PageTransition><ContactPage /></PageTransition>} />
           <Route path='/login' element={<PageTransition><LoginPage /></PageTransition>} />
@@ -53,7 +55,9 @@ function App() {
           <Route path='/services' element={<PageTransition><ServicesPage /></PageTransition>} /> 
           <Route path='/blogs' element={<PageTransition><BlogsPage /></PageTransition>} /> 
           <Route path='/profile' element={<PageTransition><ProfilePage /></PageTransition>} /> 
-          <Route path="/blog/:id" element={<PageTransition><BlogDetailsPage  /></PageTransition>} />
+          <Route path='/my-plans' element={<PageTransition><MyPlansPage /></PageTransition>} /> 
+          <Route path='/ai-tracker' element={<PageTransition><AITrackerPage /></PageTransition>} /> 
+          <Route path="/blog/:id" element={<PageTransition><BlogDetailsPage /></PageTransition>} />
 
           <Route path="/nutritionist" element={<Layout />}>
               <Route path="/nutritionist/create-blog" element={<CreateBlog />} />
@@ -71,9 +75,7 @@ function App() {
         </Routes>
       </AnimatePresence>
     </>
-
   )
 }
-
 
 export default App

@@ -300,7 +300,7 @@ export const getAllPlans = async (req, res) => {
     }
 
     const plans = await Plan.find(filter)
-      .populate("createdBy", "name email")
+      .populate("createdBy", "fullName email")
       .sort({ createdAt: -1 });
 
     res.status(200).json({

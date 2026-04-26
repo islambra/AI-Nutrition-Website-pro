@@ -218,7 +218,43 @@ function HomePage() {
         </div>
       </section>
 
-      {/* 4. THE CORE CTA */}
+      {/* 4. AI FEATURE: NEURAL RECOGNITION */}
+      <section className="ai-feature-section" style={{ padding: '100px 5%', background: '#050a05', color: '#fff', position: 'relative', zIndex: 5 }}>
+        <div style={{ maxWidth: '1300px', margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '80px', alignItems: 'center' }}>
+          <ScrollReveal direction="left">
+            <span style={{ fontFamily: 'JetBrains Mono', color: '#4caf50', fontSize: '12px', letterSpacing: '0.4em' }}>[ NEURAL_RECOGNITION_v4.0 ]</span>
+            <h2 style={{ fontFamily: 'Syne', fontSize: 'clamp(40px, 5vw, 80px)', fontWeight: 800, margin: '20px 0', lineHeight: 0.9 }}>
+              AI_ASSISTED <br /> <span style={{ color: '#4caf50' }}>CALORIE_SYNC.</span>
+            </h2>
+            <p style={{ fontSize: '18px', color: '#88a088', marginBottom: '40px', lineHeight: 1.6 }}>
+              Our proprietary computer vision model identifies food components and estimates nutritional density with clinical-grade precision. 
+              No manual logging. Just pure visual intelligence.
+            </p>
+            <NavLink to="/ai-tracker" className="btn-y2k btn-y2k-primary">
+              Access AI Engine <Zap size={20} />
+            </NavLink>
+          </ScrollReveal>
+          
+          <ScrollReveal direction="right">
+            <div style={{ position: 'relative', borderRadius: '40px', overflow: 'hidden', border: '1px solid rgba(76, 175, 80, 0.3)', background: 'rgba(76, 175, 80, 0.05)', padding: '20px' }}>
+              <img 
+                src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=2070&auto=format&fit=crop" 
+                alt="AI Analysis" 
+                style={{ width: '100%', borderRadius: '25px', opacity: 0.6 }} 
+              />
+              <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div className="AIT-ScanLine" style={{ width: '80%', height: '2px', background: '#4caf50', boxShadow: '0 0 20px #4caf50', position: 'absolute' }} />
+              </div>
+              <div style={{ position: 'absolute', top: '40px', right: '40px', background: 'rgba(5, 10, 5, 0.8)', padding: '15px 25px', borderRadius: '15px', border: '1px solid #4caf50' }}>
+                <div style={{ fontFamily: 'JetBrains Mono', fontSize: '10px', color: '#4caf50' }}>ANALYSIS_SUCCESS</div>
+                <div style={{ fontSize: '24px', fontWeight: 900 }}>420 KCAL</div>
+              </div>
+            </div>
+          </ScrollReveal>
+        </div>
+      </section>
+
+      {/* 5. THE CORE CTA */}
       <section className="cta-v5" style={{ position: 'relative', zIndex: 5 }}>
         <ScrollReveal scale={0.9}>
           <div className="hyper-card" style={{ maxWidth: '1000px', margin: '0 auto', textAlign: 'center', padding: '100px 40px', borderRadius: '60px', background: '#fff' }}>
