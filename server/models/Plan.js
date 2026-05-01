@@ -124,9 +124,27 @@ const planSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    
+    // Creator Information
     createdBy: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
+      required: true,
+    },
+    creatorInfo: {
+      fullName: {
+        type: String,
+      },
+      email: {
+        type: String,
+      },
+      role: {
+        type: String,
+        enum: ["Admin", "Nutritionist", "Client"],
+      },
+      photo: {
+        type: String,
+      },
     },
   },
   {

@@ -140,8 +140,13 @@ export const getAllPlans = async (filters = {}) => {
   return response.data;
 };
 
+export const getPlanById = async (planId) => {
+  const response = await axiosInstance.get(`/plans/${planId}`);
+  return response.data;
+};
+
 export const getMyPlans = async () => {
-  const response = await axiosInstance.get("/plans/my-plans");
+  const response = await axiosInstance.get("/plans/my-plans/list");
   return response.data;
 };
 

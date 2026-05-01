@@ -53,6 +53,11 @@ const clientSchema = new mongoose.Schema({
     type: Number
   },
   
+  // Consultation tracking
+  totalConsultations: {
+    type: Number,
+    default: 0
+  },
   // Additional info
   medicalConditions: [{
     type: String

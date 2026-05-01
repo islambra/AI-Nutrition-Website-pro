@@ -1,6 +1,6 @@
 import axiosInstance from './axiosInstance';
 
-// Register client (replaces registerPatient)
+// Register client
 export const registerClient = async (userData) => {
   const response = await axiosInstance.post("/user/register-client", userData);
   return response.data;
@@ -12,7 +12,7 @@ export const createStaffUser = async (userData) => {
   return response.data;
 };
 
-// Login user (works for all types)
+// Login user
 export const loginUser = async (userData) => {
   const response = await axiosInstance.post("/user/login", userData);
   
@@ -36,30 +36,22 @@ export const getAllStaffUsers = async () => {
   return response.data;
 };
 
-// Get all clients only (replaces getAllPatients)
+// Get all clients only
 export const getAllClients = async () => {
   const response = await axiosInstance.get("/user/clients");
   return response.data;
 };
 
-// Get single client by ID (optional - if you have this endpoint)
-export const getClientById = async (clientId) => {
-  const response = await axiosInstance.get(`/user/clients/${clientId}`);
-  return response.data;
-};
-
+// Update user
 export const updateUser = async (userId, userData = {}, profilePicture = null) => {
   let data;
   let config = {};
   
   if (profilePicture instanceof File) {
-    // Use FormData for file upload
     data = new FormData();
     
-    // Append all user data fields
     Object.keys(userData).forEach(key => {
       if (userData[key] !== undefined && userData[key] !== null) {
-        // Handle arrays (like medicalConditions, allergies)
         if (Array.isArray(userData[key])) {
           data.append(key, JSON.stringify(userData[key]));
         } else {
@@ -68,7 +60,6 @@ export const updateUser = async (userId, userData = {}, profilePicture = null) =
       }
     });
     
-    // Append profile picture
     data.append('profilePicture', profilePicture);
     
     config = {
@@ -77,17 +68,14 @@ export const updateUser = async (userId, userData = {}, profilePicture = null) =
       },
     };
   } else {
-    // Regular JSON data
     data = userData;
   }
   
   const response = await axiosInstance.put(`/user/${userId}`, data, config);
   
-  // Update localStorage with new user data if current user was updated
   if (response.data.user) {
     const currentUser = getCurrentUserFromStorage();
     if (currentUser && currentUser._id === userId) {
-      // Merge with existing client profile if needed
       const updatedUser = {
         ...currentUser,
         ...response.data.user,
@@ -100,6 +88,13 @@ export const updateUser = async (userId, userData = {}, profilePicture = null) =
   return response.data;
 };
 
+// Increment client consultations
+export const incrementClientConsultations = async (clientId) => {
+  const response = await axiosInstance.patch(`/user/client/${clientId}/increment-consultations`);
+  return response.data;
+};
+
+// Delete user
 export const deleteUser = async (userId) => {
   const response = await axiosInstance.delete(`/user/${userId}`);
   return response.data;
@@ -126,7 +121,7 @@ export const getCurrentUserFromStorage = () => {
   return user ? JSON.parse(user) : null;
 };
 
-// Get current user from API (if you add /me endpoint)
+// Get current user from API
 export const getCurrentUser = async () => {
   try {
     const response = await axiosInstance.get("/user/me");
@@ -177,6 +172,6 @@ export const getUserRoleDisplay = (user) => {
   return roleMap[user?.role] || user?.role || 'User';
 };
 
-// For backward compatibility (deprecated)
+// For backward compatibility
 export const registerPatient = registerClient;
 export const getAllPatients = getAllClients;

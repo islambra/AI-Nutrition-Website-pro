@@ -67,7 +67,7 @@ export const createPlan = async (req, res) => {
       }
     }
 
-    // Create plan
+    // Create plan with creator info
     const plan = await Plan.create({
       planName,
       planCategory,
@@ -95,6 +95,12 @@ export const createPlan = async (req, res) => {
       supplementsSuggested: supplementsSuggested ? JSON.parse(supplementsSuggested) : [],
       exerciseRecommendation: exerciseRecommendation || "",
       createdBy: req.user.id,
+      creatorInfo: {
+        fullName: user.fullName,
+        email: user.email,
+        role: user.role,
+        photo: user.photo || "",
+      },
     });
 
     res.status(201).json({
@@ -135,6 +141,10 @@ export const updatePlan = async (req, res) => {
 
     // Prepare update data
     const updateData = { ...req.body };
+    
+    // Remove creatorInfo from update data to prevent tampering
+    delete updateData.creatorInfo;
+    delete updateData.createdBy;
 
     // Parse JSON fields if they exist
     if (req.body.macronutrientRatio) {
@@ -175,9 +185,6 @@ export const updatePlan = async (req, res) => {
     // Upload new image if provided
     if (req.file) {
       try {
-        // Optional: Delete old image from ImageKit
-        // Extract fileId from old URL if you want to delete it
-        
         const base64Image = req.file.buffer.toString("base64");
         const uploadResponse = await imagekit.upload({
           file: base64Image,
@@ -234,12 +241,6 @@ export const deletePlan = async (req, res) => {
         message: "You are not authorized to delete this plan",
       });
     }
-
-    // Optional: Delete image from ImageKit
-    // if (plan.planImage) {
-    //   const fileId = plan.planImage.split("/").pop().split(".")[0];
-    //   await imagekit.deleteFile(fileId);
-    // }
 
     await plan.deleteOne();
 
@@ -300,7 +301,7 @@ export const getAllPlans = async (req, res) => {
     }
 
     const plans = await Plan.find(filter)
-      .populate("createdBy", "fullName email")
+      .select("-__v")
       .sort({ createdAt: -1 });
 
     res.status(200).json({
@@ -312,6 +313,33 @@ export const getAllPlans = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Error fetching plans",
+      error: error.message,
+    });
+  }
+};
+
+// Get single plan by ID
+export const getPlanById = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const plan = await Plan.findById(id);
+
+    if (!plan) {
+      return res.status(404).json({
+        success: false,
+        message: "Plan not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: plan,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error fetching plan",
       error: error.message,
     });
   }

@@ -110,6 +110,7 @@ export const registerClient = async (req, res) => {
       heightCm: heightCm,
       weightKg: weightKg,
       activityLevel: activityLevel || "Sedentary",
+      totalConsultations: 0,
       medicalConditions: medicalConditions || [],
       allergies: allergies || [],
       goals: goals || "",
@@ -203,7 +204,6 @@ export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Find user in User model (all users are now in User model)
     const user = await User.findOne({ email });
     
     if (!user) {
@@ -215,7 +215,6 @@ export const loginUser = async (req, res) => {
       return res.status(401).json({ message: "Invalid email or password" });
     }
 
-    // If user is a Client, fetch client profile
     let clientProfile = null;
     if (user.role === "Client") {
       clientProfile = await Client.findOne({ user: user._id });
@@ -257,6 +256,7 @@ export const getAllUsers = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
 // Get current user profile
 export const getCurrentUser = async (req, res) => {
   try {
@@ -286,7 +286,6 @@ export const updateUser = async (req, res) => {
     const { id } = req.params;
     const updateData = { ...req.body };
     
-    // Find user
     const user = await User.findById(id);
     
     if (!user) {
@@ -326,44 +325,58 @@ export const updateUser = async (req, res) => {
     if (user.role === "Client") {
       clientProfile = await Client.findOne({ user: user._id });
       
-      if (clientProfile) {
-        // Update client-specific fields
-        const allowedClientFields = [
-          'age', 'gender', 'heightCm', 'weightKg', 'activityLevel',
-          'medicalConditions', 'allergies', 'goals'
-        ];
-        
-        allowedClientFields.forEach(field => {
-          if (updateData[field] !== undefined) {
-            clientProfile[field] = updateData[field];
-          }
+      if (!clientProfile) {
+        // Create client profile if it doesn't exist
+        clientProfile = new Client({
+          user: user._id,
+          age: 25,
+          gender: "Male",
+          heightCm: 170,
+          weightKg: 70,
+          activityLevel: "Moderate",
+          totalConsultations: 0,
+          medicalConditions: [],
+          allergies: [],
+          goals: ""
         });
-        
-        // Recalculate health metrics if relevant fields changed
-        const metricsFieldsChanged = ['age', 'gender', 'heightCm', 'weightKg', 'activityLevel']
-          .some(field => updateData[field] !== undefined);
-        
-        if (metricsFieldsChanged) {
-          healthMetrics = calculateHealthMetrics(
-            clientProfile.age,
-            clientProfile.gender,
-            clientProfile.heightCm,
-            clientProfile.weightKg,
-            clientProfile.activityLevel
-          );
-          
-          if (healthMetrics) {
-            clientProfile.bmr = healthMetrics.bmr;
-            clientProfile.tdee = healthMetrics.tdee;
-            clientProfile.bmi = healthMetrics.bmi;
-            clientProfile.bmiCategory = healthMetrics.bmiCategory;
-            clientProfile.idealWeightKg = healthMetrics.idealWeightKg;
-            clientProfile.bodyFatPercentage = healthMetrics.bodyFatPercentage;
-          }
-        }
-        
-        await clientProfile.save();
       }
+      
+      // Update client-specific fields
+      const allowedClientFields = [
+        'age', 'gender', 'heightCm', 'weightKg', 'activityLevel',
+        'medicalConditions', 'allergies', 'goals', 'totalConsultations'
+      ];
+      
+      allowedClientFields.forEach(field => {
+        if (updateData[field] !== undefined) {
+          clientProfile[field] = updateData[field];
+        }
+      });
+      
+      // Recalculate health metrics if relevant fields changed
+      const metricsFieldsChanged = ['age', 'gender', 'heightCm', 'weightKg', 'activityLevel']
+        .some(field => updateData[field] !== undefined);
+      
+      if (metricsFieldsChanged) {
+        healthMetrics = calculateHealthMetrics(
+          clientProfile.age,
+          clientProfile.gender,
+          clientProfile.heightCm,
+          clientProfile.weightKg,
+          clientProfile.activityLevel
+        );
+        
+        if (healthMetrics) {
+          clientProfile.bmr = healthMetrics.bmr;
+          clientProfile.tdee = healthMetrics.tdee;
+          clientProfile.bmi = healthMetrics.bmi;
+          clientProfile.bmiCategory = healthMetrics.bmiCategory;
+          clientProfile.idealWeightKg = healthMetrics.idealWeightKg;
+          clientProfile.bodyFatPercentage = healthMetrics.bodyFatPercentage;
+        }
+      }
+      
+      await clientProfile.save();
     }
     
     const { password: _, ...userWithoutPassword } = user.toObject();
@@ -381,24 +394,44 @@ export const updateUser = async (req, res) => {
   }
 };
 
+// Increment total consultations for a client
+export const incrementConsultations = async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    const client = await Client.findById(id);
+    
+    if (!client) {
+      return res.status(404).json({ message: "Client not found" });
+    }
+    
+    client.totalConsultations += 1;
+    await client.save();
+    
+    res.status(200).json({ 
+      message: "Consultation count updated", 
+      totalConsultations: client.totalConsultations 
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 // Delete user
 export const deleteUser = async (req, res) => {
   try {
     const { id } = req.params;
     
-    // Find user
     const user = await User.findById(id);
     
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // If user is a Client, delete client profile first
     if (user.role === "Client") {
       await Client.findOneAndDelete({ user: user._id });
     }
     
-    // Delete user
     await User.findByIdAndDelete(id);
 
     res.status(200).json({ 
@@ -425,10 +458,8 @@ export const getAllStaffUsers = async (req, res) => {
 // Get all clients
 export const getAllClients = async (req, res) => {
   try {
-    // Find all users with role "Client"
     const clientUsers = await User.find({ role: "Client" }).select("-password").lean();
     
-    // Fetch client profiles for each user
     const clients = await Promise.all(clientUsers.map(async (user) => {
       const clientProfile = await Client.findOne({ user: user._id }).lean();
       return {

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 import {
   createPlan,
   validateMacronutrients,
@@ -10,6 +11,7 @@ import "./CreatePlan.css";
 
 const CreatePlan = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
@@ -271,6 +273,10 @@ const CreatePlan = () => {
 
   // Validate before submit
   const validateForm = () => {
+    if (!user) {
+      setError("You must be logged in to create a plan");
+      return false;
+    }
     if (!formData.planName.trim()) {
       setError("Plan name is required");
       return false;
@@ -316,12 +322,22 @@ const CreatePlan = () => {
     
     setLoading(true);
     try {
-      const response = await createPlan(formData);
+      // Prepare plan data - creator info will be added by the backend
+      const planData = {
+        ...formData,
+        // The backend will extract user info from the authenticated request
+        // and save it as creatorInfo automatically
+      };
+      
+      const response = await createPlan(planData);
+      console.log('Plan created with creator info:', response.data?.creatorInfo);
+      
       setSuccess("Plan created successfully! Redirecting...");
       setTimeout(() => {
         navigate("/dashboard/plans");
       }, 2000);
     } catch (err) {
+      console.error('Error creating plan:', err);
       setError(err.response?.data?.message || "Error creating plan");
     } finally {
       setLoading(false);
@@ -347,6 +363,11 @@ const CreatePlan = () => {
         <p>
           <i className="fas fa-heartbeat"></i> Design a personalized meal plan for your clients
         </p>
+        {user && (
+          <div className="creator-info-banner">
+            <span>Creating as: <strong>{user.fullName}</strong> ({user.role})</span>
+          </div>
+        )}
       </div>
 
       <form onSubmit={handleSubmit} className="create-plan-form">
@@ -608,7 +629,7 @@ const CreatePlan = () => {
           </div>
         </div>
 
-        {/* Meal Structure Section - REDESIGNED with better UI/UX */}
+        {/* Meal Structure Section */}
         <div className="form-section meal-structure-section">
           <div className="section-title">
             <i className="fas fa-utensils section-icon"></i>

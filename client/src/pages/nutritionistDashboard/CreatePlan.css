@@ -38,6 +38,32 @@
   color: #10b981;
 }
 
+/* Creator Info Banner */
+.creator-info-banner {
+  margin-top: 1rem;
+  padding: 0.75rem 1.25rem;
+  background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%);
+  border: 1px solid #a7f3d0;
+  border-radius: 0.75rem;
+  color: #059669;
+  font-size: 0.875rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.creator-info-banner::before {
+  content: '\f007';
+  font-family: 'Font Awesome 5 Free';
+  font-weight: 900;
+  color: #10b981;
+}
+
+.creator-info-banner strong {
+  color: #047857;
+  font-weight: 600;
+}
+
 /* Form Sections */
 .form-section {
   background: white;
@@ -112,6 +138,7 @@
   font-size: 0.875rem;
   transition: all 0.2s;
   background: #f9fafb;
+  color: #374151;
 }
 
 .form-group input:focus,
@@ -121,6 +148,19 @@
   border-color: #10b981;
   background: white;
   box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+.form-group input:disabled,
+.form-group select:disabled,
+.form-group textarea:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background: #f3f4f6;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: #9ca3af;
 }
 
 /* Image Upload */
@@ -184,6 +224,12 @@
   gap: 0.75rem;
   cursor: pointer;
   padding: 2rem;
+  text-align: center;
+}
+
+.upload-label span {
+  color: #374151;
+  font-weight: 500;
 }
 
 .upload-icon {
@@ -215,12 +261,17 @@
   border-radius: 0.75rem;
   background: #f9fafb;
   transition: all 0.2s;
+  color: #374151;
 }
 
 .array-input-row input:focus {
   outline: none;
   border-color: #10b981;
   background: white;
+}
+
+.array-input-row input::placeholder {
+  color: #9ca3af;
 }
 
 /* ===== UNIFIED GREEN BUTTONS ===== */
@@ -260,22 +311,37 @@ button[class*="add"]:hover {
 .add-meal-btn:active,
 .add-food-btn:active,
 .grocery-input button:active,
-.submit-btn:active {
+.submit-btn:active:not(:disabled) {
   transform: translateY(0);
+}
+
+.submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.submit-btn:disabled:hover {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+  transform: none;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
 /* Specific button sizes */
 .add-btn {
   padding: 0.75rem 1.5rem;
+  white-space: nowrap;
 }
 
 .add-meal-btn {
   padding: 0.5rem 1.25rem;
-  border-radius: 2rem;
+  border-radius: 2rem !important;
+  font-size: 0.875rem;
 }
 
 .add-food-btn {
   padding: 0.75rem 1.5rem;
+  white-space: nowrap;
 }
 
 .grocery-input button {
@@ -285,6 +351,7 @@ button[class*="add"]:hover {
 .submit-btn {
   padding: 0.75rem 2rem;
   font-weight: 600;
+  font-size: 1rem;
 }
 
 /* Cancel button remains neutral */
@@ -308,6 +375,10 @@ button[class*="add"]:hover {
   transform: translateY(-1px);
 }
 
+.cancel-btn:active {
+  transform: translateY(0);
+}
+
 /* Tags */
 .tags-container {
   display: flex;
@@ -326,6 +397,12 @@ button[class*="add"]:hover {
   font-size: 0.813rem;
   font-weight: 500;
   border: 1px solid #a7f3d0;
+  transition: all 0.2s;
+}
+
+.tag:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.1);
 }
 
 .tag i {
@@ -343,10 +420,12 @@ button[class*="add"]:hover {
   padding: 0;
   opacity: 0.6;
   font-weight: bold;
+  transition: opacity 0.2s;
 }
 
 .tag button:hover {
   opacity: 1;
+  color: #dc2626;
 }
 
 .danger-tag {
@@ -357,6 +436,10 @@ button[class*="add"]:hover {
 
 .danger-tag button {
   color: #dc2626;
+}
+
+.danger-tag button:hover {
+  color: #991b1b;
 }
 
 /* Meal Structure Section */
@@ -407,6 +490,7 @@ button[class*="add"]:hover {
   align-items: center;
   gap: 1.25rem;
   flex: 1;
+  min-width: 0;
 }
 
 .meal-number {
@@ -430,6 +514,7 @@ button[class*="add"]:hover {
   gap: 1rem;
   flex-wrap: wrap;
   flex: 1;
+  min-width: 0;
 }
 
 .meal-name-input {
@@ -441,6 +526,7 @@ button[class*="add"]:hover {
   background: white;
   width: 200px;
   transition: all 0.2s;
+  color: #374151;
 }
 
 .meal-name-input:focus {
@@ -470,6 +556,7 @@ button[class*="add"]:hover {
   background: transparent;
   padding: 0;
   font-weight: 500;
+  color: #374151;
 }
 
 .meal-time-input:focus {
@@ -480,6 +567,7 @@ button[class*="add"]:hover {
   display: flex;
   align-items: center;
   gap: 0.75rem;
+  flex-shrink: 0;
 }
 
 .remove-meal-btn {
@@ -613,12 +701,17 @@ button[class*="add"]:hover {
   font-size: 0.875rem;
   background: white;
   transition: all 0.2s;
+  color: #374151;
 }
 
 .add-food-input:focus {
   outline: none;
   border-color: #10b981;
   box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+.add-food-input::placeholder {
+  color: #9ca3af;
 }
 
 /* Grocery Grid */
@@ -670,11 +763,16 @@ button[class*="add"]:hover {
   border-radius: 0.75rem;
   background: white;
   font-size: 0.813rem;
+  color: #374151;
 }
 
 .grocery-input input:focus {
   outline: none;
   border-color: #10b981;
+}
+
+.grocery-input input::placeholder {
+  color: #9ca3af;
 }
 
 .grocery-items {
@@ -693,6 +791,7 @@ button[class*="add"]:hover {
   border-radius: 0.5rem;
   font-size: 0.75rem;
   transition: all 0.2s;
+  color: #374151;
 }
 
 .grocery-tag:hover {
@@ -714,6 +813,7 @@ button[class*="add"]:hover {
   display: flex;
   align-items: center;
   padding: 0;
+  transition: color 0.2s;
 }
 
 .grocery-tag button:hover {
@@ -746,10 +846,12 @@ button[class*="add"]:hover {
 
 .macro-warning {
   color: #dc2626;
+  font-weight: 600;
 }
 
 .macro-check {
   color: #10b981;
+  font-weight: 600;
 }
 
 /* Messages */
@@ -763,6 +865,7 @@ button[class*="add"]:hover {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  animation: shake 0.5s ease;
 }
 
 .success-message {
@@ -775,6 +878,13 @@ button[class*="add"]:hover {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+  20%, 40%, 60%, 80% { transform: translateX(4px); }
 }
 
 /* Form Actions */
@@ -801,10 +911,33 @@ button[class*="add"]:hover {
   }
 }
 
-/* Responsive */
+/* ============================================ */
+/* RESPONSIVE DESIGN */
+/* ============================================ */
+
+/* Tablet styles (769px - 1024px) */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .create-plan-container {
+    padding: 1.5rem;
+  }
+  
+  .grocery-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .meal-name-input {
+    width: 160px;
+  }
+}
+
+/* Mobile styles (up to 768px) */
 @media (max-width: 768px) {
   .create-plan-container {
     padding: 1rem;
+  }
+  
+  .create-plan-header h1 {
+    font-size: 1.5rem;
   }
   
   .form-grid,
@@ -817,7 +950,7 @@ button[class*="add"]:hover {
   }
   
   .form-actions {
-    flex-direction: column;
+    flex-direction: column-reverse;
   }
   
   .cancel-btn,
@@ -862,7 +995,7 @@ button[class*="add"]:hover {
   
   .meal-card-header-right {
     width: 100%;
-    justify-content: flex-end;
+    justify-content: space-between;
   }
   
   .meal-number {
@@ -879,10 +1012,24 @@ button[class*="add"]:hover {
     width: 100%;
     justify-content: center;
   }
+  
+  .section-title {
+    flex-wrap: wrap;
+  }
+  
+  .creator-info-banner {
+    width: 100%;
+    text-align: center;
+    justify-content: center;
+  }
 }
 
-/* Extra small devices */
+/* Extra small devices (up to 480px) */
 @media (max-width: 480px) {
+  .create-plan-header h1 {
+    font-size: 1.25rem;
+  }
+  
   .form-section {
     padding: 1rem;
   }
@@ -904,19 +1051,69 @@ button[class*="add"]:hover {
   .grocery-category {
     padding: 1rem;
   }
+  
+  .meal-card-header {
+    padding: 1rem;
+  }
+  
+  .meal-card-content {
+    padding: 1rem;
+  }
+  
+  .tag,
+  .grocery-tag {
+    font-size: 0.75rem;
+  }
+  
+  .creator-info-banner {
+    font-size: 0.75rem;
+    padding: 0.6rem 1rem;
+  }
 }
 
-/* Tablet styles */
-@media (min-width: 769px) and (max-width: 1024px) {
+/* Large Desktop styles (1400px+) */
+@media (min-width: 1400px) {
   .create-plan-container {
-    padding: 1.5rem;
+    padding: 3rem;
+  }
+  
+  .form-grid {
+    gap: 1.5rem;
   }
   
   .grocery-grid {
-    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+/* Print styles */
+@media print {
+  .create-plan-container {
+    background: white;
+    padding: 0;
   }
   
-  .meal-name-input {
-    width: 160px;
+  .form-section {
+    box-shadow: none;
+    border: 1px solid #ddd;
+    break-inside: avoid;
+  }
+  
+  .add-btn,
+  .add-meal-btn,
+  .add-food-btn,
+  .submit-btn,
+  .cancel-btn,
+  .remove-meal-btn,
+  .remove-food-btn,
+  .remove-image-btn,
+  .grocery-input button,
+  .tag button,
+  .grocery-tag button {
+    display: none;
+  }
+  
+  .image-upload-area {
+    border: 1px solid #ddd;
   }
 }
