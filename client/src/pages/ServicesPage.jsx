@@ -1,6 +1,6 @@
 import React, { memo } from 'react';
 import './ServicesPage.css';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { 
   Calendar, 
@@ -18,6 +18,7 @@ import {
   Zap
 } from 'lucide-react';
 import ScrollReveal from '../components/ScrollReveal';       
+import { useAuth } from '../context/AuthContext';
 
 // --- ORGANIC FLOATERS ---
 const ServicesOrganicFloaters = memo(() => (
@@ -56,6 +57,9 @@ const ServicesMarquee = () => (
 );
 
 function ServicesPage() {
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+
   const coreServices = [
     {
       title: "VITAL ESSENTIALS",
@@ -72,7 +76,7 @@ function ServicesPage() {
       description: "Direct-action plans for complex biological needs. Specialized support for insulin resistance and metabolic health.",
       features: ["1-on-1 Clinical Consult", "Health History Analysis", "Real-time Synchronization", "Priority Messaging"], 
       featured: true,
-      badge: "MOST_POPULAR"
+      badge: "MOST POPULAR"
     },
     {
       title: "BIO COMMUNITY",
@@ -92,7 +96,7 @@ function ServicesPage() {
       {/* 1. HERO */}
       <section className="ServicesPage-Hero">
         <ScrollReveal direction="down" className="ServicesPage-Hero-Inner">
-          <h1 className="ServicesPage-Hero-Title">SYSTEM <br /> <span className="ServicesPage-Accent-Text">OPTIMIZATION.</span></h1>
+          <h1 className="ServicesPage-Hero-Title">SYSTEM <br /> <span className="ServicesPage-Accent-Text">OPTIMIZATION</span></h1>
           <p className="ServicesPage-Hero-Subtitle">High-precision nutritional architecture designed to sync with your unique biological signature.</p>
         </ScrollReveal>
       </section>
@@ -103,7 +107,7 @@ function ServicesPage() {
       <section className="ServicesPage-AI-Showcase">
         <div className="ServicesPage-AI-Grid">
           <ScrollReveal direction="left" className="ServicesPage-AI-Content">
-            <h2>SNAP. SYNC. <br /> <span className="ServicesPage-Accent-Text">THRIVE.</span></h2>      
+            <h2>SNAP SYNC <br /> <span className="ServicesPage-Accent-Text">THRIVE</span></h2>      
             <p className="ServicesPage-AI-Description">Our neural networks eliminate the friction of data entry. Transform any meal into a high-fidelity metabolic readout instantly.</p>
 
             <div className="ServicesPage-AI-Feature-List">
@@ -130,7 +134,7 @@ function ServicesPage() {
                 <div className="ServicesPage-Screen-Content">
                   <div className="ServicesPage-Scan-Animation" />
                   <div className="ServicesPage-Food-Overlay">
-                    <span className="ServicesPage-Overlay-Label">VITAL_BOWL.OBJ</span>
+                    <span className="ServicesPage-Overlay-Label">VITAL BOWL</span>
                     <span className="ServicesPage-Overlay-Calories">~420 KCAL</span>
                   </div>
                   <div className="ServicesPage-Macros-Preview">
@@ -173,12 +177,23 @@ function ServicesPage() {
                   ))}
                 </ul>
 
-                <NavLink to="/signup" className="ServicesPage-Plan-Btn">  
-                  SELECT_PLAN
+                <NavLink 
+                  to={isAuthenticated ? "/allPlans" : "/login"} 
+                  className="ServicesPage-Plan-Btn"
+                >  
+                  SELECT PLAN
                 </NavLink>
               </div>
             </ScrollReveal>
           ))}
+        </div>
+
+        <div className="ServicesPage-AllPlans-Container">
+          <ScrollReveal delay={0.4}>
+            <NavLink to="/allPlans" className="ServicesPage-AllPlans-Btn">
+              EXPLORE ALL DYNAMIC PLANS <ArrowRight size={20} />
+            </NavLink>
+          </ScrollReveal>
         </div>
       </section>
 
@@ -187,7 +202,7 @@ function ServicesPage() {
         <ScrollReveal>
           <div className="ServicesPage-Consult-Banner">
             <div className="ServicesPage-Consult-Info">
-              <h2>CLINICAL <br /> OVERRIDE.</h2>
+              <h2>CLINICAL <br /> OVERRIDE</h2>
               <p>Direct access to certified clinical nutritionists for advanced health assessment and objective calibration.</p>
 
               <div className="ServicesPage-Consult-Stats">
@@ -202,7 +217,7 @@ function ServicesPage() {
               </div>
 
               <NavLink to="/contact" className="ServicesPage-Consult-Btn">
-                BOOK_SESSION
+                BOOK SESSION
               </NavLink>
             </div>
             <div className="ServicesPage-Consult-Visual">
@@ -217,7 +232,7 @@ function ServicesPage() {
         <ScrollReveal>
           <h2 className="ServicesPage-Section-Title">READY TO <br /> <span className="ServicesPage-Accent-Text">OPTIMIZE?</span></h2>
           <NavLink to="/signup" className="ServicesPage-Join-Btn">
-            JOIN_THE_NETWORK
+            JOIN THE NETWORK
           </NavLink>
         </ScrollReveal>
       </section>

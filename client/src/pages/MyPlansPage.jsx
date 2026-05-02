@@ -90,7 +90,7 @@ function MyPlansPage() {
         >
           <Target size={60} color="#2D5A27" />
         </motion.div>
-        <p>SYNCHRONIZING_PLAN_DATA...</p>
+        <p>SYNCHRONIZING PLAN DATA</p>
       </div>
     );
   }
@@ -107,7 +107,7 @@ function MyPlansPage() {
             animate={{ opacity: 1, y: 0 }}
             className="MPP-Badge"
           >
-            NUTRITIONAL_STRATEGY
+            NUTRITIONAL STRATEGY
           </motion.div>
           
           <motion.h1 
@@ -116,20 +116,20 @@ function MyPlansPage() {
             transition={{ delay: 0.1 }}
             className="MPP-Title"
           >
-            YOUR PERSONALIZED <br /> <span className="MPP-GradientText">VITALITY PLANS.</span>
-          </motion.h1>
+            YOUR PERSONALIZED <br /> <span className="MPP-GradientText">VITALITY PLANS</span>
+            </motion.h1>
 
-          <motion.div 
+            <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
             className="MPP-Controls"
-          >
+            >
             <div className="MPP-SearchBox">
               <Search size={20} className="MPP-SearchIcon" />
               <input 
                 type="text" 
-                placeholder="SEARCH_ACTIVE_PLANS..." 
+                placeholder="SEARCH ACTIVE PLANS" 
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -156,14 +156,14 @@ function MyPlansPage() {
         {error ? (
           <div className="MPP-ErrorState">
             <Zap size={40} />
-            <h3>SYSTEM_SYNC_ERROR</h3>
+            <h3>SYSTEM SYNC ERROR</h3>
             <p>{error}</p>
-            <button onClick={fetchPlans}>REINITIALIZE_FEED</button>
+            <button onClick={fetchPlans}>REINITIALIZE FEED</button>
           </div>
         ) : filteredPlans.length === 0 ? (
           <div className="MPP-EmptyState">
             <Sparkles size={60} opacity={0.3} />
-            <h3>ZERO_MATCHES_FOUND</h3>
+            <h3>ZERO MATCHES FOUND</h3>
             <p>Your criteria did not match any available vitality blueprints.</p>
           </div>
         ) : (
@@ -220,7 +220,7 @@ function MyPlansPage() {
                   <div className="MPP-CardFooter">
                     <span className="MPP-Author">By {plan.createdBy?.fullName || 'EXPERT'}</span>
                     <button className="MPP-ViewBtn">
-                      VIEW_DETAILS <ChevronRight size={16} />
+                      VIEW DETAILS <ChevronRight size={16} />
                     </button>
                   </div>
                 </div>
@@ -302,7 +302,7 @@ function MyPlansPage() {
                   </div>
 
                   <div className="MPP-ModalMacros">
-                    <h3><Zap size={18} /> MACRONUTRIENT_RATIO</h3>
+                    <h3><Zap size={18} /> MACRONUTRIENT RATIO</h3>
                     <div className="MPP-MacroBars">
                       <div className="MPP-MacroBar">
                         <div className="MPP-BarInfo"><span>CARBS</span><span>{selectedPlan.macronutrientRatio?.carbs}%</span></div>
@@ -323,19 +323,19 @@ function MyPlansPage() {
 
               <div className="MPP-ModalDetailsGrid">
                 <div className="MPP-DetailSection">
-                  <h3><Heart size={18} /> RECOMMENDED_FOODS</h3>
+                  <h3><Heart size={18} /> RECOMMENDED FOODS</h3>
                   <div className="MPP-Tags">
                     {selectedPlan.recommendedFoods?.map((food, i) => <span key={i} className="MPP-Tag is-positive">{food}</span>)}
                   </div>
                 </div>
                 <div className="MPP-DetailSection">
-                  <h3><Zap size={18} /> FOODS_TO_AVOID</h3>
+                  <h3><Zap size={18} /> FOODS TO AVOID</h3>
                   <div className="MPP-Tags">
                     {selectedPlan.foodsToAvoid?.map((food, i) => <span key={i} className="MPP-Tag is-negative">{food}</span>)}
                   </div>
                 </div>
                 <div className="MPP-DetailSection is-full">
-                  <h3><Coffee size={18} /> MEAL_STRUCTURE</h3>
+                  <h3><Coffee size={18} /> MEAL STRUCTURE</h3>
                   <div className="MPP-MealGrid">
                     {Object.entries(selectedPlan.mealStructure || {}).map(([meal, items]) => (
                       <div key={meal} className="MPP-MealCard">
@@ -349,7 +349,7 @@ function MyPlansPage() {
                 </div>
                 {selectedPlan.weeklyGroceryList && (
                   <div className="MPP-DetailSection is-full">
-                    <h3><ShoppingBag size={18} /> WEEKLY_GROCERY_LIST</h3>
+                    <h3><ShoppingBag size={18} /> WEEKLY GROCERY LIST</h3>
                     <div className="MPP-GroceryGrid">
                       {Object.entries(selectedPlan.weeklyGroceryList).map(([cat, items]) => (
                         items && items.length > 0 && (

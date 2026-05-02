@@ -888,7 +888,7 @@ const CreatePlan = () => {
           </button>
           <button type="submit" className="submit-btn" disabled={loading}>
             {loading ? <i className="fas fa-spinner fa-spin"></i> : <i className="fas fa-check"></i>}
-            {loading ? " Creating..." : " Create Plan"}
+            {loading ? " Creating" : " Create Plan"}
           </button>
         </div>
       </form>

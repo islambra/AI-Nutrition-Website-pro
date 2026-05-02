@@ -756,7 +756,7 @@ function ProfilePage() {
                         >
                           {isSaving ? (
                             <>
-                              <Loader2 size={18} className="VXPR-Spin" /> SAVING...
+                              <Loader2 size={18} className="VXPR-Spin" /> SAVING
                             </>
                           ) : (
                             <>

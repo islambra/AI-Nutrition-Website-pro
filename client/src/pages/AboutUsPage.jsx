@@ -62,10 +62,10 @@ function AboutUsPage() {
         <section className="AboutUsPage-Hero">
           <div className="AboutUsPage-Hero-Inner">
             <ScrollReveal direction="down">
-              <div className="AboutUsPage-Badge">SYSTEM_INTEL</div>
+              <div className="AboutUsPage-Badge">SYSTEM INTEL</div>
             </ScrollReveal>
             <ScrollReveal delay={0.2}>
-              <h1 className="AboutUsPage-Title">REVOLUTIONIZING NUTRITION WITH <span className="AboutUsPage-Highlight">AI PRECISION.</span></h1>
+              <h1 className="AboutUsPage-Title">REVOLUTIONIZING NUTRITION WITH <span className="AboutUsPage-Highlight">AI PRECISION</span></h1>
             </ScrollReveal>
             <ScrollReveal delay={0.4}>
               <p className="AboutUsPage-Subtitle">
@@ -80,7 +80,7 @@ function AboutUsPage() {
           <section className="AboutUsPage-Section">
             <div className="AboutUsPage-Grid">
               <ScrollReveal direction="left" className="AboutUsPage-Text-Block">
-                <h2 className="AboutUsPage-Heading">OUR MISSION_</h2>
+                <h2 className="AboutUsPage-Heading">OUR MISSION</h2>
                 <p className="AboutUsPage-Description">
                   To empower individuals to achieve their health and wellness goals by providing accessible, personalized nutrition solutions. We believe in a holistic approach that combines the precision of artificial intelligence with the empathy and expertise of professional nutritionists.
                 </p>
@@ -99,7 +99,7 @@ function AboutUsPage() {
                 <TiltCard className="AboutUsPage-Tilt">
                   <div className="AboutUsPage-Glass-Card">
                     <Heart className="AboutUsPage-Heart" size={48} />
-                    <h3>COMPASSIONATE_AI</h3>
+                    <h3>COMPASSIONATE AI</h3>
                     <p>We combine deep technology with human intuition to ensure optimal health outcomes.</p>
                   </div>
                 </TiltCard>
@@ -110,7 +110,7 @@ function AboutUsPage() {
           {/* Features Grid */}
           <section className="AboutUsPage-Section">
             <ScrollReveal>
-              <h2 className="AboutUsPage-Heading center">SYSTEM_OFFERINGS</h2>
+              <h2 className="AboutUsPage-Heading center">SYSTEM OFFERINGS</h2>
             </ScrollReveal>
             <div className="AboutUsPage-Features-Grid">
               {features.map((feature, index) => (
@@ -131,12 +131,12 @@ function AboutUsPage() {
           <section className="AboutUsPage-Section AboutUsPage-Approach">
             <ScrollReveal>
               <div className="AboutUsPage-Dark-Card">
-                <h2 className="AboutUsPage-Heading white">THE_APPROACH</h2>
+                <h2 className="AboutUsPage-Heading white">THE APPROACH</h2>
                 <p className="AboutUsPage-Description white opacity">
                   Leveraging advanced computer vision and deep learning to provide accurate calorie estimations, while emphasizing that technology complements expert human guidance. Our platform is designed to support individuals managing complex biological states.
                 </p>
                 <NavLink to="/signup" className="AboutUsPage-CTA-Btn">
-                  JOIN_NETWORK <ArrowUpRight size={18} style={{ marginLeft: '8px' }} />
+                  JOIN NETWORK <ArrowUpRight size={18} style={{ marginLeft: '8px' }} />
                 </NavLink>
               </div>
             </ScrollReveal>

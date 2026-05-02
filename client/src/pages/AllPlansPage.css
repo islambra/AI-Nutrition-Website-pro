@@ -3,7 +3,7 @@
 /* Modern Green & White Design */
 /* ============================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
 
 :root {
   --ap-green-50: #F0FDF4;
@@ -44,8 +44,8 @@
   --ap-transition-base: 250ms ease;
   --ap-transition-slow: 350ms ease;
   --ap-font-sans: 'Outfit', sans-serif;
-  --ap-font-heading: 'Syne', sans-serif;
-  --ap-font-mono: 'JetBrains Mono', monospace;
+  --ap-font-heading: 'Outfit', sans-serif;
+  --ap-font-mono: 'Outfit', sans-serif;
 }
 
 /* ============================================ */
@@ -101,7 +101,7 @@
 .AP-Title {
   font-family: var(--ap-font-heading);
   font-size: clamp(36px, 5vw, 56px);
-  font-weight: 800;
+  font-weight: 700;
   color: var(--ap-gray-900);
   margin: 0 0 12px;
   letter-spacing: -0.03em;

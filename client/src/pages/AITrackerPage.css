@@ -1,8 +1,8 @@
 /* AITrackerPage.css - Prefixed with AIT- */
 
 .AIT-Wrapper {
-  background-color: #050a05;
-  color: #e0e7e0;
+  background-color: #f9fbf9;
+  color: #0a140a;
   min-height: 100vh;
   padding: 140px 5% 100px;
   position: relative;
@@ -18,8 +18,8 @@
 
 .AIT-Floater {
   position: absolute;
-  color: #2d5a27;
-  opacity: 0.1;
+  color: #4caf50;
+  opacity: 0.05;
 }
 
 .AIT-Container {
@@ -34,31 +34,18 @@
   margin-bottom: 60px;
 }
 
-.AIT-Badge {
-  display: inline-block;
-  background: rgba(45, 90, 39, 0.2);
-  color: #4caf50;
-  padding: 8px 20px;
-  border-radius: 4px;
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 11px;
-  font-weight: 800;
-  letter-spacing: 0.3em;
-  margin-bottom: 24px;
-  border: 1px solid rgba(76, 175, 80, 0.3);
-}
-
 .AIT-Title {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-size: clamp(40px, 8vw, 80px);
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: -0.04em;
   line-height: 0.9;
   margin-bottom: 20px;
+  color: #050a05;
 }
 
 .AIT-Highlight {
-  background: linear-gradient(90deg, #4caf50, #8bc34a);
+  background: linear-gradient(90deg, #2d5a27, #4caf50);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -66,7 +53,7 @@
 
 .AIT-Subtitle {
   font-size: clamp(16px, 2vw, 20px);
-  color: #88a088;
+  color: #556b55;
   max-width: 600px;
   margin: 0 auto;
   font-weight: 500;
@@ -81,11 +68,12 @@
 
 /* Glass Card */
 .AIT-GlassCard {
-  background: rgba(15, 25, 15, 0.8);
+  background: rgba(255, 255, 255, 0.7);
   border: 1px solid rgba(76, 175, 80, 0.15);
   border-radius: 30px;
   padding: 40px;
   backdrop-filter: blur(10px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
 }
 
 .AIT-CardHeader {
@@ -99,21 +87,21 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  color: #4caf50;
-  font-family: 'JetBrains Mono', monospace;
+  color: #2d5a27;
+  font-family: 'Outfit', sans-serif;
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.1em;
 }
 
 .AIT-ResetBtn {
   background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  color: #88a088;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  color: #556b55;
   padding: 6px 14px;
   border-radius: 100px;
   font-size: 10px;
-  font-weight: 800;
+  font-weight: 700;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -122,15 +110,15 @@
 }
 
 .AIT-ResetBtn:hover {
-  background: rgba(255, 255, 255, 0.05);
-  color: #fff;
+  background: rgba(0, 0, 0, 0.05);
+  color: #050a05;
 }
 
 /* Upload Area */
 .AIT-UploadArea {
   width: 100%;
   aspect-ratio: 4/3;
-  background: rgba(45, 90, 39, 0.05);
+  background: rgba(76, 175, 80, 0.03);
   border: 2px dashed rgba(76, 175, 80, 0.2);
   border-radius: 20px;
   display: flex;
@@ -143,7 +131,7 @@
 }
 
 .AIT-UploadArea:hover {
-  background: rgba(45, 90, 39, 0.1);
+  background: rgba(76, 175, 80, 0.06);
   border-color: #4caf50;
 }
 
@@ -160,7 +148,7 @@
 .AIT-IconCircle {
   width: 80px;
   height: 80px;
-  background: rgba(76, 175, 80, 0.1);
+  background: rgba(76, 175, 80, 0.08);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -170,21 +158,22 @@
 }
 
 .AIT-UploadPrompt h3 {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-size: 20px;
   margin-bottom: 8px;
+  color: #050a05;
 }
 
 .AIT-UploadPrompt p {
-  color: #88a088;
+  color: #556b55;
   font-size: 14px;
   margin-bottom: 15px;
 }
 
 .AIT-TechDetail {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Outfit', sans-serif;
   font-size: 10px;
-  color: #4caf50;
+  color: #2d5a27;
   opacity: 0.6;
 }
 
@@ -218,12 +207,12 @@
 .AIT-ProcessBtn {
   width: 100%;
   padding: 20px;
-  background: #4caf50;
-  color: #050a05;
+  background: #2d5a27;
+  color: #fff;
   border: none;
   border-radius: 12px;
-  font-family: 'JetBrains Mono', monospace;
-  font-weight: 800;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -234,44 +223,46 @@
 
 .AIT-ProcessBtn:hover:not(:disabled) {
   transform: translateY(-5px);
-  box-shadow: 0 15px 30px rgba(76, 175, 80, 0.3);
+  box-shadow: 0 15px 30px rgba(45, 90, 39, 0.2);
+  background: #1a2a1a;
 }
 
 .AIT-ProcessBtn:disabled {
-  background: #1a2a1a;
-  color: #2d5a27;
+  background: #e8ede8;
+  color: #a0b0a0;
   cursor: not-allowed;
 }
 
 .AIT-StatusDone {
   width: 100%;
   padding: 20px;
-  background: rgba(76, 175, 80, 0.1);
-  color: #4caf50;
-  border: 1px solid rgba(76, 175, 80, 0.3);
+  background: rgba(76, 175, 80, 0.08);
+  color: #2d5a27;
+  border: 1px solid rgba(76, 175, 80, 0.2);
   border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 12px;
-  font-family: 'JetBrains Mono', monospace;
-  font-weight: 800;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
   font-size: 13px;
 }
 
 .AIT-InfoBox {
   margin-top: 30px;
   padding: 25px;
-  background: rgba(45, 90, 39, 0.1);
+  background: rgba(76, 175, 80, 0.05);
   border-radius: 20px;
   display: flex;
   gap: 20px;
   align-items: flex-start;
+  border: 1px solid rgba(76, 175, 80, 0.1);
 }
 
-.AIT-InfoBox svg { color: #4caf50; }
-.AIT-InfoBox h4 { font-family: 'JetBrains Mono', monospace; font-size: 11px; margin-bottom: 5px; color: #4caf50; }
-.AIT-InfoBox p { font-size: 13px; color: #88a088; line-height: 1.4; }
+.AIT-InfoBox svg { color: #2d5a27; }
+.AIT-InfoBox h4 { font-family: 'Outfit', sans-serif; font-size: 11px; margin-bottom: 5px; color: #2d5a27; }
+.AIT-InfoBox p { font-size: 13px; color: #556b55; line-height: 1.4; }
 
 /* Results Output */
 .AIT-WaitingState {
@@ -282,20 +273,21 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  border: 1px solid rgba(76, 175, 80, 0.1);
+  border: 1px solid rgba(76, 175, 80, 0.15);
   border-radius: 30px;
   padding: 40px;
+  background: rgba(255, 255, 255, 0.4);
 }
 
 .AIT-PulseIcon {
   width: 100px;
   height: 100px;
-  background: rgba(45, 90, 39, 0.05);
+  background: rgba(76, 175, 80, 0.05);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #2d5a27;
+  color: #4caf50;
   margin-bottom: 30px;
   animation: AIT-Pulse 2s infinite;
 }
@@ -311,7 +303,8 @@
   color: #050a05;
   border-radius: 30px;
   padding: 50px;
-  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.08);
+  border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .AIT-ResultHeader {
@@ -323,17 +316,17 @@
 
 .AIT-Category {
   display: block;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Outfit', sans-serif;
   font-size: 10px;
-  font-weight: 800;
-  color: #4caf50;
+  font-weight: 700;
+  color: #2d5a27;
   margin-bottom: 8px;
 }
 
 .AIT-FoodName {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-size: 32px;
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1.1;
 }
 
@@ -341,8 +334,8 @@
   text-align: right;
 }
 
-.c-label { display: block; font-family: 'JetBrains Mono', monospace; font-size: 9px; color: #9CA3AF; }
-.c-value { font-size: 20px; font-weight: 900; color: #34C759; }
+.c-label { display: block; font-family: 'Outfit', sans-serif; font-size: 9px; color: #6B7280; }
+.c-value { font-size: 20px; font-weight: 700; color: #34C759; }
 
 .AIT-MainMetrics {
   display: grid;
@@ -358,11 +351,12 @@
   display: flex;
   align-items: center;
   gap: 20px;
+  border: 1px solid rgba(0, 0, 0, 0.03);
 }
 
 .AIT-MetricLarge svg { color: #34C759; }
-.m-label { display: block; font-family: 'JetBrains Mono', monospace; font-size: 9px; color: #6B7280; margin-bottom: 5px; }
-.m-value { font-size: 28px; font-weight: 900; color: #1A1D1A; }
+.m-label { display: block; font-family: 'Outfit', sans-serif; font-size: 9px; color: #6B7280; margin-bottom: 5px; }
+.m-value { font-size: 28px; font-weight: 700; color: #1A1D1A; }
 .m-unit { font-size: 12px; color: #9CA3AF; margin-left: 4px; }
 
 .AIT-MacrosGrid {
@@ -375,9 +369,9 @@
 .AIT-MacroItem .macro-info {
   display: flex;
   justify-content: space-between;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Outfit', sans-serif;
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 700;
   margin-bottom: 8px;
 }
 
@@ -394,13 +388,14 @@
 .bar-fill.fats { background: #2e7d32; }
 
 .AIT-IngredientsSection h4 {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-size: 14px;
-  font-weight: 800;
+  font-weight: 700;
   margin-bottom: 15px;
   display: flex;
   align-items: center;
   gap: 8px;
+  color: #050a05;
 }
 
 .AIT-TagCloud {
@@ -439,8 +434,8 @@
   color: #fff;
   border: none;
   border-radius: 100px;
-  font-family: 'JetBrains Mono', monospace;
-  font-weight: 800;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -452,6 +447,7 @@
 .AIT-SaveRecordBtn:hover {
   background: #1a2a1a;
   transform: scale(1.02);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
 }
 
 /* Animations */

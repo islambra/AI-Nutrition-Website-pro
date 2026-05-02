@@ -47,7 +47,7 @@ function ContactPage() {
 
     const loadingToast = toast.loading('Establishing connection...', {
       position: 'top-center',
-      style: { fontFamily: 'JetBrains Mono', fontSize: '12px' }
+      style: { fontFamily: 'Outfit', fontSize: '12px' }
     });
 
     try {
@@ -55,26 +55,26 @@ function ContactPage() {
       toast.dismiss(loadingToast);
       
       if (response.success) {
-        toast.success('TRANSMISSION_SUCCESSFUL', {
+        toast.success('TRANSMISSION SUCCESSFUL', {
           duration: 4000,
           position: 'top-center',
           icon: '🛰️',
-          style: { fontFamily: 'JetBrains Mono', fontSize: '12px' }
+          style: { fontFamily: 'Outfit', fontSize: '12px' }
         });
         setFormData({ name: '', email: '', subject: '', message: '' });
       } else {
-        toast.error(response.message || 'TRANSMISSION_FAILED', {
+        toast.error(response.message || 'TRANSMISSION FAILED', {
           duration: 5000,
           position: 'top-center',
-          style: { fontFamily: 'JetBrains Mono', fontSize: '12px' }
+          style: { fontFamily: 'Outfit', fontSize: '12px' }
         });
       }
     } catch (err) {
       toast.dismiss(loadingToast);
-      toast.error('BIO_LINK_INTERRUPTED', {
+      toast.error('BIO LINK INTERRUPTED', {
         duration: 5000,
         position: 'top-center',
-        style: { fontFamily: 'JetBrains Mono', fontSize: '12px' }
+        style: { fontFamily: 'Outfit', fontSize: '12px' }
       });
     } finally {
       setLoading(false);
@@ -83,11 +83,11 @@ function ContactPage() {
 
   const copyToClipboard = (text, type) => {
     navigator.clipboard.writeText(text);
-    toast.success(`${type.toUpperCase()}_COPIED`, {
+    toast.success(`${type.toUpperCase()} COPIED`, {
       duration: 2000,
       icon: <Copy size={14} />,
       position: 'top-center',
-      style: { fontFamily: 'JetBrains Mono', fontSize: '12px' }
+      style: { fontFamily: 'Outfit', fontSize: '12px' }
     });
   };
 
@@ -100,10 +100,10 @@ function ContactPage() {
         <div className="ContactPage-Container">
           <div className="ContactPage-Header">
             <ScrollReveal direction="down">
-              <span className="ContactPage-Badge">COMMUNICATION_LINK</span>
+              <span className="ContactPage-Badge">COMMUNICATION LINK</span>
             </ScrollReveal>
             <ScrollReveal delay={0.1}>
-              <h1 className="ContactPage-Title">CONNECT WITH <span className="ContactPage-Highlight">VITAL_EXPERTS.</span></h1>
+              <h1 className="ContactPage-Title">CONNECT WITH <span className="ContactPage-Highlight">VITAL EXPERTS</span></h1>
             </ScrollReveal>
             <ScrollReveal delay={0.2}>
               <p className="ContactPage-Subtitle">Initiate a direct dialogue with our nutritional architects to optimize your biological trajectory.</p>
@@ -116,39 +116,39 @@ function ContactPage() {
               <ScrollReveal direction="left" delay={0.3}>
                 <div className="ContactPage-Info-Card">
                   <div className="ContactPage-Icon-Box"><Mail size={24} /></div>
-                  <h3>EMAIL_ENDPOINT</h3>
+                  <h3>EMAIL ENDPOINT</h3>
                   <p>support@ainutrition.pro</p>
                   <button 
                     onClick={() => copyToClipboard('support@ainutrition.pro', 'Email')}
                     className="ContactPage-Copy-Btn"
                   >
-                    COPY_ADDRESS
+                    COPY ADDRESS
                   </button>
                 </div>
               </ScrollReveal>
               <ScrollReveal direction="left" delay={0.4}>
                 <div className="ContactPage-Info-Card">
                   <div className="ContactPage-Icon-Box"><Phone size={24} /></div>
-                  <h3>VOICE_CHANNEL</h3>
+                  <h3>VOICE CHANNEL</h3>
                   <p>+1 (555) 000-HEALTH</p>
                   <button 
                     onClick={() => copyToClipboard('+1 (555) 000-HEALTH', 'Phone')}
                     className="ContactPage-Copy-Btn"
                   >
-                    COPY_NUMBER
+                    COPY NUMBER
                   </button>
                 </div>
               </ScrollReveal>
               <ScrollReveal direction="left" delay={0.5}>
                 <div className="ContactPage-Info-Card">
                   <div className="ContactPage-Icon-Box"><MapPin size={24} /></div>
-                  <h3>CORE_LOCATION</h3>
+                  <h3>CORE LOCATION</h3>
                   <p>Innovation Hub, Tech District, NY</p>
                   <button 
                     onClick={() => copyToClipboard('Innovation Hub, Tech District, NY', 'Location')}
                     className="ContactPage-Copy-Btn"
                   >
-                    COPY_COORDS
+                    COPY COORDS
                   </button>
                 </div>
               </ScrollReveal>
@@ -158,7 +158,7 @@ function ContactPage() {
             <ScrollReveal direction="right" delay={0.3} className="ContactPage-Form-Wrapper">
               <form onSubmit={handleSubmit} className="ContactPage-Form">
                 <div className="ContactPage-Form-Group">
-                  <label htmlFor="name">FULL_NAME</label>
+                  <label htmlFor="name">FULL NAME</label>
                   <div className="ContactPage-Input-Wrapper">
                     <User className="ContactPage-Input-Icon" size={18} />
                     <input
@@ -166,7 +166,7 @@ function ContactPage() {
                       id="name"
                       value={formData.name}
                       onChange={handleChange}
-                      placeholder="IDENTIFY_YOURSELF"
+                      placeholder="IDENTIFY YOURSELF"
                       required
                       disabled={loading}
                     />
@@ -174,7 +174,7 @@ function ContactPage() {
                 </div>
 
                 <div className="ContactPage-Form-Group">
-                  <label htmlFor="email">EMAIL_ADDRESS</label>
+                  <label htmlFor="email">EMAIL ADDRESS</label>
                   <div className="ContactPage-Input-Wrapper">
                     <Mail className="ContactPage-Input-Icon" size={18} />
                     <input
@@ -182,7 +182,7 @@ function ContactPage() {
                       id="email"
                       value={formData.email}
                       onChange={handleChange}
-                      placeholder="CONTACT_ENDPOINT"
+                      placeholder="CONTACT ENDPOINT"
                       required
                       disabled={loading}
                     />
@@ -190,7 +190,7 @@ function ContactPage() {
                 </div>
 
                 <div className="ContactPage-Form-Group">
-                  <label htmlFor="subject">SUBJECT_VECTOR</label>
+                  <label htmlFor="subject">SUBJECT VECTOR</label>
                   <div className="ContactPage-Input-Wrapper">
                     <Globe className="ContactPage-Input-Icon" size={18} />
                     <input
@@ -198,7 +198,7 @@ function ContactPage() {
                       id="subject"
                       value={formData.subject}
                       onChange={handleChange}
-                      placeholder="INQUIRY_TYPE"
+                      placeholder="INQUIRY TYPE"
                       required
                       disabled={loading}
                     />
@@ -206,14 +206,14 @@ function ContactPage() {
                 </div>
 
                 <div className="ContactPage-Form-Group">
-                  <label htmlFor="message">MESSAGE_BODY</label>
+                  <label htmlFor="message">MESSAGE BODY</label>
                   <div className="ContactPage-Input-Wrapper ContactPage-Textarea-Wrapper">
                     <MessageSquare className="ContactPage-Input-Icon top" size={18} />
                     <textarea
                       id="message"
                       value={formData.message}
                       onChange={handleChange}
-                      placeholder="TRANSMIT_YOUR_THOUGHTS..."
+                      placeholder="TRANSMIT YOUR THOUGHTS"
                       rows="5"
                       required
                       disabled={loading}
@@ -225,11 +225,11 @@ function ContactPage() {
                   {loading ? (
                     <>
                       <span className="ContactPage-Spinner"></span>
-                      SYNCING...
+                      SYNCING
                     </>
                   ) : (
                     <>
-                      INITIATE_TRANSMISSION
+                      INITIATE TRANSMISSION
                       <Send size={18} />
                     </>
                   )}

@@ -23,8 +23,8 @@ const HealthPreloader = memo(() => {
       >
         <Leaf size={80} strokeWidth={1.5} />
       </motion.div>
-      <div style={{ position: 'absolute', bottom: '10%', fontFamily: 'Syne', fontSize: '14px', letterSpacing: '0.3em', color: '#2D5A27', fontWeight: 800 }}>
-        CALIBRATING_VITALITY...
+      <div style={{ position: 'absolute', bottom: '10%', fontFamily: 'Outfit', fontSize: '14px', letterSpacing: '0.3em', color: '#2D5A27', fontWeight: 800 }}>
+        CALIBRATING VITALITY
       </div>
     </motion.div>
   );
@@ -161,7 +161,7 @@ function HomePage() {
         >
           
           <h1 className="hero-giant-text-v2">
-            NATURAL <br /> INTELLIGENCE.
+            NATURAL <br /> INTELLIGENCE
           </h1>
           
           <div className="hero-buttons">
@@ -185,7 +185,7 @@ function HomePage() {
         <div className="hyper-grid">
           <div className="hyper-card c-1">
             <Leaf size={40} color="#2D5A27" style={{ marginBottom: '20px' }} />
-            <h2 style={{ fontFamily: 'Syne', fontSize: 'clamp(32px, 5vw, 60px)', fontWeight: 900, color: '#2D5A27' }}>Organic <br /> Analytics.</h2>
+            <h2 style={{ fontFamily: 'Outfit', fontSize: 'clamp(32px, 5vw, 60px)', fontWeight: 900, color: '#2D5A27' }}>Organic <br /> Analytics</h2>
             <p style={{ marginTop: '20px', fontSize: '18px', color: '#6B7280' }}>Precision nutrition mapped to your unique biological signature.</p>
           </div>
           
@@ -203,7 +203,7 @@ function HomePage() {
           <div className="hyper-card c-3" style={{ background: 'linear-gradient(135deg, #2D5A27, #34C759)', color: '#fff' }}>
             <Sun size={40} />
             <h3 style={{ fontSize: '48px', fontWeight: 900, marginTop: '20px' }}>99.4%</h3>
-            <p style={{ fontWeight: 600, opacity: 0.9 }}>BIOMETRIC_ACCURACY</p>
+            <p style={{ fontWeight: 600, opacity: 0.9 }}>BIOMETRIC ACCURACY</p>
           </div>
 
           <div className="hyper-card c-4">
@@ -211,22 +211,21 @@ function HomePage() {
               <h3 style={{ fontSize: '32px', fontWeight: 900, color: '#2D5A27' }}>VITAL READOUT</h3>
               <Brain size={30} color="#34C759" />
             </div>
-            <div style={{ marginTop: '30px', fontFamily: 'JetBrains Mono', color: '#2D5A27', fontSize: '14px', background: '#E8F5E9', padding: '20px', borderRadius: '20px' }}>
-              {`> TARGET: OPTIMAL_HEALTH\n> STATUS: HARMONIZED\n> FUEL: PLANT_BASED`}
+            <div style={{ marginTop: '30px', fontFamily: 'Outfit', color: '#2D5A27', fontSize: '14px', background: '#E8F5E9', padding: '20px', borderRadius: '20px' }}>
+              {`> TARGET: OPTIMAL HEALTH\n> STATUS: HARMONIZED\n> FUEL: PLANT BASED`}
             </div>
           </div>
         </div>
       </section>
 
       {/* 4. AI FEATURE: NEURAL RECOGNITION */}
-      <section className="ai-feature-section" style={{ padding: '100px 5%', background: '#050a05', color: '#fff', position: 'relative', zIndex: 5 }}>
-        <div style={{ maxWidth: '1300px', margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '80px', alignItems: 'center' }}>
-          <ScrollReveal direction="left">
-            <span style={{ fontFamily: 'JetBrains Mono', color: '#4caf50', fontSize: '12px', letterSpacing: '0.4em' }}>[ NEURAL_RECOGNITION_v4.0 ]</span>
-            <h2 style={{ fontFamily: 'Syne', fontSize: 'clamp(40px, 5vw, 80px)', fontWeight: 800, margin: '20px 0', lineHeight: 0.9 }}>
-              AI_ASSISTED <br /> <span style={{ color: '#4caf50' }}>CALORIE_SYNC.</span>
+      <section className="HP-AI-Section">
+        <div className="HP-AI-Grid">
+          <ScrollReveal direction="left" className="HP-AI-TextSide">
+            <h2 className="HP-AI-Title">
+              AI ASSISTED <br /> CALORIE SYNC
             </h2>
-            <p style={{ fontSize: '18px', color: '#88a088', marginBottom: '40px', lineHeight: 1.6 }}>
+            <p className="HP-AI-Description">
               Our proprietary computer vision model identifies food components and estimates nutritional density with clinical-grade precision. 
               No manual logging. Just pure visual intelligence.
             </p>
@@ -236,18 +235,26 @@ function HomePage() {
           </ScrollReveal>
           
           <ScrollReveal direction="right">
-            <div style={{ position: 'relative', borderRadius: '40px', overflow: 'hidden', border: '1px solid rgba(76, 175, 80, 0.3)', background: 'rgba(76, 175, 80, 0.05)', padding: '20px' }}>
-              <img 
-                src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=2070&auto=format&fit=crop" 
-                alt="AI Analysis" 
-                style={{ width: '100%', borderRadius: '25px', opacity: 0.6 }} 
-              />
-              <div style={{ position: 'absolute', inset: 0, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                <div className="AIT-ScanLine" style={{ width: '80%', height: '2px', background: '#4caf50', boxShadow: '0 0 20px #4caf50', position: 'absolute' }} />
+            <div className="HP-AI-VisualBox">
+              <div className="HP-AI-Corner HP-AI-TL" />
+              <div className="HP-AI-Corner HP-AI-TR" />
+              <div className="HP-AI-Corner HP-AI-BL" />
+              <div className="HP-AI-Corner HP-AI-BR" />
+              
+              <div className="HP-AI-ImageWrapper">
+                <img 
+                  src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=2070&auto=format&fit=crop" 
+                  alt="AI Analysis" 
+                  className="HP-AI-Image" 
+                />
+                <div className="HP-AI-ScanContainer">
+                  <div className="HP-AI-ScanLine" />
+                </div>
               </div>
-              <div style={{ position: 'absolute', top: '40px', right: '40px', background: 'rgba(5, 10, 5, 0.8)', padding: '15px 25px', borderRadius: '15px', border: '1px solid #4caf50' }}>
-                <div style={{ fontFamily: 'JetBrains Mono', fontSize: '10px', color: '#4caf50' }}>ANALYSIS_SUCCESS</div>
-                <div style={{ fontSize: '24px', fontWeight: 900 }}>420 KCAL</div>
+              
+              <div className="HP-AI-Badge">
+                <div className="HP-AI-BadgeStatus">ANALYSIS SUCCESS</div>
+                <div className="HP-AI-BadgeValue">420 KCAL</div>
               </div>
             </div>
           </ScrollReveal>
@@ -258,8 +265,8 @@ function HomePage() {
       <section className="cta-v5" style={{ position: 'relative', zIndex: 5 }}>
         <ScrollReveal scale={0.9}>
           <div className="hyper-card" style={{ maxWidth: '1000px', margin: '0 auto', textAlign: 'center', padding: '100px 40px', borderRadius: '60px', background: '#fff' }}>
-            <h2 style={{ fontFamily: 'Syne', fontSize: 'clamp(40px, 8vw, 100px)', fontWeight: 900, marginBottom: '40px', color: '#2D5A27' }}>
-              RECLAIM <br /> VITALITY.
+            <h2 style={{ fontFamily: 'Outfit', fontSize: 'clamp(40px, 8vw, 100px)', fontWeight: 900, marginBottom: '40px', color: '#2D5A27' }}>
+              RECLAIM <br /> VITALITY
             </h2>
             <NavLink to="/signup" className="btn-y2k btn-y2k-primary" style={{ margin: '0 auto', padding: '24px 64px' }}>
               Join the Movement

@@ -55,7 +55,7 @@
 .creator-info-banner::before {
   content: '\f007';
   font-family: 'Font Awesome 5 Free';
-  font-weight: 900;
+  font-weight: 700;
   color: #10b981;
 }
 

@@ -97,7 +97,7 @@
 
 .header-stripe h2 {
   font-size: 32px;
-  font-weight: 800;
+  font-weight: 700;
   color: #1a1a1a;
   margin-bottom: 8px;
 }
@@ -110,7 +110,7 @@
 /* Sections */
 .form-section-title {
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
   color: #34C759;
@@ -210,7 +210,7 @@
 .readonly-highlight input {
   background-color: #f0fff4 !important;
   color: #2f855a !important;
-  font-weight: 800 !important;
+  font-weight: 700 !important;
   cursor: default;
 }
 

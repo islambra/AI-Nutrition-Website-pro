@@ -10,6 +10,7 @@ import BlogDetailsPage from './pages/BlogDetailsPage.jsx'
 import ProfilePage from './pages/ProfilePage.jsx'
 import MyPlansPage from './pages/MyPlansPage.jsx'
 import AITrackerPage from './pages/AITrackerPage.jsx'
+import AllPlansPage from './pages/AllPlansPage.jsx'
 import Header from './components/Header.jsx' 
 import Footer from './components/Footer.jsx' 
 import CustomCursor from './components/CustomCursor.jsx'
@@ -58,6 +59,7 @@ function App() {
           <Route path='/my-plans' element={<PageTransition><MyPlansPage /></PageTransition>} /> 
           <Route path='/ai-tracker' element={<PageTransition><AITrackerPage /></PageTransition>} /> 
           <Route path="/blog/:id" element={<PageTransition><BlogDetailsPage /></PageTransition>} />
+          <Route path="/allPlans" element={<PageTransition><AllPlansPage /></PageTransition>} />
 
           <Route path="/nutritionist" element={<Layout />}>
               <Route path="/nutritionist/create-blog" element={<CreateBlog />} />

@@ -59,10 +59,10 @@
 }
 
 .ServicesPage-Hero-Title {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-size: clamp(40px, 8vw, 100px);
   line-height: 0.95;
-  font-weight: 900;
+  font-weight: 700;
   color: var(--S-Green);
   margin-bottom: 24px;
   text-transform: uppercase;
@@ -91,9 +91,9 @@
   overflow: hidden;
   white-space: nowrap;
   display: flex;
-  font-family: 'Syne', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-size: 1.2rem;
-  font-weight: 900;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.2em;
   position: relative;
@@ -123,12 +123,12 @@
 }
 
 .ServicesPage-AI-Content h2 {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-size: clamp(32px, 4vw, 64px);
   line-height: 1;
   margin-bottom: 32px;
   text-transform: uppercase;
-  font-weight: 900;
+  font-weight: 700;
 }
 
 .ServicesPage-AI-Description {
@@ -162,8 +162,8 @@
 }
 
 .ServicesPage-AI-Feature-Item h4 {
-  font-family: 'Syne', sans-serif;
-  font-weight: 900;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
   color: var(--S-Green);
   margin-bottom: 4px;
 }
@@ -230,8 +230,8 @@
   z-index: 4;
 }
 
-.ServicesPage-Overlay-Label { font-weight: 900; color: var(--S-Green); font-size: 12px; }
-.ServicesPage-Overlay-Calories { font-weight: 900; color: var(--S-Accent); font-size: 12px; }
+.ServicesPage-Overlay-Label { font-weight: 700; color: var(--S-Green); font-size: 12px; }
+.ServicesPage-Overlay-Calories { font-weight: 700; color: var(--S-Accent); font-size: 12px; }
 
 .ServicesPage-Macros-Preview {
   display: flex;
@@ -245,7 +245,7 @@
   padding: 6px 10px;
   border-radius: 8px;
   font-size: 10px;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Outfit', sans-serif;
 }
 
 /* PLANS */
@@ -272,19 +272,19 @@
   color: var(--S-Green);
   border: 1px solid rgba(45, 90, 39, 0.1);
   border-radius: 100px;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'Outfit', sans-serif;
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 700;
   letter-spacing: 0.15em;
   text-transform: uppercase;
   margin-bottom: 24px;
 }
 
 .ServicesPage-Section-Title {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-size: clamp(32px, 5vw, 64px);
   text-transform: uppercase;
-  font-weight: 900;
+  font-weight: 700;
   line-height: 1;
   margin-bottom: 24px;
 }
@@ -331,9 +331,9 @@
 }
 
 .ServicesPage-Plan-Card h3 {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-size: 24px;
-  font-weight: 900;
+  font-weight: 700;
   margin-bottom: 16px;
 }
 
@@ -346,14 +346,14 @@
   padding: 6px 14px;
   border-radius: 100px;
   font-size: 10px;
-  font-weight: 900;
-  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  font-family: 'Outfit', sans-serif;
 }
 
 .ServicesPage-Plan-Price {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-size: 48px;
-  font-weight: 900;
+  font-weight: 700;
   margin: 24px 0;
 }
 
@@ -393,8 +393,8 @@
   width: 100%;
   padding: 20px;
   border-radius: 100px;
-  font-family: 'JetBrains Mono', monospace;
-  font-weight: 800;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
   text-transform: uppercase;
   font-size: 12px;
   text-align: center;
@@ -417,6 +417,37 @@
   border: none;
 }
 
+.ServicesPage-AllPlans-Container {
+  display: flex;
+  justify-content: center;
+  margin-top: 60px;
+}
+
+.ServicesPage-AllPlans-Btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--S-Mint);
+  color: var(--S-Green);
+  padding: 18px 40px;
+  border-radius: 100px;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  border: 1px solid var(--S-Border);
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.ServicesPage-AllPlans-Btn:hover {
+  background: var(--S-Green);
+  color: #fff;
+  transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(45, 90, 39, 0.15);
+}
+
 /* CONSULTATION */
 .ServicesPage-Consult-Section {
   padding: 80px 5%;
@@ -434,12 +465,12 @@
 }
 
 .ServicesPage-Consult-Info h2 {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-size: clamp(32px, 5vw, 64px);
   color: #fff;
   line-height: 0.95;
   margin-bottom: 32px;
-  font-weight: 900;
+  font-weight: 700;
 }
 
 .ServicesPage-Consult-Info p {
@@ -458,9 +489,9 @@
 }
 
 .ServicesPage-Consult-Stats h4 {
-  font-family: 'Syne', sans-serif;
+  font-family: 'Outfit', sans-serif;
   font-size: 24px;
-  font-weight: 900;
+  font-weight: 700;
   color: var(--S-Accent);
   margin-bottom: 4px;
 }
@@ -476,8 +507,8 @@
   color: #fff;
   padding: 18px 48px;
   border-radius: 100px;
-  font-family: 'JetBrains Mono', monospace;
-  font-weight: 800;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
   text-decoration: none;
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
@@ -500,8 +531,8 @@
   color: #fff;
   padding: 24px 64px;
   border-radius: 100px;
-  font-family: 'JetBrains Mono', monospace;
-  font-weight: 800;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
   text-decoration: none;
   margin-top: 32px;
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);

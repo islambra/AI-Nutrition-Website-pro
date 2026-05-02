@@ -3,7 +3,7 @@
 /* Unique prefix to avoid conflicts */
 /* ============================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Syne:wght@600;700;800&family=JetBrains+Mono:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap');
 
 /* ============================================ */
 /* DESIGN TOKENS */
@@ -93,8 +93,8 @@
   
   /* Font */
   --vxpr-font-body: 'Plus Jakarta Sans', 'Outfit', sans-serif;
-  --vxpr-font-heading: 'Syne', sans-serif;
-  --vxpr-font-mono: 'JetBrains Mono', monospace;
+  --vxpr-font-heading: 'Outfit', sans-serif;
+  --vxpr-font-mono: 'Outfit', sans-serif;
 }
 
 /* ============================================ */
@@ -173,7 +173,7 @@
 .VXPR-Title {
   font-family: var(--vxpr-font-heading);
   font-size: clamp(40px, 6vw, 68px);
-  font-weight: 800;
+  font-weight: 700;
   text-transform: uppercase;
   letter-spacing: -0.03em;
   line-height: 1.1;
@@ -318,7 +318,7 @@
 .VXPR-UserName {
   font-family: var(--vxpr-font-heading);
   font-size: 26px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--vxpr-gray-900);
   margin-bottom: 10px;
   letter-spacing: -0.02em;
@@ -392,7 +392,7 @@
 
 .VXPR-QuickStatValue {
   font-size: 12px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--vxpr-accent-dark);
   letter-spacing: -0.01em;
 }
@@ -478,7 +478,7 @@
 
 .VXPR-MetricValue {
   font-size: 22px;
-  font-weight: 800;
+  font-weight: 700;
   color: var(--vxpr-gray-900);
   line-height: 1.1;
   font-family: var(--vxpr-font-heading);
