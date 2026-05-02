@@ -1,12 +1,13 @@
 import { useState, useRef, useEffect, useMemo, memo } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { motion, useScroll, useTransform, useSpring, useVelocity, useAnimationFrame, AnimatePresence, useMotionValue } from 'framer-motion';
-import { Sparkles, Star, Zap, Activity, Heart, Brain, Flame, Share2, MousePointer2, Terminal, Cpu, Target, Fingerprint, Dna, Clock, Eye, Radio, ChevronRight, Crosshair, Hexagon, Leaf, Sun, Wind, ArrowUpRight } from 'lucide-react';
+import { Sparkles, Star, Zap, Activity, Heart, Brain, Flame, Share2, MousePointer2, Terminal, Cpu, Target, Fingerprint, Dna, Clock, Eye, Radio, ChevronRight, Crosshair, Hexagon, Leaf, Sun, Wind, ArrowUpRight, Check, Quote, Users } from 'lucide-react';
 import { AreaChart, Area, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid } from 'recharts';
 import './HomePage.css';
 import Footer from '../components/Footer.jsx';
 import ScrollReveal from '../components/ScrollReveal.jsx';
 import CustomCursor from '../components/CustomCursor.jsx';
+import { useAuth } from '../context/AuthContext';
 
 // --- 1. REFRESH PRELOADER ---
 const HealthPreloader = memo(() => {
@@ -31,50 +32,105 @@ const HealthPreloader = memo(() => {
 });
 
 // --- 2. HERO SCROLL FRAMES ---
+const HeroFrameItem = ({ img, i, scrollYProgress }) => {
+  const yParallax = useTransform(scrollYProgress, [0, 1], [0, -200 * img.depth]);
+  
+  return (
+    <motion.div
+      className="hero-frame"
+      style={{ 
+        y: yParallax,
+        left: img.xPos,
+        top: img.yPos,
+        width: img.width,
+        height: img.height,
+        zIndex: Math.floor(img.depth * 10),
+        filter: img.blur,
+        opacity: img.opacity
+      }}
+      initial={{ opacity: 0, scale: 0.9, rotate: img.rotation }}
+      animate={{ 
+        opacity: img.opacity, 
+        scale: 1,
+        translateY: [0, 15, 0],
+        rotate: [img.rotation, img.rotation + 2, img.rotation]
+      }}
+      transition={{ 
+        opacity: { duration: 1.2, delay: img.delay },
+        scale: { duration: 1.2, delay: img.delay },
+        translateY: {
+          duration: img.duration,
+          repeat: Infinity,
+          ease: "easeInOut"
+        },
+        rotate: {
+          duration: img.duration * 1.3,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }
+      }}
+      whileHover={{ scale: 1.05, zIndex: 100, filter: 'blur(0px)', opacity: 1 }}
+    >
+      <motion.img 
+        src={img.url} 
+        alt={`Vitality ${i + 1}`} 
+        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+      />
+    </motion.div>
+  );
+};
+
 const HeroScrollFrames = memo(() => {
   const { scrollYProgress } = useScroll();
-  const y1 = useTransform(scrollYProgress, [0, 1], [0, -200]);
-  const y2 = useTransform(scrollYProgress, [0, 1], [0, -500]);
-  const y3 = useTransform(scrollYProgress, [0, 1], [0, -350]);
-
-  const images = [
-    { url: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=2070&auto=format&fit=crop', y: y1, delay: 0, floatRange: [-15, 15] },
-    { url: 'https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=2070&auto=format&fit=crop', y: y2, delay: 0.2, floatRange: [-20, 20] },
-    { url: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?q=80&w=1968&auto=format&fit=crop', y: y3, delay: 0.4, floatRange: [-10, 10] },
+  
+  // High-performance nutritional imagery - reduced to 6 to prevent clutter
+  const rawImages = [
+    'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?q=80&w=2070&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=2070&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1540420773420-3366772f4999?q=80&w=1968&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1466637574441-749b8f19452f?q=80&w=2080&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1511690656952-34342bb7c2f2?q=80&w=2000&auto=format&fit=crop',
+    'https://images.unsplash.com/photo-1498837167922-ddd27525d352?q=80&w=2070&auto=format&fit=crop'
   ];
+
+  const frames = useMemo(() => {
+    // Define 6 specific non-overlapping slots
+    const slots = [
+      { x: 5, y: 10 },  // Top Left
+      { x: 12, y: 45 }, // Mid Left
+      { x: 6, y: 75 },  // Bottom Left
+      { x: 80, y: 15 }, // Top Right
+      { x: 72, y: 50 }, // Mid Right
+      { x: 82, y: 78 }  // Bottom Right
+    ];
+
+    return rawImages.map((url, i) => {
+      const slot = slots[i];
+      return {
+        url,
+        xPos: `${slot.x + (Math.random() * 5 - 2.5)}%`,
+        yPos: `${slot.y + (Math.random() * 5 - 2.5)}%`,
+        width: `${Math.random() * 50 + 200}px`,
+        height: `${Math.random() * 50 + 280}px`,
+        rotation: Math.random() * 16 - 8,
+        duration: 5 + Math.random() * 3,
+        delay: i * 0.2,
+        depth: 1 + Math.random() * 1.5,
+        opacity: 0.9,
+        scale: 1
+      };
+    });
+  }, []);
 
   return (
     <div className="hero-frames-container">
-      {images.map((img, i) => (
-        <motion.div
-          key={i}
-          className={`hero-frame frame-${i + 1}`}
-          style={{ y: img.y }}
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ 
-            opacity: 1, 
-            scale: 1,
-            translateY: img.floatRange
-          }}
-          transition={{ 
-            opacity: { duration: 1, delay: img.delay },
-            scale: { duration: 1, delay: img.delay },
-            translateY: {
-              duration: 3 + i,
-              repeat: Infinity,
-              repeatType: "reverse",
-              ease: "easeInOut"
-            }
-          }}
-          whileHover={{ scale: 1.05, rotate: i % 2 === 0 ? 1 : -1 }}
-        >
-          <motion.img 
-            whileHover={{ scale: 1.1 }}
-            transition={{ duration: 0.6 }}
-            src={img.url} 
-            alt={`Vitality ${i + 1}`} 
-          />
-        </motion.div>
+      {frames.map((img, i) => (
+        <HeroFrameItem 
+          key={i} 
+          img={img} 
+          i={i} 
+          scrollYProgress={scrollYProgress} 
+        />
       ))}
     </div>
   );
@@ -132,12 +188,58 @@ const chartData = [
 
 function HomePage() {
   const [isLoading, setIsLoading] = useState(true);
+  const { isAuthenticated } = useAuth();
+  const navigate = useNavigate();
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
     }, 2000);
     return () => clearTimeout(timer);
   }, []);
+
+  const reviews = [
+    {
+      name: "Dr. Elena Vance",
+      role: "Neural Surgeon",
+      text: "The precision tracking has completely recalibrated my daily performance. Biological optimization at its peak.",
+      image: "https://images.unsplash.com/photo-1559839734-2b71f1536783?q=80&w=2070&auto=format&fit=crop"
+    },
+    {
+      name: "Marcus Thorne",
+      role: "Bio-Hacker",
+      text: "Eliminating the friction of manual logging with AI vision changed everything. It's like having a clinical lab in my pocket.",
+      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=2070&auto=format&fit=crop"
+    },
+    {
+      name: "Sophia Chen",
+      role: "Athlete",
+      text: "Finally, a system that understands nutrient density versus just calories. My recovery time has decreased by 40%.",
+      image: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?q=80&w=1974&auto=format&fit=crop"
+    }
+  ];
+
+  const previewPlans = [
+    {
+      title: "VITAL ESSENTIALS",
+      price: "$19",
+      features: ["Monthly Vitality Tracking", "AI Nutrition Hub Access", "Weekly Insights"],
+      icon: <Target size={24} />
+    },
+    {
+      title: "PRECISION CARE",
+      price: "$49",
+      features: ["1-on-1 Clinical Consult", "Health History Analysis", "Priority Messaging"],
+      icon: <Activity size={24} />,
+      featured: true
+    },
+    {
+      title: "BIO COMMUNITY",
+      price: "$29",
+      features: ["Verified Network Access", "Expert Research Feed", "Bio-Wellness Forums"],
+      icon: <Users size={24} />
+    }
+  ];
 
   return (
     <div className="home-page-wrapper">
@@ -261,7 +363,71 @@ function HomePage() {
         </div>
       </section>
 
-      {/* 5. THE CORE CTA */}
+      {/* 5. PLANS PEAK */}
+      <section className="HP-Plans-Section">
+        <div className="HP-Section-Header">
+          <ScrollReveal>
+            <h2 className="HP-Section-Title">VITALITY <span className="HP-Accent-Text">BLUEPRINTS</span></h2>
+            <p className="HP-Section-Subtitle">Strategic nutritional architectures for high-performance living.</p>
+          </ScrollReveal>
+        </div>
+
+        <div className="HP-Plans-Grid">
+          {previewPlans.map((plan, i) => (
+            <ScrollReveal key={i} delay={i * 0.1} direction={i % 2 === 0 ? "left" : "right"}>
+              <div className={`HP-Plan-Card ${plan.featured ? 'featured' : ''}`}>
+                <div className="HP-Plan-Icon">{plan.icon}</div>
+                <h3>{plan.title}</h3>
+                <div className="HP-Plan-Price">{plan.price}<span>/mo</span></div>
+                <ul className="HP-Plan-Features">
+                  {plan.features.map((feat, fi) => (
+                    <li key={fi}><Check size={16} /> {feat}</li>
+                  ))}
+                </ul>
+                <NavLink to={isAuthenticated ? "/allPlans" : "/login"} className="HP-Plan-Btn">
+                  Select Blueprint
+                </NavLink>
+              </div>
+            </ScrollReveal>
+          ))}
+        </div>
+        
+        <ScrollReveal className="HP-ViewAll-Container">
+          <NavLink to="/services" className="HP-ViewAll-Link">
+            Explore All Systems <ChevronRight size={20} />
+          </NavLink>
+        </ScrollReveal>
+      </section>
+
+      {/* 6. REVIEWS: BIOLOGICAL TESTIMONIALS */}
+      <section className="HP-Reviews-Section">
+        <div className="HP-Section-Header">
+          <ScrollReveal>
+            <h2 className="HP-Section-Title">BIOLOGICAL <span className="HP-Accent-Text">REPORTS</span></h2>
+            <p className="HP-Section-Subtitle">Peer-reviewed feedback from the high-performance community.</p>
+          </ScrollReveal>
+        </div>
+
+        <div className="HP-Reviews-Grid">
+          {reviews.map((rev, i) => (
+            <ScrollReveal key={i} delay={i * 0.1}>
+              <div className="HP-Review-Card">
+                <Quote className="HP-Review-Quote" size={40} />
+                <p className="HP-Review-Text">{rev.text}</p>
+                <div className="HP-Review-User">
+                  <img src={rev.image} alt={rev.name} className="HP-Review-Avatar" />
+                  <div>
+                    <h4>{rev.name}</h4>
+                    <p>{rev.role}</p>
+                  </div>
+                </div>
+              </div>
+            </ScrollReveal>
+          ))}
+        </div>
+      </section>
+
+      {/* 7. THE CORE CTA */}
       <section className="cta-v5" style={{ position: 'relative', zIndex: 5 }}>
         <ScrollReveal scale={0.9}>
           <div className="hyper-card" style={{ maxWidth: '1000px', margin: '0 auto', textAlign: 'center', padding: '100px 40px', borderRadius: '60px', background: '#fff' }}>

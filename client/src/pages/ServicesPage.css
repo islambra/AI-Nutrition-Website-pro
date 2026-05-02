@@ -563,6 +563,19 @@
   }
 }
 
+@media (max-width: 900px) {
+  .ServicesPage-Plans-Grid {
+    grid-template-columns: 1fr;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+  
+  .ServicesPage-Plan-Card.featured {
+    transform: scale(1);
+    margin: 20px 0;
+  }
+}
+
 @media (max-width: 768px) {
   .ServicesPage-Wrapper {
     padding-top: 80px;
@@ -570,7 +583,38 @@
   .ServicesPage-Hero {
     padding: 60px 5%;
   }
+  .ServicesPage-Hero-Title {
+    font-size: clamp(32px, 12vw, 56px);
+  }
   .ServicesPage-Consult-Banner {
     padding: 60px 5%;
+    border-radius: 40px;
+  }
+  .ServicesPage-Section-Title {
+    font-size: clamp(28px, 10vw, 44px);
+  }
+  .ServicesPage-Consult-Info h2 {
+    font-size: clamp(28px, 10vw, 44px);
+  }
+}
+
+@media (max-width: 480px) {
+  .ServicesPage-AI-Feature-Item {
+    flex-direction: column;
+    text-align: center;
+    padding: 24px 16px;
+  }
+  .ServicesPage-Plan-Card {
+    padding: 40px 24px;
+    border-radius: 32px;
+  }
+  .ServicesPage-Plan-Price {
+    font-size: 36px;
+  }
+  .ServicesPage-AllPlans-Btn {
+    padding: 16px 24px;
+    font-size: 12px;
+    width: 100%;
+    justify-content: center;
   }
 }
