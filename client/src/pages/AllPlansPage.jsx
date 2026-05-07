@@ -1,3 +1,4 @@
+// components/AllPlansPage.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -6,13 +7,14 @@ import {
   Activity, Search, Filter, X, Eye, ChevronRight,
   Heart, Award, Zap, Loader2, SlidersHorizontal,
   Grid3X3, List, TrendingUp, User, Mail, Star,
-  ShoppingCart, Info
+  ShoppingCart, Info, Check, Sparkles, MessageCircle
 } from 'lucide-react';
 import { getAllPlans, getPlanCategories } from '../api/planApi';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 import PageTransition from '../components/PageTransition';
 import ScrollReveal from '../components/ScrollReveal';
+import PurchaseModal from './PurchaseModal';
 import './AllPlansPage.css';
 
 function AllPlansPage() {
@@ -29,6 +31,10 @@ function AllPlansPage() {
   const [showFilters, setShowFilters] = useState(false);
   const [priceRange, setPriceRange] = useState({ min: '', max: '' });
   const [durationRange, setDurationRange] = useState({ min: '', max: '' });
+  
+  // Modal state
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState(null);
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
@@ -64,7 +70,6 @@ function AllPlansPage() {
   useEffect(() => {
     let result = [...plans];
 
-    // Search filter
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
       result = result.filter(plan => 
@@ -76,12 +81,10 @@ function AllPlansPage() {
       );
     }
 
-    // Category filter
     if (selectedCategory) {
       result = result.filter(plan => plan.planCategory === selectedCategory);
     }
 
-    // Price range filter
     if (priceRange.min) {
       result = result.filter(plan => plan.price >= Number(priceRange.min));
     }
@@ -89,7 +92,6 @@ function AllPlansPage() {
       result = result.filter(plan => plan.price <= Number(priceRange.max));
     }
 
-    // Duration range filter
     if (durationRange.min) {
       result = result.filter(plan => plan.duration >= Number(durationRange.min));
     }
@@ -97,7 +99,6 @@ function AllPlansPage() {
       result = result.filter(plan => plan.duration <= Number(durationRange.max));
     }
 
-    // Sort
     switch (sortBy) {
       case 'newest':
         result.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
@@ -132,6 +133,26 @@ function AllPlansPage() {
     setDurationRange({ min: '', max: '' });
   };
 
+  const handlePlanClick = (plan, e) => {
+    e.stopPropagation();
+    setSelectedPlan(plan);
+    setModalOpen(true);
+  };
+
+  const handleBuyNow = () => {
+    setModalOpen(false);
+    if (selectedPlan) {
+      navigate(`/checkout/${selectedPlan._id}`, {
+        state: { plan: selectedPlan }
+      });
+    }
+  };
+
+  const handleViewMyPlan = () => {
+    setModalOpen(false);
+    navigate('/my-plans');
+  };
+
   const getCategoryColor = (category) => {
     const colors = {
       'Diabetes': '#EF4444',
@@ -150,7 +171,6 @@ function AllPlansPage() {
 
   const categories = getPlanCategories();
 
-  // Loading state
   if (authLoading || (loading && plans.length === 0)) {
     return (
       <div className="AP-LoadingContainer">
@@ -160,7 +180,6 @@ function AllPlansPage() {
     );
   }
 
-  // Not authenticated
   if (!isAuthenticated) {
     return null;
   }
@@ -235,61 +254,31 @@ function AllPlansPage() {
                   className="AP-FiltersPanel"
                 >
                   <div className="AP-FiltersGrid">
-                    {/* Category Filter */}
                     <div className="AP-FilterGroup">
                       <label>Category</label>
-                      <select
-                        value={selectedCategory}
-                        onChange={(e) => setSelectedCategory(e.target.value)}
-                      >
+                      <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
                         <option value="">All Categories</option>
                         {categories.map(cat => (
                           <option key={cat} value={cat}>{cat}</option>
                         ))}
                       </select>
                     </div>
-
-                    {/* Price Range */}
                     <div className="AP-FilterGroup">
                       <label>Price Range ($)</label>
                       <div className="AP-RangeInputs">
-                        <input
-                          type="number"
-                          placeholder="Min"
-                          value={priceRange.min}
-                          onChange={(e) => setPriceRange(prev => ({ ...prev, min: e.target.value }))}
-                        />
+                        <input type="number" placeholder="Min" value={priceRange.min} onChange={(e) => setPriceRange(prev => ({ ...prev, min: e.target.value }))} />
                         <span>-</span>
-                        <input
-                          type="number"
-                          placeholder="Max"
-                          value={priceRange.max}
-                          onChange={(e) => setPriceRange(prev => ({ ...prev, max: e.target.value }))}
-                        />
+                        <input type="number" placeholder="Max" value={priceRange.max} onChange={(e) => setPriceRange(prev => ({ ...prev, max: e.target.value }))} />
                       </div>
                     </div>
-
-                    {/* Duration Range */}
                     <div className="AP-FilterGroup">
                       <label>Duration (weeks)</label>
                       <div className="AP-RangeInputs">
-                        <input
-                          type="number"
-                          placeholder="Min"
-                          value={durationRange.min}
-                          onChange={(e) => setDurationRange(prev => ({ ...prev, min: e.target.value }))}
-                        />
+                        <input type="number" placeholder="Min" value={durationRange.min} onChange={(e) => setDurationRange(prev => ({ ...prev, min: e.target.value }))} />
                         <span>-</span>
-                        <input
-                          type="number"
-                          placeholder="Max"
-                          value={durationRange.max}
-                          onChange={(e) => setDurationRange(prev => ({ ...prev, max: e.target.value }))}
-                        />
+                        <input type="number" placeholder="Max" value={durationRange.max} onChange={(e) => setDurationRange(prev => ({ ...prev, max: e.target.value }))} />
                       </div>
                     </div>
-
-                    {/* Sort By */}
                     <div className="AP-FilterGroup">
                       <label>Sort By</label>
                       <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
@@ -302,7 +291,6 @@ function AllPlansPage() {
                       </select>
                     </div>
                   </div>
-
                   <div className="AP-FilterActions">
                     <button onClick={clearFilters} className="AP-ClearFiltersBtn">
                       <X size={16} /> Clear All Filters
@@ -331,9 +319,7 @@ function AllPlansPage() {
               <Search size={64} />
               <h2>No Plans Found</h2>
               <p>Try adjusting your search or filters to find what you're looking for.</p>
-              <button onClick={clearFilters} className="AP-ClearFiltersBtn">
-                Clear All Filters
-              </button>
+              <button onClick={clearFilters} className="AP-ClearFiltersBtn">Clear All Filters</button>
             </div>
           ) : viewMode === 'grid' ? (
             <div className="AP-Grid">
@@ -343,9 +329,7 @@ function AllPlansPage() {
                     className="AP-Card"
                     whileHover={{ y: -6 }}
                     transition={{ duration: 0.3 }}
-                    onClick={() => navigate(`/dashboard/plans/${plan._id}`)}
                   >
-                    {/* Card Image */}
                     <div className="AP-CardImage">
                       {plan.planImage ? (
                         <img src={plan.planImage} alt={plan.planName} />
@@ -354,29 +338,20 @@ function AllPlansPage() {
                           <Target size={40} />
                         </div>
                       )}
-                      <div
-                        className="AP-CategoryBadge"
-                        style={{ backgroundColor: getCategoryColor(plan.planCategory) }}
-                      >
+                      <div className="AP-CategoryBadge" style={{ backgroundColor: getCategoryColor(plan.planCategory) }}>
                         {plan.planCategory}
                       </div>
                     </div>
-
-                    {/* Card Content */}
                     <div className="AP-CardContent">
                       <h3 className="AP-CardTitle">{plan.planName}</h3>
                       <p className="AP-CardDescription">
-                        {plan.description?.length > 100
-                          ? `${plan.description.substring(0, 100)}...`
-                          : plan.description}
+                        {plan.description?.length > 100 ? `${plan.description.substring(0, 100)}...` : plan.description}
                       </p>
-
                       <div className="AP-CardMeta">
                         <span><Calendar size={14} /> {plan.duration} weeks</span>
                         <span><DollarSign size={14} /> ${plan.price}</span>
-                        <span><Target size={14} /> {plan.targetUserProfile}</span>
+                        <span><MessageCircle size={14} /> {plan.consultationIncluded} Sessions</span>
                       </div>
-
                       <div className="AP-CardFooter">
                         <div className="AP-CreatorInfo">
                           {plan.creatorInfo?.photo ? (
@@ -386,18 +361,10 @@ function AllPlansPage() {
                               {plan.creatorInfo?.fullName?.charAt(0)?.toUpperCase() || 'U'}
                             </div>
                           )}
-                          <span className="AP-CreatorName">
-                            {plan.creatorInfo?.fullName || 'Unknown'}
-                          </span>
+                          <span className="AP-CreatorName">{plan.creatorInfo?.fullName || 'Unknown'}</span>
                         </div>
-                        <button
-                          className="AP-ViewPlanBtn"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            navigate(`/dashboard/plans/${plan._id}`);
-                          }}
-                        >
-                          View <ChevronRight size={16} />
+                        <button className="AP-ViewPlanBtn" onClick={(e) => handlePlanClick(plan, e)}>
+                          <ShoppingCart size={16} /> Buy <ChevronRight size={16} />
                         </button>
                       </div>
                     </div>
@@ -409,39 +376,28 @@ function AllPlansPage() {
             <div className="AP-List">
               {filteredPlans.map((plan, index) => (
                 <ScrollReveal key={plan._id} delay={index * 0.03}>
-                  <motion.div
-                    className="AP-ListItem"
-                    whileHover={{ x: 4 }}
-                    onClick={() => navigate(`/dashboard/plans/${plan._id}`)}
-                  >
+                  <motion.div className="AP-ListItem" whileHover={{ x: 4 }}>
                     <div className="AP-ListItemImage">
                       {plan.planImage ? (
                         <img src={plan.planImage} alt={plan.planName} />
                       ) : (
-                        <div className="AP-CardImagePlaceholder">
-                          <Target size={28} />
-                        </div>
+                        <div className="AP-CardImagePlaceholder"><Target size={28} /></div>
                       )}
                     </div>
                     <div className="AP-ListItemContent">
                       <div className="AP-ListItemHeader">
                         <h3>{plan.planName}</h3>
-                        <span
-                          className="AP-ListCategoryBadge"
-                          style={{ backgroundColor: getCategoryColor(plan.planCategory) }}
-                        >
+                        <span className="AP-ListCategoryBadge" style={{ backgroundColor: getCategoryColor(plan.planCategory) }}>
                           {plan.planCategory}
                         </span>
                       </div>
                       <p className="AP-ListItemDescription">
-                        {plan.description?.length > 120
-                          ? `${plan.description.substring(0, 120)}...`
-                          : plan.description}
+                        {plan.description?.length > 120 ? `${plan.description.substring(0, 120)}...` : plan.description}
                       </p>
                       <div className="AP-ListItemMeta">
                         <span><Calendar size={14} /> {plan.duration} weeks</span>
                         <span><DollarSign size={14} /> ${plan.price}</span>
-                        <span><Target size={14} /> {plan.targetUserProfile}</span>
+                        <span><MessageCircle size={14} /> {plan.consultationIncluded} Sessions</span>
                         <span><Clock size={14} /> {plan.followUpFrequency}</span>
                       </div>
                     </div>
@@ -456,7 +412,9 @@ function AllPlansPage() {
                         )}
                         <span>{plan.creatorInfo?.fullName || 'Unknown'}</span>
                       </div>
-                      <ChevronRight size={20} className="AP-ListArrow" />
+                      <button className="AP-ViewPlanBtn" onClick={(e) => handlePlanClick(plan, e)}>
+                        <ShoppingCart size={16} /> Buy
+                      </button>
                     </div>
                   </motion.div>
                 </ScrollReveal>
@@ -465,6 +423,15 @@ function AllPlansPage() {
           )}
         </div>
       </div>
+
+      {/* Purchase Modal */}
+      <PurchaseModal
+        isOpen={modalOpen}
+        onClose={() => setModalOpen(false)}
+        plan={selectedPlan}
+        onBuyNow={handleBuyNow}
+        onViewMyPlan={handleViewMyPlan}
+      />
     </PageTransition>
   );
 }

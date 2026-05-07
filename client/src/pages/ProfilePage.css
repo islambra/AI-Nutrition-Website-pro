@@ -1176,3 +1176,459 @@ input[type="number"]::-webkit-outer-spin-button {
 input[type="number"] {
   -moz-appearance: textfield;
 }
+
+/* ============================================ */
+/* MY PLANS TAB (Profile) */
+/* ============================================ */
+
+.VXPR-PlansContainer {
+  padding: 30px;
+}
+
+.VXPR-PlansLoading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 0;
+  color: var(--vxpr-accent);
+  gap: 16px;
+}
+
+.VXPR-EmptyPlans {
+  text-align: center;
+  padding: 60px 0;
+  color: var(--vxpr-text-muted);
+}
+
+.VXPR-EmptyPlans h3 {
+  font-size: 1.3rem;
+  margin: 20px 0 10px;
+  color: var(--vxpr-accent-dark);
+}
+
+.VXPR-BrowsePlansBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 20px;
+  padding: 10px 24px;
+  background: var(--vxpr-accent);
+  color: white;
+  border: none;
+  border-radius: var(--vxpr-radius-md);
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.VXPR-BrowsePlansBtn:hover {
+  background: var(--vxpr-accent-hover);
+}
+
+.VXPR-PlansGrid {
+  display: grid;
+  gap: 20px;
+}
+
+.VXPR-PlanCard {
+  background: var(--vxpr-bg-primary);
+  border: 1px solid var(--vxpr-border-light);
+  border-radius: var(--vxpr-radius-lg);
+  padding: 20px;
+  transition: box-shadow 0.2s;
+}
+
+.VXPR-PlanCard:hover {
+  box-shadow: var(--vxpr-shadow-md);
+}
+
+.VXPR-PlanCardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.VXPR-PlanCardHeader h4 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--vxpr-text-primary);
+  margin: 0 0 4px 0;
+}
+
+.VXPR-PlanCategory {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--vxpr-accent);
+  background: var(--vxpr-accent-soft);
+  padding: 2px 10px;
+  border-radius: 20px;
+}
+
+.VXPR-SessionsBadge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--vxpr-success-light);
+  color: var(--vxpr-success);
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.8rem;
+}
+
+.VXPR-ConsultationInfo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 15px;
+  padding: 10px;
+  background: var(--vxpr-gray-50);
+  border-radius: 10px;
+}
+
+.VXPR-ConsultBadge {
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: white;
+}
+
+.VXPR-ConsultBadge.pending { background: #F59E0B; }
+.VXPR-ConsultBadge.accepted { background: #10B981; }
+.VXPR-ConsultBadge.rejected { background: #EF4444; }
+
+.VXPR-ConsultDate {
+  font-size: 0.85rem;
+  color: var(--vxpr-text-secondary);
+}
+
+.VXPR-ZoomLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+  color: #16A34A;
+  font-weight: 700;
+  text-decoration: none;
+  background: #DCFCE7;
+  padding: 4px 12px;
+  border-radius: 20px;
+  transition: background 0.2s;
+}
+
+.VXPR-ZoomLink:hover {
+  background: #BBF7D0;
+}
+
+.VXPR-PlanCardFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.VXPR-PurchaseDate {
+  font-size: 0.8rem;
+  color: var(--vxpr-text-muted);
+  font-weight: 500;
+}
+
+.VXPR-BookSessionBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--vxpr-accent);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: 700;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.VXPR-BookSessionBtn:hover {
+  background: var(--vxpr-accent-hover);
+}
+
+/* ============================================ */
+/* BOOKING MODAL (within Profile) */
+/* ============================================ */
+
+.VXPR-ModalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(5px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.VXPR-BookingModal {
+  background: white;
+  width: 90%;
+  max-width: 460px;
+  padding: 35px 30px;
+  border-radius: 24px;
+  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.15);
+  position: relative;
+}
+
+.VXPR-BookingClose {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: #F3F4F6;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #4B5563;
+}
+
+.VXPR-BookingModal h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 8px;
+}
+
+.VXPR-BookingSubtext {
+  color: #6B7280;
+  font-size: 0.9rem;
+  margin-bottom: 24px;
+}
+
+.VXPR-DateInput,
+.VXPR-NoteInput {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid #E5E7EB;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.VXPR-DateInput:focus,
+.VXPR-NoteInput:focus {
+  border-color: var(--vxpr-accent);
+}
+
+.VXPR-BookingActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 30px;
+}
+
+.VXPR-BookingCancelBtn {
+  padding: 10px 24px;
+  border: 1px solid #D1D5DB;
+  background: white;
+  border-radius: 12px;
+  font-weight: 600;
+  color: #4B5563;
+  cursor: pointer;
+}
+
+.VXPR-BookingConfirmBtn {
+  padding: 10px 24px;
+  background: var(--vxpr-accent);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: background 0.2s;
+}
+
+.VXPR-BookingConfirmBtn:hover:not(:disabled) {
+  background: var(--vxpr-accent-hover);
+}
+
+.VXPR-BookingConfirmBtn:disabled {
+  background: #A3E4B5;
+  cursor: not-allowed;
+}
+
+/* ============================================ */
+/* MY BOOKINGS TAB (unique prefix UPBK-) */
+/* ============================================ */
+
+.UPBK-Container {
+  padding: 30px;
+}
+
+.UPBK-Loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60px 0;
+  color: var(--vxpr-accent);
+  gap: 16px;
+}
+
+.UPBK-Empty {
+  text-align: center;
+  padding: 60px 0;
+  color: var(--vxpr-text-muted);
+}
+
+.UPBK-Empty h3 {
+  font-size: 1.3rem;
+  margin: 20px 0 10px;
+  color: var(--vxpr-accent-dark);
+}
+
+.UPBK-List {
+  display: grid;
+  gap: 20px;
+}
+
+.UPBK-Card {
+  background: var(--vxpr-bg-primary);
+  border: 1px solid var(--vxpr-border-light);
+  border-radius: var(--vxpr-radius-lg);
+  padding: 20px;
+  transition: box-shadow 0.2s;
+}
+
+.UPBK-Card:hover {
+  box-shadow: var(--vxpr-shadow-md);
+}
+
+.UPBK-CardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+
+.UPBK-CardHeader h4 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--vxpr-text-primary);
+  margin: 0 0 4px 0;
+}
+
+.UPBK-PlanCategory {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--vxpr-accent);
+  background: var(--vxpr-accent-soft);
+  padding: 2px 10px;
+  border-radius: 20px;
+}
+
+.UPBK-StatusBadge {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: white;
+}
+
+.UPBK-StatusBadge.UPBK-pending { background: #F59E0B; }
+.UPBK-StatusBadge.UPBK-accepted { background: #10B981; }
+.UPBK-StatusBadge.UPBK-rejected { background: #EF4444; }
+.UPBK-StatusBadge.UPBK-completed { background: #3B82F6; }
+.UPBK-StatusBadge.UPBK-cancelled { background: #6B7280; }
+
+.UPBK-Details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.UPBK-DetailItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.85rem;
+  color: var(--vxpr-text-secondary);
+}
+
+.UPBK-DetailItem svg {
+  color: var(--vxpr-accent);
+}
+
+.UPBK-ZoomLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: #16A34A;
+  font-weight: 700;
+  text-decoration: none;
+  background: #DCFCE7;
+  padding: 6px 14px;
+  border-radius: 20px;
+  margin-top: 8px;
+  transition: background 0.2s;
+}
+
+.UPBK-ZoomLink:hover {
+  background: #BBF7D0;
+}
+
+.UPBK-CancelBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  padding: 6px 14px;
+  background: #FEE2E2;
+  color: #B91C1C;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.UPBK-CancelBtn:hover {
+  background: #FECACA;
+}
+
+.UPBK-DeleteBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 12px;
+  padding: 6px 14px;
+  background: #E5E7EB;
+  color: #374151;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.UPBK-DeleteBtn:hover {
+  background: #D1D5DB;
+}
+
+/* Ensure delete and cancel buttons sit side by side if needed */
+.UPBK-Card .UPBK-CancelBtn + .UPBK-DeleteBtn {
+  margin-left: 10px;
+}

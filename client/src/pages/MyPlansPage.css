@@ -1,5 +1,8 @@
 /* MyPlansPage.css - Prefixed with MPP- */
 
+/* ============================================ */
+/* MAIN WRAPPER */
+/* ============================================ */
 .MPP-MainWrapper {
   min-height: 100vh;
   background-color: #f9fbf9;
@@ -34,7 +37,9 @@
   opacity: 0.05;
 }
 
-/* Loader */
+/* ============================================ */
+/* LOADER */
+/* ============================================ */
 .MPP-LoaderWrapper {
   height: 100vh;
   display: flex;
@@ -59,7 +64,9 @@
   font-weight: 700;
 }
 
-/* Hero Section */
+/* ============================================ */
+/* HERO SECTION */
+/* ============================================ */
 .MPP-Hero {
   padding: 140px 5% 60px;
   position: relative;
@@ -101,7 +108,9 @@
   color: transparent;
 }
 
-/* Controls */
+/* ============================================ */
+/* CONTROLS */
+/* ============================================ */
 .MPP-Controls {
   display: flex;
   flex-direction: column;
@@ -142,48 +151,62 @@
   box-shadow: 0 8px 25px rgba(76, 175, 80, 0.1);
 }
 
-.MPP-Filters {
-  width: 100%;
-  overflow-x: auto;
-  padding-bottom: 10px;
+/* ============================================ */
+/* EMPTY STATE */
+/* ============================================ */
+.MPP-EmptyState {
+  text-align: center;
+  padding: 80px 20px;
 }
 
-.MPP-FiltersScroll {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  min-width: max-content;
-  margin: 0 auto;
+.MPP-EmptyState svg:first-child {
+  color: #a0b0a0;
+  margin-bottom: 16px;
 }
 
-.MPP-FilterBtn {
-  padding: 8px 18px;
-  background: #fff;
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  border-radius: 30px;
-  color: #556b55;
-  font-size: 0.7rem;
+.MPP-EmptyState h3 {
+  font-size: 1.2rem;
   font-weight: 700;
+  color: #2d5a27;
+  margin: 20px 0 10px;
   letter-spacing: 1px;
+}
+
+.MPP-EmptyState p {
+  color: #88a088;
+  font-size: 0.9rem;
+  margin-bottom: 20px;
+}
+
+/* ============================================ */
+/* BROWSE BUTTON */
+/* ============================================ */
+.MPP-BrowseBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  background: #2d5a27;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.02);
+  font-family: 'Outfit', sans-serif;
+  margin-top: 16px;
 }
 
-.MPP-FilterBtn:hover {
-  border-color: #4caf50;
-  color: #2d5a27;
+.MPP-BrowseBtn:hover {
+  background: #1a3d16;
   transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(45, 90, 39, 0.25);
 }
 
-.MPP-FilterBtn.is-active {
-  background: #2d5a27;
-  border-color: #2d5a27;
-  color: #fff;
-  box-shadow: 0 5px 15px rgba(45, 90, 39, 0.2);
-}
-
-/* Grid */
+/* ============================================ */
+/* GRID */
+/* ============================================ */
 .MPP-Content {
   padding: 0 5%;
   max-width: 1400px;
@@ -198,7 +221,9 @@
   gap: 30px;
 }
 
-/* Card */
+/* ============================================ */
+/* CARD */
+/* ============================================ */
 .MPP-PlanCard {
   background: #fff;
   border: 1px solid rgba(0, 0, 0, 0.04);
@@ -243,22 +268,23 @@
   color: #a0b0a0;
 }
 
-.MPP-CardTag {
+/* Status Badge */
+.MPP-StatusBadge {
   position: absolute;
   top: 15px;
-  left: 15px;
+  right: 15px;
   padding: 5px 12px;
-  background: rgba(255, 255, 255, 0.9);
+  background: rgba(45, 90, 39, 0.9);
   backdrop-filter: blur(4px);
-  border: 1px solid rgba(76, 175, 80, 0.2);
-  border-radius: 6px;
+  border: 1px solid rgba(76, 175, 80, 0.3);
+  border-radius: 20px;
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 0.65rem;
+  font-size: 0.6rem;
   font-weight: 700;
-  color: #2d5a27;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+  color: #fff;
+  letter-spacing: 1px;
 }
 
 .MPP-CardBody {
@@ -280,17 +306,71 @@
   color: #050a05;
 }
 
-.MPP-CardPrice {
-  font-size: 1.25rem;
-  font-weight: 700;
+.MPP-CardCategory {
+  display: inline-block;
+  padding: 4px 10px;
+  background: rgba(76, 175, 80, 0.08);
   color: #2d5a27;
+  border-radius: 20px;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  white-space: nowrap;
 }
 
 .MPP-CardExcerpt {
   font-size: 0.85rem;
   color: #556b55;
-  margin-bottom: 20px;
+  margin-bottom: 12px;
   line-height: 1.5;
+}
+
+/* Creator Info on Card */
+.MPP-CardCreatorInfo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 14px;
+  font-size: 0.75rem;
+  color: #88a088;
+  font-weight: 600;
+}
+
+.MPP-CardCreatorInfo svg {
+  color: #4caf50;
+}
+
+/* Sessions Highlight */
+.MPP-SessionsHighlight {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: linear-gradient(135deg, rgba(45, 90, 39, 0.05), rgba(76, 175, 80, 0.08));
+  border: 1px solid rgba(76, 175, 80, 0.15);
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+
+.MPP-SessionsHighlight svg {
+  color: #2d5a27;
+}
+
+.MPP-SessionsLabel {
+  display: block;
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: #88a088;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.MPP-SessionsCount {
+  display: block;
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: #2d5a27;
+  line-height: 1;
 }
 
 .MPP-CardStats {
@@ -326,8 +406,8 @@
   align-items: center;
 }
 
-.MPP-Author {
-  font-size: 0.75rem;
+.MPP-PurchaseDate {
+  font-size: 0.7rem;
   color: #88a088;
   font-weight: 600;
 }
@@ -365,7 +445,9 @@
   transform: translate(0, 0);
 }
 
-/* Modal */
+/* ============================================ */
+/* MODAL */
+/* ============================================ */
 .MPP-ModalOverlay {
   position: fixed;
   inset: 0;
@@ -392,6 +474,24 @@
   color: #050a05;
 }
 
+/* Custom Scrollbar for Modal */
+.MPP-ModalContent::-webkit-scrollbar {
+  width: 6px;
+}
+
+.MPP-ModalContent::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.MPP-ModalContent::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 3px;
+}
+
+.MPP-ModalContent::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
 .MPP-ModalClose {
   position: absolute;
   top: 25px;
@@ -416,11 +516,142 @@
   transform: rotate(90deg);
 }
 
+/* ============================================ */
+/* SESSION BANNER */
+/* ============================================ */
+.MPP-SessionBanner {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding: 20px;
+  background: linear-gradient(135deg, #f0fdf4, #dcfce7);
+  border: 1px solid rgba(34, 197, 94, 0.2);
+  border-radius: 16px;
+}
+
+.MPP-SessionBannerItem {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 16px;
+  border-right: 1px solid rgba(34, 197, 94, 0.15);
+}
+
+.MPP-SessionBannerItem:last-child {
+  border-right: none;
+}
+
+.MPP-SessionBannerItem svg {
+  color: #16a34a;
+  flex-shrink: 0;
+}
+
+.sb-label {
+  display: block;
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: #88a088;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.sb-value {
+  display: block;
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #166534;
+}
+
+/* ============================================ */
+/* CREATOR BANNER */
+/* ============================================ */
+.MPP-CreatorBanner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  background: linear-gradient(135deg, #f0fdf4, #f9fbf9);
+  border: 1px solid rgba(76, 175, 80, 0.15);
+  border-radius: 16px;
+  margin-bottom: 30px;
+}
+
+.MPP-CreatorAvatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #4caf50;
+  flex-shrink: 0;
+}
+
+.MPP-CreatorAvatarFallback {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2d5a27, #4caf50);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+  border: 3px solid #4caf50;
+  flex-shrink: 0;
+}
+
+.MPP-CreatorBannerInfo {
+  flex: 1;
+}
+
+.cb-label {
+  display: block;
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: #88a088;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+
+.cb-name {
+  display: block;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #050a05;
+  margin-bottom: 2px;
+}
+
+.cb-role {
+  display: inline-block;
+  padding: 2px 10px;
+  background: rgba(76, 175, 80, 0.1);
+  color: #2d5a27;
+  border-radius: 20px;
+  font-size: 0.65rem;
+  font-weight: 600;
+}
+
+.MPP-CreatorContact {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.cb-email {
+  font-size: 0.75rem;
+  color: #88a088;
+  font-weight: 500;
+}
+
+/* ============================================ */
+/* MODAL GRID */
+/* ============================================ */
 .MPP-ModalGrid {
   display: grid;
   grid-template-columns: 1fr 1.2fr;
   gap: 40px;
-  margin-bottom: 40px;
+  margin-bottom: 30px;
 }
 
 .MPP-ModalImageSection {
@@ -428,7 +659,7 @@
   border-radius: 20px;
   overflow: hidden;
   height: 400px;
-  box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
 }
 
 .MPP-ModalImageSection img {
@@ -460,6 +691,11 @@
   box-shadow: 0 10px 20px rgba(45, 90, 39, 0.3);
 }
 
+.MPP-ModalInfoSection {
+  display: flex;
+  flex-direction: column;
+}
+
 .MPP-ModalBadge {
   display: inline-block;
   padding: 4px 12px;
@@ -469,6 +705,7 @@
   font-weight: 700;
   border-radius: 4px;
   margin-bottom: 15px;
+  width: fit-content;
 }
 
 .MPP-ModalTitle {
@@ -522,9 +759,11 @@
   color: #050a05;
 }
 
+/* Modal Description */
 .MPP-ModalDescription h3,
 .MPP-ModalMacros h3,
-.MPP-DetailSection h3 {
+.MPP-DetailSection h3,
+.MPP-PricePaidSection h3 {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -542,6 +781,7 @@
   margin-bottom: 30px;
 }
 
+/* Macro Bars */
 .MPP-MacroBars {
   display: flex;
   flex-direction: column;
@@ -573,16 +813,72 @@
 .MPP-BarFill.protein { background: #8bc34a; }
 .MPP-BarFill.fats { background: #2e7d32; }
 
+/* ============================================ */
+/* PRICE PAID SECTION */
+/* ============================================ */
+.MPP-PricePaidSection {
+  padding: 24px;
+  background: #f9fbf9;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  border-radius: 16px;
+  margin-bottom: 30px;
+}
+
+.MPP-PricePaidSection h3 {
+  margin-bottom: 16px;
+}
+
+.MPP-PricePaidGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.MPP-PricePaidCard {
+  padding: 14px;
+  background: #fff;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.03);
+  text-align: center;
+  transition: all 0.2s ease;
+}
+
+.MPP-PricePaidCard:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  transform: translateY(-2px);
+}
+
+.pp-label {
+  display: block;
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: #88a088;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.pp-value {
+  display: block;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #2d5a27;
+}
+
+/* ============================================ */
+/* MODAL DETAILS GRID */
+/* ============================================ */
 .MPP-ModalDetailsGrid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 40px;
+  gap: 30px;
 }
 
 .MPP-DetailSection.is-full {
   grid-column: span 2;
 }
 
+/* Tags */
 .MPP-Tags {
   display: flex;
   flex-wrap: wrap;
@@ -594,6 +890,11 @@
   font-size: 0.75rem;
   font-weight: 700;
   border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.MPP-Tag:hover {
+  transform: scale(1.05);
 }
 
 .MPP-Tag.is-positive {
@@ -606,6 +907,7 @@
   color: #d32f2f;
 }
 
+/* Meal Grid */
 .MPP-MealGrid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -617,6 +919,12 @@
   border: 1px solid rgba(0, 0, 0, 0.03);
   padding: 20px;
   border-radius: 12px;
+  transition: all 0.2s ease;
+}
+
+.MPP-MealCard:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+  border-color: rgba(76, 175, 80, 0.1);
 }
 
 .MPP-MealCard h4 {
@@ -630,6 +938,7 @@
 .MPP-MealCard ul {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
 
 .MPP-MealCard li {
@@ -647,9 +956,10 @@
   font-weight: bold;
 }
 
+/* Grocery Grid */
 .MPP-GroceryGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 20px;
 }
 
@@ -657,61 +967,151 @@
   background: #f9fbf9;
   padding: 15px;
   border-radius: 8px;
-  border: 1px solid rgba(0,0,0,0.02);
+  border: 1px solid rgba(0, 0, 0, 0.02);
+  transition: all 0.2s ease;
+}
+
+.MPP-GroceryCat:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
 }
 
 .MPP-GroceryCat h4 {
   font-size: 0.7rem;
   color: #2d5a27;
   margin-bottom: 5px;
+  font-weight: 700;
+  letter-spacing: 1px;
 }
 
 .MPP-GroceryCat p {
   font-size: 0.85rem;
   color: #050a05;
+  margin: 0;
+  line-height: 1.5;
 }
 
-/* Responsive */
+/* ============================================ */
+/* RESPONSIVE */
+/* ============================================ */
 @media (max-width: 900px) {
   .MPP-ModalGrid {
     grid-template-columns: 1fr;
   }
+  
   .MPP-ModalImageSection {
     height: 300px;
+  }
+
+  .MPP-PricePaidGrid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .MPP-CreatorBanner {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .MPP-CreatorContact {
+    text-align: center;
   }
 }
 
 @media (max-width: 768px) {
+  .MPP-Hero {
+    padding: 120px 16px 40px;
+  }
+
+  .MPP-Grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .MPP-ModalContent {
+    padding: 24px 20px;
+    border-radius: 20px;
+  }
+
+  .MPP-ModalTitle {
+    font-size: 1.8rem;
+  }
+
   .MPP-ModalDetailsGrid {
     grid-template-columns: 1fr;
+    gap: 24px;
   }
+
   .MPP-DetailSection.is-full {
     grid-column: span 1;
   }
+
   .MPP-ModalStatsGrid {
     grid-template-columns: 1fr;
   }
+
+  .MPP-SessionBanner {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .MPP-SessionBannerItem {
+    border-right: none;
+    border-bottom: 1px solid rgba(34, 197, 94, 0.15);
+    padding: 0 0 12px;
+  }
+
+  .MPP-SessionBannerItem:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .MPP-PricePaidGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .MPP-MealGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .MPP-GroceryGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .MPP-CardImageWrapper {
+    height: 180px;
+  }
+
+  .MPP-CardBody {
+    padding: 20px;
+  }
 }
 
+@media (max-width: 480px) {
+  .MPP-Title {
+    font-size: 2rem;
+  }
 
-/* Responsive */
-@media (max-width: 900px) {
-  .MPP-ModalGrid {
-    grid-template-columns: 1fr;
+  .MPP-ModalPriceBadge {
+    font-size: 1.2rem;
+    padding: 10px 18px;
   }
-  .MPP-ModalImageSection {
-    height: 300px;
-  }
-}
 
-@media (max-width: 768px) {
-  .MPP-ModalDetailsGrid {
-    grid-template-columns: 1fr;
+  .MPP-CardHeader {
+    flex-direction: column;
+    gap: 8px;
   }
-  .MPP-DetailSection.is-full {
-    grid-column: span 1;
+
+  .MPP-CardStats {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
   }
-  .MPP-ModalStatsGrid {
-    grid-template-columns: 1fr;
+
+  .MPP-StatItem {
+    flex: 1;
+    min-width: 80px;
+  }
+
+  .MPP-CreatorBanner {
+    padding: 16px;
   }
 }

@@ -6,6 +6,8 @@ import userRouter from "./routes/userRoutes.js";
 import blogRouter from "./routes/blogRoutes.js";
 import contactRouter from "./routes/contactRoutes.js";
 import planRouter from "./routes/planRoutes.js";
+import paymentRouter from "./routes/paymentRoutes.js";
+import consultationRoutes from "./routes/consultationRoutes.js";
 
 await connectDB();
 
@@ -17,6 +19,8 @@ app.use("/api/user", userRouter);
 app.use("/api/blog", blogRouter);
 app.use("/api", contactRouter);
 app.use("/api/plans", planRouter);
+app.use("/api/payments", paymentRouter);
+app.use("/api/consultations", consultationRoutes);
 
 const PORT = 5000;
 

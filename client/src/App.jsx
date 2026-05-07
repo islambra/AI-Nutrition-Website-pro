@@ -11,6 +11,7 @@ import ProfilePage from './pages/ProfilePage.jsx'
 import MyPlansPage from './pages/MyPlansPage.jsx'
 import AITrackerPage from './pages/AITrackerPage.jsx'
 import AllPlansPage from './pages/AllPlansPage.jsx'
+import CheckoutPage from './pages/CheckoutPage.jsx'
 import Header from './components/Header.jsx' 
 import Footer from './components/Footer.jsx' 
 import CustomCursor from './components/CustomCursor.jsx'
@@ -31,6 +32,8 @@ import AddAdminNutritionist from './pages/AdminDasboard/AddAdminNutritionist.jsx
 import ClientsPage from './pages/nutritionistDashboard/ClientsPage.jsx'
 import AllUsers from './pages/AdminDasboard/AllUsers.jsx'
 import EditUserProfile from './pages/AdminDasboard/EditUserProfile.jsx'
+import ConsultationRequests from './pages/nutritionistDashboard/ConsultationRequests.jsx'
+
 import './App.css'
 
 function App() {
@@ -60,6 +63,7 @@ function App() {
           <Route path='/ai-tracker' element={<PageTransition><AITrackerPage /></PageTransition>} /> 
           <Route path="/blog/:id" element={<PageTransition><BlogDetailsPage /></PageTransition>} />
           <Route path="/allPlans" element={<PageTransition><AllPlansPage /></PageTransition>} />
+          <Route path="/checkout/:planId" element={<PageTransition><CheckoutPage /></PageTransition>} />
 
           <Route path="/nutritionist" element={<Layout />}>
               <Route path="/nutritionist/create-blog" element={<CreateBlog />} />
@@ -68,6 +72,7 @@ function App() {
               <Route path="/nutritionist/contact-messages" element={<ContactMessages />} />
               <Route path="/nutritionist/my-Profile" element={<EditUserProfile />} />
               <Route path="/nutritionist/all-clients" element={<ClientsPage />} />
+              <Route path="/nutritionist/consultation-requests" element={<ConsultationRequests />} />
           </Route>
           <Route path="/admin" element={<AdminLayout />}>
               <Route path="/admin/add-admin-nutritionist" element={<AddAdminNutritionist />} />

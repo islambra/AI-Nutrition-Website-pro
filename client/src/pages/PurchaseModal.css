@@ -1,0 +1,318 @@
+/* PurchaseModal.css - PM Prefix */
+
+.PM-Overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.PM-Modal {
+  background: #fff;
+  border-radius: 24px;
+  width: 100%;
+  max-width: 520px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 40px 80px rgba(0, 0, 0, 0.2);
+}
+
+.PM-CloseBtn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: #f3f4f6;
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #6b7280;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.PM-CloseBtn:hover {
+  background: #e5e7eb;
+  color: #111827;
+}
+
+/* Loading */
+.PM-Loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 40px;
+  gap: 16px;
+}
+
+.PM-Loading p {
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.PM-Spin {
+  animation: pmSpin 0.8s linear infinite;
+  color: #22c55e;
+}
+
+@keyframes pmSpin {
+  to { transform: rotate(360deg); }
+}
+
+/* Content */
+.PM-Content {
+  padding: 40px 32px 32px;
+  text-align: center;
+}
+
+.PM-IconWrapper {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+}
+
+.PM-IconWrapper.owned {
+  background: #dcfce7;
+  color: #16a34a;
+}
+
+.PM-IconWrapper.not-owned {
+  background: #fef3c7;
+  color: #f59e0b;
+}
+
+.PM-Content h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 16px;
+}
+
+.PM-PlanInfo {
+  margin-bottom: 16px;
+}
+
+.PM-PlanInfo h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 4px;
+}
+
+.PM-Category {
+  display: inline-block;
+  padding: 4px 12px;
+  background: #f0fdf4;
+  color: #16a34a;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.PM-Message {
+  color: #6b7280;
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 0 0 20px;
+}
+
+.PM-Description {
+  color: #6b7280;
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 0 0 20px;
+}
+
+/* Details */
+.PM-Details {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.PM-Detail {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: #374151;
+  font-weight: 500;
+}
+
+.PM-Detail svg {
+  color: #22c55e;
+}
+
+/* Features */
+.PM-Features {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.PM-Feature {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  background: #f9fafb;
+  border-radius: 12px;
+  text-align: left;
+}
+
+.PM-Feature svg {
+  color: #22c55e;
+  flex-shrink: 0;
+}
+
+.PM-FeatureLabel {
+  display: block;
+  font-size: 11px;
+  color: #9ca3af;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.PM-FeatureValue {
+  display: block;
+  font-size: 14px;
+  color: #111827;
+  font-weight: 600;
+}
+
+/* Price Section */
+.PM-PriceSection {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  background: #f0fdf4;
+  border-radius: 12px;
+  margin-bottom: 24px;
+}
+
+.PM-PriceTag {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #16a34a;
+}
+
+.PM-PriceAmount {
+  font-size: 28px;
+  font-weight: 800;
+  color: #16a34a;
+}
+
+.PM-SecureBadge {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.PM-SecureBadge svg {
+  color: #22c55e;
+}
+
+/* Actions */
+.PM-Actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.PM-BtnSecondary {
+  padding: 12px 24px;
+  background: #f3f4f6;
+  color: #374151;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.PM-BtnSecondary:hover {
+  background: #e5e7eb;
+}
+
+.PM-BtnPrimary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: #22c55e;
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.PM-BtnPrimary:hover {
+  background: #16a34a;
+  transform: translateY(-1px);
+}
+
+.PM-BuyBtn {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.3);
+}
+
+.PM-BuyBtn:hover {
+  box-shadow: 0 6px 20px rgba(34, 197, 94, 0.4);
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .PM-Modal {
+    max-width: 100%;
+    border-radius: 20px;
+  }
+  
+  .PM-Content {
+    padding: 32px 20px 24px;
+  }
+  
+  .PM-Features {
+    grid-template-columns: 1fr;
+  }
+  
+  .PM-PriceSection {
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  .PM-Actions {
+    flex-direction: column;
+  }
+  
+  .PM-BtnSecondary,
+  .PM-BtnPrimary {
+    width: 100%;
+    justify-content: center;
+  }
+}
