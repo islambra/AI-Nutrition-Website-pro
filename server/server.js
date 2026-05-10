@@ -8,6 +8,8 @@ import contactRouter from "./routes/contactRoutes.js";
 import planRouter from "./routes/planRoutes.js";
 import paymentRouter from "./routes/paymentRoutes.js";
 import consultationRoutes from "./routes/consultationRoutes.js";
+import aiRoutes from "./routes/aiRoutes.js";
+
 
 await connectDB();
 
@@ -21,6 +23,7 @@ app.use("/api", contactRouter);
 app.use("/api/plans", planRouter);
 app.use("/api/payments", paymentRouter);
 app.use("/api/consultations", consultationRoutes);
+app.use("/api/ai", aiRoutes);
 
 const PORT = 5000;
 

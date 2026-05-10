@@ -7,11 +7,11 @@ const paymentSchema = new mongoose.Schema({
     ref: "User",
     required: true
   },
-  plan: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Plan",
-    required: true
-  },
+plan: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "Plan",
+  required: false      // optional now
+},
   amount: {
     type: Number,
     required: true

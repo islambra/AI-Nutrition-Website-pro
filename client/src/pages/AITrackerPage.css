@@ -1,64 +1,249 @@
-/* AITrackerPage.css - Prefixed with AIT- */
+
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap');
+
+:root {
+  --ait-bg: #F8FAF8;
+  --ait-surface: #FFFFFF;
+  --ait-surface-light: #F0F7F1;
+  --ait-border: rgba(34, 197, 94, 0.15);
+  --ait-text-primary: #0A140A;
+  --ait-text-secondary: #4B5563;
+  --ait-accent: #22C55E;
+  --ait-accent-glow: rgba(34, 197, 94, 0.3);
+  --ait-gradient-main: linear-gradient(135deg, #F8FAF8 0%, #FFFFFF 100%);
+  --ait-gradient-card: linear-gradient(145deg, #FFFFFF 0%, #F8FAF8 100%);
+  --ait-radius-xl: 32px;
+  --ait-radius-lg: 24px;
+  --ait-radius-md: 16px;
+  --ait-font: 'Outfit', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
 
 .AIT-Wrapper {
-  background-color: #f9fbf9;
-  color: #0a140a;
+  background: var(--ait-gradient-main);
   min-height: 100vh;
   padding: 140px 5% 100px;
+  font-family: var(--ait-font);
+  color: var(--ait-text-primary);
   position: relative;
   overflow-x: hidden;
 }
 
+/* Subtle grid background */
 .AIT-OrganicContainer {
   position: fixed;
   inset: 0;
   pointer-events: none;
   z-index: 0;
+  background-image:
+    linear-gradient(rgba(34, 197, 94, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(34, 197, 94, 0.03) 1px, transparent 1px);
+  background-size: 60px 60px;
 }
 
 .AIT-Floater {
   position: absolute;
-  color: #4caf50;
+  color: var(--ait-accent);
   opacity: 0.05;
 }
 
 .AIT-Container {
-  max-width: 1200px;
+  max-width: 1300px;
   margin: 0 auto;
   position: relative;
   z-index: 10;
 }
 
+/* Header */
 .AIT-Header {
   text-align: center;
-  margin-bottom: 60px;
+  margin-bottom: 70px;
 }
 
 .AIT-Title {
-  font-family: 'Outfit', sans-serif;
-  font-size: clamp(40px, 8vw, 80px);
-  font-weight: 700;
+  font-size: clamp(50px, 10vw, 100px);
+  font-weight: 900;
   letter-spacing: -0.04em;
-  line-height: 0.9;
-  margin-bottom: 20px;
-  color: #050a05;
+  line-height: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
 }
 
-.AIT-Highlight {
-  background: linear-gradient(90deg, #2d5a27, #4caf50);
+.AIT-TitleLine {
+  color: var(--ait-text-secondary);
+  opacity: 0.4;
+}
+
+.AIT-TitleGradient {
+  background: linear-gradient(135deg, #16A34A 0%, #22C55E 60%);
   -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   background-clip: text;
-  color: transparent;
+  filter: drop-shadow(0 0 20px rgba(34, 197, 94, 0.3));
 }
 
 .AIT-Subtitle {
-  font-size: clamp(16px, 2vw, 20px);
-  color: #556b55;
-  max-width: 600px;
-  margin: 0 auto;
+  font-size: clamp(16px, 2.5vw, 22px);
+  color: var(--ait-text-secondary);
+  margin-top: 20px;
+  font-weight: 400;
+}
+
+/* Login Prompt */
+.AIT-LoginPrompt {
+  text-align: center;
+  padding-top: 60px;
+}
+
+.AIT-LoginPromptIcon {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 30px;
+  color: var(--ait-accent);
+  opacity: 0.9;
+}
+
+.AIT-LoginPromptCpu {
+  position: absolute;
+  color: var(--ait-accent);
+  animation: pulse 2s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 0.8; }
+  50% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(1); opacity: 0.8; }
+}
+
+.AIT-LoginPrompt h2 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: var(--ait-text-primary);
+}
+
+.AIT-LoginPrompt p {
+  color: var(--ait-text-secondary);
+  font-size: 1.1rem;
+  margin-bottom: 30px;
+}
+
+/* Paywall */
+.AIT-Paywall {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+}
+
+.AIT-PaywallContent {
+  background: var(--ait-gradient-card);
+  border: 1px solid var(--ait-border);
+  backdrop-filter: blur(20px);
+  padding: 60px 50px;
+  border-radius: var(--ait-radius-xl);
+  box-shadow: 0 30px 60px rgba(0,0,0,0.06), 0 0 80px rgba(34,197,94,0.1);
+  text-align: center;
+  max-width: 520px;
+  width: 100%;
+  position: relative;
+  overflow: hidden;
+}
+
+.AIT-PaywallGlow {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle at center, rgba(34,197,94,0.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.AIT-PaywallIconWrap {
+  background: rgba(34,197,94,0.1);
+  width: 90px;
+  height: 90px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.AIT-PaywallIcon {
+  color: var(--ait-accent);
+}
+
+.AIT-PaywallContent h2 {
+  font-size: 2.2rem;
+  font-weight: 800;
+  margin-bottom: 16px;
+  color: var(--ait-text-primary);
+}
+
+.AIT-PaywallContent p {
+  color: var(--ait-text-secondary);
+  font-size: 1.05rem;
+  line-height: 1.6;
+  margin-bottom: 30px;
+}
+
+.AIT-PriceTag {
+  background: rgba(34,197,94,0.05);
+  border: 1px solid rgba(34,197,94,0.12);
+  border-radius: var(--ait-radius-md);
+  padding: 20px;
+  margin-bottom: 35px;
+}
+
+.AIT-Price {
+  font-size: 3rem;
+  font-weight: 900;
+  color: var(--ait-accent);
+  display: block;
+}
+
+.AIT-PriceLabel {
+  font-size: 0.9rem;
+  color: var(--ait-text-secondary);
   font-weight: 500;
 }
 
+.AIT-PaywallBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 40px;
+  background: linear-gradient(135deg, #22C55E 0%, #16A34A 100%);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  cursor: pointer;
+  box-shadow: 0 10px 30px rgba(34,197,94,0.3);
+  transition: all 0.3s ease;
+}
+
+.AIT-PaywallBtn:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 20px 40px rgba(34,197,94,0.4);
+}
+
+.AIT-PaywallBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Grid */
 .AIT-Grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -66,14 +251,14 @@
   align-items: start;
 }
 
-/* Glass Card */
+/* Glass card */
 .AIT-GlassCard {
-  background: rgba(255, 255, 255, 0.7);
-  border: 1px solid rgba(76, 175, 80, 0.15);
-  border-radius: 30px;
+  background: var(--ait-gradient-card);
+  border: 1px solid var(--ait-border);
+  backdrop-filter: blur(20px);
+  border-radius: var(--ait-radius-xl);
   padding: 40px;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.04);
 }
 
 .AIT-CardHeader {
@@ -87,40 +272,39 @@
   display: flex;
   align-items: center;
   gap: 12px;
-  color: #2d5a27;
-  font-family: 'Outfit', sans-serif;
-  font-size: 12px;
+  color: var(--ait-accent);
+  font-size: 14px;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.08em;
 }
 
 .AIT-ResetBtn {
   background: transparent;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-  color: #556b55;
-  padding: 6px 14px;
-  border-radius: 100px;
-  font-size: 10px;
+  border: 1px solid var(--ait-border);
+  color: var(--ait-text-secondary);
+  padding: 8px 16px;
+  border-radius: 50px;
+  font-size: 12px;
   font-weight: 700;
   cursor: pointer;
   display: flex;
   align-items: center;
   gap: 6px;
-  transition: all 0.3s ease;
+  transition: all 0.2s;
 }
 
 .AIT-ResetBtn:hover {
-  background: rgba(0, 0, 0, 0.05);
-  color: #050a05;
+  background: rgba(34,197,94,0.05);
+  color: var(--ait-accent);
 }
 
-/* Upload Area */
+/* Upload area */
 .AIT-UploadArea {
   width: 100%;
   aspect-ratio: 4/3;
-  background: rgba(76, 175, 80, 0.03);
-  border: 2px dashed rgba(76, 175, 80, 0.2);
-  border-radius: 20px;
+  background: rgba(34,197,94,0.02);
+  border: 2px dashed rgba(34,197,94,0.2);
+  border-radius: var(--ait-radius-lg);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -131,13 +315,13 @@
 }
 
 .AIT-UploadArea:hover {
-  background: rgba(76, 175, 80, 0.06);
-  border-color: #4caf50;
+  background: rgba(34,197,94,0.04);
+  border-color: var(--ait-accent);
 }
 
 .AIT-UploadArea.has-preview {
   border-style: solid;
-  border-color: rgba(76, 175, 80, 0.4);
+  border-color: rgba(34,197,94,0.3);
 }
 
 .AIT-UploadPrompt {
@@ -148,33 +332,31 @@
 .AIT-IconCircle {
   width: 80px;
   height: 80px;
-  background: rgba(76, 175, 80, 0.08);
+  background: rgba(34,197,94,0.08);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto 20px;
-  color: #4caf50;
+  color: var(--ait-accent);
 }
 
 .AIT-UploadPrompt h3 {
-  font-family: 'Outfit', sans-serif;
   font-size: 20px;
   margin-bottom: 8px;
-  color: #050a05;
+  color: var(--ait-text-primary);
 }
 
 .AIT-UploadPrompt p {
-  color: #556b55;
+  color: var(--ait-text-secondary);
   font-size: 14px;
   margin-bottom: 15px;
 }
 
 .AIT-TechDetail {
-  font-family: 'Outfit', sans-serif;
-  font-size: 10px;
-  color: #2d5a27;
-  opacity: 0.6;
+  font-size: 11px;
+  color: var(--ait-accent);
+  opacity: 0.7;
 }
 
 .AIT-PreviewContainer {
@@ -194,77 +376,77 @@
   left: 0;
   width: 100%;
   height: 4px;
-  background: linear-gradient(90deg, transparent, #4caf50, transparent);
-  box-shadow: 0 0 20px #4caf50;
+  background: linear-gradient(90deg, transparent, #22C55E, transparent);
+  box-shadow: 0 0 30px #22C55E;
   z-index: 5;
 }
 
-/* Action Area */
+/* Action */
 .AIT-ActionWrapper {
   margin-top: 30px;
 }
 
 .AIT-ProcessBtn {
   width: 100%;
-  padding: 20px;
-  background: #2d5a27;
-  color: #fff;
+  padding: 22px;
+  background: linear-gradient(135deg, #22C55E, #16A34A);
+  color: #FFFFFF;
   border: none;
-  border-radius: 12px;
-  font-family: 'Outfit', sans-serif;
+  border-radius: var(--ait-radius-md);
   font-weight: 700;
+  font-size: 16px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 12px;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: all 0.3s ease;
+  box-shadow: 0 10px 30px rgba(34,197,94,0.25);
 }
 
 .AIT-ProcessBtn:hover:not(:disabled) {
-  transform: translateY(-5px);
-  box-shadow: 0 15px 30px rgba(45, 90, 39, 0.2);
-  background: #1a2a1a;
+  transform: translateY(-3px);
+  box-shadow: 0 20px 40px rgba(34,197,94,0.4);
 }
 
 .AIT-ProcessBtn:disabled {
-  background: #e8ede8;
-  color: #a0b0a0;
+  background: #E5E7EB;
+  color: #9CA3AF;
   cursor: not-allowed;
+  box-shadow: none;
 }
 
 .AIT-StatusDone {
   width: 100%;
-  padding: 20px;
-  background: rgba(76, 175, 80, 0.08);
-  color: #2d5a27;
-  border: 1px solid rgba(76, 175, 80, 0.2);
-  border-radius: 12px;
+  padding: 22px;
+  background: rgba(34,197,94,0.06);
+  border: 1px solid rgba(34,197,94,0.15);
+  border-radius: var(--ait-radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 12px;
-  font-family: 'Outfit', sans-serif;
   font-weight: 700;
-  font-size: 13px;
+  color: var(--ait-accent);
 }
 
+/* Info box */
 .AIT-InfoBox {
   margin-top: 30px;
   padding: 25px;
-  background: rgba(76, 175, 80, 0.05);
-  border-radius: 20px;
+  background: rgba(34,197,94,0.03);
+  border-radius: var(--ait-radius-lg);
   display: flex;
   gap: 20px;
-  align-items: flex-start;
-  border: 1px solid rgba(76, 175, 80, 0.1);
+  border: 1px solid rgba(34,197,94,0.08);
+  color: var(--ait-text-secondary);
 }
 
-.AIT-InfoBox svg { color: #2d5a27; }
-.AIT-InfoBox h4 { font-family: 'Outfit', sans-serif; font-size: 11px; margin-bottom: 5px; color: #2d5a27; }
-.AIT-InfoBox p { font-size: 13px; color: #556b55; line-height: 1.4; }
+.AIT-InfoBox svg { color: var(--ait-accent); }
+.AIT-InfoBox h4 { font-size: 13px; margin-bottom: 5px; color: var(--ait-text-primary); }
+.AIT-InfoBox p { font-size: 14px; }
 
-/* Results Output */
+/* Waiting */
 .AIT-WaitingState {
   height: 100%;
   min-height: 500px;
@@ -272,39 +454,50 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  text-align: center;
-  border: 1px solid rgba(76, 175, 80, 0.15);
-  border-radius: 30px;
+  background: var(--ait-gradient-card);
+  border: 1px solid var(--ait-border);
+  border-radius: var(--ait-radius-xl);
   padding: 40px;
-  background: rgba(255, 255, 255, 0.4);
+  text-align: center;
 }
 
 .AIT-PulseIcon {
   width: 100px;
   height: 100px;
-  background: rgba(76, 175, 80, 0.05);
+  background: rgba(34,197,94,0.05);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #4caf50;
+  color: var(--ait-accent);
   margin-bottom: 30px;
-  animation: AIT-Pulse 2s infinite;
+  animation: aitPulse 2s infinite;
 }
 
-@keyframes AIT-Pulse {
-  0% { transform: scale(1); opacity: 0.5; }
+@keyframes aitPulse {
+  0% { transform: scale(1); opacity: 0.6; }
   50% { transform: scale(1.1); opacity: 1; }
-  100% { transform: scale(1); opacity: 0.5; }
+  100% { transform: scale(1); opacity: 0.6; }
 }
 
+.AIT-WaitingState h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: var(--ait-text-primary);
+}
+
+.AIT-WaitingState p {
+  color: var(--ait-text-secondary);
+}
+
+/* Results card */
 .AIT-ResultsCard {
-  background: #fff;
-  color: #050a05;
-  border-radius: 30px;
-  padding: 50px;
-  box-shadow: 0 30px 60px rgba(0, 0, 0, 0.08);
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  background: var(--ait-gradient-card);
+  border: 1px solid var(--ait-border);
+  border-radius: var(--ait-radius-xl);
+  padding: 45px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.04);
 }
 
 .AIT-ResultHeader {
@@ -316,26 +509,26 @@
 
 .AIT-Category {
   display: block;
-  font-family: 'Outfit', sans-serif;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
-  color: #2d5a27;
+  color: var(--ait-accent);
+  letter-spacing: 0.08em;
   margin-bottom: 8px;
 }
 
 .AIT-FoodName {
-  font-family: 'Outfit', sans-serif;
-  font-size: 32px;
-  font-weight: 700;
+  font-size: 2.5rem;
+  font-weight: 800;
   line-height: 1.1;
+  color: var(--ait-text-primary);
 }
 
 .AIT-Confidence {
   text-align: right;
 }
 
-.c-label { display: block; font-family: 'Outfit', sans-serif; font-size: 9px; color: #6B7280; }
-.c-value { font-size: 20px; font-weight: 700; color: #34C759; }
+.c-label { display: block; font-size: 11px; color: var(--ait-text-secondary); }
+.c-value { font-size: 1.5rem; font-weight: 700; color: var(--ait-accent); }
 
 .AIT-MainMetrics {
   display: grid;
@@ -345,117 +538,237 @@
 }
 
 .AIT-MetricLarge {
-  background: #F9FBF9;
+  background: rgba(34,197,94,0.03);
+  border: 1px solid rgba(34,197,94,0.08);
+  border-radius: var(--ait-radius-lg);
   padding: 25px;
-  border-radius: 20px;
   display: flex;
   align-items: center;
   gap: 20px;
-  border: 1px solid rgba(0, 0, 0, 0.03);
 }
 
-.AIT-MetricLarge svg { color: #34C759; }
-.m-label { display: block; font-family: 'Outfit', sans-serif; font-size: 9px; color: #6B7280; margin-bottom: 5px; }
-.m-value { font-size: 28px; font-weight: 700; color: #1A1D1A; }
-.m-unit { font-size: 12px; color: #9CA3AF; margin-left: 4px; }
+.AIT-MetricLarge svg { color: var(--ait-accent); }
+.m-label { display: block; font-size: 11px; color: var(--ait-text-secondary); margin-bottom: 5px; }
+.m-value { font-size: 2rem; font-weight: 800; color: var(--ait-text-primary); }
+.m-unit { font-size: 0.9rem; color: var(--ait-text-secondary); margin-left: 4px; }
 
 .AIT-MacrosGrid {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 15px;
+  gap: 18px;
   margin-bottom: 40px;
 }
 
 .AIT-MacroItem .macro-info {
   display: flex;
   justify-content: space-between;
-  font-family: 'Outfit', sans-serif;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   margin-bottom: 8px;
+  color: var(--ait-text-secondary);
 }
 
 .macro-bar {
-  height: 6px;
-  background: #E8F5E9;
-  border-radius: 3px;
+  height: 8px;
+  background: rgba(0,0,0,0.05);
+  border-radius: 4px;
   overflow: hidden;
 }
 
-.bar-fill { height: 100%; border-radius: 3px; }
-.bar-fill.protein { background: #4caf50; }
-.bar-fill.carbs { background: #8bc34a; }
-.bar-fill.fats { background: #2e7d32; }
+.bar-fill { height: 100%; border-radius: 4px; }
+.bar-fill.protein { background: #22C55E; }
+.bar-fill.carbs { background: #F59E0B; }
+.bar-fill.fat { background: #EF4444; }
 
 .AIT-IngredientsSection h4 {
-  font-family: 'Outfit', sans-serif;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 700;
   margin-bottom: 15px;
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #050a05;
+  color: var(--ait-text-primary);
 }
 
 .AIT-TagCloud {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 10px;
   margin-bottom: 40px;
 }
 
 .AIT-Tag {
-  padding: 6px 16px;
-  background: #F0F4F0;
-  color: #2D5A27;
-  border-radius: 100px;
-  font-size: 12px;
-  font-weight: 700;
+  padding: 6px 18px;
+  background: rgba(34,197,94,0.06);
+  border: 1px solid rgba(34,197,94,0.15);
+  border-radius: 50px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ait-accent);
 }
 
 .AIT-InsightBox {
-  background: #F0F9F0;
+  background: rgba(34,197,94,0.04);
+  border-left: 4px solid var(--ait-accent);
   padding: 20px;
-  border-radius: 15px;
+  border-radius: var(--ait-radius-md);
   display: flex;
   gap: 15px;
-  margin-bottom: 40px;
-  border-left: 4px solid #34C759;
+  margin-bottom: 30px;
+  color: var(--ait-text-secondary);
 }
 
-.AIT-InsightBox svg { color: #34C759; flex-shrink: 0; }
-.AIT-InsightBox p { font-size: 14px; color: #2D5A27; font-weight: 600; line-height: 1.5; }
+.AIT-InsightBox svg { color: var(--ait-accent); flex-shrink: 0; }
 
 .AIT-SaveRecordBtn {
   width: 100%;
   padding: 22px;
-  background: #050a05;
-  color: #fff;
+  background: var(--ait-accent);
+  color: #FFFFFF;
   border: none;
-  border-radius: 100px;
-  font-family: 'Outfit', sans-serif;
+  border-radius: 50px;
   font-weight: 700;
+  font-size: 16px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
-  transition: all 0.3s ease;
+  gap: 10px;
+  transition: all 0.2s;
+  box-shadow: 0 10px 25px rgba(34,197,94,0.2);
 }
 
 .AIT-SaveRecordBtn:hover {
-  background: #1a2a1a;
-  transform: scale(1.02);
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+  background: #16A34A;
+  box-shadow: 0 15px 30px rgba(34,197,94,0.3);
+  transform: translateY(-2px);
 }
 
-/* Animations */
+/* Checkout modal */
+.AIT-ModalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.3);
+  backdrop-filter: blur(8px);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.AIT-CheckoutModal {
+  background: #FFFFFF;
+  border: 1px solid rgba(34,197,94,0.15);
+  border-radius: var(--ait-radius-xl);
+  padding: 40px 35px;
+  max-width: 460px;
+  width: 90%;
+  box-shadow: 0 30px 60px rgba(0,0,0,0.08);
+  position: relative;
+}
+
+.AIT-CheckoutClose {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  color: var(--ait-text-secondary);
+  cursor: pointer;
+}
+
+.AIT-CheckoutModal h2 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 8px;
+  color: var(--ait-text-primary);
+}
+
+.AIT-CheckoutPrice {
+  color: var(--ait-accent);
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 25px;
+}
+
+.AIT-FormGroup {
+  margin-bottom: 18px;
+  display: flex;
+  flex-direction: column;
+}
+
+.AIT-FormGroup label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--ait-text-secondary);
+  margin-bottom: 6px;
+}
+
+.AIT-FormGroup input {
+  padding: 14px 16px;
+  background: #F9FAFB;
+  border: 1px solid #E5E7EB;
+  border-radius: var(--ait-radius-md);
+  color: var(--ait-text-primary);
+  font-size: 1rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.AIT-FormGroup input:focus {
+  border-color: var(--ait-accent);
+}
+
+.AIT-FormRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.AIT-CheckoutBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, #22C55E, #16A34A);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 10px;
+  transition: all 0.2s;
+}
+
+.AIT-CheckoutBtn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 15px 30px rgba(34,197,94,0.3);
+}
+
+.AIT-CheckoutBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Loading */
+.AIT-LoadingScreen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background: var(--ait-gradient-main);
+  color: var(--ait-accent);
+  gap: 20px;
+}
+
 .AIT-Spin {
-  animation: AIT-SpinAnim 1s linear infinite;
+  animation: aitSpin 1s linear infinite;
 }
 
-@keyframes AIT-SpinAnim {
+@keyframes aitSpin {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
@@ -463,10 +776,10 @@
 /* Responsive */
 @media (max-width: 1024px) {
   .AIT-Grid { grid-template-columns: 1fr; }
-  .AIT-Wrapper { padding-top: 100px; }
 }
 
 @media (max-width: 768px) {
   .AIT-ResultsCard { padding: 30px; }
   .AIT-MainMetrics { grid-template-columns: 1fr; }
+  .AIT-PaywallContent { padding: 40px 30px; }
 }
