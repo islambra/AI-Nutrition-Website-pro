@@ -129,13 +129,17 @@
 .mobile-nav-item {
     color: #2D5A27; /* --health-green */
     text-decoration: none;
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 700;
     font-family: 'Outfit', sans-serif;
     text-transform: uppercase;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.01em;
     transition: all 0.3s ease;
     text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
 }
 
 .mobile-nav-item:hover {

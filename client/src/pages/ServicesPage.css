@@ -135,7 +135,31 @@
   font-size: 18px;
   line-height: 1.7;
   color: var(--S-Gray);
+  margin-bottom: 24px; /* Reduced to accommodate button */
+}
+
+.ServicesPage-AI-Btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--S-Green);
+  color: #fff;
+  padding: 16px 32px;
+  border-radius: 100px;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  text-decoration: none;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
   margin-bottom: 48px;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.ServicesPage-AI-Btn:hover {
+  background: var(--S-Accent);
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(52, 199, 89, 0.2);
 }
 
 .ServicesPage-AI-Feature-List {
@@ -306,6 +330,113 @@
   margin: 0 auto;
 }
 
+.ServicesPage-Plans-Slider-Wrapper {
+  max-width: 1400px;
+  margin: 0 auto;
+  position: relative;
+  padding: 0 100px;
+}
+
+.ServicesPage-Plans-Slider-Container {
+  position: relative;
+  overflow: hidden;
+  padding: 20px 0;
+}
+
+.ServicesPage-Plans-Track {
+  display: flex;
+  gap: 32px;
+}
+
+.ServicesPage-Plan-Slide {
+  flex: 0 0 100%;
+  min-width: 300px;
+}
+
+@media (min-width: 769px) {
+  .ServicesPage-Plan-Slide {
+    flex: 0 0 calc((100% - 64px) / 3);
+  }
+}
+
+.ServicesPage-Plans-Controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  margin-top: 40px;
+}
+
+.ServicesPage-Plan-NavBtn {
+  background: #FFFFFF;
+  border: 1px solid var(--S-Border);
+  color: var(--S-Green);
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 10px 30px rgba(45, 90, 39, 0.05);
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 20;
+}
+
+.ServicesPage-Plan-NavBtn.prev {
+  left: 0;
+}
+
+.ServicesPage-Plan-NavBtn.next {
+  right: 0;
+}
+
+@media (max-width: 1400px) {
+  .ServicesPage-Plans-Slider-Wrapper { padding: 0 80px; }
+  .ServicesPage-Plan-NavBtn { width: 50px; height: 50px; }
+}
+
+@media (max-width: 1024px) {
+  .ServicesPage-Plan-NavBtn {
+    display: none;
+  }
+}
+
+.ServicesPage-Plan-NavBtn:hover {
+  background: var(--S-Accent);
+  color: #fff;
+  transform: translateY(-50%) scale(1.1) translateY(-5px);
+  border-color: var(--S-Accent);
+  box-shadow: 0 15px 45px rgba(52, 199, 89, 0.25);
+}
+
+.ServicesPage-Plan-NavBtn:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+.ServicesPage-Plans-Dots {
+  display: flex;
+  gap: 12px;
+}
+
+.ServicesPage-Plan-Dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--S-Border);
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.ServicesPage-Plan-Dot.active {
+  background: var(--S-Accent);
+  width: 24px;
+  border-radius: 4px;
+}
+
 .ServicesPage-Plan-Card {
   background: var(--S-Cream);
   border: 1px solid var(--S-Border);
@@ -315,6 +446,7 @@
   flex-direction: column;
   transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
   position: relative;
+  height: 100%;
 }
 
 .ServicesPage-Plan-Card:hover {
@@ -328,6 +460,61 @@
   color: #fff;
   transform: scale(1.05);
   border: none;
+}
+
+.ServicesPage-Plan-Icon-Fallback {
+  color: var(--S-Accent);
+  background: var(--S-Mint);
+  width: 64px;
+  height: 64px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.ServicesPage-Plan-Image-Container {
+  width: 100%;
+  height: 220px;
+  border-radius: 32px;
+  overflow: hidden;
+  margin-bottom: 24px;
+  background: var(--S-Mint);
+  border: 1px solid var(--S-Border);
+}
+
+.ServicesPage-Plan-Image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.ServicesPage-Plan-Card:hover .ServicesPage-Plan-Image {
+  transform: scale(1.1);
+}
+
+.ServicesPage-Loading-State, .ServicesPage-Empty-Plans {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 80px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  color: var(--S-Gray);
+  font-weight: 500;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.AP-Spin {
+  animation: spin 1s linear infinite;
+  color: var(--S-Accent);
 }
 
 .ServicesPage-Plan-Card h3 {

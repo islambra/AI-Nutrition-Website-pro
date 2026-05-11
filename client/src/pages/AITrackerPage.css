@@ -24,12 +24,15 @@
 
 .AIT-Wrapper {
   background: var(--ait-gradient-main);
-  min-height: 100vh;
-  padding: 140px 5% 100px;
+  height: 100vh;
+  padding: 80px 5% 20px;
   font-family: var(--ait-font);
   color: var(--ait-text-primary);
   position: relative;
-  overflow-x: hidden;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Subtle grid background */
@@ -135,112 +138,214 @@
   margin-bottom: 30px;
 }
 
-/* Paywall */
-.AIT-Paywall {
+/* Premium Paywall V2 */
+.AIT-Paywall-V2 {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  padding: 40px 20px;
+  gap: 30px;
+  max-width: 1000px;
+  margin: 0 auto;
 }
 
-.AIT-PaywallContent {
-  background: var(--ait-gradient-card);
+.AIT-Paywall-Card {
+  background: var(--ait-surface);
   border: 1px solid var(--ait-border);
-  backdrop-filter: blur(20px);
-  padding: 60px 50px;
   border-radius: var(--ait-radius-xl);
-  box-shadow: 0 30px 60px rgba(0,0,0,0.06), 0 0 80px rgba(34,197,94,0.1);
-  text-align: center;
-  max-width: 520px;
-  width: 100%;
-  position: relative;
   overflow: hidden;
+  position: relative;
+  box-shadow: 0 40px 100px rgba(0,0,0,0.08);
+  width: 100%;
 }
 
-.AIT-PaywallGlow {
+.AIT-Neural-Glow {
   position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle at center, rgba(34,197,94,0.08) 0%, transparent 70%);
+  top: -100px;
+  right: -100px;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(34, 197, 94, 0.1) 0%, transparent 70%);
   pointer-events: none;
 }
 
-.AIT-PaywallIconWrap {
-  background: rgba(34,197,94,0.1);
-  width: 90px;
-  height: 90px;
-  border-radius: 50%;
+.AIT-Paywall-Layout {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  min-height: 500px;
+}
+
+.AIT-Paywall-Hero {
+  padding: 60px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-right: 1px solid var(--ait-border);
+}
+
+.AIT-Lock-Badge {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  margin-bottom: 30px;
-}
-
-.AIT-PaywallIcon {
+  gap: 8px;
+  background: var(--ait-surface-light);
   color: var(--ait-accent);
+  padding: 8px 16px;
+  border-radius: 50px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  width: fit-content;
+  margin-bottom: 24px;
 }
 
-.AIT-PaywallContent h2 {
-  font-size: 2.2rem;
-  font-weight: 800;
-  margin-bottom: 16px;
+.AIT-Paywall-Hero h2 {
+  font-size: clamp(32px, 4vw, 56px);
+  line-height: 1;
+  font-weight: 900;
+  margin-bottom: 20px;
   color: var(--ait-text-primary);
 }
 
-.AIT-PaywallContent p {
-  color: var(--ait-text-secondary);
-  font-size: 1.05rem;
-  line-height: 1.6;
-  margin-bottom: 30px;
-}
-
-.AIT-PriceTag {
-  background: rgba(34,197,94,0.05);
-  border: 1px solid rgba(34,197,94,0.12);
-  border-radius: var(--ait-radius-md);
-  padding: 20px;
-  margin-bottom: 35px;
-}
-
-.AIT-Price {
-  font-size: 3rem;
-  font-weight: 900;
+.AIT-Accent-Text {
   color: var(--ait-accent);
-  display: block;
 }
 
-.AIT-PriceLabel {
-  font-size: 0.9rem;
+.AIT-Paywall-Hero p {
+  font-size: 18px;
   color: var(--ait-text-secondary);
-  font-weight: 500;
+  line-height: 1.6;
+  max-width: 400px;
+  margin-bottom: 40px;
 }
 
-.AIT-PaywallBtn {
-  display: inline-flex;
+.AIT-Feature-List {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.AIT-Feature-Item-Mini {
+  display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 18px 40px;
-  background: linear-gradient(135deg, #22C55E 0%, #16A34A 100%);
-  color: #FFFFFF;
-  border: none;
-  border-radius: 50px;
+  gap: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ait-text-primary);
+}
+
+.AIT-Feature-Item-Mini svg {
+  color: var(--ait-accent);
+  flex-shrink: 0;
+}
+
+.AIT-Paywall-Pricing {
+  background: var(--ait-surface-light);
+  padding: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.AIT-Pricing-Inner {
+  width: 100%;
+}
+
+.AIT-Price-Badge {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--ait-text-secondary);
+  letter-spacing: 0.2em;
+  margin-bottom: 10px;
+}
+
+.AIT-Price-Value {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  color: var(--ait-text-primary);
+  margin-bottom: 10px;
+}
+
+.AIT-Price-Value .currency {
+  font-size: 24px;
+  font-weight: 800;
+  margin-top: 10px;
+}
+
+.AIT-Price-Value .amount {
+  font-size: 80px;
+  font-weight: 900;
+  letter-spacing: -0.05em;
+}
+
+.AIT-Price-Detail {
+  font-size: 12px;
   font-weight: 700;
-  font-size: 1.1rem;
+  color: var(--ait-accent);
+  margin-bottom: 40px;
+}
+
+.AIT-Purchase-Btn {
+  width: 100%;
+  padding: 24px;
+  border-radius: 100px;
+  background: var(--ait-text-primary);
+  color: #fff;
+  border: none;
+  font-family: var(--ait-font);
+  font-weight: 800;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
   cursor: pointer;
-  box-shadow: 0 10px 30px rgba(34,197,94,0.3);
-  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  margin-bottom: 24px;
 }
 
-.AIT-PaywallBtn:hover:not(:disabled) {
-  transform: translateY(-3px);
-  box-shadow: 0 20px 40px rgba(34,197,94,0.4);
+.AIT-Purchase-Btn:hover {
+  background: var(--ait-accent);
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(34, 197, 94, 0.2);
 }
 
-.AIT-PaywallBtn:disabled {
+.AIT-Secure-Notice {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--ait-text-secondary);
   opacity: 0.6;
-  cursor: not-allowed;
+}
+
+.AIT-Paywall-Footer {
+  text-align: center;
+  color: var(--ait-text-secondary);
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+@media (max-width: 900px) {
+  .AIT-Paywall-Layout {
+    grid-template-columns: 1fr;
+  }
+  .AIT-Paywall-Hero {
+    border-right: none;
+    border-bottom: 1px solid var(--ait-border);
+    padding: 40px;
+  }
+  .AIT-Paywall-Pricing {
+    padding: 40px;
+  }
+  .AIT-Feature-List {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Grid */

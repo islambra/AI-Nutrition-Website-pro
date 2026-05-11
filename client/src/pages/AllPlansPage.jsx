@@ -1,6 +1,6 @@
 // components/AllPlansPage.jsx
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Calendar, DollarSign, Target, Users, Clock, 
@@ -135,8 +135,9 @@ function AllPlansPage() {
 
   const handlePlanClick = (plan, e) => {
     e.stopPropagation();
-    setSelectedPlan(plan);
-    setModalOpen(true);
+    navigate(`/checkout/${plan._id}`, {
+      state: { plan }
+    });
   };
 
   const handleBuyNow = () => {
@@ -349,7 +350,7 @@ function AllPlansPage() {
                       </p>
                       <div className="AP-CardMeta">
                         <span><Calendar size={14} /> {plan.duration} weeks</span>
-                        <span><DollarSign size={14} /> ${plan.price}</span>
+                        <span><DollarSign size={14} /> {(plan.price * 140).toLocaleString()} DZD</span>
                         <span><MessageCircle size={14} /> {plan.consultationIncluded} Sessions</span>
                       </div>
                       <div className="AP-CardFooter">
@@ -363,9 +364,9 @@ function AllPlansPage() {
                           )}
                           <span className="AP-CreatorName">{plan.creatorInfo?.fullName || 'Unknown'}</span>
                         </div>
-                        <button className="AP-ViewPlanBtn" onClick={(e) => handlePlanClick(plan, e)}>
-                          <ShoppingCart size={16} /> Buy <ChevronRight size={16} />
-                        </button>
+                        <Link to={`/checkout/${plan._id}`} state={{ plan }} className="AP-ViewPlanBtn">
+                          <ShoppingCart size={16} /> Select Plan <ChevronRight size={16} />
+                        </Link>
                       </div>
                     </div>
                   </motion.div>
@@ -396,7 +397,7 @@ function AllPlansPage() {
                       </p>
                       <div className="AP-ListItemMeta">
                         <span><Calendar size={14} /> {plan.duration} weeks</span>
-                        <span><DollarSign size={14} /> ${plan.price}</span>
+                        <span><DollarSign size={14} /> {(plan.price * 140).toLocaleString()} DZD</span>
                         <span><MessageCircle size={14} /> {plan.consultationIncluded} Sessions</span>
                         <span><Clock size={14} /> {plan.followUpFrequency}</span>
                       </div>
@@ -412,9 +413,9 @@ function AllPlansPage() {
                         )}
                         <span>{plan.creatorInfo?.fullName || 'Unknown'}</span>
                       </div>
-                      <button className="AP-ViewPlanBtn" onClick={(e) => handlePlanClick(plan, e)}>
-                        <ShoppingCart size={16} /> Buy
-                      </button>
+                      <Link to={`/checkout/${plan._id}`} state={{ plan }} className="AP-ViewPlanBtn">
+                        <ShoppingCart size={16} /> Select Plan
+                      </Link>
                     </div>
                   </motion.div>
                 </ScrollReveal>

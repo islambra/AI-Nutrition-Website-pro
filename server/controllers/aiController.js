@@ -1,7 +1,7 @@
 import AiAccess from "../models/AiAccess.js";
 import Payment from "../models/Payment.js";
 
-const AI_TRACKER_PRICE = 9.99;
+const AI_TRACKER_PRICE = 1500; // Algerian Affordable Pricing (DZD)
 
 // Check if the user already has AI access
 export const checkAiAccess = async (req, res) => {

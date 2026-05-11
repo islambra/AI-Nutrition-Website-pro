@@ -183,37 +183,70 @@ function AITrackerPage() {
         </div>
 
         <div className="AIT-Container">
-          <header className="AIT-Header">
-            <ScrollReveal delay={0.1}>
-              <h1 className="AIT-Title">
-                <span className="AIT-TitleLine">AI</span>
-                <span className="AIT-TitleGradient">TRACKER</span>
-              </h1>
-              <p className="AIT-Subtitle">Next‑generation nutritional intelligence at your fingertips.</p>
-            </ScrollReveal>
-          </header>
-
           {!hasAccess ? (
-            /* ----- PAYWALL ----- */
+            /* ----- PREMIUM PAYWALL ----- */
             <motion.div
-              initial={{ opacity: 0, scale: 0.95 }}
+              initial={{ opacity: 0, scale: 0.98 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="AIT-Paywall"
+              className="AIT-Paywall-V2"
             >
-              <div className="AIT-PaywallContent">
-                <div className="AIT-PaywallGlow" />
-                <div className="AIT-PaywallIconWrap">
-                  <Lock size={48} strokeWidth={1.5} className="AIT-PaywallIcon" />
+              <div className="AIT-Paywall-Card">
+                <div className="AIT-Neural-Glow" />
+                
+                <div className="AIT-Paywall-Layout">
+                  <div className="AIT-Paywall-Hero">
+                    <div className="AIT-Lock-Badge">
+                      <Lock size={20} />
+                      <span>PREMIUM ENGINE</span>
+                    </div>
+                    <h2>NEURAL <br /> <span className="AIT-Accent-Text">RECOGNITION</span></h2>
+                    <p>Unlock the full biological intelligence suite for a one‑time activation fee.</p>
+                    
+                    <div className="AIT-Feature-List">
+                      <div className="AIT-Feature-Item-Mini">
+                        <CheckCircle2 size={18} />
+                        <span>98.4% Recognition Accuracy</span>
+                      </div>
+                      <div className="AIT-Feature-Item-Mini">
+                        <CheckCircle2 size={18} />
+                        <span>Instant Macro Decomposition</span>
+                      </div>
+                      <div className="AIT-Feature-Item-Mini">
+                        <CheckCircle2 size={18} />
+                        <span>Clinical‑Grade Health Scoring</span>
+                      </div>
+                      <div className="AIT-Feature-Item-Mini">
+                        <CheckCircle2 size={18} />
+                        <span>Lifetime Biological Updates</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="AIT-Paywall-Pricing">
+                    <div className="AIT-Pricing-Inner">
+                      <div className="AIT-Price-Badge">LIMITED OFFER</div>
+                      <div className="AIT-Price-Value">
+                        <span className="amount">1,500</span>
+                        <span className="currency" style={{ marginLeft: '8px', fontSize: '20px' }}>DZD</span>
+                      </div>
+                      <p className="AIT-Price-Detail">LIFETIME ACCESS • NO SUBSCRIPTION</p>
+                      
+                      <button className="AIT-Purchase-Btn" onClick={openCheckout}>
+                        <CreditCard size={20} />
+                        UNLOCK SYSTEM <ArrowRight size={18} />
+                      </button>
+                      
+                      <div className="AIT-Secure-Notice">
+                        <Shield size={14} />
+                        <span>SECURE ENCRYPTED CHECKOUT</span>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <h2>Unlock AI Tracker</h2>
-                <p>One‑time purchase for unlimited access to advanced food recognition technology.</p>
-                <div className="AIT-PriceTag">
-                  <span className="AIT-Price">$9.99</span>
-                  <span className="AIT-PriceLabel">Lifetime Access</span>
-                </div>
-                <button className="AIT-PaywallBtn" onClick={openCheckout}>
-                  <CreditCard size={22} /> Purchase Now
-                </button>
+              </div>
+              
+              <div className="AIT-Paywall-Footer">
+                <p>Trusted by health optimizers and clinical professionals worldwide.</p>
               </div>
             </motion.div>
           ) : (
@@ -412,7 +445,7 @@ function AITrackerPage() {
                   <X size={20} />
                 </button>
                 <h2>Complete Purchase</h2>
-                <p className="AIT-CheckoutPrice">$9.99</p>
+                <p className="AIT-CheckoutPrice">1,500 DZD</p>
                 <form onSubmit={handleCheckoutSubmit}>
                   <div className="AIT-FormGroup">
                     <label>Cardholder Name</label>
@@ -440,7 +473,7 @@ function AITrackerPage() {
                     {buying ? (
                       <><Loader2 size={18} className="AIT-Spin" /> Processing…</>
                     ) : (
-                      <><CreditCard size={18} /> Pay $9.99</>
+                      <><CreditCard size={18} /> Pay 1,500 DZD</>
                     )}
                   </button>
                 </form>

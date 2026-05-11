@@ -1,12 +1,12 @@
-// components/CheckoutPage.jsx
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { 
   ArrowLeft, CreditCard, Shield, Check, 
-  Calendar, MessageCircle, DollarSign
+  Calendar, MessageCircle, DollarSign, Loader2, Info
 } from 'lucide-react';
 import { buyPlan } from '../api/paymentApi';
+import { getPlanById } from '../api/planApi';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 import PageTransition from '../components/PageTransition';
@@ -15,21 +15,61 @@ import './CheckoutPage.css';
 function CheckoutPage() {
   const { planId } = useParams();
   const location = useLocation();
-  const plan = location.state?.plan;
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, isAuthenticated, loading: authLoading } = useAuth();
 
+  const [plan, setPlan] = useState(location.state?.plan || null);
+  const [loadingPlan, setLoadingPlan] = useState(!location.state?.plan);
+  const [planError, setPlanError] = useState(null);
+  
   const [paymentMethod, setPaymentMethod] = useState('credit_card');
   const [loading, setLoading] = useState(false);
   const [cardInfo, setCardInfo] = useState({
     cardNumber: '',
     expiry: '',
     cvv: '',
-    name: ''
+    name: user?.fullName || ''
   });
+
+  useEffect(() => {
+    if (!authLoading && !isAuthenticated) {
+      toast.error('Please login to continue');
+      navigate('/login', { state: { from: location.pathname } });
+    }
+  }, [isAuthenticated, authLoading, navigate, location.pathname]);
+
+  useEffect(() => {
+    const fetchPlan = async () => {
+      if (plan) return;
+      
+      try {
+        setLoadingPlan(true);
+        const response = await getPlanById(planId);
+        if (response.success) {
+          setPlan(response.data);
+        } else {
+          setPlanError('Plan not found');
+        }
+      } catch (error) {
+        console.error('Error fetching plan:', error);
+        setPlanError('Error loading plan details');
+      } finally {
+        setLoadingPlan(false);
+      }
+    };
+
+    if (planId) {
+      fetchPlan();
+    }
+  }, [planId, plan]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!isAuthenticated) {
+      toast.error('Please login to purchase');
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -37,7 +77,6 @@ function CheckoutPage() {
       
       if (response.success) {
         toast.success('Plan purchased successfully!');
-        // Update user in context if needed
         navigate('/my-plans');
       }
     } catch (error) {
@@ -47,9 +86,30 @@ function CheckoutPage() {
     }
   };
 
-  if (!plan) {
-    navigate('/plans');
-    return null;
+  if (authLoading || loadingPlan) {
+    return (
+      <div className="AP-LoadingContainer">
+        <Loader2 size={48} className="AP-Spin" />
+        <p>Loading checkout details...</p>
+      </div>
+    );
+  }
+
+  if (planError || !plan) {
+    return (
+      <div className="AP-ErrorContainer" style={{ textAlign: 'center', padding: '100px 20px' }}>
+        <Info size={48} style={{ color: '#EF4444', marginBottom: '20px' }} />
+        <h2>Oops! Plan Not Found</h2>
+        <p>{planError || "The plan you're looking for doesn't exist or has been removed."}</p>
+        <button 
+          onClick={() => navigate('/allPlans')}
+          className="AP-ClearFiltersBtn"
+          style={{ marginTop: '20px' }}
+        >
+          Back to Plans
+        </button>
+      </div>
+    );
   }
 
   return (
@@ -70,12 +130,16 @@ function CheckoutPage() {
             <h2>Order Summary</h2>
             
             <div className="plan-summary-card">
-              {plan.planImage && (
+              {plan.planImage ? (
                 <img src={plan.planImage} alt={plan.planName} />
+              ) : (
+                <div className="plan-placeholder" style={{ height: '150px', background: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '12px', marginBottom: '15px' }}>
+                  <Calendar size={48} color="#ccc" />
+                </div>
               )}
               <h3>{plan.planName}</h3>
               <span className="category">{plan.planCategory}</span>
-              <p>{plan.description}</p>
+              <p>{plan.description?.length > 150 ? `${plan.description.substring(0, 150)}...` : plan.description}</p>
               
               <div className="summary-details">
                 <div className="summary-item">
@@ -96,7 +160,7 @@ function CheckoutPage() {
                   <DollarSign size={18} />
                   <div>
                     <span className="label">Price</span>
-                    <span className="value price">${plan.price}</span>
+                    <span className="value price">{(plan.price * 140).toLocaleString()} DZD</span>
                   </div>
                 </div>
               </div>
@@ -188,7 +252,7 @@ function CheckoutPage() {
                   ) : (
                     <>
                       <Check size={20} />
-                      Pay ${plan.price}
+                      Pay {(plan.price * 140).toLocaleString()} DZD
                     </>
                   )}
                 </button>

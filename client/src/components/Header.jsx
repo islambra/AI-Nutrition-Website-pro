@@ -95,7 +95,6 @@ function Header() {
         <nav className="desktop-nav-links">
           <NavLink to="/" className="nav-item">Home</NavLink>
           <NavLink to="/services" className="nav-item">Services</NavLink>
-          <NavLink to="/ai-tracker" className="nav-item">AI Tracker</NavLink>
           <NavLink to="/blogs" className="nav-item">Blogs</NavLink>
           <NavLink to="/about" className="nav-item">About Us</NavLink>
           <NavLink to="/contact" className="nav-item">Contact Us</NavLink>
@@ -161,7 +160,6 @@ function Header() {
       <nav className={`mobile-menu ${isMenuOpen ? "is-open" : ""}`}>
         <NavLink to="/" className="mobile-nav-item">Home</NavLink>
         <NavLink to="/services" className="mobile-nav-item">Services</NavLink>
-        <NavLink to="/ai-tracker" className="mobile-nav-item">AI Tracker</NavLink>
         <NavLink to="/blogs" className="mobile-nav-item">Blogs</NavLink>
         <NavLink to="/about" className="mobile-nav-item">About Us</NavLink>
         <NavLink to="/contact" className="mobile-nav-item">Contact Us</NavLink>

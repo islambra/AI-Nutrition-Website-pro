@@ -30,12 +30,14 @@ const upload = multer({
 
 // Public routes
 planRouter.get("/", getAllPlans);
-planRouter.get("/:id", getPlanById);
 
 // Protected routes (nutritionist only)
 planRouter.get("/my-plans/list", protect, getMyPlans);
 planRouter.post("/", protect, upload.single("planImage"), createPlan);
 planRouter.put("/:id", protect, upload.single("planImage"), updatePlan);
 planRouter.delete("/:id", protect, deletePlan);
+
+// Get single plan - move this after specific routes
+planRouter.get("/:id", getPlanById);
 
 export default planRouter;

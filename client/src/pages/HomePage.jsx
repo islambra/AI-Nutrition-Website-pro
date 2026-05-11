@@ -1,13 +1,13 @@
 import { useState, useRef, useEffect, useMemo, memo } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate, Link } from 'react-router-dom';
 import { motion, useScroll, useTransform, useSpring, useVelocity, useAnimationFrame, AnimatePresence, useMotionValue } from 'framer-motion';
-import { Sparkles, Star, Zap, Activity, Heart, Brain, Flame, Share2, MousePointer2, Terminal, Cpu, Target, Fingerprint, Dna, Clock, Eye, Radio, ChevronRight, Crosshair, Hexagon, Leaf, Sun, Wind, ArrowUpRight, Check, Quote, Users } from 'lucide-react';
-import { AreaChart, Area, ResponsiveContainer, Tooltip, XAxis, YAxis, CartesianGrid } from 'recharts';
+import { Activity, Leaf, ChevronRight, ArrowUpRight, Check, Quote, Users, Target, Dna, ShoppingCart } from 'lucide-react';
 import './HomePage.css';
 import Footer from '../components/Footer.jsx';
 import ScrollReveal from '../components/ScrollReveal.jsx';
-import CustomCursor from '../components/CustomCursor.jsx';
 import { useAuth } from '../context/AuthContext';
+import { getAllPlans } from '../api/planApi';
+import toast from 'react-hot-toast';
 
 // --- 1. REFRESH PRELOADER ---
 const HealthPreloader = memo(() => {
@@ -181,11 +181,6 @@ const VelocityMarquee = memo(({ children, baseVelocity = -3 }) => {
   );
 });
 
-const chartData = [
-  { time: '08:00', v: 40 }, { time: '10:00', v: 85 }, { time: '12:00', v: 65 },
-  { time: '14:00', v: 95 }, { time: '16:00', v: 75 }, { time: '18:00', v: 90 }, { time: '20:00', v: 50 },
-];
-
 function HomePage() {
   const [isLoading, setIsLoading] = useState(true);
   const { isAuthenticated } = useAuth();
@@ -216,30 +211,105 @@ function HomePage() {
       role: "Athlete",
       text: "Finally, a system that understands nutrient density versus just calories. My recovery time has decreased by 40%.",
       image: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?q=80&w=1974&auto=format&fit=crop"
+    },
+    {
+      name: "James Wilson",
+      role: "Executive",
+      text: "Managing a high-stress career requires cognitive clarity. This platform ensures my brain is fueled for maximum output.",
+      image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=2070&auto=format&fit=crop"
     }
   ];
 
-  const previewPlans = [
-    {
-      title: "VITAL ESSENTIALS",
-      price: "$19",
-      features: ["Monthly Vitality Tracking", "AI Nutrition Hub Access", "Weekly Insights"],
-      icon: <Target size={24} />
-    },
-    {
-      title: "PRECISION CARE",
-      price: "$49",
-      features: ["1-on-1 Clinical Consult", "Health History Analysis", "Priority Messaging"],
-      icon: <Activity size={24} />,
-      featured: true
-    },
-    {
-      title: "BIO COMMUNITY",
-      price: "$29",
-      features: ["Verified Network Access", "Expert Research Feed", "Bio-Wellness Forums"],
-      icon: <Users size={24} />
+  const [previewPlans, setPreviewPlans] = useState([]);
+  const [plansLoading, setPlansLoading] = useState(true);
+  const [reviewIndex, setReviewIndex] = useState(0);
+
+  const [planIndex, setPlanIndex] = useState(0);
+
+  useEffect(() => {
+    const fetchPreviewPlans = async () => {
+      try {
+        const response = await getAllPlans();
+        if (response.success) {
+          const plans = response.data.map((plan, i) => {
+            // Category-based icon fallback
+            let CategoryIcon = <Activity size={24} />;
+            if (plan.planCategory === "Weight Loss") CategoryIcon = <Target size={24} />;
+            else if (plan.planCategory === "Muscle Gain") CategoryIcon = <Activity size={24} />;
+            else if (plan.planCategory === "Diabetes") CategoryIcon = <Dna size={24} />;
+            else if (plan.planCategory === "PCOS & Hormonal Balance") CategoryIcon = <Users size={24} />;
+            
+            return {
+              ...plan, 
+              title: plan.planName.toUpperCase(),
+              displayPrice: `${(plan.price * 140).toLocaleString()} DZD`,
+              features: [
+                `${plan.duration} Weeks Program`,
+                `${plan.consultationIncluded} Consultations`,
+                plan.followUpFrequency + " Follow-ups"
+              ],
+              icon: CategoryIcon,
+              featured: i === 1
+            };
+          });
+          setPreviewPlans(plans);
+        }
+      } catch (error) {
+        console.error("Error fetching preview plans:", error);
+      } finally {
+        setPlansLoading(false);
+      }
+    };
+    fetchPreviewPlans();
+  }, []);
+
+  const nextPlan = () => setPlanIndex((prev) => (prev + 1) % previewPlans.length);
+  const prevPlan = () => setPlanIndex((prev) => (prev - 1 + previewPlans.length) % previewPlans.length);
+
+  const nextReview = () => setReviewIndex((prev) => (prev + 1) % reviews.length);
+  const prevReview = () => setReviewIndex((prev) => (prev - 1 + reviews.length) % reviews.length);
+
+  const handleSelectPlan = (plan) => {
+    if (!isAuthenticated) {
+      toast.error("Please login to purchase a plan");
+      navigate('/login');
+      return;
     }
-  ];
+    navigate(`/checkout/${plan._id}`, {
+      state: { plan }
+    });
+  };
+
+  const plansTrackRef = useRef(null);
+  const [trackConstraints, setTrackConstraints] = useState({ left: 0, right: 0 });
+
+  useEffect(() => {
+    if (plansTrackRef.current) {
+      const updateConstraints = () => {
+        const track = plansTrackRef.current;
+        const container = track.parentElement;
+        const scrollWidth = track.scrollWidth;
+        const containerWidth = container.offsetWidth;
+        setTrackConstraints({
+          left: -(scrollWidth - containerWidth),
+          right: 0
+        });
+      };
+
+      updateConstraints();
+      window.addEventListener('resize', updateConstraints);
+      return () => window.removeEventListener('resize', updateConstraints);
+    }
+  }, [previewPlans]);
+
+  const handleDragEnd = (event, info) => {
+    const threshold = 100;
+    if (info.offset.x < -threshold && planIndex < previewPlans.length - 1) {
+      nextPlan();
+    } else if (info.offset.x > threshold && planIndex > 0) {
+      prevPlan();
+    }
+  };
 
   return (
     <div className="home-page-wrapper">
@@ -252,144 +322,127 @@ function HomePage() {
       <OrganicFloaters />
 
 
-      {/* 1. HERO: ORGANIC PRECISION */}
+      {/* 1. HERO: UX REFINEMENT */}
       <section className="hero-section-v4">
         <HeroScrollFrames />
         <motion.div 
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          style={{ textAlign: 'center', position: 'relative', zIndex: 10 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1 }}
+          style={{ textAlign: 'center', position: 'relative', zIndex: 10, maxWidth: '1000px' }}
         >
           
           <h1 className="hero-giant-text-v2">
-            NATURAL <br /> INTELLIGENCE
+            FUEL YOUR <br /> VITALITY
           </h1>
+          <p className="hero-subtitle-v2">
+            Precision nutrition tailored to your unique biological signature. <br /> 
+            Unlock peak health through expert-led dietary science and clinical-grade tracking.
+          </p>
           
-          <div className="hero-buttons">
+          <motion.div 
+            className="hero-buttons"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6, duration: 0.8 }}
+          >
             <NavLink to="/signup" className="btn-y2k btn-y2k-primary">
               Start Assessment <ArrowUpRight size={20} />
             </NavLink>
             <NavLink to="/services" className="btn-y2k btn-y2k-glass">
               Our Science <Dna size={20} />
             </NavLink>
-          </div>
+          </motion.div>
         </motion.div>
       </section>
 
       {/* 2. VELOCITY MARQUEE */}
       <VelocityMarquee>
-        ✦ CELLULAR HARMONY ✦ NUTRIENT DENSITY ✦ PEAK VITALITY ✦ AI PRECISION ✦ ORGANIC GROWTH ✦
+        ✦ EXPERT GUIDANCE ✦ BIOLOGICAL PRECISION ✦ CLINICAL TRACKING ✦ PEAK VITALITY ✦ ORGANIC GROWTH ✦
       </VelocityMarquee>
 
-      {/* 3. BENTO: CLEAN ANALYTICS */}
-      <section className="bento-section" style={{ position: 'relative', zIndex: 5 }}>
-        <div className="hyper-grid">
-          <div className="hyper-card c-1">
-            <Leaf size={40} color="#2D5A27" style={{ marginBottom: '20px' }} />
-            <h2 style={{ fontFamily: 'Outfit', fontSize: 'clamp(32px, 5vw, 60px)', fontWeight: 900, color: '#2D5A27' }}>Organic <br /> Analytics</h2>
-            <p style={{ marginTop: '20px', fontSize: '18px', color: '#6B7280' }}>Precision nutrition mapped to your unique biological signature.</p>
-          </div>
-          
-          <div className="hyper-card c-2">
-            <Activity size={32} color="#34C759" />
-            <div style={{ height: '150px', marginTop: '20px' }}>
-              <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={chartData}>
-                  <Area type="monotone" dataKey="v" stroke="#34C759" strokeWidth={3} fill="#34C759" fillOpacity={0.1} />
-                </AreaChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-
-          <div className="hyper-card c-3" style={{ background: 'linear-gradient(135deg, #2D5A27, #34C759)', color: '#fff' }}>
-            <Sun size={40} />
-            <h3 style={{ fontSize: '48px', fontWeight: 900, marginTop: '20px' }}>99.4%</h3>
-            <p style={{ fontWeight: 600, opacity: 0.9 }}>BIOMETRIC ACCURACY</p>
-          </div>
-
-          <div className="hyper-card c-4">
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <h3 style={{ fontSize: '32px', fontWeight: 900, color: '#2D5A27' }}>VITAL READOUT</h3>
-              <Brain size={30} color="#34C759" />
-            </div>
-            <div style={{ marginTop: '30px', fontFamily: 'Outfit', color: '#2D5A27', fontSize: '14px', background: '#E8F5E9', padding: '20px', borderRadius: '20px' }}>
-              {`> TARGET: OPTIMAL HEALTH\n> STATUS: HARMONIZED\n> FUEL: PLANT BASED`}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 4. AI FEATURE: NEURAL RECOGNITION */}
-      <section className="HP-AI-Section">
-        <div className="HP-AI-Grid">
-          <ScrollReveal direction="left" className="HP-AI-TextSide">
-            <h2 className="HP-AI-Title">
-              AI ASSISTED <br /> CALORIE SYNC
-            </h2>
-            <p className="HP-AI-Description">
-              Our proprietary computer vision model identifies food components and estimates nutritional density with clinical-grade precision. 
-              No manual logging. Just pure visual intelligence.
-            </p>
-            <NavLink to="/ai-tracker" className="btn-y2k btn-y2k-primary">
-              Access AI Engine <Zap size={20} />
-            </NavLink>
-          </ScrollReveal>
-          
-          <ScrollReveal direction="right">
-            <div className="HP-AI-VisualBox">
-              <div className="HP-AI-Corner HP-AI-TL" />
-              <div className="HP-AI-Corner HP-AI-TR" />
-              <div className="HP-AI-Corner HP-AI-BL" />
-              <div className="HP-AI-Corner HP-AI-BR" />
-              
-              <div className="HP-AI-ImageWrapper">
-                <img 
-                  src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=2070&auto=format&fit=crop" 
-                  alt="AI Analysis" 
-                  className="HP-AI-Image" 
-                />
-                <div className="HP-AI-ScanContainer">
-                  <div className="HP-AI-ScanLine" />
-                </div>
-              </div>
-              
-              <div className="HP-AI-Badge">
-                <div className="HP-AI-BadgeStatus">ANALYSIS SUCCESS</div>
-                <div className="HP-AI-BadgeValue">420 KCAL</div>
-              </div>
-            </div>
-          </ScrollReveal>
-        </div>
-      </section>
-
-      {/* 5. PLANS PEAK */}
+      {/* 3. PLANS PEAK */}
       <section className="HP-Plans-Section">
         <div className="HP-Section-Header">
           <ScrollReveal>
-            <h2 className="HP-Section-Title">VITALITY <span className="HP-Accent-Text">BLUEPRINTS</span></h2>
-            <p className="HP-Section-Subtitle">Strategic nutritional architectures for high-performance living.</p>
+            <h2 className="HP-Section-Title">VITALITY <span className="HP-Accent-Text">PLANS</span></h2>
+            <p className="HP-Section-Subtitle">Strategic nutritional architectures designed by clinical experts.</p>
           </ScrollReveal>
         </div>
 
-        <div className="HP-Plans-Grid">
-          {previewPlans.map((plan, i) => (
-            <ScrollReveal key={i} delay={i * 0.1} direction={i % 2 === 0 ? "left" : "right"}>
-              <div className={`HP-Plan-Card ${plan.featured ? 'featured' : ''}`}>
-                <div className="HP-Plan-Icon">{plan.icon}</div>
-                <h3>{plan.title}</h3>
-                <div className="HP-Plan-Price">{plan.price}<span>/mo</span></div>
-                <ul className="HP-Plan-Features">
-                  {plan.features.map((feat, fi) => (
-                    <li key={fi}><Check size={16} /> {feat}</li>
+        <div className="HP-Plans-Slider-Wrapper">
+          {plansLoading ? (
+            <div className="HP-Loading-State">
+              <Activity className="AP-Spin" size={48} />
+              <p>Calibrating Plans...</p>
+            </div>
+          ) : previewPlans.length > 0 ? (
+            <>
+              <div className="HP-Plans-Slider-Container">
+                <motion.div 
+                  className="HP-Plans-Track"
+                  ref={plansTrackRef}
+                  drag="x"
+                  dragConstraints={trackConstraints}
+                  animate={{ 
+                    x: window.innerWidth > 768 
+                      ? `calc(-${planIndex * (100 / 3)}% - ${planIndex * (30 / 3)}px)`
+                      : `calc(-${planIndex * 100}% - ${planIndex * 30}px)`
+                  }}
+                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                  onDragEnd={handleDragEnd}
+                >
+                  {previewPlans.map((plan, i) => (
+                    <div key={i} className="HP-Plan-Slide">
+                      <div className={`HP-Plan-Card ${i % 2 === 1 ? 'featured' : ''}`}>
+                        <div className="HP-Plan-Image-Container">
+                          {plan.planImage ? (
+                            <img src={plan.planImage} alt={plan.planName} className="HP-Plan-Image" />
+                          ) : (
+                            <div className="HP-Plan-Icon-Fallback">{plan.icon}</div>
+                          )}
+                        </div>
+                        <h3>{plan.title}</h3>
+                        <div className="HP-Plan-Price">{plan.displayPrice}<span>/mo</span></div>
+                        <ul className="HP-Plan-Features">
+                          {plan.features.map((feat, fi) => (
+                            <li key={fi}><Check size={16} /> {feat}</li>
+                          ))}
+                        </ul>
+                        <button 
+                          onClick={() => handleSelectPlan(plan)}
+                          className="HP-Plan-Btn"
+                          style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', font: 'inherit' }}
+                        >
+                          <ShoppingCart size={16} style={{ marginRight: '8px' }} />
+                          Select Plan
+                          <ChevronRight size={16} style={{ marginLeft: '8px' }} />
+                        </button>
+                      </div>
+                    </div>
                   ))}
-                </ul>
-                <NavLink to={isAuthenticated ? "/allPlans" : "/login"} className="HP-Plan-Btn">
-                  Select Blueprint
-                </NavLink>
+                </motion.div>
               </div>
-            </ScrollReveal>
-          ))}
+
+              <div className="HP-Plans-Controls">
+                <button onClick={prevPlan} className="HP-Plan-NavBtn prev"><ChevronRight size={24} style={{ transform: 'rotate(180deg)' }} /></button>
+                <div className="HP-Plans-Dots">
+                  {previewPlans.map((_, i) => (
+                    <div 
+                      key={i} 
+                      className={`HP-Plan-Dot ${i === planIndex ? 'active' : ''}`}
+                      onClick={() => setPlanIndex(i)}
+                    />
+                  ))}
+                </div>
+                <button onClick={nextPlan} className="HP-Plan-NavBtn next"><ChevronRight size={24} /></button>
+              </div>
+            </>
+          ) : (
+            <div className="HP-Empty-Plans">
+              <p>No plans available at the moment. Please check back later.</p>
+            </div>
+          )}
         </div>
         
         <ScrollReveal className="HP-ViewAll-Container">
@@ -399,40 +452,64 @@ function HomePage() {
         </ScrollReveal>
       </section>
 
-      {/* 6. REVIEWS: BIOLOGICAL TESTIMONIALS */}
+      {/* 4. REVIEWS: BIOLOGICAL TESTIMONIALS */}
       <section className="HP-Reviews-Section">
         <div className="HP-Section-Header">
           <ScrollReveal>
             <h2 className="HP-Section-Title">BIOLOGICAL <span className="HP-Accent-Text">REPORTS</span></h2>
-            <p className="HP-Section-Subtitle">Peer-reviewed feedback from the high-performance community.</p>
+            <p className="HP-Section-Subtitle">Real-world results from our global community of health optimizers.</p>
           </ScrollReveal>
         </div>
 
-        <div className="HP-Reviews-Grid">
-          {reviews.map((rev, i) => (
-            <ScrollReveal key={i} delay={i * 0.1}>
-              <div className="HP-Review-Card">
-                <Quote className="HP-Review-Quote" size={40} />
-                <p className="HP-Review-Text">{rev.text}</p>
-                <div className="HP-Review-User">
-                  <img src={rev.image} alt={rev.name} className="HP-Review-Avatar" />
-                  <div>
-                    <h4>{rev.name}</h4>
-                    <p>{rev.role}</p>
+        <div className="HP-Reviews-Slider-Container">
+          <div className="HP-Reviews-Track">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={reviewIndex}
+                initial={{ opacity: 0, x: 30 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -30 }}
+                transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+                className="HP-Review-Slide"
+              >
+                <div className="HP-Review-Card slider-mode">
+                  <Quote className="HP-Review-Quote" size={60} />
+                  <p className="HP-Review-Text">"{reviews[reviewIndex].text}"</p>
+                  <div className="HP-Review-User">
+                    <img src={reviews[reviewIndex].image} alt={reviews[reviewIndex].name} className="HP-Review-Avatar" />
+                    <div>
+                      <h4>{reviews[reviewIndex].name}</h4>
+                      <p>{reviews[reviewIndex].role}</p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            </ScrollReveal>
-          ))}
+              </motion.div>
+            </AnimatePresence>
+          </div>
+
+          <div className="HP-Reviews-Dots">
+            {reviews.map((_, i) => (
+              <div 
+                key={i} 
+                className={`HP-Review-Dot ${i === reviewIndex ? 'active' : ''}`}
+                onClick={() => setReviewIndex(i)}
+              />
+            ))}
+          </div>
+
+          <div className="HP-Reviews-Controls" style={{ marginTop: '40px', justifyContent: 'center' }}>
+            <button onClick={prevReview} className="HP-Review-NavBtn"><ChevronRight size={24} style={{ transform: 'rotate(180deg)' }} /></button>
+            <button onClick={nextReview} className="HP-Review-NavBtn"><ChevronRight size={24} /></button>
+          </div>
         </div>
       </section>
 
-      {/* 7. THE CORE CTA */}
-      <section className="cta-v5" style={{ position: 'relative', zIndex: 5 }}>
-        <ScrollReveal scale={0.9}>
-          <div className="hyper-card" style={{ maxWidth: '1000px', margin: '0 auto', textAlign: 'center', padding: '100px 40px', borderRadius: '60px', background: '#fff' }}>
-            <h2 style={{ fontFamily: 'Outfit', fontSize: 'clamp(40px, 8vw, 100px)', fontWeight: 900, marginBottom: '40px', color: '#2D5A27' }}>
-              RECLAIM <br /> VITALITY
+      {/* 5. THE CORE CTA */}
+      <section className="cta-v5">
+        <ScrollReveal scale={0.95}>
+          <div className="hyper-card" style={{ maxWidth: '1000px', margin: '0 auto', textAlign: 'center', padding: '120px 40px', borderRadius: '80px', background: '#fff' }}>
+            <h2 style={{ fontFamily: 'Outfit', fontSize: 'clamp(40px, 8vw, 80px)', fontWeight: 900, marginBottom: '40px', color: '#1E3F1B', letterSpacing: '-0.04em' }}>
+              RECLAIM YOUR <br /> VITALITY
             </h2>
             <NavLink to="/signup" className="btn-y2k btn-y2k-primary" style={{ margin: '0 auto', padding: '24px 64px' }}>
               Join the Movement
