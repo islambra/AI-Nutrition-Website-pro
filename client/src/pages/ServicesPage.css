@@ -274,7 +274,7 @@
 
 /* PLANS */
 .ServicesPage-Plans-Section {
-  padding: 120px 5%;
+  padding: 60px 5%; /* Reduced from 120px */
   background: #fff;
   border-radius: 60px 60px 0 0;
   position: relative;
@@ -283,7 +283,7 @@
 
 .ServicesPage-Section-Header {
   text-align: center;
-  margin-bottom: 80px;
+  margin-bottom: 40px; /* Reduced from 80px */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -291,30 +291,30 @@
 
 .ServicesPage-Badge {
   display: inline-flex;
-  padding: 8px 16px;
+  padding: 6px 12px; /* Reduced from 8px 16px */
   background: var(--S-Mint);
   color: var(--S-Green);
   border: 1px solid rgba(45, 90, 39, 0.1);
   border-radius: 100px;
   font-family: 'Outfit', sans-serif;
-  font-size: 11px;
+  font-size: 10px; /* Reduced from 11px */
   font-weight: 700;
   letter-spacing: 0.15em;
   text-transform: uppercase;
-  margin-bottom: 24px;
+  margin-bottom: 16px; /* Reduced from 24px */
 }
 
 .ServicesPage-Section-Title {
   font-family: 'Outfit', sans-serif;
-  font-size: clamp(32px, 5vw, 64px);
+  font-size: clamp(28px, 4vw, 48px); /* Reduced from clamp(32px, 5vw, 64px) */
   text-transform: uppercase;
   font-weight: 700;
   line-height: 1;
-  margin-bottom: 24px;
+  margin-bottom: 16px; /* Reduced from 24px */
 }
 
 .ServicesPage-Section-Subtitle {
-  font-size: 18px;
+  font-size: 16px; /* Reduced from 18px */
   color: var(--S-Gray);
   max-width: 500px;
   line-height: 1.6;
@@ -334,28 +334,28 @@
   max-width: 1400px;
   margin: 0 auto;
   position: relative;
-  padding: 0 100px;
+  padding: 0 60px; /* Reduced from 100px */
 }
 
 .ServicesPage-Plans-Slider-Container {
   position: relative;
   overflow: hidden;
-  padding: 20px 0;
+  padding: 10px 0; /* Reduced from 20px */
 }
 
 .ServicesPage-Plans-Track {
   display: flex;
-  gap: 32px;
+  gap: 20px; /* Reduced from 32px */
 }
 
 .ServicesPage-Plan-Slide {
   flex: 0 0 100%;
-  min-width: 300px;
+  min-width: 260px; /* Reduced from 300px */
 }
 
 @media (min-width: 769px) {
   .ServicesPage-Plan-Slide {
-    flex: 0 0 calc((100% - 64px) / 3);
+    flex: 0 0 calc((100% - 40px) / 3); /* Adjusted for new gap */
   }
 }
 
@@ -363,16 +363,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 30px;
-  margin-top: 40px;
+  gap: 20px; /* Reduced from 30px */
+  margin-top: 20px; /* Reduced from 40px */
 }
 
 .ServicesPage-Plan-NavBtn {
   background: #FFFFFF;
   border: 1px solid var(--S-Border);
   color: var(--S-Green);
-  width: 64px;
-  height: 64px;
+  width: 48px; /* Reduced from 64px */
+  height: 48px; /* Reduced from 64px */
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -395,8 +395,8 @@
 }
 
 @media (max-width: 1400px) {
-  .ServicesPage-Plans-Slider-Wrapper { padding: 0 80px; }
-  .ServicesPage-Plan-NavBtn { width: 50px; height: 50px; }
+  .ServicesPage-Plans-Slider-Wrapper { padding: 0 50px; } /* Reduced from 80px */
+  .ServicesPage-Plan-NavBtn { width: 40px; height: 40px; }
 }
 
 @media (max-width: 1024px) {
@@ -408,7 +408,7 @@
 .ServicesPage-Plan-NavBtn:hover {
   background: var(--S-Accent);
   color: #fff;
-  transform: translateY(-50%) scale(1.1) translateY(-5px);
+  transform: translateY(-50%) scale(1.1);
   border-color: var(--S-Accent);
   box-shadow: 0 15px 45px rgba(52, 199, 89, 0.25);
 }
@@ -419,12 +419,12 @@
 
 .ServicesPage-Plans-Dots {
   display: flex;
-  gap: 12px;
+  gap: 10px; /* Reduced from 12px */
 }
 
 .ServicesPage-Plan-Dot {
-  width: 8px;
-  height: 8px;
+  width: 6px; /* Reduced from 8px */
+  height: 6px; /* Reduced from 8px */
   border-radius: 50%;
   background: var(--S-Border);
   cursor: pointer;
@@ -433,15 +433,15 @@
 
 .ServicesPage-Plan-Dot.active {
   background: var(--S-Accent);
-  width: 24px;
+  width: 18px; /* Reduced from 24px */
   border-radius: 4px;
 }
 
 .ServicesPage-Plan-Card {
   background: var(--S-Cream);
   border: 1px solid var(--S-Border);
-  padding: 60px 40px;
-  border-radius: 48px;
+  padding: 30px 24px; /* Reduced from 60px 40px */
+  border-radius: 32px; /* Reduced from 48px */
   display: flex;
   flex-direction: column;
   transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
@@ -450,7 +450,7 @@
 }
 
 .ServicesPage-Plan-Card:hover {
-  transform: translateY(-10px);
+  transform: translateY(-8px); /* Reduced from -10px */
   border-color: var(--S-Accent);
   box-shadow: 0 30px 60px rgba(45, 90, 39, 0.08);
 }
@@ -458,28 +458,28 @@
 .ServicesPage-Plan-Card.featured {
   background: var(--S-Dark);
   color: #fff;
-  transform: scale(1.05);
+  transform: scale(1.02); /* Reduced from 1.05 */
   border: none;
 }
 
 .ServicesPage-Plan-Icon-Fallback {
   color: var(--S-Accent);
   background: var(--S-Mint);
-  width: 64px;
-  height: 64px;
-  border-radius: 20px;
+  width: 48px; /* Reduced from 64px */
+  height: 48px; /* Reduced from 64px */
+  border-radius: 16px; /* Reduced from 20px */
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 24px;
+  margin-bottom: 20px; /* Reduced from 24px */
 }
 
 .ServicesPage-Plan-Image-Container {
   width: 100%;
-  height: 220px;
-  border-radius: 32px;
+  height: 140px; /* Reduced from 220px */
+  border-radius: 20px; /* Reduced from 32px */
   overflow: hidden;
-  margin-bottom: 24px;
+  margin-bottom: 20px; /* Reduced from 24px */
   background: var(--S-Mint);
   border: 1px solid var(--S-Border);
 }
@@ -498,7 +498,7 @@
 .ServicesPage-Loading-State, .ServicesPage-Empty-Plans {
   grid-column: 1 / -1;
   text-align: center;
-  padding: 80px 0;
+  padding: 40px 0; /* Reduced from 80px */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -519,55 +519,55 @@
 
 .ServicesPage-Plan-Card h3 {
   font-family: 'Outfit', sans-serif;
-  font-size: 24px;
+  font-size: 18px; /* Reduced from 24px */
   font-weight: 700;
-  margin-bottom: 16px;
+  margin-bottom: 12px; /* Reduced from 16px */
 }
 
 .ServicesPage-Plan-Badge {
   position: absolute;
-  top: 24px;
-  right: 24px;
+  top: 16px; /* Reduced from 24px */
+  right: 16px; /* Reduced from 24px */
   background: var(--S-Accent);
   color: #fff;
-  padding: 6px 14px;
+  padding: 4px 10px; /* Reduced from 6px 14px */
   border-radius: 100px;
-  font-size: 10px;
+  font-size: 9px; /* Reduced from 10px */
   font-weight: 700;
   font-family: 'Outfit', sans-serif;
 }
 
 .ServicesPage-Plan-Price {
   font-family: 'Outfit', sans-serif;
-  font-size: 48px;
+  font-size: 32px; /* Reduced from 48px */
   font-weight: 700;
-  margin: 24px 0;
+  margin: 16px 0; /* Reduced from 24px */
 }
 
 .ServicesPage-Plan-Price span {
-  font-size: 16px;
+  font-size: 14px; /* Reduced from 16px */
   opacity: 0.6;
 }
 
 .ServicesPage-Plan-Desc {
-  font-size: 15px;
+  font-size: 13px; /* Reduced from 15px */
   opacity: 0.8;
-  line-height: 1.6;
-  margin-bottom: 40px;
+  line-height: 1.5; /* Reduced from 1.6 */
+  margin-bottom: 20px; /* Reduced from 40px */
 }
 
 .ServicesPage-Plan-Features {
   list-style: none;
-  margin-bottom: 48px;
+  margin-bottom: 24px; /* Reduced from 48px */
   flex-grow: 1;
 }
 
 .ServicesPage-Plan-Features li {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 16px;
-  font-size: 14px;
+  gap: 10px; /* Reduced from 12px */
+  margin-bottom: 10px; /* Reduced from 16px */
+  font-size: 12px; /* Reduced from 14px */
   font-weight: 600;
 }
 
@@ -578,12 +578,12 @@
 .ServicesPage-Plan-Btn {
   display: block;
   width: 100%;
-  padding: 20px;
+  padding: 14px; /* Reduced from 20px */
   border-radius: 100px;
   font-family: 'Outfit', sans-serif;
   font-weight: 700;
   text-transform: uppercase;
-  font-size: 12px;
+  font-size: 11px; /* Reduced from 12px */
   text-align: center;
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   text-decoration: none;
@@ -607,7 +607,7 @@
 .ServicesPage-AllPlans-Container {
   display: flex;
   justify-content: center;
-  margin-top: 60px;
+  margin-top: 30px; /* Reduced from 60px */
 }
 
 .ServicesPage-AllPlans-Btn {
@@ -616,14 +616,14 @@
   gap: 12px;
   background: var(--S-Mint);
   color: var(--S-Green);
-  padding: 18px 40px;
+  padding: 14px 28px; /* Reduced from 18px 40px */
   border-radius: 100px;
   font-family: 'Outfit', sans-serif;
   font-weight: 700;
   text-decoration: none;
   transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   border: 1px solid var(--S-Border);
-  font-size: 14px;
+  font-size: 12px; /* Reduced from 14px */
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -635,75 +635,11 @@
   box-shadow: 0 15px 30px rgba(45, 90, 39, 0.15);
 }
 
-/* CONSULTATION */
-.ServicesPage-Consult-Section {
-  padding: 80px 5%;
-}
-
-.ServicesPage-Consult-Banner {
+.ServicesPage-AllPlans-Btn:hover {
   background: var(--S-Green);
   color: #fff;
-  padding: 80px 8%;
-  border-radius: 60px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 60px;
-}
-
-.ServicesPage-Consult-Info h2 {
-  font-family: 'Outfit', sans-serif;
-  font-size: clamp(32px, 5vw, 64px);
-  color: #fff;
-  line-height: 0.95;
-  margin-bottom: 32px;
-  font-weight: 700;
-}
-
-.ServicesPage-Consult-Info p {
-  font-size: 18px;
-  opacity: 0.9;
-  margin-bottom: 48px;
-  line-height: 1.6;
-  max-width: 600px;
-}
-
-.ServicesPage-Consult-Stats {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 32px;
-  margin-bottom: 48px;
-}
-
-.ServicesPage-Consult-Stats h4 {
-  font-family: 'Outfit', sans-serif;
-  font-size: 24px;
-  font-weight: 700;
-  color: var(--S-Accent);
-  margin-bottom: 4px;
-}
-
-.ServicesPage-Consult-Stats p {
-  margin-bottom: 0;
-  font-size: 14px;
-}
-
-.ServicesPage-Consult-Btn {
-  display: inline-block;
-  background: var(--S-Accent);
-  color: #fff;
-  padding: 18px 48px;
-  border-radius: 100px;
-  font-family: 'Outfit', sans-serif;
-  font-weight: 700;
-  text-decoration: none;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-}
-
-.ServicesPage-Consult-Btn:hover {
-  background: #fff;
-  color: var(--S-Dark);
   transform: translateY(-5px);
+  box-shadow: 0 15px 30px rgba(45, 90, 39, 0.15);
 }
 
 /* FINAL CTA */

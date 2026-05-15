@@ -18,14 +18,42 @@
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
 }
 
+.logo-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+}
+
 .nutrition-logo-icon {
     color: #2D5A27; /* --health-green */
     transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
+.logo-text {
+    font-family: 'Outfit', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: #1C1C1E; /* --health-dark */
+    letter-spacing: -0.03em;
+    transition: all 0.3s ease;
+}
+
+.logo-text-accent {
+    color: #2D5A27; /* --health-green */
+}
+
 .logo-btn:hover .nutrition-logo-icon {
-    transform: scale(1.15) rotate(5deg);
+    transform: scale(1.1) rotate(5deg);
     color: #34C759; /* --health-accent */
+}
+
+.logo-btn:hover .logo-text {
+    color: #2D5A27;
+}
+
+.logo-btn:hover .logo-text-accent {
+    color: #34C759;
 }
 
 /* Desktop Navigation Links */

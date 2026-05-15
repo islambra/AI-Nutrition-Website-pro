@@ -90,6 +90,7 @@ function Header() {
       <div className="header-container">
         <NavLink to="/" className="logo-btn">
           <Apple className="nutrition-logo-icon" size={28} />
+          <span className="logo-text">Bite<span className="logo-text-accent">Wise</span></span>
         </NavLink>
 
         <nav className="desktop-nav-links">

@@ -322,37 +322,7 @@ function ServicesPage() {
         </div>
       </section>
 
-      {/* 4. CONSULTATION BANNER */}
-      <section className="ServicesPage-Consult-Section">
-        <ScrollReveal>
-          <div className="ServicesPage-Consult-Banner">
-            <div className="ServicesPage-Consult-Info">
-              <h2>CLINICAL <br /> OVERRIDE</h2>
-              <p>Direct access to certified clinical nutritionists for advanced health assessment and objective calibration.</p>
-
-              <div className="ServicesPage-Consult-Stats">
-                <div>
-                  <h4>HD VIDEO</h4>
-                  <p>Bio-Consults</p>
-                </div>
-                <div>
-                  <h4>WRITTEN</h4>
-                  <p>Vital Reports</p>
-                </div>
-              </div>
-
-              <NavLink to="/contact" className="ServicesPage-Consult-Btn">
-                BOOK SESSION
-              </NavLink>
-            </div>
-            <div className="ServicesPage-Consult-Visual">
-              <Brain size={240} strokeWidth={0.5} opacity={0.3} color="#fff" />
-            </div>
-          </div>
-        </ScrollReveal>
-      </section>
-
-      {/* 5. FINAL CTA */}
+      {/* 4. FINAL CTA */}
       <section className="ServicesPage-CTA-Section">
         <ScrollReveal>
           <h2 className="ServicesPage-Section-Title">READY TO <br /> <span className="ServicesPage-Accent-Text">OPTIMIZE?</span></h2>
