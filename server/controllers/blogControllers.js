@@ -1,4 +1,3 @@
-// controllers/blogControllers.js
 import Blog from "../models/Blog.js";
 import User from "../models/User.js";
 import Comment from "../models/Comment.js";
@@ -9,9 +8,7 @@ export const createBlog = async (req, res) => {
     try {
         const { type, title, content, tags } = req.body;
         
-        // Get authenticated user
         const user = await User.findById(req.user.id);
-        
         if (!user) {
             return res.status(404).json({ 
                 success: false,
@@ -20,8 +17,6 @@ export const createBlog = async (req, res) => {
         }
 
         let photoUrl = null;
-        
-        // Upload image to ImageKit if file exists
         if (req.file) {
             try {
                 const base64Image = req.file.buffer.toString('base64');
@@ -40,11 +35,10 @@ export const createBlog = async (req, res) => {
             }
         }
 
-        // Create new blog
         const newBlog = new Blog({
             photo: photoUrl,
             type,
-            author: user._id,
+            author: user._id,          // ✅ ObjectId reference
             title,
             content,
             tags: tags ? JSON.parse(tags) : []
@@ -70,7 +64,6 @@ export const createBlog = async (req, res) => {
 export const updateBlog = async (req, res) => {
     try {
         const { type, title, content, tags } = req.body;
-        
         const blog = await Blog.findById(req.params.id);
         
         if (!blog) {
@@ -80,7 +73,7 @@ export const updateBlog = async (req, res) => {
             });
         }
         
-        // Check if user is the author
+        // Compare ObjectId with string (works because ObjectId has toString())
         if (blog.author.toString() !== req.user.id) {
             return res.status(403).json({
                 success: false,
@@ -89,8 +82,6 @@ export const updateBlog = async (req, res) => {
         }
         
         let photoUrl = blog.photo;
-        
-        // Upload new image to ImageKit if file exists
         if (req.file) {
             try {
                 const base64Image = req.file.buffer.toString('base64');
@@ -138,10 +129,9 @@ export const updateBlog = async (req, res) => {
 export const getAllBlogs = async (req, res) => {
     try {
         const blogs = await Blog.find()
-            .populate('author', 'fullName email photo')
+            .populate('author', 'fullName email photo')  // ✅ Populates full user object
             .sort({ createdAt: -1 });
         
-        // Get likes and comments count for each blog
         const blogsWithStats = await Promise.all(blogs.map(async (blog) => {
             const likesCount = await Like.countDocuments({ blog: blog._id });
             const commentsCount = await Comment.countDocuments({ blog: blog._id });
@@ -171,7 +161,6 @@ export const getMyBlogs = async (req, res) => {
             .populate('author', 'fullName email photo')
             .sort({ createdAt: -1 });
         
-        // Get likes and comments count for each blog
         const blogsWithStats = await Promise.all(blogs.map(async (blog) => {
             const likesCount = await Like.countDocuments({ blog: blog._id });
             const commentsCount = await Comment.countDocuments({ blog: blog._id });
@@ -199,7 +188,6 @@ export const getMyBlogs = async (req, res) => {
 export const getBlogsByAuthor = async (req, res) => {
     try {
         const { authorId } = req.params;
-        
         const user = await User.findById(authorId);
         
         if (!user) {
@@ -213,7 +201,6 @@ export const getBlogsByAuthor = async (req, res) => {
             .populate('author', 'fullName email photo')
             .sort({ createdAt: -1 });
         
-        // Get likes and comments count for each blog
         const blogsWithStats = await Promise.all(blogs.map(async (blog) => {
             const likesCount = await Like.countDocuments({ blog: blog._id });
             const commentsCount = await Comment.countDocuments({ blog: blog._id });
@@ -251,15 +238,11 @@ export const getBlogById = async (req, res) => {
             });
         }
         
-        // Get likes count
         const likesCount = await Like.countDocuments({ blog: blog._id });
-        
-        // Get comments with author details
         const comments = await Comment.find({ blog: blog._id })
             .populate('author', 'fullName email photo')
             .sort({ createdAt: -1 });
         
-        // Check if current user liked this blog (if user is authenticated)
         let userLiked = false;
         if (req.user && req.user.id) {
             userLiked = await Like.exists({ blog: blog._id, user: req.user.id });
@@ -294,7 +277,6 @@ export const deleteBlog = async (req, res) => {
             });
         }
         
-        // Check if user is the author
         if (blog.author.toString() !== req.user.id) {
             return res.status(403).json({
                 success: false,
@@ -302,11 +284,8 @@ export const deleteBlog = async (req, res) => {
             });
         }
         
-        // Delete all comments and likes related to this blog
         await Comment.deleteMany({ blog: req.params.id });
         await Like.deleteMany({ blog: req.params.id });
-        
-        // Delete the blog
         await Blog.findByIdAndDelete(req.params.id);
         
         res.status(200).json({
@@ -322,11 +301,10 @@ export const deleteBlog = async (req, res) => {
     }
 };
 
-// Comment Controllers
+// ==================== COMMENT CONTROLLERS ====================
 export const addComment = async (req, res) => {
     try {
         const { content } = req.body;
-        
         if (!content) {
             return res.status(400).json({
                 success: false,
@@ -334,7 +312,6 @@ export const addComment = async (req, res) => {
             });
         }
         
-        // Check if blog exists
         const blog = await Blog.findById(req.params.id);
         if (!blog) {
             return res.status(404).json({
@@ -343,14 +320,12 @@ export const addComment = async (req, res) => {
             });
         }
         
-        // Create comment
         const comment = await Comment.create({
             blog: req.params.id,
             author: req.user.id,
             content
         });
         
-        // Get populated comment
         const populatedComment = await Comment.findById(comment._id)
             .populate('author', 'fullName email photo');
         
@@ -391,7 +366,6 @@ export const getComments = async (req, res) => {
 export const deleteComment = async (req, res) => {
     try {
         const comment = await Comment.findById(req.params.commentId);
-        
         if (!comment) {
             return res.status(404).json({
                 success: false,
@@ -399,7 +373,6 @@ export const deleteComment = async (req, res) => {
             });
         }
         
-        // Check if user is the comment author
         if (comment.author.toString() !== req.user.id) {
             return res.status(403).json({
                 success: false,
@@ -422,10 +395,9 @@ export const deleteComment = async (req, res) => {
     }
 };
 
-// Like Controllers
+// ==================== LIKE CONTROLLERS ====================
 export const likeBlog = async (req, res) => {
     try {
-        // Check if blog exists
         const blog = await Blog.findById(req.params.id);
         if (!blog) {
             return res.status(404).json({
@@ -434,19 +406,23 @@ export const likeBlog = async (req, res) => {
             });
         }
         
-        // Check if user already liked the blog
         const existingLike = await Like.findOne({
             blog: req.params.id,
             user: req.user.id
         });
         
-        // Create like
+        if (existingLike) {
+            return res.status(400).json({
+                success: false,
+                message: "You already liked this blog"
+            });
+        }
+        
         await Like.create({
             blog: req.params.id,
             user: req.user.id
         });
         
-        // Get updated like count
         const likesCount = await Like.countDocuments({ blog: req.params.id });
         
         res.status(200).json({
@@ -465,7 +441,6 @@ export const likeBlog = async (req, res) => {
 
 export const unlikeBlog = async (req, res) => {
     try {
-        // Check if blog exists
         const blog = await Blog.findById(req.params.id);
         if (!blog) {
             return res.status(404).json({
@@ -474,13 +449,11 @@ export const unlikeBlog = async (req, res) => {
             });
         }
         
-        // Remove like
-        const result = await Like.findOneAndDelete({
+        await Like.findOneAndDelete({
             blog: req.params.id,
             user: req.user.id
         });
         
-        // Get updated like count
         const likesCount = await Like.countDocuments({ blog: req.params.id });
         
         res.status(200).json({

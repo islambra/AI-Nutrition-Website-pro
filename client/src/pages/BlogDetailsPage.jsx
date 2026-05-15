@@ -1,387 +1,396 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { getBlogById, addComment, deleteComment, likeBlog, unlikeBlog } from '../api/blogApi';
-import { useAuth } from '../context/AuthContext';
-import './BlogDetailsPage.css';
+import React, { useState, useEffect, memo } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  Search, 
+  Filter, 
+  Heart, 
+  MessageCircle, 
+  Share2, 
+  ChevronRight, 
+  Clock, 
+  User, 
+  Tag, 
+  Leaf,
+  Sparkles,
+  Zap,
+  ArrowUpRight,
+  Plus
+} from 'lucide-react';
+import { getAllBlogs, likeBlog, unlikeBlog, getLikeStatus } from '../api/blogApi';
+import './BlogsPage.css';
 
-function BlogDetailsPage() {
-  const { id } = useParams();
+// --- HELPER FUNCTIONS FOR AUTHOR DATA ---
+const getAuthorName = (author) => {
+  if (!author) return 'VITAL_EXPERT';
+  if (typeof author === 'object' && author.fullName) return author.fullName;
+  if (typeof author === 'string' && author.length > 0) return 'VITAL_EXPERT'; // fallback instead of ID
+  return 'VITAL_EXPERT';
+};
+
+const getAuthorPhoto = (author) => {
+  if (author && typeof author === 'object' && author.photo) return author.photo;
+  return null;
+};
+
+// --- ORGANIC FLOATERS (unchanged) ---
+const BlogsOrganicFloaters = memo(() => (
+  <div className="BlogsPage-Organic-Container">
+    {[...Array(6)].map((_, i) => (
+      <motion.div
+        key={i}
+        className="BlogsPage-Floater"
+        initial={{ opacity: 0 }}
+        animate={{ 
+          opacity: [0, 0.15, 0], 
+          x: [Math.random() * 100 + 'vw', Math.random() * 100 + 'vw'],
+          y: [Math.random() * 100 + 'vh', Math.random() * 100 + 'vh']
+        }}
+        transition={{ duration: 20 + i * 5, repeat: Infinity, ease: "linear" }}
+      >
+        <Leaf size={40 + i * 20} strokeWidth={1} />
+      </motion.div>
+    ))}
+  </div>
+));
+
+function BlogsPage() {
   const navigate = useNavigate();
-  const { user: currentUser } = useAuth();
-  const [blog, setBlog] = useState(null);
+  const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [commentText, setCommentText] = useState('');
-  const [submitting, setSubmitting] = useState(false);
-  const [liked, setLiked] = useState(false);
-  const [likesCount, setLikesCount] = useState(0);
+  const [activeFilter, setActiveFilter] = useState('All Posts');
+  const [likesStates, setLikesStates] = useState({});
   const [showNotification, setShowNotification] = useState(false);
-  const [notificationMessage, setNotificationMessage] = useState('');
-  const [notificationType, setNotificationType] = useState('success');
-  const [deleteConfirmId, setDeleteConfirmId] = useState(null); // For confirmation modal
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
-    fetchBlogDetails();
-  }, [id]);
+    fetchBlogs();
+  }, []);
 
-  const fetchBlogDetails = async () => {
+  const fetchBlogs = async () => {
     try {
       setLoading(true);
-      const response = await getBlogById(id);
-      console.log('Blog data:', response.data);
-      console.log('Current user:', currentUser);
-      setBlog(response.data);
-      setLiked(response.data.userLiked || false);
-      setLikesCount(response.data.likesCount || 0);
+      const response = await getAllBlogs();
+      setPosts(response.data);
       setError('');
+      await fetchAllLikesStatus(response.data);
     } catch (err) {
-      console.error('Error fetching blog:', err);
-      setError('Failed to load blog. Please try again later.');
+      console.error('Error fetching blogs:', err);
+      setError('Failed to load the knowledge base. Connection interrupted.');
     } finally {
       setLoading(false);
     }
   };
 
-  const handleLike = async () => {
+  const fetchAllLikesStatus = async (blogs) => {
     try {
-      if (liked) {
-        const response = await unlikeBlog(id);
-        setLiked(false);
-        setLikesCount(response.likesCount);
-        showTemporaryNotification('Removed like', 'success');
+      const likeStatusPromises = blogs.map(async (blog) => {
+        try {
+          const statusResponse = await getLikeStatus(blog._id);
+          return { blogId: blog._id, liked: statusResponse.liked, likesCount: statusResponse.likesCount };
+        } catch (err) {
+          return { blogId: blog._id, liked: false, likesCount: blog.likesCount || 0 };
+        }
+      });
+      
+      const statuses = await Promise.all(likeStatusPromises);
+      const likesMap = {};
+      statuses.forEach(status => {
+        likesMap[status.blogId] = {
+          liked: status.liked,
+          likesCount: status.likesCount
+        };
+      });
+      
+      setLikesStates(likesMap);
+    } catch (err) {
+      console.error('Error fetching likes status:', err);
+    }
+  };
+
+  const handleLike = async (e, blogId, isCurrentlyLiked) => {
+    e.stopPropagation();
+    try {
+      if (isCurrentlyLiked) {
+        const response = await unlikeBlog(blogId);
+        setLikesStates(prev => ({
+          ...prev,
+          [blogId]: {
+            liked: false,
+            likesCount: response.likesCount
+          }
+        }));
       } else {
-        const response = await likeBlog(id);
-        setLiked(true);
-        setLikesCount(response.likesCount);
-        showTemporaryNotification('Added to your likes!', 'success');
+        const response = await likeBlog(blogId);
+        setLikesStates(prev => ({
+          ...prev,
+          [blogId]: {
+            liked: true,
+            likesCount: response.likesCount
+          }
+        }));
       }
     } catch (err) {
-      console.error('Error toggling like:', err);
-      showTemporaryNotification('Failed to update like', 'error');
+      console.error('Error handling blog like/unlike:', err);
     }
   };
 
-  const handleAddComment = async (e) => {
-    e.preventDefault();
-    if (!commentText.trim()) return;
-
+  const handleShare = async (e, blog) => {
+    e.stopPropagation();
     try {
-      setSubmitting(true);
-      const response = await addComment(id, commentText);
-      setBlog(prev => ({
-        ...prev,
-        comments: [response.data, ...(prev.comments || [])]
-      }));
-      setCommentText('');
-      showTemporaryNotification('Comment added successfully!', 'success');
-    } catch (err) {
-      console.error('Error adding comment:', err);
-      showTemporaryNotification('Failed to add comment', 'error');
-    } finally {
-      setSubmitting(false);
-    }
-  };
-
-  // Show confirmation modal instead of browser alert
-  const confirmDeleteComment = (commentId) => {
-    setDeleteConfirmId(commentId);
-  };
-
-  const handleDeleteComment = async () => {
-    if (!deleteConfirmId) return;
-
-    try {
-      await deleteComment(id, deleteConfirmId);
-      setBlog(prev => ({
-        ...prev,
-        comments: prev.comments.filter(comment => comment._id !== deleteConfirmId)
-      }));
-      showTemporaryNotification('Comment deleted successfully!', 'success');
-      setDeleteConfirmId(null);
-    } catch (err) {
-      console.error('Error deleting comment:', err);
-      showTemporaryNotification('Failed to delete comment', 'error');
-      setDeleteConfirmId(null);
-    }
-  };
-
-  const cancelDelete = () => {
-    setDeleteConfirmId(null);
-  };
-
-  const showTemporaryNotification = (message, type = 'success') => {
-    setNotificationMessage(message);
-    setNotificationType(type);
-    setShowNotification(true);
-    setTimeout(() => {
-      setShowNotification(false);
-    }, 3000);
-  };
-
-  const handleShare = async () => {
-    try {
-      await navigator.clipboard.writeText(window.location.href);
-      showTemporaryNotification('Link copied to clipboard!', 'success');
+      await navigator.clipboard.writeText(`${window.location.origin}/blog/${blog._id}`);
+      setShowNotification(true);
+      setTimeout(() => {
+        setShowNotification(false);
+      }, 3000);
     } catch (err) {
       console.error('Error copying to clipboard:', err);
-      showTemporaryNotification('Failed to copy link', 'error');
     }
   };
 
+  const handleReadMore = (blogId) => {
+    navigate(`/blog/${blogId}`);
+  };
+
+  const filteredPosts = posts.filter(post => {
+    const matchesFilter = activeFilter === 'All Posts' || post.type === activeFilter;
+    const matchesSearch = post.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                         post.content.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesFilter && matchesSearch;
+  });
+
   const formatDate = (dateString) => {
-    const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    const options = { year: 'numeric', month: 'short', day: 'numeric' };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
   const getTypeIcon = (type) => {
     switch(type) {
-      case 'Recipe': return '🍳';
-      case 'Article': return '📝';
-      case 'Community': return '👥';
-      default: return '📄';
+      case 'Recipe': return <Zap size={14} />;
+      case 'Article': return <FileText size={14} />;
+      case 'Community': return <Users size={14} />;
+      default: return <Sparkles size={14} />;
     }
-  };
-
-  const canDeleteComment = (commentAuthor) => {
-    if (!currentUser || !commentAuthor) return false;
-    
-    const currentUserId = currentUser._id || currentUser.id;
-    const commentAuthorId = commentAuthor._id || commentAuthor;
-    
-    return currentUserId === commentAuthorId;
   };
 
   if (loading) {
     return (
-      <div className="blog-details-container">
-        <div className="loading-container">
-          <div className="spinner"></div>
-          <p>Loading amazing content...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (error || !blog) {
-    return (
-      <div className="blog-details-container">
-        <div className="error-container">
-          <div className="error-icon">⚠️</div>
-          <h3>Something went wrong</h3>
-          <p>{error || 'Blog not found'}</p>
-          <button className="btn bl-btn-primary" onClick={() => navigate('/blogs')}>
-            Back to Blogs
-          </button>
-        </div>
+      <div className="BlogsPage-Loader-Wrapper">
+        <motion.div 
+          animate={{ scale: [1, 1.1, 1], rotate: [0, 90, 0] }}
+          transition={{ duration: 2, repeat: Infinity }}
+          className="BlogsPage-Loader-Icon"
+        >
+          <Leaf size={60} color="#2D5A27" />
+        </motion.div>
+        <p>CALIBRATING_KNOWLEDGE_BASE...</p>
       </div>
     );
   }
 
   return (
-    <>
-      <div className="blog-details-container">
-        {/* Notification Toast */}
+    <div className="BlogsPage-Main-Wrapper">
+      <BlogsOrganicFloaters />
+      <div className="BlogsPage-Grid-Overlay" />
+
+      {/* Share Notification */}
+      <AnimatePresence>
         {showNotification && (
-          <div className={`share-notification ${notificationType === 'error' ? 'error' : 'success'}`}>
-            <div className="notification-content">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                {notificationType === 'error' ? (
-                  <>
-                    <circle cx="12" cy="12" r="10" />
-                    <line x1="12" y1="8" x2="12" y2="12" />
-                    <line x1="12" y1="16" x2="12.01" y2="16" />
-                  </>
-                ) : (
-                  <path d="M20 6L9 17l-5-5" />
-                )}
-              </svg>
-              <span>{notificationMessage}</span>
-            </div>
-          </div>
+          <motion.div 
+            initial={{ opacity: 0, y: 20, x: '-50%' }}
+            animate={{ opacity: 1, y: 0, x: '-50%' }}
+            exit={{ opacity: 0, y: 20, x: '-50%' }}
+            className="BlogsPage-Notification"
+          >
+            <Share2 size={16} />
+            <span>KNOWLEDGE_LINK_COPIED</span>
+          </motion.div>
         )}
+      </AnimatePresence>
 
-        {/* Delete Confirmation Modal */}
-        {deleteConfirmId && (
-          <div className="modal-overlay" onClick={cancelDelete}>
-            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-              <div className="modal-icon">
-                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
-                  <circle cx="12" cy="12" r="10" />
-                  <line x1="12" y1="8" x2="12" y2="12" />
-                  <line x1="12" y1="16" x2="12.01" y2="16" />
-                </svg>
-              </div>
-              <h3>Delete Comment?</h3>
-              <p>Are you sure you want to delete this comment? This action cannot be undone.</p>
-              <div className="modal-actions">
-                <button className="modal-btn modal-btn-cancel" onClick={cancelDelete}>
-                  Cancel
-                </button>
-                <button className="modal-btn modal-btn-delete" onClick={handleDeleteComment}>
-                  Delete
-                </button>
-              </div>
+      <header className="BlogsPage-Hero">
+        <div className="BlogsPage-Hero-Content">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="BlogsPage-Badge"
+          >
+            VITAL_INTELLIGENCE
+          </motion.div>
+          
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="BlogsPage-Title"
+          >
+            THE VITALITY <br /> <span className="BlogsPage-Gradient-Text">KNOWLEDGE HUB.</span>
+          </motion.h1>
+
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="BlogsPage-Controls"
+          >
+            <div className="BlogsPage-Search-Box">
+              <Search size={20} className="BlogsPage-Search-Icon" />
+              <input 
+                type="text" 
+                placeholder="SEARCH_BIOLOGICAL_RESOURCES..." 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
             </div>
+            
+            <div className="BlogsPage-Filters">
+              {['All Posts', 'Recipe', 'Article', 'Community'].map((filter) => (
+                <button 
+                  key={filter}
+                  onClick={() => setActiveFilter(filter)}
+                  className={`BlogsPage-Filter-Btn ${activeFilter === filter ? 'active' : ''}`}
+                >
+                  {filter.toUpperCase()}
+                </button>
+              ))}
+            </div>
+          </motion.div>
+        </div>
+      </header>
+
+      <main className="BlogsPage-Content">
+        {error ? (
+          <div className="BlogsPage-Error">
+            <Zap size={40} />
+            <h3>SYSTEM_ERROR</h3>
+            <p>{error}</p>
+            <button onClick={fetchBlogs}>REBOOT_CONNECTION</button>
           </div>
-        )}
-
-        {/* Back Button */}
-        <button className="back-button" onClick={() => navigate('/blogs')}>
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M19 12H5M12 19l-7-7 7-7" />
-          </svg>
-          Back to Blogs
-        </button>
-
-        <div className="blog-details-layout">
-          {/* Left Column - Blog Content */}
-          <div className="blog-content-section">
-            <article className="blog-details-card">
-              <div className="blog-header">
-                <div className="blog-type-badge">{getTypeIcon(blog.type)} {blog.type}</div>
-                <h1 className="blog-title">{blog.title}</h1>
-                <div className="blog-author-info">
-                  <div className="author-avatar">
-                    {blog.author?.photo ? (
-                      <img src={blog.author.photo} alt={blog.author.fullName} />
+        ) : filteredPosts.length === 0 ? (
+          <div className="BlogsPage-Empty">
+            <Sparkles size={60} opacity={0.3} />
+            <h3>ZERO_MATCHES_FOUND</h3>
+            <p>Your search query did not sync with any current biological records.</p>
+          </div>
+        ) : (
+          <div className="BlogsPage-Grid">
+            {filteredPosts.map((post, index) => {
+              const likeState = likesStates[post._id] || { 
+                liked: false, 
+                likesCount: post.likesCount || 0 
+              };
+              
+              // Safe author data extraction
+              const authorName = getAuthorName(post.author);
+              const authorPhoto = getAuthorPhoto(post.author);
+              
+              return (
+                <motion.article 
+                  key={post._id}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: index * 0.05 }}
+                  onClick={() => handleReadMore(post._id)}
+                  className="BlogsPage-Card"
+                >
+                  <div className="BlogsPage-Card-Image-Wrapper">
+                    {post.photo ? (
+                      <img src={post.photo} alt={post.title} className="BlogsPage-Card-Image" />
                     ) : (
-                      <div className="avatar-placeholder">
-                        {blog.author?.fullName?.charAt(0) || 'U'}
+                      <div className="BlogsPage-Card-Placeholder">
+                        <Leaf size={60} strokeWidth={1} />
                       </div>
                     )}
+                    <div className="BlogsPage-Card-Tag">
+                      {getTypeIcon(post.type)}
+                      <span>{post.type.toUpperCase()}</span>
+                    </div>
                   </div>
-                  <div className="author-details">
-                    <span className="author-name">{blog.author?.fullName || blog.author}</span>
-                    <span className="blog-date">{formatDate(blog.createdAt)}</span>
-                  </div>
-                </div>
-              </div>
 
-              {blog.photo && (
-                <div className="blog-featured-image">
-                  <img src={blog.photo} alt={blog.title} />
-                </div>
-              )}
-
-              <div className="blog-body">
-                <p className="blog-content-text">{blog.content}</p>
-              </div>
-
-              {blog.tags && blog.tags.length > 0 && (
-                <div className="blog-tags-section">
-                  <h4>Tags</h4>
-                  <div className="blog-tags-list">
-                    {blog.tags.map((tag, idx) => (
-                      <span key={idx} className="tag">#{tag}</span>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              <div className="blog-actions-section">
-                <button className={`like-button ${liked ? 'liked' : ''}`} onClick={handleLike}>
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill={liked ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2">
-                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
-                  </svg>
-                  <span>{likesCount} Likes</span>
-                </button>
-                <button className="share-button" onClick={handleShare}>
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <circle cx="18" cy="5" r="3" />
-                    <circle cx="6" cy="12" r="3" />
-                    <circle cx="18" cy="19" r="3" />
-                    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
-                    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
-                  </svg>
-                  <span>Share</span>
-                </button>
-              </div>
-            </article>
-          </div>
-
-          {/* Right Column - Comments Section */}
-          <div className="comments-section">
-            <div className="comments-card">
-              <div className="comments-header">
-                <h3>
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
-                  </svg>
-                  Comments ({blog.comments?.length || 0})
-                </h3>
-              </div>
-
-              {/* Add Comment Form */}
-              {currentUser ? (
-                <form onSubmit={handleAddComment} className="add-comment-form">
-                  <div className="comment-input-wrapper">
-                    <textarea
-                      value={commentText}
-                      onChange={(e) => setCommentText(e.target.value)}
-                      placeholder="Share your thoughts..."
-                      rows="3"
-                      disabled={submitting}
-                    />
-                    <button type="submit" disabled={submitting || !commentText.trim()}>
-                      {submitting ? 'Posting...' : 'Post Comment'}
-                    </button>
-                  </div>
-                </form>
-              ) : (
-                <div className="login-to-comment">
-                  <p>Please <button onClick={() => navigate('/login')} className="login-link-btn">login</button> to leave a comment</p>
-                </div>
-              )}
-
-              {/* Comments List */}
-              <div className="comments-list">
-                {blog.comments && blog.comments.length > 0 ? (
-                  blog.comments.map((comment) => (
-                    <div key={comment._id} className="comment-item">
-                      <div className="comment-avatar">
-                        {comment.author?.photo ? (
-                          <img src={comment.author.photo} alt={comment.author.fullName} />
+                  <div className="BlogsPage-Card-Body">
+                    {/* UPDATED META SECTION – includes author photo and safe name */}
+                    <div className="BlogsPage-Card-Meta">
+                      <div className="BlogsPage-Author">
+                        {authorPhoto ? (
+                          <img 
+                            src={authorPhoto} 
+                            alt={authorName} 
+                            className="BlogsPage-Author-Image" 
+                            referrerPolicy="no-referrer"
+                          />
                         ) : (
-                          <div className="avatar-placeholder-small">
-                            {comment.author?.fullName?.charAt(0) || 'U'}
+                          <div className="BlogsPage-Author-Placeholder">
+                            <User size={12} />
                           </div>
                         )}
+                        <span>{authorName}</span>
                       </div>
-                      <div className="comment-content">
-                        <div className="comment-header">
-                          <span className="comment-author">{comment.author?.fullName}</span>
-                          <span className="comment-date">{formatDate(comment.createdAt)}</span>
-                        </div>
-                        <p className="comment-text">{comment.content}</p>
-                        {canDeleteComment(comment.author) && (
-                          <button 
-                            className="delete-comment-btn"
-                            onClick={() => confirmDeleteComment(comment._id)}
-                          >
-                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                              <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
-                              <line x1="10" y1="11" x2="10" y2="17" />
-                              <line x1="14" y1="11" x2="14" y2="17" />
-                            </svg>
-                            Delete
-                          </button>
-                        )}
+                      <div className="BlogsPage-Date">
+                        <Clock size={14} />
+                        <span>{formatDate(post.createdAt)}</span>
                       </div>
                     </div>
-                  ))
-                ) : (
-                  <div className="no-comments">
-                    <div className="no-comments-icon">💬</div>
-                    <p>No comments yet. Be the first to share your thoughts!</p>
+
+                    <h3 className="BlogsPage-Card-Title">{post.title}</h3>
+                    <p className="BlogsPage-Card-Excerpt">
+                      {post.content.length > 100 ? `${post.content.substring(0, 100)}...` : post.content}
+                    </p>
+
+                    <div className="BlogsPage-Card-Tags">
+                      {post.tags && post.tags.slice(0, 3).map((tag, idx) => (
+                        <span key={idx} className="BlogsPage-Tag-Pill">#{tag.toUpperCase()}</span>
+                      ))}
+                    </div>
+
+                    <div className="BlogsPage-Card-Footer">
+                      <div className="BlogsPage-Stats">
+                        <button 
+                          className={`BlogsPage-Stat-Btn ${likeState.liked ? 'liked' : ''}`}
+                          onClick={(e) => handleLike(e, post._id, likeState.liked)}
+                        >
+                          <Heart size={18} fill={likeState.liked ? "currentColor" : "none"} />
+                          <span>{likeState.likesCount}</span>
+                        </button>
+                        <button className="BlogsPage-Stat-Btn">
+                          <MessageCircle size={18} />
+                          <span>{post.commentsCount || 0}</span>
+                        </button>
+                      </div>
+                      <button 
+                        className="BlogsPage-Share-Btn"
+                        onClick={(e) => handleShare(e, post)}
+                      >
+                        <Share2 size={18} />
+                      </button>
+                    </div>
                   </div>
-                )}
-              </div>
-            </div>
+
+                  <div className="BlogsPage-Card-Hover-Indicator">
+                    <ArrowUpRight size={20} />
+                  </div>
+                </motion.article>
+              );
+            })}
           </div>
-        </div>
-      </div>
-    </>
+        )}
+      </main>
+    </div>
   );
 }
 
-export default BlogDetailsPage;
+// --- SVG Icons (unchanged) ---
+const FileText = ({ size }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/>
+  </svg>
+);
+
+const Users = ({ size }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+  </svg>
+);
+
+export default BlogsPage;
