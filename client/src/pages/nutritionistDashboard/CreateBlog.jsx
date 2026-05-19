@@ -216,7 +216,7 @@ const CreateBlog = () => {
       setTimeout(() => {
         resetForm();
         setSuccess("");
-        navigate("/dashboard/blogs");
+        navigate("/nutritionist/MyBlogs");
       }, 2000);
     } catch (err) {
       setError(err.response?.data?.message || "Error creating blog. Please try again.");

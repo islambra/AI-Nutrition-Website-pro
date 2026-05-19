@@ -232,7 +232,7 @@ function MyPlansPage() {
                     <div className="MPP-CardStats">
                       <div className="MPP-StatItem">
                         <Calendar size={14} />
-                        <span>{userPlan.plan?.duration} DAYS</span>
+                        <span>{userPlan.plan?.duration} WEEKS</span>
                       </div>
                       <div className="MPP-StatItem">
                         <Activity size={14} />
@@ -304,7 +304,7 @@ function MyPlansPage() {
                     <DollarSign size={20} />
                     <div>
                       <span className="sb-label">PRICE</span>
-                      <span className="sb-value">${selectedUserPlan.price || selectedPlan.price || 0}</span>
+                      <span className="sb-value">{selectedPlan.price?.toLocaleString()} DZD</span>
                     </div>
                   </div>
                   <div className="MPP-SessionBannerItem">
@@ -349,7 +349,7 @@ function MyPlansPage() {
                       </div>
                     )}
                     <div className="MPP-ModalPriceBadge">
-                      ${selectedUserPlan.price || selectedPlan.price || 0}
+                      {selectedPlan.price?.toLocaleString()} DZD
                     </div>
                   </div>
 
@@ -365,7 +365,7 @@ function MyPlansPage() {
                         <Clock size={20} />
                         <div>
                           <span className="m-label">DURATION</span>
-                          <span className="m-value">{selectedPlan.duration} Days</span>
+                          <span className="m-value">{selectedPlan.duration} Weeks</span>
                         </div>
                       </div>
                       <div className="MPP-ModalStatCard">

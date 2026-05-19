@@ -10,7 +10,7 @@ import {
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { checkAiAccess, buyAiAccess } from '../api/aiApi';
+import { checkAiAccess, buyAiAccess, analyzeFoodImage } from '../api/aiApi';
 import PageTransition from '../components/PageTransition';
 import ScrollReveal from '../components/ScrollReveal';
 import toast from 'react-hot-toast';
@@ -95,7 +95,8 @@ function AITrackerPage() {
     }
   };
 
-  const startScan = () => {
+  // REAL API CALL
+  const startScan = async () => {
     if (!selectedImage) {
       toast.error('NO VISUAL DATA: Please upload an image first.');
       return;
@@ -104,21 +105,18 @@ function AITrackerPage() {
     const loadingToast = toast.loading('Initializing neural analysis...', {
       style: { fontFamily: 'Outfit', fontSize: '12px' }
     });
-    setTimeout(() => {
-      const mockResults = {
-        foodName: "Grilled Salmon with Asparagus",
-        confidence: 98.4,
-        calories: 420,
-        macros: { protein: 45, carbs: 12, fat: 22 },
-        ingredients: ["Salmon", "Asparagus", "Lemon", "Olive Oil", "Herbs"],
-        insight: "High protein, omega‑3 rich meal. Excellent for metabolic recovery.",
-        healthScore: 92
-      };
-      setResults(mockResults);
-      setIsScanning(false);
+
+    try {
+      const result = await analyzeFoodImage(selectedImage);
+      setResults(result);
       toast.dismiss(loadingToast);
       toast.success('ANALYSIS COMPLETE', { icon: '✨' });
-    }, 3500);
+    } catch (err) {
+      toast.dismiss(loadingToast);
+      toast.error(err.response?.data?.error || 'Analysis failed');
+    } finally {
+      setIsScanning(false);
+    }
   };
 
   const resetTracker = () => {

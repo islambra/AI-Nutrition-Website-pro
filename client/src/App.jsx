@@ -25,6 +25,7 @@ import SmoothScroll from './components/SmoothScroll.jsx'
 import CreateBlog from './pages/nutritionistDashboard/CreateBlog.jsx'
 import CreatePlan from './pages/nutritionistDashboard/CreatePlan.jsx'
 import MyPlans from './pages/nutritionistDashboard/MyPlans.jsx'
+import MyBlog from './pages/nutritionistDashboard/NutritionistBlogs.jsx'
 import Layout from './pages/nutritionistDashboard/Layout.jsx'
 import AdminLayout from './pages/AdminDasboard/AdminLayout.jsx'
 import ContactMessages from './pages/nutritionistDashboard/ContactMessages.jsx'
@@ -32,7 +33,9 @@ import AddAdminNutritionist from './pages/AdminDasboard/AddAdminNutritionist.jsx
 import ClientsPage from './pages/nutritionistDashboard/ClientsPage.jsx'
 import AllUsers from './pages/AdminDasboard/AllUsers.jsx'
 import EditUserProfile from './pages/AdminDasboard/EditUserProfile.jsx'
+import AdminPayments from './pages/AdminDasboard/AdminPayments.jsx'
 import ConsultationRequests from './pages/nutritionistDashboard/ConsultationRequests.jsx'
+import NutritionistPayments from './pages/nutritionistDashboard/NutritionistPayments.jsx'
 
 import './App.css'
 
@@ -69,14 +72,17 @@ function App() {
               <Route path="/nutritionist/create-blog" element={<CreateBlog />} />
               <Route path="/nutritionist/create-plan" element={<CreatePlan />} />
               <Route path="/nutritionist/MyPlans" element={<MyPlans />} />
+              <Route path="/nutritionist/MyBlogs" element={<MyBlog />} />
               <Route path="/nutritionist/contact-messages" element={<ContactMessages />} />
               <Route path="/nutritionist/my-Profile" element={<EditUserProfile />} />
+              <Route path="/nutritionist/payments" element={<NutritionistPayments />} />
               <Route path="/nutritionist/all-clients" element={<ClientsPage />} />
               <Route path="/nutritionist/consultation-requests" element={<ConsultationRequests />} />
           </Route>
           <Route path="/admin" element={<AdminLayout />}>
               <Route path="/admin/add-admin-nutritionist" element={<AddAdminNutritionist />} />
               <Route path="/admin/all-users" element={<AllUsers />} />
+              <Route path="/admin/payments" element={<AdminPayments />} />
               <Route path="/admin/my-Profile" element={<EditUserProfile />} />
           </Route>
         </Routes>

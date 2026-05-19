@@ -1,4 +1,3 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&display=swap');
 
 :root {
@@ -24,15 +23,16 @@
 
 .AIT-Wrapper {
   background: var(--ait-gradient-main);
-  height: 100vh;
+  min-height: 100vh;            /* changed from height: 100vh */
   padding: 80px 5% 20px;
   font-family: var(--ait-font);
   color: var(--ait-text-primary);
   position: relative;
-  overflow: hidden;
+  overflow-y: auto;             /* allow vertical scroll */
   display: flex;
+  flex-direction: column;       /* stack children vertically */
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;  /* start from top, not center */
 }
 
 /* Subtle grid background */
@@ -748,7 +748,9 @@
   transform: translateY(-2px);
 }
 
-/* Checkout modal */
+/* ====================================
+   CHECKOUT MODAL (FIXED LAYOUT)
+==================================== */
 .AIT-ModalOverlay {
   position: fixed;
   inset: 0;
@@ -767,7 +769,7 @@
   padding: 40px 35px;
   max-width: 460px;
   width: 90%;
-  box-shadow: 0 30px 60px rgba(0,0,0,0.08);
+  box-sizing: border-box;
   position: relative;
 }
 
@@ -795,10 +797,13 @@
   margin-bottom: 25px;
 }
 
+/* Form group – ensures label + input stay inside */
 .AIT-FormGroup {
   margin-bottom: 18px;
   display: flex;
   flex-direction: column;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .AIT-FormGroup label {
@@ -806,6 +811,7 @@
   font-weight: 600;
   color: var(--ait-text-secondary);
   margin-bottom: 6px;
+  display: block;
 }
 
 .AIT-FormGroup input {
@@ -817,16 +823,32 @@
   font-size: 1rem;
   outline: none;
   transition: border-color 0.2s;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .AIT-FormGroup input:focus {
   border-color: var(--ait-accent);
 }
 
+/* Two-column row */
 .AIT-FormRow {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 16px;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* On small screens, stack the row so labels are fully visible */
+@media (max-width: 480px) {
+  .AIT-FormRow {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  .AIT-CheckoutModal {
+    padding: 30px 20px;
+  }
 }
 
 .AIT-CheckoutBtn {

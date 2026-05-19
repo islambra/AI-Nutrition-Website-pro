@@ -86,7 +86,8 @@ function ServicesPage() {
               ...plan,
               title: plan.planName.toUpperCase(),
               icon: CategoryIcon,
-              displayPrice: `${(plan.price * 140).toLocaleString()} DZD`,
+              // Price already in DZD – no "/mo" attached
+              displayPrice: `${plan.price.toLocaleString()} DZD`,
               displayDescription: plan.description.substring(0, 120) + "...",
               features: [
                 `${plan.duration} Weeks Program`,
@@ -262,7 +263,8 @@ function ServicesPage() {
                           )}
                         </div>      
                         <h3>{plan.title}</h3>
-                        <div className="ServicesPage-Plan-Price">{plan.displayPrice}<span>/mo</span></div>
+                        {/* ✅ Removed "/mo" span */}
+                        <div className="ServicesPage-Plan-Price">{plan.displayPrice}</div>
                         <p className="ServicesPage-Plan-Desc">{plan.displayDescription}</p>
 
                         <ul className="ServicesPage-Plan-Features">

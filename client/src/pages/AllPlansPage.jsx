@@ -1,4 +1,3 @@
-// components/AllPlansPage.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -10,6 +9,7 @@ import {
   ShoppingCart, Info, Check, Sparkles, MessageCircle
 } from 'lucide-react';
 import { getAllPlans, getPlanCategories } from '../api/planApi';
+import { checkPlanOwnership } from '../api/paymentApi';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 import PageTransition from '../components/PageTransition';
@@ -35,6 +35,9 @@ function AllPlansPage() {
   // Modal state
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedPlan, setSelectedPlan] = useState(null);
+  
+  // Loading state for plan ownership check
+  const [checkingPlanId, setCheckingPlanId] = useState(null);
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
@@ -133,19 +136,53 @@ function AllPlansPage() {
     setDurationRange({ min: '', max: '' });
   };
 
+  // Handle plan selection with ownership check
+  const handleSelectPlan = async (plan, e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (!isAuthenticated) {
+      toast.error('Please login to continue');
+      navigate('/login');
+      return;
+    }
+
+    // Only clients can buy plans (optional - adjust if nutritionists/admins can also buy)
+    if (user?.role !== 'Client') {
+      toast.error('Only clients can purchase plans');
+      return;
+    }
+
+    setCheckingPlanId(plan._id);
+    try {
+      const response = await checkPlanOwnership(plan._id);
+      if (response.success && response.ownsPlan) {
+        toast.error('You already own this plan. View it in "My Plans".', {
+          duration: 4000,
+          icon: ' '
+        });
+        return;
+      }
+      // If not owned, proceed to checkout
+      navigate(`/checkout/${plan._id}`, { state: { plan } });
+    } catch (err) {
+      console.error('Error checking plan ownership:', err);
+      toast.error('Unable to verify plan status. Please try again.');
+    } finally {
+      setCheckingPlanId(null);
+    }
+  };
+
   const handlePlanClick = (plan, e) => {
     e.stopPropagation();
-    navigate(`/checkout/${plan._id}`, {
-      state: { plan }
-    });
+    // Reuse the same logic
+    handleSelectPlan(plan, e);
   };
 
   const handleBuyNow = () => {
     setModalOpen(false);
     if (selectedPlan) {
-      navigate(`/checkout/${selectedPlan._id}`, {
-        state: { plan: selectedPlan }
-      });
+      handleSelectPlan(selectedPlan, new Event('click'));
     }
   };
 
@@ -265,7 +302,7 @@ function AllPlansPage() {
                       </select>
                     </div>
                     <div className="AP-FilterGroup">
-                      <label>Price Range ($)</label>
+                      <label>Price Range (DZD)</label>
                       <div className="AP-RangeInputs">
                         <input type="number" placeholder="Min" value={priceRange.min} onChange={(e) => setPriceRange(prev => ({ ...prev, min: e.target.value }))} />
                         <span>-</span>
@@ -350,7 +387,7 @@ function AllPlansPage() {
                       </p>
                       <div className="AP-CardMeta">
                         <span><Calendar size={14} /> {plan.duration} weeks</span>
-                        <span><DollarSign size={14} /> {(plan.price * 140).toLocaleString()} DZD</span>
+                        <span><DollarSign size={14} /> {plan.price.toLocaleString()} DZD</span>
                         <span><MessageCircle size={14} /> {plan.consultationIncluded} Sessions</span>
                       </div>
                       <div className="AP-CardFooter">
@@ -364,9 +401,19 @@ function AllPlansPage() {
                           )}
                           <span className="AP-CreatorName">{plan.creatorInfo?.fullName || 'Unknown'}</span>
                         </div>
-                        <Link to={`/checkout/${plan._id}`} state={{ plan }} className="AP-ViewPlanBtn">
-                          <ShoppingCart size={16} /> Select Plan <ChevronRight size={16} />
-                        </Link>
+                        <button
+                          onClick={(e) => handleSelectPlan(plan, e)}
+                          className="AP-ViewPlanBtn"
+                          disabled={checkingPlanId === plan._id}
+                        >
+                          {checkingPlanId === plan._id ? (
+                            <Loader2 size={16} className="AP-Spin" />
+                          ) : (
+                            <>
+                              <ShoppingCart size={16} /> Select Plan <ChevronRight size={16} />
+                            </>
+                          )}
+                        </button>
                       </div>
                     </div>
                   </motion.div>
@@ -397,7 +444,7 @@ function AllPlansPage() {
                       </p>
                       <div className="AP-ListItemMeta">
                         <span><Calendar size={14} /> {plan.duration} weeks</span>
-                        <span><DollarSign size={14} /> {(plan.price * 140).toLocaleString()} DZD</span>
+                        <span><DollarSign size={14} /> {plan.price.toLocaleString()} DZD</span>
                         <span><MessageCircle size={14} /> {plan.consultationIncluded} Sessions</span>
                         <span><Clock size={14} /> {plan.followUpFrequency}</span>
                       </div>
@@ -413,9 +460,19 @@ function AllPlansPage() {
                         )}
                         <span>{plan.creatorInfo?.fullName || 'Unknown'}</span>
                       </div>
-                      <Link to={`/checkout/${plan._id}`} state={{ plan }} className="AP-ViewPlanBtn">
-                        <ShoppingCart size={16} /> Select Plan
-                      </Link>
+                      <button
+                        onClick={(e) => handleSelectPlan(plan, e)}
+                        className="AP-ViewPlanBtn"
+                        disabled={checkingPlanId === plan._id}
+                      >
+                        {checkingPlanId === plan._id ? (
+                          <Loader2 size={16} className="AP-Spin" />
+                        ) : (
+                          <>
+                            <ShoppingCart size={16} /> Select Plan
+                          </>
+                        )}
+                      </button>
                     </div>
                   </motion.div>
                 </ScrollReveal>

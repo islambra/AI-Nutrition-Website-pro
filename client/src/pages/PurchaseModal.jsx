@@ -166,7 +166,7 @@ function PurchaseModal({ isOpen, onClose, plan, onBuyNow, onViewMyPlan }) {
                 </button>
                 <button className="PM-BtnPrimary PM-BuyBtn" onClick={onBuyNow}>
                   <ShoppingCart size={18} />
-                  Buy Now - ${plan.price}
+                  Buy Now - DZD{plan.price}
                   <ArrowRight size={18} />
                 </button>
               </div>

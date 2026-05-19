@@ -21,3 +21,18 @@ export const getUserPlans = async () => {
   const response = await axiosInstance.get("/payments/my-plans");
   return response.data;
 };
+// Add to existing paymentApi.js
+export const getAllPaymentsAdmin = async () => {
+  const response = await axiosInstance.get('/admin/payments');
+  return response.data;
+};
+
+export const deletePaymentAdmin = async (paymentId) => {
+  const response = await axiosInstance.delete(`/admin/payments/${paymentId}`);
+  return response.data;
+};
+
+export const getNutritionistPlanPayments = async () => {
+  const response = await axiosInstance.get('/nutritionist/payments/my-plan-payments');
+  return response.data;
+};

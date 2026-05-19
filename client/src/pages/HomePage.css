@@ -696,3 +696,8 @@ body {
   .HP-Review-Text { font-size: 18px; }
   .cta-v5 h2 { font-size: 36px !important; }
 }
+@media (max-width: 768px) {
+  .hero-frames-container {
+    display: none;
+  }
+}

@@ -336,8 +336,7 @@ function HomePage() {
             FUEL YOUR <br /> VITALITY
           </h1>
           <p className="hero-subtitle-v2">
-            Precision nutrition tailored to your unique biological signature. <br /> 
-            Unlock peak health through expert-led dietary science and clinical-grade tracking.
+            Precision nutrition tailored to your biology,<br />Unlock peak health through science & tracking.
           </p>
           
           <motion.div 

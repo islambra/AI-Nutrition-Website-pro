@@ -334,7 +334,7 @@ const CreatePlan = () => {
       
       setSuccess("Plan created successfully! Redirecting...");
       setTimeout(() => {
-        navigate("/dashboard/plans");
+        navigate("/nutritionist/MyPlans");
       }, 2000);
     } catch (err) {
       console.error('Error creating plan:', err);
@@ -483,7 +483,7 @@ const CreatePlan = () => {
               />
             </div>
             <div className="form-group">
-              <label><i className="fas fa-dollar-sign"></i> Price (USD) *</label>
+              <label><i className="fas fa-dollar-sign"></i> Price (DZD) *</label>
               <input
                 type="number"
                 name="price"

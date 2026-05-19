@@ -160,7 +160,8 @@ function CheckoutPage() {
                   <DollarSign size={18} />
                   <div>
                     <span className="label">Price</span>
-                    <span className="value price">{(plan.price * 140).toLocaleString()} DZD</span>
+                    {/* ✅ Fixed: removed * 140 */}
+                    <span className="value price">{plan.price.toLocaleString()} DZD</span>
                   </div>
                 </div>
               </div>
@@ -252,7 +253,8 @@ function CheckoutPage() {
                   ) : (
                     <>
                       <Check size={20} />
-                      Pay {(plan.price * 140).toLocaleString()} DZD
+                      {/* ✅ Fixed: removed * 140 */}
+                      Pay {plan.price.toLocaleString()} DZD
                     </>
                   )}
                 </button>
