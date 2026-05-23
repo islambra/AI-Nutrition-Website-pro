@@ -10,7 +10,7 @@ const MODEL_PATH = path.join(__dirname, '../models/model.onnx');
 const INPUT_SIZE = 640;
 let session = null;
 
-// Class mapping – same as your notebook
+// Your original 73‑class mapping
 const KEEP_IDS = [1,3,4,5,6,8,9,10,13,14,15,17,18,19,20,22,24,25,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,48,49,50,51,52,54,57,58,59,61,64,66,67,69,70,71,73,76,79,80,82,83,84,87,90,91,92,93,94,95,96,97,98,102,103];
 
 const CLASS_NAMES = {
@@ -31,7 +31,8 @@ const CLASS_NAMES = {
   97: 'king oyster mushroom', 98: 'shiitake', 102: 'salad', 103: 'other ingredients'
 };
 
-const classNamesList = KEEP_IDS.map(id => CLASS_NAMES[id]);
+// Build the full 73‑class name list (index 0 = candy, …)
+const classNamesList73 = KEEP_IDS.map(id => CLASS_NAMES[id]);
 
 async function loadModel() {
   if (!session) {
@@ -63,21 +64,27 @@ async function preprocessImage(imageBuffer) {
 export async function detectFood(imageBuffer) {
   await loadModel();
   const tensor = await preprocessImage(imageBuffer);
-  // Note: input node name may differ; use Netron to check
   const feeds = { images: tensor };
   const results = await session.run(feeds);
   const output = results.output0;
   const data = output.data;
-  const dims = output.dims; // [1,84,8400]
+  const dims = output.dims;   // Expected: [1, 66, 8400] (or [1, 77, 8400] after re-export)
+  const stride = dims[1];
   const numBoxes = dims[2];
-  const numClasses = 73;
+  const numClassesFromModel = stride - 4;   // 62 if stride=66, 73 if stride=77
+
+  console.log(`📊 Model output: dims=${dims}, stride=${stride}, numClasses=${numClassesFromModel}`);
+
+  // Use as many class names as the model expects (but never exceed our list)
+  const availableClassNames = classNamesList73.slice(0, numClassesFromModel);
+  console.log(`✅ Using ${availableClassNames.length} class names (model expects ${numClassesFromModel})`);
 
   let bestScore = 0;
   let bestClassId = -1;
 
   for (let i = 0; i < numBoxes; i++) {
-    const startIdx = i * 84;
-    for (let c = 0; c < numClasses; c++) {
+    const startIdx = i * stride;
+    for (let c = 0; c < availableClassNames.length; c++) {
       const score = data[startIdx + 4 + c];
       if (score > bestScore) {
         bestScore = score;
@@ -86,9 +93,17 @@ export async function detectFood(imageBuffer) {
     }
   }
 
-  if (bestClassId === -1) throw new Error('No food detected');
-  const foodName = classNamesList[bestClassId];
+  if (bestClassId === -1 || bestScore < 0.3) {
+    throw new Error('No reliable food detected');
+  }
+
+  const foodName = availableClassNames[bestClassId];
+  if (!foodName) {
+    throw new Error(`Invalid class index ${bestClassId} (max ${availableClassNames.length-1})`);
+  }
+
   const confidence = (bestScore * 100).toFixed(1);
+  console.log(`✅ Detected: ${foodName} (confidence ${confidence}%)`);
 
   return { foodName, confidence: parseFloat(confidence) };
 }

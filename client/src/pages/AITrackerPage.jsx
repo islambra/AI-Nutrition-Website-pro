@@ -354,7 +354,7 @@ function AITrackerPage() {
                         </div>
                         <div className="AIT-Confidence">
                           <span className="c-label">CONFIDENCE</span>
-                          <span className="c-value">{results.confidence}%</span>
+                          <span className="c-value">{results.confidence *0.001}%</span>
                         </div>
                       </div>
 
