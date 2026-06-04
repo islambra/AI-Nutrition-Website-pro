@@ -1,0 +1,288 @@
+.mc-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+.mc-loader-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  gap: 1.5rem;
+  color: #6b7280;
+  font-size: 1.125rem;
+  font-weight: 500;
+}
+
+.mc-header {
+  margin-bottom: 2.5rem;
+}
+
+.mc-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+  color: #059669;
+  border-radius: 2rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  border: 1px solid #a7f3d0;
+}
+
+.mc-title {
+  font-size: 2.25rem;
+  font-weight: 800;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.mc-gradient {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.mc-subtitle {
+  color: #6b7280;
+  font-size: 1.0625rem;
+}
+
+.mc-levels {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.mc-level-card {
+  background: white;
+  border-radius: 1rem;
+  border: 2px solid #e5e7eb;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.mc-level-card:hover {
+  border-color: #10b981;
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.1);
+}
+
+.mc-level-card.expanded {
+  border-color: #10b981;
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.15);
+}
+
+.mc-level-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 1.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.mc-level-header:hover {
+  background: #f9fafb;
+}
+
+.mc-level-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.mc-level-icon {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+}
+
+.mc-level-info h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin: 0;
+  text-align: left;
+}
+
+.mc-level-subtitle {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.mc-level-stats {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  color: #6b7280;
+}
+
+.mc-course-count {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #059669;
+  background: #ecfdf5;
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+}
+
+.mc-level-body {
+  padding: 0 1.5rem 1.5rem;
+}
+
+.mc-semesters {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.mc-semester {
+  background: #f9fafb;
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  border: 1px solid #e5e7eb;
+}
+
+.mc-semester-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.mc-semester-header h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #059669;
+  margin: 0;
+}
+
+.mc-semester-count {
+  margin-left: auto;
+  font-size: 0.75rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.mc-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 2rem;
+  color: #9ca3af;
+  font-size: 0.875rem;
+}
+
+.mc-course-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.mc-course-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: white;
+  border-radius: 0.75rem;
+  border: 1px solid #e5e7eb;
+  transition: all 0.2s;
+}
+
+.mc-course-item:hover {
+  border-color: #10b981;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.1);
+}
+
+.mc-course-icon {
+  width: 40px;
+  height: 40px;
+  background: #ecfdf5;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #059669;
+  flex-shrink: 0;
+}
+
+.mc-course-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.mc-course-content h4 {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0 0 0.15rem;
+}
+
+.mc-course-date {
+  font-size: 0.75rem;
+  color: #9ca3af;
+}
+
+.mc-pdf-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 0.8rem;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  border-radius: 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+
+.mc-pdf-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+@media (max-width: 768px) {
+  .mc-container {
+    padding: 1rem;
+  }
+
+  .mc-title {
+    font-size: 1.75rem;
+  }
+
+  .mc-semesters {
+    grid-template-columns: 1fr;
+  }
+
+  .mc-level-header {
+    padding: 1rem;
+  }
+
+  .mc-level-stats {
+    gap: 0.5rem;
+  }
+
+  .mc-course-count {
+    display: none;
+  }
+}

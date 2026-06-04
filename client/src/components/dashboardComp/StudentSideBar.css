@@ -1,0 +1,10 @@
+.student-sidebar {
+  background: linear-gradient(180deg, #ffffff 0%, #f0fdf4 100%);
+}
+
+.student-sidebar .sidebar-link.active {
+  background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+  color: #16a34a;
+  border-left: 3px solid #16a34a;
+  font-weight: 600;
+}

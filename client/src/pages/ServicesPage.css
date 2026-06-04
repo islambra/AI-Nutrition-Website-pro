@@ -666,6 +666,238 @@
   transform: translateY(-5px) scale(1.05);
 }
 
+/* ===== STUDENT COURSES SECTION ===== */
+.sc-levels {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.sc-level-card {
+  background: white;
+  border-radius: 1rem;
+  border: 2px solid var(--S-Border);
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.sc-level-card:hover {
+  border-color: var(--S-Accent);
+  box-shadow: 0 8px 24px rgba(52, 199, 89, 0.1);
+}
+
+.sc-level-card.expanded {
+  border-color: var(--S-Accent);
+  box-shadow: 0 8px 24px rgba(52, 199, 89, 0.15);
+}
+
+.sc-level-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 1.25rem 1.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.sc-level-header:hover {
+  background: var(--S-Mint);
+}
+
+.sc-level-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  text-align: left;
+}
+
+.sc-level-icon {
+  width: 44px;
+  height: 44px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  flex-shrink: 0;
+}
+
+.sc-level-info h3 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--S-Green);
+  margin: 0;
+}
+
+.sc-level-subtitle {
+  font-size: 0.8125rem;
+  color: var(--S-Gray);
+}
+
+.sc-level-stats {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--S-Gray);
+}
+
+.sc-course-count {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--S-Accent);
+  background: var(--S-Mint);
+  padding: 0.25rem 0.75rem;
+  border-radius: 1rem;
+}
+
+.sc-level-body {
+  padding: 0 1.5rem 1.5rem;
+}
+
+.sc-semesters {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+.sc-semester {
+  background: #f9fafb;
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  border: 1px solid #e5e7eb;
+}
+
+.sc-semester-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+.sc-semester-header h4 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--S-Accent);
+  margin: 0;
+}
+
+.sc-semester-count {
+  margin-left: auto;
+  font-size: 0.75rem;
+  color: var(--S-Gray);
+  font-weight: 500;
+}
+
+.sc-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1.5rem;
+  color: #9ca3af;
+  font-size: 0.8125rem;
+}
+
+.sc-empty svg {
+  color: #d1d5db;
+}
+
+.sc-course-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.625rem;
+}
+
+.sc-course-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background: white;
+  border-radius: 0.75rem;
+  border: 1px solid #e5e7eb;
+  transition: all 0.2s;
+}
+
+.sc-course-item:hover {
+  border-color: var(--S-Accent);
+  box-shadow: 0 2px 8px rgba(52, 199, 89, 0.1);
+}
+
+.sc-course-item-icon {
+  color: var(--S-Accent);
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  padding: 8px;
+  background: var(--S-Mint);
+  border-radius: 8px;
+}
+
+.sc-course-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.sc-course-content h5 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0 0 0.15rem;
+}
+
+.sc-course-date {
+  font-size: 0.6875rem;
+  color: #9ca3af;
+}
+
+.sc-pdf-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.7rem;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.sc-pdf-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+}
+
+@media (max-width: 768px) {
+  .sc-semesters {
+    grid-template-columns: 1fr;
+  }
+  .sc-level-header {
+    padding: 1rem;
+  }
+  .sc-level-stats {
+    gap: 0.5rem;
+  }
+  .sc-course-count {
+    display: none;
+  }
+}
+
 /* RESPONSIVE */
 @media (max-width: 1024px) {
   .ServicesPage-AI-Grid, .ServicesPage-Consult-Banner {

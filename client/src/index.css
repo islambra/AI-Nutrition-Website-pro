@@ -70,20 +70,37 @@ button, .btn {
 
 /* Global Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--health-cream);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: var(--health-border);
+  background: var(--health-green);
   border-radius: 10px;
 }
 
-::-webkit-scrollbar-thumb:hover {
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--health-green) transparent;
+}
+
+/* Hide scrollbar but keep functionality on all scrollable containers */
+.scrollable-form {
+  scrollbar-width: thin;
+}
+.scrollable-form::-webkit-scrollbar {
+  width: 4px;
+}
+.scrollable-form::-webkit-scrollbar-thumb {
   background: var(--health-green);
+  border-radius: 10px;
+}
+.scrollable-form::-webkit-scrollbar-track {
+  background: transparent;
 }
 
 /* Base Utility Classes */

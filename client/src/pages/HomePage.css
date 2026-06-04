@@ -688,12 +688,77 @@ body {
   .frame-1, .frame-2, .frame-3 { display: none; }
 }
 
+/* --- FEATURES GRID --- */
+.HP-Features-Section {
+  position: relative;
+  z-index: 5;
+  padding: 80px 5%;
+  background: var(--health-mint);
+}
+
+.HP-Features-Grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+  max-width: var(--container-width);
+  margin: 0 auto;
+}
+
+.HP-Feature-Card {
+  background: #fff;
+  border-radius: 24px;
+  padding: 36px 28px;
+  border: 1px solid var(--health-border);
+  transition: var(--transition-smooth);
+}
+
+.HP-Feature-Card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-premium);
+  border-color: var(--health-accent);
+}
+
+.HP-Feature-Icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--health-mint);
+  color: var(--health-green);
+  margin-bottom: 20px;
+}
+
+.HP-Feature-Card h3 {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--health-green);
+  margin-bottom: 10px;
+}
+
+.HP-Feature-Card p {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--health-gray);
+  margin: 0;
+}
+
+@media (max-width: 1024px) {
+  .HP-Features-Grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
 @media (max-width: 768px) {
   .hero-section-v4 { padding: 120px 20px; }
   .hero-giant-text-v2 { font-size: clamp(44px, 14vw, 72px); }
   .HP-Plan-Card { padding: 32px 24px; }
   .HP-Review-Card.slider-mode { padding: 40px 24px; }
   .HP-Review-Text { font-size: 18px; }
+  .HP-Features-Grid { grid-template-columns: 1fr; }
+  .HP-Features-Section { padding: 60px 20px; }
   .cta-v5 h2 { font-size: 36px !important; }
 }
 @media (max-width: 768px) {

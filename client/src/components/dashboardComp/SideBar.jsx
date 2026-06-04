@@ -1,5 +1,5 @@
 import { useLocation, NavLink } from "react-router-dom";
-import { nutritionistMenuLinks } from "../../assets/assets";
+import { dieteticienMenuLinks } from "../../assets/assets";
 import "./SideBar.css";
 
 const SideBar = () => {
@@ -7,7 +7,7 @@ const SideBar = () => {
 
   return (
     <div className="sidebar">
-      {nutritionistMenuLinks.map((link, i) => (
+      {dieteticienMenuLinks.map((link, i) => (
         <NavLink
           key={i}
           to={link.path}

@@ -31,6 +31,10 @@ const planSchema = new mongoose.Schema(
       required: false,
       default: "",
     },
+    imageKitFileId: {
+      type: String,
+      default: null,
+    },
 
     // Duration & Price
     duration: {
@@ -140,7 +144,7 @@ const planSchema = new mongoose.Schema(
       },
       role: {
         type: String,
-        enum: ["Admin", "Nutritionist", "Client"],
+        enum: ["admin", "dieteticien", "client", "student"],
       },
       photo: {
         type: String,

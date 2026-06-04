@@ -12,7 +12,7 @@ const AddUser = () => {
     email: "",
     password: "",
     confirmPassword: "",
-    role: "Nutritionist"
+    role: "dieteticien"
   });
   const [errors, setErrors] = useState({});
 
@@ -59,7 +59,7 @@ const AddUser = () => {
         email: "", 
         password: "", 
         confirmPassword: "", 
-        role: "Nutritionist" 
+        role: "dieteticien" 
       });
       
       setTimeout(() => {
@@ -141,7 +141,7 @@ const AddUser = () => {
             <span>User Management</span>
           </div>
           <h1>Create New User Account</h1>
-          <p>Add administrators or nutritionists to manage your platform</p>
+          <p>Add administrators or Dieteticiens to manage your platform</p>
         </div>
 
         <div className="create-user-card">
@@ -205,12 +205,12 @@ const AddUser = () => {
                   </div>
                 </div>
                 <div
-                  className={`role-option ${formData.role === "Nutritionist" ? "active" : ""}`}
-                  onClick={() => setFormData(prev => ({ ...prev, role: "Nutritionist" }))}
+                  className={`role-option ${formData.role === "dieteticien" ? "active" : ""}`}
+                  onClick={() => setFormData(prev => ({ ...prev, role: "dieteticien" }))}
                 >
                   <div className="role-header">
-                    <h3>Nutritionist</h3>
-                    <span className="role-tag nutritionist">Professional Access</span>
+                    <h3>Dieteticien</h3>
+                    <span className="role-tag Dieteticien">Professional Access</span>
                   </div>
                   <p>Manage clients, create meal plans, and track nutritional progress</p>
                   <div className="role-features">

@@ -37,13 +37,14 @@ function LoginPage() {
       if (result.success) {
         const user = result.user;
         // CHANGED: Role is now "Client" instead of "Patient"
-        const userRole = user.role || "Client";
+        const userRole = user.role || "client";
         
         // CHANGED: Get display role text
         const roleDisplay = {
-          'Admin': 'Administrator',
-          'Nutritionist': 'Nutritionist',
-          'Client': 'Client'
+          'admin': 'Administrator',
+          'dieteticien': 'Dieteticien',
+          'client': 'Client',
+          'student': 'Student'
         }[userRole] || userRole;
         
         toast.success(`Welcome back, ${user.fullName || 'User'}!`, {
@@ -108,7 +109,7 @@ function LoginPage() {
       </div>
 
       {/* Right Side: Form */}
-      <div className="split-form-side">
+      <div className="split-form-side scrollable-form">
         <motion.div 
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}

@@ -1,12 +1,25 @@
 import axiosInstance from './axiosInstance';
 
-// Register client
-export const registerClient = async (userData) => {
-  const response = await axiosInstance.post("/user/register-client", userData);
+// Register client/student
+export const registerUser = async (userData) => {
+  const response = await axiosInstance.post("/user/register", userData);
   return response.data;
 };
 
-// Register staff (Admin or Nutritionist)
+// Register client (backward compatible)
+export const registerClient = async (userData) => {
+  return registerUser(userData);
+};
+
+// Register dieteticien (with diploma upload)
+export const registerDieteticien = async (formData) => {
+  const response = await axiosInstance.post("/user/register-dieteticien", formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
+  return response.data;
+};
+
+// Register staff (Admin or Dieteticien)
 export const createStaffUser = async (userData) => {
   const response = await axiosInstance.post("/user/create-staff", userData);
   return response.data;
@@ -15,12 +28,12 @@ export const createStaffUser = async (userData) => {
 // Login user
 export const loginUser = async (userData) => {
   const response = await axiosInstance.post("/user/login", userData);
-  
+
   if (response.data.token) {
     localStorage.setItem("token", response.data.token);
     localStorage.setItem("user", JSON.stringify(response.data.user));
   }
-  
+
   return response.data;
 };
 
@@ -30,13 +43,13 @@ export const getAllUsers = async () => {
   return response.data;
 };
 
-// Get all staff users only (Admin and Nutritionist)
+// Get all staff users only (Admin and Dieteticien)
 export const getAllStaffUsers = async () => {
   const response = await axiosInstance.get("/user/staff");
   return response.data;
 };
 
-// Get all clients only
+// Get all clients/students
 export const getAllClients = async () => {
   const response = await axiosInstance.get("/user/clients");
   return response.data;
@@ -46,10 +59,10 @@ export const getAllClients = async () => {
 export const updateUser = async (userId, userData = {}, profilePicture = null) => {
   let data;
   let config = {};
-  
+
   if (profilePicture instanceof File) {
     data = new FormData();
-    
+
     Object.keys(userData).forEach(key => {
       if (userData[key] !== undefined && userData[key] !== null) {
         if (Array.isArray(userData[key])) {
@@ -59,9 +72,9 @@ export const updateUser = async (userId, userData = {}, profilePicture = null) =
         }
       }
     });
-    
+
     data.append('profilePicture', profilePicture);
-    
+
     config = {
       headers: {
         'Content-Type': 'multipart/form-data',
@@ -70,9 +83,9 @@ export const updateUser = async (userId, userData = {}, profilePicture = null) =
   } else {
     data = userData;
   }
-  
+
   const response = await axiosInstance.put(`/user/${userId}`, data, config);
-  
+
   if (response.data.user) {
     const currentUser = getCurrentUserFromStorage();
     if (currentUser && currentUser._id === userId) {
@@ -84,7 +97,7 @@ export const updateUser = async (userId, userData = {}, profilePicture = null) =
       localStorage.setItem("user", JSON.stringify(updatedUser));
     }
   }
-  
+
   return response.data;
 };
 
@@ -128,33 +141,48 @@ export const getCurrentUser = async () => {
     localStorage.setItem("user", JSON.stringify(response.data));
     return { success: true, user: response.data };
   } catch (error) {
-    return { 
-      success: false, 
-      error: error.response?.data?.message || 'Failed to fetch user data' 
+    return {
+      success: false,
+      error: error.response?.data?.message || 'Failed to fetch user data'
     };
   }
 };
 
 // Helper functions for role checks
 export const isClient = (user) => {
-  return user?.role === "Client";
+  return user?.role === "client";
+};
+
+export const isStudent = (user) => {
+  return user?.role === "student";
+};
+
+export const isDieteticien = (user) => {
+  return user?.role === "dieteticien";
 };
 
 export const isStaff = (user) => {
-  return user?.role === "Admin" || user?.role === "Nutritionist";
+  return user?.role === "admin" || user?.role === "dieteticien";
 };
 
 export const isAdmin = (user) => {
-  return user?.role === "Admin";
+  return user?.role === "admin";
 };
 
-export const isNutritionist = (user) => {
-  return user?.role === "Nutritionist";
-};
+// Backward compatibility
+export const isNutritionist = isDieteticien;
 
-// Get client profile from user object
+// Get profile from user object
 export const getClientProfile = (user) => {
   return user?.clientProfile || null;
+};
+
+export const getStudentProfile = (user) => {
+  return user?.studentProfile || null;
+};
+
+export const getDieteticienProfile = (user) => {
+  return user?.dieteticienProfile || null;
 };
 
 // Get user display name
@@ -165,13 +193,30 @@ export const getUserDisplayName = (user) => {
 // Get user role display text
 export const getUserRoleDisplay = (user) => {
   const roleMap = {
-    'Admin': 'Administrator',
-    'Nutritionist': 'Nutritionist',
-    'Client': 'Client'
+    'admin': 'Administrator',
+    'dieteticien': 'Dieteticien',
+    'client': 'Client',
+    'student': 'Student'
   };
   return roleMap[user?.role] || user?.role || 'User';
 };
 
 // For backward compatibility
-export const registerPatient = registerClient;
+export const registerPatient = registerUser;
 export const getAllPatients = getAllClients;
+// === Admin: Dieteticien Management ===
+
+export const getPendingDieteticiens = async () => {
+  const response = await axiosInstance.get('/admin/dieteticiens/pending');
+  return response.data;
+};
+
+export const approveDieteticien = async (id) => {
+  const response = await axiosInstance.post(`/admin/dieteticiens/approve/${id}`);
+  return response.data;
+};
+
+export const rejectDieteticien = async (id) => {
+  const response = await axiosInstance.delete(`/admin/dieteticiens/reject/${id}`);
+  return response.data;
+};

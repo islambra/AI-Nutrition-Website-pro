@@ -10,7 +10,8 @@ import paymentRouter from "./routes/paymentRoutes.js";
 import consultationRoutes from "./routes/consultationRoutes.js";
 import aiRoutes from "./routes/aiRoutes.js";
 import adminRoutes from './routes/adminRoutes.js';
-import nutritionistRoutes from './routes/nutritionistRoutes.js';
+import dieteticienRoutes from './routes/dieteticienRoutes.js';
+import courseRoutes from './routes/courseRoutes.js';
 await connectDB();
 
 const app = express();
@@ -25,7 +26,8 @@ app.use("/api/payments", paymentRouter);
 app.use("/api/consultations", consultationRoutes);
 app.use("/api/ai", aiRoutes);
 app.use('/api/admin', adminRoutes);
-app.use('/api/nutritionist', nutritionistRoutes);
+app.use('/api/dieteticien', dieteticienRoutes);
+app.use('/api/courses', courseRoutes);
 
 const PORT = 5000;
 

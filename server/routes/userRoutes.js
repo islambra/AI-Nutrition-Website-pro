@@ -1,6 +1,8 @@
 import express from "express";
 import {
   registerClient,
+  registerUser,
+  registerDieteticien,
   createStaffUser,
   loginUser,
   getCurrentUser,
@@ -18,13 +20,15 @@ const userRouter = express.Router();
 
 // Public routes (no authentication required)
 userRouter.post("/register-client", registerClient);
+userRouter.post("/register", registerUser);
+userRouter.post("/register-dieteticien", upload.single("diploma"), registerDieteticien);
 userRouter.post("/login", loginUser);
 
 // Protected routes (authentication required)
 userRouter.get("/me", protect, getCurrentUser);
 userRouter.post("/create-staff", protect, createStaffUser);
-userRouter.get("/all", protect, getAllUsers);           
-userRouter.get("/staff", protect, getAllStaffUsers);   
+userRouter.get("/all", protect, getAllUsers);
+userRouter.get("/staff", protect, getAllStaffUsers);
 userRouter.get("/clients", protect, getAllClients);
 userRouter.put("/:id", protect, upload.single('profilePicture'), updateUser);
 userRouter.delete("/:id", protect, deleteUser);

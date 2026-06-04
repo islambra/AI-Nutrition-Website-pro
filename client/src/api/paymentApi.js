@@ -32,7 +32,8 @@ export const deletePaymentAdmin = async (paymentId) => {
   return response.data;
 };
 
-export const getNutritionistPlanPayments = async () => {
-  const response = await axiosInstance.get('/nutritionist/payments/my-plan-payments');
+export const getDieteticienPlanPayments = async () => {
+  const response = await axiosInstance.get('/dieteticien/payments/my-plan-payments');
   return response.data;
 };
+export const getNutritionistPlanPayments = getDieteticienPlanPayments;

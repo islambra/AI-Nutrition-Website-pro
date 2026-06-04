@@ -63,10 +63,10 @@ function Header() {
 
   // Function to get dashboard path based on user role
   const getDashboardPath = () => {
-    if (user?.role === "Admin") {
+    if (user?.role === "admin") {
       return "/admin/add-admin-nutritionist";
-    } else if (user?.role === "Nutritionist") {
-      return "/nutritionist/create-blog";
+    } else if (user?.role === "dieteticien") {
+      return "/dieteticien/create-blog";
     }
     return "/dashboard"; // fallback
   };
@@ -77,8 +77,12 @@ function Header() {
   };
 
   // Check if user is a client
-  const isClient = () => {
-    return user?.role === "Client";
+  const isClientRole = () => {
+    return user?.role === "client";
+  };
+
+  const isStudent = () => {
+    return user?.role === "student";
   };
 
   useEffect(() => {
@@ -95,7 +99,9 @@ function Header() {
 
         <nav className="desktop-nav-links">
           <NavLink to="/" className="nav-item">Home</NavLink>
-          <NavLink to="/services" className="nav-item">Services</NavLink>
+          {user?.role !== "admin" && user?.role !== "dieteticien" && (
+            <NavLink to="/services" className="nav-item">Services</NavLink>
+          )}
           <NavLink to="/blogs" className="nav-item">Blogs</NavLink>
           <NavLink to="/about" className="nav-item">About Us</NavLink>
           <NavLink to="/contact" className="nav-item">Contact Us</NavLink>
@@ -121,14 +127,14 @@ function Header() {
               </button>
               <div className="dropdown">
                 {/* Dashboard link based on role */}
-                {(user?.role === "Admin" || user?.role === "Nutritionist") && (
+                {(user?.role === "admin" || user?.role === "dieteticien") && (
                   <NavLink to={getDashboardPath()} className="dropdown-item">
                     <LayoutDashboard size={16} />
                     Dashboard
                   </NavLink>
                 )}
-                {/* Profile link - Only show for Client role */}
-                {isClient() && (
+                {/* Profile & Plans links for Clients */}
+                {isClientRole() && (
                   <>
                     <NavLink to="/profile" className="dropdown-item">
                       <User size={16} />
@@ -143,6 +149,13 @@ function Header() {
                       AI Tracker
                     </NavLink>
                   </>
+                )}
+                {/* Profile link for Students only */}
+                {isStudent() && (
+                  <NavLink to="/profile" className="dropdown-item">
+                    <User size={16} />
+                    Profile
+                  </NavLink>
                 )}
                 <button className="logout-btn" onClick={handleLogout}>
                   <LogOut size={16} />
@@ -160,7 +173,9 @@ function Header() {
 
       <nav className={`mobile-menu ${isMenuOpen ? "is-open" : ""}`}>
         <NavLink to="/" className="mobile-nav-item">Home</NavLink>
-        <NavLink to="/services" className="mobile-nav-item">Services</NavLink>
+        {user?.role !== "admin" && user?.role !== "dieteticien" && (
+          <NavLink to="/services" className="mobile-nav-item">Services</NavLink>
+        )}
         <NavLink to="/blogs" className="mobile-nav-item">Blogs</NavLink>
         <NavLink to="/about" className="mobile-nav-item">About Us</NavLink>
         <NavLink to="/contact" className="mobile-nav-item">Contact Us</NavLink>
@@ -182,14 +197,14 @@ function Header() {
               <span>{user?.fullName || user?.name || user?.email || "User"}</span>
             </div>
             {/* Dashboard link based on role for mobile */}
-            {(user?.role === "Admin" || user?.role === "Nutritionist") && (
+            {(user?.role === "admin" || user?.role === "dieteticien") && (
               <NavLink to={getDashboardPath()} className="mobile-nav-item">
                 <LayoutDashboard size={16} />
                 Dashboard
               </NavLink>
             )}
-            {/* Profile link - Only show for Client role on mobile */}
-            {isClient() && (
+            {/* Profile & Plans links for Clients on mobile */}
+            {isClientRole() && (
               <>
                 <NavLink to="/profile" className="mobile-nav-item">
                   <User size={16} />
@@ -204,6 +219,13 @@ function Header() {
                   AI Tracker
                 </NavLink>
               </>
+            )}
+            {/* Profile link for Students on mobile */}
+            {isStudent() && (
+              <NavLink to="/profile" className="mobile-nav-item">
+                <User size={16} />
+                Profile
+              </NavLink>
             )}
             <button className="mobile-nav-item mobile-logout-btn" onClick={handleLogout}>
               <LogOut size={16} />

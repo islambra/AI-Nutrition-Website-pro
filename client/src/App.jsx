@@ -18,24 +18,30 @@ import CustomCursor from './components/CustomCursor.jsx'
 import ScrollToTop from './utils/ScrollToTop.jsx'
 import { Routes, Route, useLocation } from 'react-router-dom' 
 import { Toaster } from 'react-hot-toast';
+import { Toaster as SonnerToaster } from 'sonner';
 import { AnimatePresence } from 'framer-motion';
 import PageTransition from './components/PageTransition.jsx'
 import ProgressBar from './components/ProgressBar.jsx'
 import SmoothScroll from './components/SmoothScroll.jsx'
-import CreateBlog from './pages/nutritionistDashboard/CreateBlog.jsx'
-import CreatePlan from './pages/nutritionistDashboard/CreatePlan.jsx'
-import MyPlans from './pages/nutritionistDashboard/MyPlans.jsx'
-import MyBlog from './pages/nutritionistDashboard/NutritionistBlogs.jsx'
-import Layout from './pages/nutritionistDashboard/Layout.jsx'
+import CreateBlog from './pages/dieteticienDashboard/CreateBlog.jsx'
+import CreatePlan from './pages/dieteticienDashboard/CreatePlan.jsx'
+import MyPlans from './pages/dieteticienDashboard/MyPlans.jsx'
+import MyBlog from './pages/dieteticienDashboard/DieteticienBlogs.jsx'
+import Layout from './pages/dieteticienDashboard/Layout.jsx'
 import AdminLayout from './pages/AdminDasboard/AdminLayout.jsx'
-import ContactMessages from './pages/nutritionistDashboard/ContactMessages.jsx'
+import ContactMessages from './pages/dieteticienDashboard/ContactMessages.jsx'
 import AddAdminNutritionist from './pages/AdminDasboard/AddAdminNutritionist.jsx'
-import ClientsPage from './pages/nutritionistDashboard/ClientsPage.jsx'
+import ClientsPage from './pages/dieteticienDashboard/ClientsPage.jsx'
 import AllUsers from './pages/AdminDasboard/AllUsers.jsx'
 import EditUserProfile from './pages/AdminDasboard/EditUserProfile.jsx'
 import AdminPayments from './pages/AdminDasboard/AdminPayments.jsx'
-import ConsultationRequests from './pages/nutritionistDashboard/ConsultationRequests.jsx'
-import NutritionistPayments from './pages/nutritionistDashboard/NutritionistPayments.jsx'
+import ManageDieteticiens from './pages/AdminDasboard/ManageDieteticiens.jsx'
+import ConsultationRequests from './pages/dieteticienDashboard/ConsultationRequests.jsx'
+import DieteticienPayments from './pages/dieteticienDashboard/DieteticienPayments.jsx'
+import CreateCourse from './pages/dieteticienDashboard/CreateCourse.jsx'
+import AllCourses from './pages/dieteticienDashboard/AllCourses.jsx'
+import LoginGate from './components/LoginGate.jsx'
+import ProtectedRoute from './components/ProtectedRoute.jsx'
 
 import './App.css'
 
@@ -51,39 +57,43 @@ function App() {
       <ProgressBar />
       <ScrollToTop />
       <Toaster />
+      <SonnerToaster position="top-center" richColors closeButton />
       {(!isLoginRoute && !isSignupRoute) && <Header />}
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
           <Route index element={<PageTransition><HomePage /></PageTransition>} />
-          <Route path='/contact' element={<PageTransition><ContactPage /></PageTransition>} />
+          <Route path='/contact' element={<LoginGate><PageTransition><ContactPage /></PageTransition></LoginGate>} />
           <Route path='/login' element={<PageTransition><LoginPage /></PageTransition>} />
           <Route path='/signup' element={<PageTransition><SignUpPage /></PageTransition>} />
           <Route path='/about' element={<PageTransition><AboutUsPage /></PageTransition>} /> 
-          <Route path='/services' element={<PageTransition><ServicesPage /></PageTransition>} /> 
-          <Route path='/blogs' element={<PageTransition><BlogsPage /></PageTransition>} /> 
-          <Route path='/profile' element={<PageTransition><ProfilePage /></PageTransition>} /> 
-          <Route path='/my-plans' element={<PageTransition><MyPlansPage /></PageTransition>} /> 
-          <Route path='/ai-tracker' element={<PageTransition><AITrackerPage /></PageTransition>} /> 
-          <Route path="/blog/:id" element={<PageTransition><BlogDetailsPage /></PageTransition>} />
-          <Route path="/allPlans" element={<PageTransition><AllPlansPage /></PageTransition>} />
-          <Route path="/checkout/:planId" element={<PageTransition><CheckoutPage /></PageTransition>} />
+          <Route path='/services' element={<LoginGate><PageTransition><ServicesPage /></PageTransition></LoginGate>} /> 
+          <Route path='/blogs' element={<LoginGate><PageTransition><BlogsPage /></PageTransition></LoginGate>} /> 
+          <Route path='/profile' element={<LoginGate><PageTransition><ProfilePage /></PageTransition></LoginGate>} /> 
+          <Route path='/my-plans' element={<LoginGate><PageTransition><MyPlansPage /></PageTransition></LoginGate>} /> 
+          <Route path='/ai-tracker' element={<LoginGate><PageTransition><AITrackerPage /></PageTransition></LoginGate>} /> 
+          <Route path="/blog/:id" element={<LoginGate><PageTransition><BlogDetailsPage /></PageTransition></LoginGate>} />
+          <Route path="/allPlans" element={<LoginGate><PageTransition><AllPlansPage /></PageTransition></LoginGate>} />
+          <Route path="/checkout/:planId" element={<LoginGate><PageTransition><CheckoutPage /></PageTransition></LoginGate>} />
 
-          <Route path="/nutritionist" element={<Layout />}>
-              <Route path="/nutritionist/create-blog" element={<CreateBlog />} />
-              <Route path="/nutritionist/create-plan" element={<CreatePlan />} />
-              <Route path="/nutritionist/MyPlans" element={<MyPlans />} />
-              <Route path="/nutritionist/MyBlogs" element={<MyBlog />} />
-              <Route path="/nutritionist/contact-messages" element={<ContactMessages />} />
-              <Route path="/nutritionist/my-Profile" element={<EditUserProfile />} />
-              <Route path="/nutritionist/payments" element={<NutritionistPayments />} />
-              <Route path="/nutritionist/all-clients" element={<ClientsPage />} />
-              <Route path="/nutritionist/consultation-requests" element={<ConsultationRequests />} />
+          <Route path="/dieteticien" element={<ProtectedRoute roles={['dieteticien', 'admin']}><Layout /></ProtectedRoute>}>
+              <Route path="create-blog" element={<CreateBlog />} />
+              <Route path="create-plan" element={<CreatePlan />} />
+              <Route path="MyPlans" element={<MyPlans />} />
+              <Route path="MyBlogs" element={<MyBlog />} />
+              <Route path="create-course" element={<CreateCourse />} />
+              <Route path="all-courses" element={<AllCourses />} />
+              <Route path="contact-messages" element={<ContactMessages />} />
+              <Route path="my-Profile" element={<EditUserProfile />} />
+              <Route path="payments" element={<DieteticienPayments />} />
+              <Route path="all-clients" element={<ClientsPage />} />
+              <Route path="consultation-requests" element={<ConsultationRequests />} />
           </Route>
-          <Route path="/admin" element={<AdminLayout />}>
-              <Route path="/admin/add-admin-nutritionist" element={<AddAdminNutritionist />} />
-              <Route path="/admin/all-users" element={<AllUsers />} />
-              <Route path="/admin/payments" element={<AdminPayments />} />
-              <Route path="/admin/my-Profile" element={<EditUserProfile />} />
+          <Route path="/admin" element={<ProtectedRoute roles={['admin']}><AdminLayout /></ProtectedRoute>}>
+              <Route path="add-admin-nutritionist" element={<AddAdminNutritionist />} />
+              <Route path="all-users" element={<AllUsers />} />
+              <Route path="payments" element={<AdminPayments />} />
+              <Route path="manage-dieteticiens" element={<ManageDieteticiens />} />
+              <Route path="my-Profile" element={<EditUserProfile />} />
           </Route>
         </Routes>
       </AnimatePresence>

@@ -17,28 +17,23 @@ export const createBlog = async (req, res) => {
         }
 
         let photoUrl = null;
+        let blogFileId = null;
         if (req.file) {
-            try {
-                const base64Image = req.file.buffer.toString('base64');
-                const uploadResponse = await imagekit.upload({
-                    file: base64Image,
-                    fileName: `${Date.now()}-${req.file.originalname}`,
-                    folder: "/blogs",
-                });
-                photoUrl = uploadResponse.url;
-            } catch (uploadError) {
-                return res.status(500).json({
-                    success: false,
-                    message: "Error uploading image",
-                    error: uploadError.message
-                });
-            }
+            const base64Image = req.file.buffer.toString('base64');
+            const uploadResponse = await imagekit.upload({
+                file: base64Image,
+                fileName: `${Date.now()}-${req.file.originalname}`,
+                folder: "/blogs",
+            });
+            photoUrl = uploadResponse.url;
+            blogFileId = uploadResponse.fileId;
         }
 
         const newBlog = new Blog({
             photo: photoUrl,
+            imageKitFileId: blogFileId,
             type,
-            author: user._id,          // ✅ ObjectId reference
+            author: user._id,
             title,
             content,
             tags: tags ? JSON.parse(tags) : []
@@ -90,7 +85,11 @@ export const updateBlog = async (req, res) => {
                     fileName: `${Date.now()}-${req.file.originalname}`,
                     folder: "/blogs",
                 });
+                if (blog.imageKitFileId) {
+                    try { await imagekit.deleteFile(blog.imageKitFileId); } catch (_) {}
+                }
                 photoUrl = uploadResponse.url;
+                blog.imageKitFileId = uploadResponse.fileId;
             } catch (uploadError) {
                 return res.status(500).json({
                     success: false,
@@ -104,6 +103,7 @@ export const updateBlog = async (req, res) => {
             req.params.id,
             { 
                 photo: photoUrl,
+                imageKitFileId: blog.imageKitFileId,
                 type, 
                 title, 
                 content, 
@@ -284,6 +284,10 @@ export const deleteBlog = async (req, res) => {
             });
         }
         
+        if (blog.imageKitFileId) {
+            try { await imagekit.deleteFile(blog.imageKitFileId); } catch (_) {}
+        }
+
         await Comment.deleteMany({ blog: req.params.id });
         await Like.deleteMany({ blog: req.params.id });
         await Blog.findByIdAndDelete(req.params.id);

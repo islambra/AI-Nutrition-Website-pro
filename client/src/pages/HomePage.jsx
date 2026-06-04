@@ -1,12 +1,11 @@
-import { useState, useRef, useEffect, useMemo, memo } from 'react';
+import { useState, useEffect, useMemo, memo } from 'react';
 import { NavLink, useNavigate, Link } from 'react-router-dom';
 import { motion, useScroll, useTransform, useSpring, useVelocity, useAnimationFrame, AnimatePresence, useMotionValue } from 'framer-motion';
-import { Activity, Leaf, ChevronRight, ArrowUpRight, Check, Quote, Users, Target, Dna, ShoppingCart } from 'lucide-react';
+import { Activity, Leaf, ChevronRight, ArrowUpRight, Quote, Users, Target, Dna, BookOpen } from 'lucide-react';
 import './HomePage.css';
 import Footer from '../components/Footer.jsx';
 import ScrollReveal from '../components/ScrollReveal.jsx';
 import { useAuth } from '../context/AuthContext';
-import { getAllPlans } from '../api/planApi';
 import toast from 'react-hot-toast';
 
 // --- 1. REFRESH PRELOADER ---
@@ -220,96 +219,10 @@ function HomePage() {
     }
   ];
 
-  const [previewPlans, setPreviewPlans] = useState([]);
-  const [plansLoading, setPlansLoading] = useState(true);
   const [reviewIndex, setReviewIndex] = useState(0);
-
-  const [planIndex, setPlanIndex] = useState(0);
-
-  useEffect(() => {
-    const fetchPreviewPlans = async () => {
-      try {
-        const response = await getAllPlans();
-        if (response.success) {
-          const plans = response.data.map((plan, i) => {
-            // Category-based icon fallback
-            let CategoryIcon = <Activity size={24} />;
-            if (plan.planCategory === "Weight Loss") CategoryIcon = <Target size={24} />;
-            else if (plan.planCategory === "Muscle Gain") CategoryIcon = <Activity size={24} />;
-            else if (plan.planCategory === "Diabetes") CategoryIcon = <Dna size={24} />;
-            else if (plan.planCategory === "PCOS & Hormonal Balance") CategoryIcon = <Users size={24} />;
-            
-            return {
-              ...plan, 
-              title: plan.planName.toUpperCase(),
-              displayPrice: `${(plan.price * 140).toLocaleString()} DZD`,
-              features: [
-                `${plan.duration} Weeks Program`,
-                `${plan.consultationIncluded} Consultations`,
-                plan.followUpFrequency + " Follow-ups"
-              ],
-              icon: CategoryIcon,
-              featured: i === 1
-            };
-          });
-          setPreviewPlans(plans);
-        }
-      } catch (error) {
-        console.error("Error fetching preview plans:", error);
-      } finally {
-        setPlansLoading(false);
-      }
-    };
-    fetchPreviewPlans();
-  }, []);
-
-  const nextPlan = () => setPlanIndex((prev) => (prev + 1) % previewPlans.length);
-  const prevPlan = () => setPlanIndex((prev) => (prev - 1 + previewPlans.length) % previewPlans.length);
 
   const nextReview = () => setReviewIndex((prev) => (prev + 1) % reviews.length);
   const prevReview = () => setReviewIndex((prev) => (prev - 1 + reviews.length) % reviews.length);
-
-  const handleSelectPlan = (plan) => {
-    if (!isAuthenticated) {
-      toast.error("Please login to purchase a plan");
-      navigate('/login');
-      return;
-    }
-    navigate(`/checkout/${plan._id}`, {
-      state: { plan }
-    });
-  };
-
-  const plansTrackRef = useRef(null);
-  const [trackConstraints, setTrackConstraints] = useState({ left: 0, right: 0 });
-
-  useEffect(() => {
-    if (plansTrackRef.current) {
-      const updateConstraints = () => {
-        const track = plansTrackRef.current;
-        const container = track.parentElement;
-        const scrollWidth = track.scrollWidth;
-        const containerWidth = container.offsetWidth;
-        setTrackConstraints({
-          left: -(scrollWidth - containerWidth),
-          right: 0
-        });
-      };
-
-      updateConstraints();
-      window.addEventListener('resize', updateConstraints);
-      return () => window.removeEventListener('resize', updateConstraints);
-    }
-  }, [previewPlans]);
-
-  const handleDragEnd = (event, info) => {
-    const threshold = 100;
-    if (info.offset.x < -threshold && planIndex < previewPlans.length - 1) {
-      nextPlan();
-    } else if (info.offset.x > threshold && planIndex > 0) {
-      prevPlan();
-    }
-  };
 
   return (
     <div className="home-page-wrapper">
@@ -360,95 +273,40 @@ function HomePage() {
         ✦ EXPERT GUIDANCE ✦ BIOLOGICAL PRECISION ✦ CLINICAL TRACKING ✦ PEAK VITALITY ✦ ORGANIC GROWTH ✦
       </VelocityMarquee>
 
-      {/* 3. PLANS PEAK */}
-      <section className="HP-Plans-Section">
+      {/* 3. FEATURES */}
+      <section className="HP-Features-Section">
         <div className="HP-Section-Header">
           <ScrollReveal>
-            <h2 className="HP-Section-Title">VITALITY <span className="HP-Accent-Text">PLANS</span></h2>
-            <p className="HP-Section-Subtitle">Strategic nutritional architectures designed by clinical experts.</p>
+            <h2 className="HP-Section-Title">EVERYTHING YOU <span className="HP-Accent-Text">NEED</span></h2>
+            <p className="HP-Section-Subtitle">A complete platform for nutrition education, meal planning, and health tracking.</p>
           </ScrollReveal>
         </div>
 
-        <div className="HP-Plans-Slider-Wrapper">
-          {plansLoading ? (
-            <div className="HP-Loading-State">
-              <Activity className="AP-Spin" size={48} />
-              <p>Calibrating Plans...</p>
-            </div>
-          ) : previewPlans.length > 0 ? (
-            <>
-              <div className="HP-Plans-Slider-Container">
-                <motion.div 
-                  className="HP-Plans-Track"
-                  ref={plansTrackRef}
-                  drag="x"
-                  dragConstraints={trackConstraints}
-                  animate={{ 
-                    x: window.innerWidth > 768 
-                      ? `calc(-${planIndex * (100 / 3)}% - ${planIndex * (30 / 3)}px)`
-                      : `calc(-${planIndex * 100}% - ${planIndex * 30}px)`
-                  }}
-                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                  onDragEnd={handleDragEnd}
-                >
-                  {previewPlans.map((plan, i) => (
-                    <div key={i} className="HP-Plan-Slide">
-                      <div className={`HP-Plan-Card ${i % 2 === 1 ? 'featured' : ''}`}>
-                        <div className="HP-Plan-Image-Container">
-                          {plan.planImage ? (
-                            <img src={plan.planImage} alt={plan.planName} className="HP-Plan-Image" />
-                          ) : (
-                            <div className="HP-Plan-Icon-Fallback">{plan.icon}</div>
-                          )}
-                        </div>
-                        <h3>{plan.title}</h3>
-                        <div className="HP-Plan-Price">{plan.displayPrice}<span>/mo</span></div>
-                        <ul className="HP-Plan-Features">
-                          {plan.features.map((feat, fi) => (
-                            <li key={fi}><Check size={16} /> {feat}</li>
-                          ))}
-                        </ul>
-                        <button 
-                          onClick={() => handleSelectPlan(plan)}
-                          className="HP-Plan-Btn"
-                          style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', font: 'inherit' }}
-                        >
-                          <ShoppingCart size={16} style={{ marginRight: '8px' }} />
-                          Select Plan
-                          <ChevronRight size={16} style={{ marginLeft: '8px' }} />
-                        </button>
-                      </div>
-                    </div>
-                  ))}
-                </motion.div>
-              </div>
+        <div className="HP-Features-Grid">
+          <ScrollReveal className="HP-Feature-Card">
+            <div className="HP-Feature-Icon"><BookOpen size={28} /></div>
+            <h3>Course Library</h3>
+            <p>Access structured nutrition courses organized by level and semester. Learn at your own pace with downloadable materials.</p>
+          </ScrollReveal>
 
-              <div className="HP-Plans-Controls">
-                <button onClick={prevPlan} className="HP-Plan-NavBtn prev"><ChevronRight size={24} style={{ transform: 'rotate(180deg)' }} /></button>
-                <div className="HP-Plans-Dots">
-                  {previewPlans.map((_, i) => (
-                    <div 
-                      key={i} 
-                      className={`HP-Plan-Dot ${i === planIndex ? 'active' : ''}`}
-                      onClick={() => setPlanIndex(i)}
-                    />
-                  ))}
-                </div>
-                <button onClick={nextPlan} className="HP-Plan-NavBtn next"><ChevronRight size={24} /></button>
-              </div>
-            </>
-          ) : (
-            <div className="HP-Empty-Plans">
-              <p>No plans available at the moment. Please check back later.</p>
-            </div>
-          )}
+          <ScrollReveal className="HP-Feature-Card">
+            <div className="HP-Feature-Icon"><Target size={28} /></div>
+            <h3>Personalized Plans</h3>
+            <p>Get custom meal plans tailored to your goals — weight loss, muscle gain, diabetes management, and more.</p>
+          </ScrollReveal>
+
+          <ScrollReveal className="HP-Feature-Card">
+            <div className="HP-Feature-Icon"><Activity size={28} /></div>
+            <h3>AI Tracking</h3>
+            <p>Snap a photo of your meal and let our AI analyze macros, calories, and nutrients in real time.</p>
+          </ScrollReveal>
+
+          <ScrollReveal className="HP-Feature-Card">
+            <div className="HP-Feature-Icon"><Users size={28} /></div>
+            <h3>Expert Consultations</h3>
+            <p>Connect with certified dietitians for one-on-one guidance and follow-up support.</p>
+          </ScrollReveal>
         </div>
-        
-        <ScrollReveal className="HP-ViewAll-Container">
-          <NavLink to="/services" className="HP-ViewAll-Link">
-            Explore All Systems <ChevronRight size={20} />
-          </NavLink>
-        </ScrollReveal>
       </section>
 
       {/* 4. REVIEWS: BIOLOGICAL TESTIMONIALS */}

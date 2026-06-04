@@ -21,10 +21,11 @@ export const getConsultationsByUserPlan = async (userPlanId) => {
   return res.data;
 };
 
-export const getNutritionistRequests = async () => {
+export const getDieteticienRequests = async () => {
   const res = await axiosInstance.get("/consultations/nutritionist-requests");
   return res.data;
 };
+export const getNutritionistRequests = getDieteticienRequests;
 
 export const acceptConsultation = async (consultationId) => {
   const res = await axiosInstance.patch(`/consultations/${consultationId}/accept`);

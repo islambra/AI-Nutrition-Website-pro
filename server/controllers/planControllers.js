@@ -47,6 +47,7 @@ export const createPlan = async (req, res) => {
     }
 
     let planImageUrl = null;
+    let planFileId = null;
 
     // Upload image to ImageKit if file exists
     if (req.file) {
@@ -58,6 +59,7 @@ export const createPlan = async (req, res) => {
           folder: "/plans",
         });
         planImageUrl = uploadResponse.url;
+        planFileId = uploadResponse.fileId;
       } catch (uploadError) {
         return res.status(500).json({
           success: false,
@@ -74,6 +76,7 @@ export const createPlan = async (req, res) => {
       targetUserProfile,
       description,
       planImage: planImageUrl,
+      imageKitFileId: planFileId,
       duration,
       price,
       consultationIncluded: consultationIncluded || 0,
@@ -185,6 +188,9 @@ export const updatePlan = async (req, res) => {
     // Upload new image if provided
     if (req.file) {
       try {
+        if (plan.imageKitFileId) {
+          try { await imagekit.deleteFile(plan.imageKitFileId); } catch (_) {}
+        }
         const base64Image = req.file.buffer.toString("base64");
         const uploadResponse = await imagekit.upload({
           file: base64Image,
@@ -192,6 +198,7 @@ export const updatePlan = async (req, res) => {
           folder: "/plans",
         });
         updateData.planImage = uploadResponse.url;
+        updateData.imageKitFileId = uploadResponse.fileId;
       } catch (uploadError) {
         return res.status(500).json({
           success: false,
@@ -240,6 +247,10 @@ export const deletePlan = async (req, res) => {
         success: false,
         message: "You are not authorized to delete this plan",
       });
+    }
+
+    if (plan.imageKitFileId) {
+      try { await imagekit.deleteFile(plan.imageKitFileId); } catch (_) {}
     }
 
     await plan.deleteOne();

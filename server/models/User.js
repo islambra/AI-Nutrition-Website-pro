@@ -21,9 +21,13 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: null
   },
+  imageKitFileId: {
+    type: String,
+    default: null
+  },
   role: {
     type: String,
-    enum: ["Admin", "Nutritionist", "Client"],
+    enum: ["admin", "dieteticien", "client", "student"],
     required: true
   },
   createdAt: {
