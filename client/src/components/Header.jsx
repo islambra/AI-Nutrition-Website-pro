@@ -150,12 +150,18 @@ function Header() {
                     </NavLink>
                   </>
                 )}
-                {/* Profile link for Students only */}
+                {/* Student Dashboard links */}
                 {isStudent() && (
-                  <NavLink to="/profile" className="dropdown-item">
-                    <User size={16} />
-                    Profile
-                  </NavLink>
+                  <>
+                    <NavLink to="/student/dashboard" className="dropdown-item">
+                      <LayoutDashboard size={16} />
+                      Dashboard
+                    </NavLink>
+                    <NavLink to="/profile" className="dropdown-item">
+                      <User size={16} />
+                      Profile
+                    </NavLink>
+                  </>
                 )}
                 <button className="logout-btn" onClick={handleLogout}>
                   <LogOut size={16} />
@@ -220,12 +226,18 @@ function Header() {
                 </NavLink>
               </>
             )}
-            {/* Profile link for Students on mobile */}
+            {/* Student Dashboard links on mobile */}
             {isStudent() && (
-              <NavLink to="/profile" className="mobile-nav-item">
-                <User size={16} />
-                Profile
-              </NavLink>
+              <>
+                <NavLink to="/student/dashboard" className="mobile-nav-item">
+                  <LayoutDashboard size={16} />
+                  Dashboard
+                </NavLink>
+                <NavLink to="/profile" className="mobile-nav-item">
+                  <User size={16} />
+                  Profile
+                </NavLink>
+              </>
             )}
             <button className="mobile-nav-item mobile-logout-btn" onClick={handleLogout}>
               <LogOut size={16} />

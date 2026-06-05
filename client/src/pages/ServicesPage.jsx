@@ -26,11 +26,14 @@ import {
   ExternalLink,
   Loader2,
   BookMarked,
+  X,
+  Clock,
 } from 'lucide-react';
 import ScrollReveal from '../components/ScrollReveal';       
 import { useAuth } from '../context/AuthContext';
 import { getAllPlans } from '../api/planApi';
 import { getAllCourses } from '../api/courseApi';
+import { getAllFormations, purchaseFormation } from '../api/formationApi';
 import { useState, useEffect, useRef } from 'react';
 import toast from 'react-hot-toast';
 import { isStudent, isClient } from '../api/userApi';
@@ -90,8 +93,12 @@ function ServicesPage() {
   const [courses, setCourses] = useState([]);
   const [coursesLoading, setCoursesLoading] = useState(true);
   const [expandedLevel, setExpandedLevel] = useState(null);
+  const [formations, setFormations] = useState([]);
+  const [formationsLoading, setFormationsLoading] = useState(true);
+  const [selectedFormation, setSelectedFormation] = useState(null);
 
   useEffect(() => {
+    fetchFormations();
     if (userIsStudent) {
       fetchCourses();
     } else if (userIsClient) {
@@ -100,6 +107,34 @@ function ServicesPage() {
       fetchPlans();
     }
   }, [userIsStudent, userIsClient]);
+
+  const fetchFormations = async () => {
+    try {
+      setFormationsLoading(true);
+      const response = await getAllFormations();
+      if (response.success) setFormations(response.data);
+    } catch (error) {
+      console.error("Error fetching formations:", error);
+    } finally {
+      setFormationsLoading(false);
+    }
+  };
+
+  const handlePurchaseFormation = async (formation) => {
+    if (!isAuthenticated) {
+      toast.error("Please login to purchase");
+      navigate('/login');
+      return;
+    }
+    try {
+      const res = await purchaseFormation(formation._id);
+      if (res.success) {
+        toast.success("Formation purchased successfully! Check My Formations.");
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Purchase failed");
+    }
+  };
 
   const fetchCourses = async () => {
     try {
@@ -686,6 +721,106 @@ function ServicesPage() {
           </section>
         </>
       )}
+
+      {/* FORMATIONS SECTION */}
+      <section className="ServicesPage-Plans-Section">
+        <div className="ServicesPage-Section-Header">
+          <ScrollReveal>
+            <div className="ServicesPage-Badge">
+              <GraduationCap size={14} style={{ marginRight: 6 }} /> FORMATIONS
+            </div>
+            <h2 className="ServicesPage-Section-Title">ONLINE <span className="ServicesPage-Accent-Text">FORMATIONS</span></h2>
+            <p className="ServicesPage-Section-Subtitle">Enroll in guided training programs with live sessions and resources.</p>
+          </ScrollReveal>
+        </div>
+
+        <div className="ServicesPage-Formations-Grid">
+          {formationsLoading ? (
+            <div className="ServicesPage-Loading-State">
+              <Loader2 className="AP-Spin" size={48} />
+              <p>Loading formations...</p>
+            </div>
+          ) : formations.length === 0 ? (
+            <div className="ServicesPage-Empty-Plans">
+              <p>No formations available yet.</p>
+            </div>
+          ) : (
+            formations.map((f) => (
+              <motion.div
+                key={f._id}
+                className="ServicesPage-Formation-Card"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.1 }}
+                onClick={() => setSelectedFormation(f)}
+                style={{ cursor: 'pointer' }}
+              >
+                {f.image && <img src={f.image} alt={f.title} className="ServicesPage-Formation-Image" />}
+                <div className="ServicesPage-Formation-Body">
+                  <h3>{f.title}</h3>
+                  <div className="ServicesPage-Formation-Price">{f.price.toLocaleString()} DZD</div>
+                </div>
+              </motion.div>
+            ))
+          )}
+        </div>
+
+        {/* Formation Detail Modal */}
+        <AnimatePresence>
+          {selectedFormation && (
+            <motion.div
+              className="ServicesPage-Modal-Overlay"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setSelectedFormation(null)}
+            >
+              <motion.div
+                className="ServicesPage-Modal-Content"
+                initial={{ opacity: 0, scale: 0.9, y: 40 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9, y: 40 }}
+                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <button className="ServicesPage-Modal-Close" onClick={() => setSelectedFormation(null)}>
+                  <X size={20} />
+                </button>
+                {selectedFormation.image && (
+                  <img src={selectedFormation.image} alt={selectedFormation.title} className="ServicesPage-Modal-Image" />
+                )}
+                <div className="ServicesPage-Modal-Body">
+                  <h2>{selectedFormation.title}</h2>
+                  <p className="ServicesPage-Formation-Desc">{selectedFormation.description}</p>
+                  <div className="ServicesPage-Formation-Meta">
+                    <span><Calendar size={14} /> {selectedFormation.sessionsCount} sessions</span>
+                    <span><Clock size={14} /> {selectedFormation.durationWeeks} weeks</span>
+                  </div>
+                  {selectedFormation.startDate && (
+                    <div className="ServicesPage-Formation-Meta" style={{ marginTop: 4 }}>
+                      <span><Calendar size={14} /> Starts {new Date(selectedFormation.startDate).toLocaleDateString()}</span>
+                    </div>
+                  )}
+                  {selectedFormation.files?.length > 0 && (
+                    <div className="ServicesPage-Formation-Files">
+                      <strong>What's included:</strong>
+                      {selectedFormation.files.map((file, i) => (
+                        <div key={i} className="ServicesPage-Formation-File-Item">
+                          <FileText size={14} /> {file.name}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  <div className="ServicesPage-Formation-Price">{selectedFormation.price.toLocaleString()} DZD</div>
+                  <button onClick={() => { handlePurchaseFormation(selectedFormation); setSelectedFormation(null); }} className="ServicesPage-Plan-Btn" style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', font: 'inherit', width: '100%' }}>
+                    <ShoppingCart size={16} style={{ marginRight: 6 }} /> ENROLL NOW
+                  </button>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </section>
 
       {/* FINAL CTA */}
       <section className="ServicesPage-CTA-Section">

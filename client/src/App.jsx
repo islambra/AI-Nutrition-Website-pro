@@ -40,6 +40,13 @@ import ConsultationRequests from './pages/dieteticienDashboard/ConsultationReque
 import DieteticienPayments from './pages/dieteticienDashboard/DieteticienPayments.jsx'
 import CreateCourse from './pages/dieteticienDashboard/CreateCourse.jsx'
 import AllCourses from './pages/dieteticienDashboard/AllCourses.jsx'
+import MyFormations from './pages/dieteticienDashboard/MyFormations.jsx'
+import CreateFormation from './pages/dieteticienDashboard/CreateFormation.jsx'
+import FormationSessions from './pages/dieteticienDashboard/FormationSessions.jsx'
+import StudentLayout from './pages/studentDashboard/StudentLayout.jsx'
+import DashboardHome from './pages/studentDashboard/DashboardHome.jsx'
+import MyCoursesPage from './pages/studentDashboard/MyCourses.jsx'
+import MyFormationsPage from './pages/studentDashboard/MyFormationsPage.jsx'
 import LoginGate from './components/LoginGate.jsx'
 import ProtectedRoute from './components/ProtectedRoute.jsx'
 
@@ -70,6 +77,7 @@ function App() {
           <Route path='/blogs' element={<LoginGate><PageTransition><BlogsPage /></PageTransition></LoginGate>} /> 
           <Route path='/profile' element={<LoginGate><PageTransition><ProfilePage /></PageTransition></LoginGate>} /> 
           <Route path='/my-plans' element={<LoginGate><PageTransition><MyPlansPage /></PageTransition></LoginGate>} /> 
+          <Route path='/my-formations' element={<LoginGate><PageTransition><MyFormationsPage /></PageTransition></LoginGate>} /> 
           <Route path='/ai-tracker' element={<LoginGate><PageTransition><AITrackerPage /></PageTransition></LoginGate>} /> 
           <Route path="/blog/:id" element={<LoginGate><PageTransition><BlogDetailsPage /></PageTransition></LoginGate>} />
           <Route path="/allPlans" element={<LoginGate><PageTransition><AllPlansPage /></PageTransition></LoginGate>} />
@@ -82,11 +90,20 @@ function App() {
               <Route path="MyBlogs" element={<MyBlog />} />
               <Route path="create-course" element={<CreateCourse />} />
               <Route path="all-courses" element={<AllCourses />} />
+              <Route path="formations" element={<MyFormations />} />
+              <Route path="formations/create" element={<CreateFormation />} />
+              <Route path="formations/edit/:id" element={<CreateFormation />} />
+              <Route path="formations/:formationId/sessions" element={<FormationSessions />} />
               <Route path="contact-messages" element={<ContactMessages />} />
               <Route path="my-Profile" element={<EditUserProfile />} />
               <Route path="payments" element={<DieteticienPayments />} />
               <Route path="all-clients" element={<ClientsPage />} />
               <Route path="consultation-requests" element={<ConsultationRequests />} />
+          </Route>
+          <Route path="/student" element={<ProtectedRoute roles={['student']}><StudentLayout /></ProtectedRoute>}>
+              <Route path="dashboard" element={<DashboardHome />} />
+              <Route path="my-courses" element={<MyCoursesPage />} />
+              <Route path="my-formations" element={<MyFormationsPage />} />
           </Route>
           <Route path="/admin" element={<ProtectedRoute roles={['admin']}><AdminLayout /></ProtectedRoute>}>
               <Route path="add-admin-nutritionist" element={<AddAdminNutritionist />} />

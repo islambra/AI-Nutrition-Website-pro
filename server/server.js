@@ -12,6 +12,7 @@ import aiRoutes from "./routes/aiRoutes.js";
 import adminRoutes from './routes/adminRoutes.js';
 import dieteticienRoutes from './routes/dieteticienRoutes.js';
 import courseRoutes from './routes/courseRoutes.js';
+import formationRoutes from './routes/formationRoutes.js';
 await connectDB();
 
 const app = express();
@@ -28,6 +29,7 @@ app.use("/api/ai", aiRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/dieteticien', dieteticienRoutes);
 app.use('/api/courses', courseRoutes);
+app.use('/api/formations', formationRoutes);
 
 const PORT = 5000;
 

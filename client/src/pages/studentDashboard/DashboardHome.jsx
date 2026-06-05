@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import {
   BookOpen,
+  BookMarked,
   Clock,
   Sparkles,
   GraduationCap,
@@ -20,6 +21,14 @@ const activeFeatures = [
     path: "/student/my-courses",
     color: "#10b981",
     gradient: "linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%)",
+  },
+  {
+    icon: BookMarked,
+    title: "My Formations",
+    description: "View your purchased training programs with live sessions",
+    path: "/student/my-formations",
+    color: "#8b5cf6",
+    gradient: "linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%)",
   },
 ];
 

@@ -973,3 +973,209 @@
     justify-content: center;
   }
 }
+
+/* --- FORMATIONS --- */
+.ServicesPage-Formations-Grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.ServicesPage-Formation-Card {
+  background: rgba(255,255,255,0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 20px;
+  border: 1px solid rgba(255,255,255,0.8);
+  box-shadow: 0 15px 40px -8px rgba(30,63,27,0.06);
+  overflow: hidden;
+  transition: all 0.5s cubic-bezier(0.16,1,0.3,1);
+}
+
+.ServicesPage-Formation-Card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 25px 60px -8px rgba(30,63,27,0.1);
+  border-color: rgba(52,199,89,0.2);
+}
+
+.ServicesPage-Formation-Image {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.ServicesPage-Formation-Body {
+  padding: 24px;
+}
+
+.ServicesPage-Formation-Body h3 {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--health-green);
+  margin-bottom: 8px;
+}
+
+.ServicesPage-Formation-Desc {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--health-gray);
+  margin-bottom: 16px;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.ServicesPage-Formation-Meta {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 12px;
+  font-size: 12px;
+  color: var(--health-gray);
+}
+
+.ServicesPage-Formation-Meta span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ServicesPage-Formation-Files {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+  font-size: 12px;
+  color: var(--health-gray);
+}
+
+.ServicesPage-Formation-Files strong {
+  width: 100%;
+  margin-bottom: 4px;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.6;
+}
+
+.ServicesPage-Formation-File {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: rgba(46,204,113,0.08);
+  color: var(--health-green);
+  text-decoration: none;
+  font-size: 11px;
+  transition: background 0.2s;
+}
+
+.ServicesPage-Formation-File:hover {
+  background: rgba(46,204,113,0.15);
+}
+
+.ServicesPage-Formation-Price {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--health-green);
+  margin-bottom: 16px;
+}
+
+@media (max-width: 768px) {
+  .ServicesPage-Formations-Grid {
+    grid-template-columns: 1fr;
+    padding: 0 12px;
+  }
+}
+
+/* --- FORMATION MODAL --- */
+.ServicesPage-Modal-Overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.ServicesPage-Modal-Content {
+  background: #fff;
+  border-radius: 20px;
+  max-width: 520px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 25px 60px rgba(0,0,0,0.15);
+}
+
+.ServicesPage-Modal-Close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: rgba(0,0,0,0.08);
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #374151;
+  z-index: 1;
+  transition: background 0.2s;
+}
+
+.ServicesPage-Modal-Close:hover {
+  background: rgba(0,0,0,0.15);
+}
+
+.ServicesPage-Modal-Image {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  border-radius: 20px 20px 0 0;
+}
+
+.ServicesPage-Modal-Body {
+  padding: 24px;
+}
+
+.ServicesPage-Modal-Body h2 {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--health-green);
+  margin-bottom: 12px;
+}
+
+.ServicesPage-Formation-File-Item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 8px;
+  background: rgba(46,204,113,0.08);
+  color: var(--health-green);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* --- COUNTDOWN --- */
+.countdown-timer {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--health-accent);
+  letter-spacing: 0.05em;
+}
