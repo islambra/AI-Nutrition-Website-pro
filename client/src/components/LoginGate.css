@@ -1,0 +1,276 @@
+.logingate-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  padding: 20px;
+  position: relative;
+  overflow: auto;
+  box-sizing: border-box;
+}
+
+.logingate-bg-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(46,204,113,0.08) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.logingate-card {
+  position: relative;
+  max-width: 380px;
+  width: 100%;
+  background: rgba(255,255,255,0.04);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 20px;
+  padding: 36px 32px;
+  text-align: center;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+
+.logingate-icon-box {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, rgba(46,204,113,0.2), rgba(46,204,113,0.05));
+  border: 1px solid rgba(46,204,113,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 18px;
+}
+
+.logingate-title {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  letter-spacing: -0.3px;
+  line-height: 1.3;
+}
+
+.logingate-title-accent {
+  background: linear-gradient(135deg, #2ecc71, #27ae60);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.logingate-subtitle {
+  font-size: 13px;
+  line-height: 1.5;
+  opacity: 0.6;
+  margin-bottom: 22px;
+  max-width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.logingate-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.logingate-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 24px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #2ecc71, #27ae60);
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 13px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(46,204,113,0.3);
+}
+
+.logingate-btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(46,204,113,0.4);
+}
+
+.logingate-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 24px;
+  border-radius: 10px;
+  background: transparent;
+  color: rgba(255,255,255,0.9);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 13px;
+  border: 1px solid rgba(255,255,255,0.15);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.logingate-btn-secondary:hover {
+  border-color: rgba(255,255,255,0.3);
+  background: rgba(255,255,255,0.04);
+}
+
+.logingate-divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 18px 0;
+  opacity: 0.3;
+  font-size: 11px;
+}
+
+.logingate-divider-line {
+  flex: 1;
+  height: 1px;
+  background: rgba(255,255,255,0.15);
+}
+
+.logingate-features {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.logingate-feature {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  opacity: 0.45;
+  text-align: left;
+}
+
+.logingate-feature-dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #2ecc71;
+  flex-shrink: 0;
+}
+
+.logingate-spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid rgba(46,204,113,0.1);
+  border-top-color: #2ecc71;
+  border-radius: 50%;
+  animation: logingate-spin 0.8s linear infinite;
+}
+
+@keyframes logingate-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (max-width: 768px) {
+  .logingate-wrapper {
+    padding: 16px;
+  }
+
+  .logingate-bg-glow {
+    width: 300px;
+    height: 300px;
+  }
+
+  .logingate-card {
+    padding: 28px 24px;
+    border-radius: 18px;
+    max-width: 340px;
+  }
+
+  .logingate-icon-box {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    margin-bottom: 16px;
+  }
+
+  .logingate-title {
+    font-size: 18px;
+  }
+
+  .logingate-subtitle {
+    font-size: 12px;
+    margin-bottom: 18px;
+  }
+
+  .logingate-btn-primary,
+  .logingate-btn-secondary {
+    padding: 9px 20px;
+    font-size: 12px;
+  }
+
+  .logingate-divider {
+    margin: 16px 0;
+  }
+
+  .logingate-feature {
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 480px) {
+  .logingate-wrapper {
+    padding: 12px;
+  }
+
+  .logingate-card {
+    padding: 24px 18px;
+    border-radius: 16px;
+    max-width: 100%;
+  }
+
+  .logingate-bg-glow {
+    width: 200px;
+    height: 200px;
+  }
+
+  .logingate-icon-box {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    margin-bottom: 14px;
+  }
+
+  .logingate-title {
+    font-size: 16px;
+  }
+
+  .logingate-subtitle {
+    font-size: 12px;
+    margin-bottom: 16px;
+  }
+
+  .logingate-buttons {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .logingate-btn-primary,
+  .logingate-btn-secondary {
+    justify-content: center;
+    padding: 10px 18px;
+    font-size: 12px;
+  }
+
+  .logingate-feature {
+    font-size: 11px;
+    gap: 6px;
+  }
+
+  .logingate-divider {
+    margin: 14px 0;
+    font-size: 10px;
+  }
+}
