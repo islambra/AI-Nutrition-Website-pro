@@ -369,6 +369,14 @@
     padding: 1rem;
   }
 
+  .create-course-header h1 {
+    font-size: 22px;
+  }
+
+  .cc-section-title h2 {
+    font-size: 16px;
+  }
+
   .cc-grid {
     grid-template-columns: 1fr;
   }

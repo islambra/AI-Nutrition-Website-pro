@@ -327,6 +327,18 @@
 }
 
 @media (max-width: 768px) {
+  .CR-Wrapper {
+    padding: 16px;
+  }
+  
+  .CR-Header {
+    margin-bottom: 24px;
+  }
+  
+  .CR-Title {
+    font-size: 22px;
+  }
+  
   .CR-ActionBtns {
     justify-content: flex-end;
     flex-wrap: wrap;

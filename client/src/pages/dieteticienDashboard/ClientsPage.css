@@ -1162,6 +1162,14 @@
     font-size: 1.5rem;
   }
   
+  .patient-name {
+    font-size: 1rem;
+  }
+  
+  .metric-value {
+    font-size: 1rem;
+  }
+  
   .filters-section {
     flex-direction: column;
     border-radius: 28px;
