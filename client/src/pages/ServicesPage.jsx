@@ -28,8 +28,11 @@ import {
   BookMarked,
   X,
   Clock,
+  Eye,
+  User,
 } from 'lucide-react';
-import ScrollReveal from '../components/ScrollReveal';       
+import ScrollReveal from '../components/ScrollReveal';
+import "../components/FormationCard.css";
 import { useAuth } from '../context/AuthContext';
 import { getAllPlans } from '../api/planApi';
 import { getAllCourses } from '../api/courseApi';
@@ -96,6 +99,15 @@ function ServicesPage() {
   const [formations, setFormations] = useState([]);
   const [formationsLoading, setFormationsLoading] = useState(true);
   const [selectedFormation, setSelectedFormation] = useState(null);
+
+  useEffect(() => {
+    if (selectedFormation) {
+      document.body.classList.add("modal-open");
+    } else {
+      document.body.classList.remove("modal-open");
+    }
+    return () => document.body.classList.remove("modal-open");
+  }, [selectedFormation]);
 
   useEffect(() => {
     fetchFormations();
@@ -734,7 +746,7 @@ function ServicesPage() {
           </ScrollReveal>
         </div>
 
-        <div className="ServicesPage-Formations-Grid">
+        <div className="sp-formation-grid">
           {formationsLoading ? (
             <div className="ServicesPage-Loading-State">
               <Loader2 className="AP-Spin" size={48} />
@@ -748,17 +760,52 @@ function ServicesPage() {
             formations.map((f) => (
               <motion.div
                 key={f._id}
-                className="ServicesPage-Formation-Card"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.1 }}
-                onClick={() => setSelectedFormation(f)}
-                style={{ cursor: 'pointer' }}
+                className="sp-formation-card"
               >
-                {f.image && <img src={f.image} alt={f.title} className="ServicesPage-Formation-Image" />}
-                <div className="ServicesPage-Formation-Body">
-                  <h3>{f.title}</h3>
-                  <div className="ServicesPage-Formation-Price">{f.price.toLocaleString()} DZD</div>
+                <div className="sp-formation-img-wrap">
+                  {f.image ? (
+                    <img src={f.image} alt={f.title} className="sp-formation-img" />
+                  ) : (
+                    <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", background: "var(--health-mint)" }}>
+                      <Video size={36} style={{ color: "var(--health-green)", opacity: 0.3 }} />
+                    </div>
+                  )}
+                  <span className="sp-formation-price">{f.price.toLocaleString()} DZD</span>
+                </div>
+
+                <div className="sp-formation-body">
+                  <div className="sp-formation-meta">
+                    <span><Calendar size={12} /> {f.sessionsCount} sessions</span>
+                    <span><Clock size={12} /> {f.durationWeeks} weeks</span>
+                  </div>
+
+                  <h3 className="sp-formation-title">{f.title}</h3>
+                  <p className="sp-formation-desc">{f.description}</p>
+
+                  {f.creatorInfo && (
+                    <div className="sp-formation-creator">
+                      {f.creatorInfo.photo ? (
+                        <img src={f.creatorInfo.photo} alt={f.creatorInfo.fullName} className="sp-formation-avatar" />
+                      ) : (
+                        <div className="sp-formation-avatar sp-formation-avatar-fallback">
+                          <User size={14} />
+                        </div>
+                      )}
+                      <span>{f.creatorInfo.fullName}</span>
+                    </div>
+                  )}
+
+                  <motion.button
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => setSelectedFormation(f)}
+                    className="sp-formation-btn"
+                  >
+                    <Eye size={15} /> View Details
+                  </motion.button>
                 </div>
               </motion.div>
             ))
@@ -782,39 +829,77 @@ function ServicesPage() {
                 exit={{ opacity: 0, scale: 0.9, y: 40 }}
                 transition={{ type: "spring", stiffness: 300, damping: 30 }}
                 onClick={(e) => e.stopPropagation()}
+                style={{ maxWidth: 800 }}
               >
                 <button className="ServicesPage-Modal-Close" onClick={() => setSelectedFormation(null)}>
                   <X size={20} />
                 </button>
-                {selectedFormation.image && (
-                  <img src={selectedFormation.image} alt={selectedFormation.title} className="ServicesPage-Modal-Image" />
-                )}
-                <div className="ServicesPage-Modal-Body">
-                  <h2>{selectedFormation.title}</h2>
-                  <p className="ServicesPage-Formation-Desc">{selectedFormation.description}</p>
-                  <div className="ServicesPage-Formation-Meta">
-                    <span><Calendar size={14} /> {selectedFormation.sessionsCount} sessions</span>
-                    <span><Clock size={14} /> {selectedFormation.durationWeeks} weeks</span>
-                  </div>
-                  {selectedFormation.startDate && (
-                    <div className="ServicesPage-Formation-Meta" style={{ marginTop: 4 }}>
-                      <span><Calendar size={14} /> Starts {new Date(selectedFormation.startDate).toLocaleDateString()}</span>
+                <div style={{ display: "flex", minHeight: 350 }}>
+                  {selectedFormation.image && (
+                    <div style={{ width: "45%", flexShrink: 0, position: "relative", overflow: "hidden" }}>
+                      <img
+                        src={selectedFormation.image}
+                        alt={selectedFormation.title}
+                        style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "20px 0 0 20px" }}
+                      />
+                      <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, transparent 60%, rgba(255,255,255,0.95))", pointerEvents: "none" }} />
                     </div>
                   )}
-                  {selectedFormation.files?.length > 0 && (
-                    <div className="ServicesPage-Formation-Files">
-                      <strong>What's included:</strong>
-                      {selectedFormation.files.map((file, i) => (
-                        <div key={i} className="ServicesPage-Formation-File-Item">
-                          <FileText size={14} /> {file.name}
+                  <div style={{ flex: 1, padding: 32, display: "flex", flexDirection: "column" }}>
+                    <div className="fc-badge-row">
+                      <span className="fc-badge"><Clock size={12} /> {selectedFormation.durationWeeks} weeks</span>
+                      <span className="fc-price-badge" style={{ fontSize: 16 }}>{selectedFormation.price.toLocaleString()} DZD</span>
+                    </div>
+
+                    <h2 style={{ fontFamily: "var(--font-display)", fontSize: 26, fontWeight: 800, color: "var(--health-green)", margin: "12px 0 8px", lineHeight: 1.2 }}>{selectedFormation.title}</h2>
+                    <p className="ServicesPage-Formation-Desc" style={{ fontSize: 14, lineHeight: 1.7, color: "var(--health-gray)", marginBottom: 16, WebkitLineClamp: 5 }}>{selectedFormation.description}</p>
+
+                    <div className="fc-meta-row" style={{ marginBottom: 12 }}>
+                      <span className="fc-meta-item"><Calendar size={14} /> {selectedFormation.sessionsCount} sessions</span>
+                      <span className="fc-meta-item"><Users size={14} /> {selectedFormation.durationWeeks} weeks</span>
+                      {selectedFormation.startDate && (
+                        <span className="fc-meta-item"><Calendar size={14} /> Starts {new Date(selectedFormation.startDate).toLocaleDateString()}</span>
+                      )}
+                    </div>
+
+                    {selectedFormation.creatorInfo && (
+                      <div className="fc-creator-row" style={{ marginTop: 0, paddingTop: 12 }}>
+                        {selectedFormation.creatorInfo.photo ? (
+                          <img src={selectedFormation.creatorInfo.photo} alt={selectedFormation.creatorInfo.fullName} className="fc-creator-avatar" />
+                        ) : (
+                          <div className="fc-creator-avatar-fallback">
+                            <User size={16} />
+                          </div>
+                        )}
+                        <div className="fc-creator-info">
+                          <span className="fc-creator-label">Created by</span>
+                          <span className="fc-creator-name">{selectedFormation.creatorInfo.fullName}</span>
                         </div>
-                      ))}
+                      </div>
+                    )}
+
+                    {selectedFormation.files?.length > 0 && (
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginBottom: 16 }}>
+                        {selectedFormation.files.map((file, i) => (
+                          <div key={i} className="ServicesPage-Formation-File-Item">
+                            <FileText size={14} /> {file.name}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    <div style={{ marginTop: "auto", display: "flex", gap: 12 }}>
+                      <motion.button
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => { handlePurchaseFormation(selectedFormation); setSelectedFormation(null); }}
+                        className="fc-btn fc-btn-primary"
+                        style={{ flex: 1, justifyContent: "center", padding: "14px 28px", fontSize: 14 }}
+                      >
+                        <ShoppingCart size={16} /> ENROLL NOW
+                      </motion.button>
                     </div>
-                  )}
-                  <div className="ServicesPage-Formation-Price">{selectedFormation.price.toLocaleString()} DZD</div>
-                  <button onClick={() => { handlePurchaseFormation(selectedFormation); setSelectedFormation(null); }} className="ServicesPage-Plan-Btn" style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', font: 'inherit', width: '100%' }}>
-                    <ShoppingCart size={16} style={{ marginRight: 6 }} /> ENROLL NOW
-                  </button>
+                  </div>
                 </div>
               </motion.div>
             </motion.div>

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
-  Award, Calendar, Users, Video, Clock, Monitor, Loader2, FileText, ArrowLeft,
+  Award, Calendar, Users, Video, Clock, Monitor, Loader2, FileText, ArrowLeft, Search,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { getMyPurchasedFormations } from "../../api/formationApi";
@@ -12,6 +12,7 @@ const MyFormationsPage = () => {
   const navigate = useNavigate();
   const [formations, setFormations] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     fetchFormations();
@@ -55,6 +56,18 @@ const MyFormationsPage = () => {
         </p>
       </div>
 
+      {!loading && formations.length > 0 && (
+        <div className="mc-search-bar">
+          <Search size={18} />
+          <input
+            type="text"
+            placeholder="Search by formation name..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
+      )}
+
       {loading ? (
         <div className="mc-loader-wrapper">
           <motion.div
@@ -81,7 +94,9 @@ const MyFormationsPage = () => {
           </button>
         </div>
       ) : (
-        formations.map((uf) => {
+        formations.filter((uf) =>
+          uf.formation?.title?.toLowerCase().includes(searchQuery.toLowerCase())
+        ).map((uf) => {
           const f = uf.formation;
           return (
             <motion.div
