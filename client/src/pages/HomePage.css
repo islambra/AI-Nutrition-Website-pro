@@ -701,7 +701,15 @@ body {
 
 /* --- RESPONSIVE BREAKPOINTS --- */
 @media (max-width: 1100px) {
-  .frame-1, .frame-2, .frame-3 { display: none; }
+  .hero-frame {
+    transform: scale(0.75);
+  }
+}
+
+@media (max-width: 768px) {
+  .hero-frames-container {
+    display: none;
+  }
 }
 
 /* --- FEATURES GRID --- */
@@ -807,9 +815,4 @@ body {
     -webkit-backdrop-filter: blur(8px);
   }
   .cta-v5 h2 { font-size: 36px !important; }
-}
-@media (max-width: 768px) {
-  .hero-frames-container {
-    opacity: 0.4;
-  }
 }
