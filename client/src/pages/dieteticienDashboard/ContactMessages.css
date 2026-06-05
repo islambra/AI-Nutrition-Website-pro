@@ -22,7 +22,7 @@
   padding: 2rem;
   max-width: 1400px;
   margin: 0 auto;
-  background: #f5f7fa;
+  background: transparent;
   min-height: calc(100vh - 56px);
 }
 
@@ -34,7 +34,7 @@
   justify-content: center;
   min-height: 500px;
   gap: 1.5rem;
-  background: #f5f7fa;
+  background: transparent;
 }
 
 .loading-spinner {

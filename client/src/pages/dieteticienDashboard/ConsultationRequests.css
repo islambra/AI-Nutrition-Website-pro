@@ -25,7 +25,7 @@
 
 .CR-Wrapper {
   min-height: 100vh;
-  background: #F8FAF8;
+  background: transparent;
   padding: 110px 5% 80px;
   font-family: var(--cr-font);
 }

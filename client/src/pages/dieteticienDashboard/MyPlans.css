@@ -5,7 +5,7 @@
   height: calc(100vh - 80px);
   gap: 1.5rem;
   padding: 1.5rem;
-  background: #f5f7fa;
+  background: transparent;
   position: relative;
 }
 

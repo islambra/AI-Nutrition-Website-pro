@@ -4,7 +4,7 @@
   margin: 0 auto;
   padding: 100px 32px 60px;
   font-family: 'Inter', system-ui, sans-serif;
-  background: #f8fafc;
+  background: transparent;
   min-height: 100vh;
 }
 

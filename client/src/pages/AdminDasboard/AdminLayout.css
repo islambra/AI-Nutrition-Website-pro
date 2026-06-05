@@ -9,6 +9,8 @@
 .dashboard-body{
   display:flex;
   margin-top:56px;
+  min-height:calc(100vh - 56px);
+  background:#f8fafc;
 }
 
 /* main content */
