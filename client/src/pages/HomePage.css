@@ -173,16 +173,18 @@ body {
 
 .HP-Section-Header {
   text-align: center;
-  margin-bottom: 40px; /* Reduced from 80px */
+  margin-bottom: 40px;
+  position: relative;
+  z-index: 1;
 }
 
 .HP-Section-Title {
   font-family: var(--font-display);
-  font-size: clamp(32px, 4vw, 56px); /* Reduced from 80px */
+  font-size: clamp(32px, 4vw, 56px);
   text-transform: uppercase;
   font-weight: 800;
   line-height: 0.95;
-  margin-bottom: 12px; /* Reduced from 24px */
+  margin-bottom: 12px;
   color: var(--health-green);
   letter-spacing: -0.04em;
 }
@@ -192,7 +194,7 @@ body {
 }
 
 .HP-Section-Subtitle {
-  font-size: clamp(14px, 1.2vw, 16px); /* Reduced from 19px */
+  font-size: clamp(14px, 1.2vw, 16px);
   color: var(--health-gray);
   max-width: 640px;
   margin: 0 auto;
@@ -484,11 +486,25 @@ body {
 /* --- REVIEWS: SOFTNESS & FOCUS --- */
 .HP-Reviews-Section {
   padding: var(--section-padding) 5%;
-  background: var(--health-mint);
+  background: 
+    radial-gradient(ellipse at 20% 80%, rgba(52, 199, 89, 0.05) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(30, 63, 27, 0.04) 0%, transparent 50%),
+    linear-gradient(180deg, var(--health-cream) 0%, var(--health-mint) 100%);
   border-radius: 80px;
   margin: 0 20px;
   position: relative;
   z-index: 5;
+  overflow: hidden;
+}
+
+.HP-Reviews-Section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: 
+    radial-gradient(circle at 30% 40%, rgba(52, 199, 89, 0.03) 0%, transparent 40%),
+    radial-gradient(circle at 70% 60%, rgba(45, 90, 39, 0.02) 0%, transparent 40%);
+  pointer-events: none;
 }
 
 .HP-Reviews-Slider-Container {
@@ -692,8 +708,23 @@ body {
 .HP-Features-Section {
   position: relative;
   z-index: 5;
-  padding: 80px 5%;
-  background: var(--health-mint);
+  padding: 100px 5%;
+  background: 
+    radial-gradient(ellipse at 0% 50%, rgba(52, 199, 89, 0.04) 0%, transparent 60%),
+    radial-gradient(ellipse at 100% 50%, rgba(30, 63, 27, 0.03) 0%, transparent 60%),
+    radial-gradient(circle at 50% 0%, rgba(240, 247, 240, 0.8) 0%, transparent 50%);
+}
+
+.HP-Features-Section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: 
+    linear-gradient(rgba(30, 63, 27, 0.015) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(30, 63, 27, 0.015) 1px, transparent 1px);
+  background-size: 60px 60px;
+  mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+  pointer-events: none;
 }
 
 .HP-Features-Grid {
@@ -702,20 +733,26 @@ body {
   gap: 24px;
   max-width: var(--container-width);
   margin: 0 auto;
+  position: relative;
+  z-index: 1;
 }
 
 .HP-Feature-Card {
-  background: #fff;
+  background: rgba(255, 255, 255, 0.75);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   border-radius: 24px;
   padding: 36px 28px;
-  border: 1px solid var(--health-border);
-  transition: var(--transition-smooth);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 15px 40px -8px rgba(30, 63, 27, 0.06);
+  transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .HP-Feature-Card:hover {
-  transform: translateY(-6px);
-  box-shadow: var(--shadow-premium);
-  border-color: var(--health-accent);
+  transform: translateY(-8px);
+  box-shadow: 0 25px 60px -8px rgba(30, 63, 27, 0.1);
+  border-color: rgba(52, 199, 89, 0.2);
+  background: rgba(255, 255, 255, 0.9);
 }
 
 .HP-Feature-Icon {
@@ -725,9 +762,10 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--health-mint);
+  background: linear-gradient(135deg, var(--health-mint), rgba(52, 199, 89, 0.08));
   color: var(--health-green);
   margin-bottom: 20px;
+  box-shadow: inset 0 0 0 1px rgba(52, 199, 89, 0.1);
 }
 
 .HP-Feature-Card h3 {
@@ -759,10 +797,19 @@ body {
   .HP-Review-Text { font-size: 18px; }
   .HP-Features-Grid { grid-template-columns: 1fr; }
   .HP-Features-Section { padding: 60px 20px; }
+  .HP-Reviews-Section { 
+    padding: 60px 20px; 
+    border-radius: 40px; 
+    margin: 0 12px; 
+  }
+  .HP-Feature-Card {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+  }
   .cta-v5 h2 { font-size: 36px !important; }
 }
 @media (max-width: 768px) {
   .hero-frames-container {
-    display: none;
+    opacity: 0.4;
   }
 }
