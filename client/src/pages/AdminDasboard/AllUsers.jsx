@@ -9,7 +9,7 @@ const AllUsers = () => {
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedRole, setSelectedRole] = useState("All");
+  const [selectedRole, setSelectedRole] = useState("all");
   const [notification, setNotification] = useState(null);
   const [deleteConfirm, setDeleteConfirm] = useState(null);
 
@@ -43,7 +43,7 @@ const AllUsers = () => {
   const filterUsers = () => {
     let filtered = [...users];
 
-    if (selectedRole !== "All") {
+    if (selectedRole !== "all") {
       filtered = filtered.filter(user => user.role === selectedRole);
     }
 
@@ -71,7 +71,7 @@ const AllUsers = () => {
   };
 
   const getUserRole = (user) => {
-    return user.role || "Client";
+    return user.role || "";
   };
 
   const getInitials = (fullName) => {
@@ -88,9 +88,10 @@ const AllUsers = () => {
 
   const getRoleBadgeClass = (role) => {
     switch(role) {
-      case "Admin": return "role-badge-admin";
-      case "Nutritionist": return "role-badge-nutritionist";
-      case "Client": return "role-badge-client";
+      case "admin": return "role-badge-admin";
+      case "dieteticien": return "role-badge-dieteticien";
+      case "client": return "role-badge-client";
+      case "student": return "role-badge-student";
       default: return "role-badge-default";
     }
   };
@@ -102,9 +103,16 @@ const AllUsers = () => {
     return user.email ? user.email.split('@')[0] : "Unknown User";
   };
 
+  const roleDisplayMap = {
+    admin: "Administrator",
+    dieteticien: "Dieteticien",
+    client: "Client",
+    student: "Student",
+  };
+
   const getRoleIcon = (role) => {
     switch(role) {
-      case "Admin":
+      case "admin":
         return (
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
             <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -112,19 +120,28 @@ const AllUsers = () => {
             <path d="M2 12L12 17L22 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         );
-      case "Nutritionist":
+      case "dieteticien":
         return (
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M2 17L12 22L22 17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M2 12L12 17L22 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M9 5C9 3.9 9.9 3 11 3H13C14.1 3 15 3.9 15 5V7H9V5Z" stroke="currentColor" strokeWidth="2"/>
+            <path d="M5 7H19L18 21H6L5 7Z" stroke="currentColor" strokeWidth="2"/>
+            <path d="M9 11V17" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+            <path d="M15 11V17" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
           </svg>
         );
-      case "Client":
+      case "client":
         return (
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
             <circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="2"/>
             <path d="M5 20V19C5 15.7 7.7 13 11 13H13C16.3 13 19 15.7 19 19V20" stroke="currentColor" strokeWidth="2"/>
+          </svg>
+        );
+      case "student":
+        return (
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M2 17L12 22L22 17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M6 9V14.5C6 17.5 8.7 20 12 20C15.3 20 18 17.5 18 14.5V9" stroke="currentColor" strokeWidth="2"/>
           </svg>
         );
       default: return null;
@@ -141,12 +158,13 @@ const AllUsers = () => {
             <path d="M2 12L12 17L22 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         );
-      case "nutritionist":
+      case "dieteticien":
         return (
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
-            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M2 17L12 22L22 17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            <path d="M2 12L12 17L22 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M9 5C9 3.9 9.9 3 11 3H13C14.1 3 15 3.9 15 5V7H9V5Z" stroke="currentColor" strokeWidth="2"/>
+            <path d="M5 7H19L18 21H6L5 7Z" stroke="currentColor" strokeWidth="2"/>
+            <path d="M9 11V17" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+            <path d="M15 11V17" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
           </svg>
         );
       case "client":
@@ -154,6 +172,14 @@ const AllUsers = () => {
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
             <circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="2"/>
             <path d="M5 20V19C5 15.7 7.7 13 11 13H13C16.3 13 19 15.7 19 19V20" stroke="currentColor" strokeWidth="2"/>
+          </svg>
+        );
+      case "student":
+        return (
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M2 17L12 22L22 17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M6 9V14.5C6 17.5 8.7 20 12 20C15.3 20 18 17.5 18 14.5V9" stroke="currentColor" strokeWidth="2"/>
           </svg>
         );
       case "total":
@@ -170,16 +196,17 @@ const AllUsers = () => {
   };
 
   const getStats = () => {
-    const admins = users.filter(u => u.role === "Admin").length;
-    const nutritionists = users.filter(u => u.role === "Nutritionist").length;
-    const clients = users.filter(u => u.role === "Client").length;
-    return { admins, nutritionists, clients, total: users.length };
+    const admins = users.filter(u => u.role === "admin").length;
+    const dieteticiens = users.filter(u => u.role === "dieteticien").length;
+    const clients = users.filter(u => u.role === "client").length;
+    const students = users.filter(u => u.role === "student").length;
+    return { admins, dieteticiens, clients, students, total: users.length };
   };
 
   const stats = getStats();
 
   const getClientMetrics = (user) => {
-    if (user.role === "Client" && user.clientProfile) {
+    if (user.role === "client" && user.clientProfile) {
       return {
         bmi: user.clientProfile.bmi,
         age: user.clientProfile.age
@@ -246,7 +273,7 @@ const AllUsers = () => {
             <span>User Management</span>
           </div>
           <h1>Manage Users</h1>
-          <p>View and manage all administrators, nutritionists, and clients</p>
+          <p>View and manage all administrators, dieteticiens, clients, and students</p>
         </div>
         <button onClick={() => navigate("/admin/add-admin-nutritionist")} className="add-user-btn">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -269,12 +296,12 @@ const AllUsers = () => {
           </div>
         </div>
         <div className="stat-card">
-          <div className="stat-icon nutritionist-stat">
-            {getStatIcon("nutritionist")}
+          <div className="stat-icon dieteticien-stat">
+            {getStatIcon("dieteticien")}
           </div>
           <div className="stat-info">
-            <h3>{stats.nutritionists}</h3>
-            <p>Nutritionists</p>
+            <h3>{stats.dieteticiens}</h3>
+            <p>Dieteticiens</p>
           </div>
         </div>
         <div className="stat-card">
@@ -284,6 +311,15 @@ const AllUsers = () => {
           <div className="stat-info">
             <h3>{stats.clients}</h3>
             <p>Clients</p>
+          </div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-icon student-stat">
+            {getStatIcon("student")}
+          </div>
+          <div className="stat-info">
+            <h3>{stats.students}</h3>
+            <p>Students</p>
           </div>
         </div>
         <div className="stat-card">
@@ -314,28 +350,34 @@ const AllUsers = () => {
 
         <div className="role-filters">
           <button
-            className={`filter-btn ${selectedRole === "All" ? "active" : ""}`}
-            onClick={() => setSelectedRole("All")}
+            className={`filter-btn ${selectedRole === "all" ? "active" : ""}`}
+            onClick={() => setSelectedRole("all")}
           >
             All Users
           </button>
           <button
-            className={`filter-btn ${selectedRole === "Admin" ? "active" : ""}`}
-            onClick={() => setSelectedRole("Admin")}
+            className={`filter-btn ${selectedRole === "admin" ? "active" : ""}`}
+            onClick={() => setSelectedRole("admin")}
           >
             Administrators
           </button>
           <button
-            className={`filter-btn ${selectedRole === "Nutritionist" ? "active" : ""}`}
-            onClick={() => setSelectedRole("Nutritionist")}
+            className={`filter-btn ${selectedRole === "dieteticien" ? "active" : ""}`}
+            onClick={() => setSelectedRole("dieteticien")}
           >
-            Nutritionists
+            Dieteticiens
           </button>
           <button
-            className={`filter-btn ${selectedRole === "Client" ? "active" : ""}`}
-            onClick={() => setSelectedRole("Client")}
+            className={`filter-btn ${selectedRole === "client" ? "active" : ""}`}
+            onClick={() => setSelectedRole("client")}
           >
             Clients
+          </button>
+          <button
+            className={`filter-btn ${selectedRole === "student" ? "active" : ""}`}
+            onClick={() => setSelectedRole("student")}
+          >
+            Students
           </button>
         </div>
       </div>
@@ -398,9 +440,9 @@ const AllUsers = () => {
                   <p className="user-email">{user.email || "No email provided"}</p>
                   <div className={`role-badge ${getRoleBadgeClass(getUserRole(user))}`}>
                     {getRoleIcon(getUserRole(user))}
-                    <span>{getUserRole(user)}</span>
+                    <span>{roleDisplayMap[getUserRole(user)] || getUserRole(user)}</span>
                   </div>
-                  {user.role === "Client" && clientMetrics && (
+                  {user.role === "client" && clientMetrics && (
                     <div className="client-metrics">
                       {clientMetrics.bmi && <span>BMI: {clientMetrics.bmi}</span>}
                       {clientMetrics.age && <span>Age: {clientMetrics.age}</span>}

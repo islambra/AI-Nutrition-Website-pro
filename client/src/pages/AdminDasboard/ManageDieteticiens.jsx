@@ -7,6 +7,7 @@ const ManageDieteticiens = () => {
   const [pendingList, setPendingList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(null);
+  const [confirmAction, setConfirmAction] = useState(null);
   const [previewImg, setPreviewImg] = useState(null);
   const [notification, setNotification] = useState(null);
   const showNotification = (message, type = 'success') => {
@@ -28,8 +29,9 @@ const ManageDieteticiens = () => {
 
   useEffect(() => { fetchPending(); }, []);
 
-  const handleApprove = async (id) => {
+  const executeApprove = async (id) => {
     setActionLoading(id);
+    setConfirmAction(null);
     try {
       const data = await approveDieteticien(id);
       if (data.success) {
@@ -45,9 +47,9 @@ const ManageDieteticiens = () => {
     }
   };
 
-  const handleReject = async (id) => {
-    if (!window.confirm('Are you sure you want to reject this request?')) return;
+  const executeReject = async (id) => {
     setActionLoading(id);
+    setConfirmAction(null);
     try {
       const data = await rejectDieteticien(id);
       if (data.success) {
@@ -62,6 +64,9 @@ const ManageDieteticiens = () => {
       setActionLoading(null);
     }
   };
+
+  const handleApprove = (id) => setConfirmAction({ id, type: 'approve' });
+  const handleReject = (id) => setConfirmAction({ id, type: 'reject' });
 
   if (loading) return (
     <div className="manage-diet-loading">
@@ -143,7 +148,7 @@ const ManageDieteticiens = () => {
                     onClick={() => handleApprove(item._id)}
                     disabled={actionLoading === item._id}
                   >
-                    {actionLoading === item._id ? <Loader size={16} className="spin" /> : <Check size={16} />}
+                    <Check size={16} />
                     Approve
                   </button>
                   <button
@@ -159,6 +164,34 @@ const ManageDieteticiens = () => {
             ))}
           </div>
         </>
+      )}
+
+      {confirmAction && (
+        <div className="manage-diet-modal" onClick={() => setConfirmAction(null)}>
+          <div className="modal-content confirm-modal" onClick={e => e.stopPropagation()}>
+            <div className={`confirm-icon ${confirmAction.type}`}>
+              {confirmAction.type === 'approve' ? <Check size={32} /> : <X size={32} />}
+            </div>
+            <h3>{confirmAction.type === 'approve' ? 'Approve Request' : 'Reject Request'}</h3>
+            <p>Are you sure you want to {confirmAction.type} this dieteticien request?</p>
+            <div className="confirm-actions">
+              <button
+                className={`action-btn ${confirmAction.type}`}
+                onClick={() => confirmAction.type === 'approve' ? executeApprove(confirmAction.id) : executeReject(confirmAction.id)}
+                disabled={actionLoading === confirmAction.id}
+              >
+                {confirmAction.type === 'approve' ? <Check size={16} /> : <X size={16} />}
+                {confirmAction.type === 'approve' ? 'Approve' : 'Reject'}
+              </button>
+              <button
+                className="action-btn cancel-btn"
+                onClick={() => setConfirmAction(null)}
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       {previewImg && (

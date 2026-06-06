@@ -34,7 +34,7 @@ export const dieteticienMenuLinks = [
   { name: "My Profile", path: "/dieteticien/my-Profile", icon: userInfo },
 ];
 export const adminMenuLinks = [
-  { name: "Add Admin/Dieteticien", path: "/admin/add-admin-nutritionist", icon: addUsers },
+  { name: "Add Admin", path: "/admin/add-admin-nutritionist", icon: addUsers },
   { name: "All Users", path: "/admin/all-users", icon: allUsers },
   { name: "Payments", path: "/admin/payments", icon: payment },
   { name: "Manage Dieteticiens", path: "/admin/manage-dieteticiens", icon: messagesicon },

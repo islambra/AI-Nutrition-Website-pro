@@ -61,7 +61,6 @@ function Header() {
     });
   };
 
-  // Function to get dashboard path based on user role
   const getDashboardPath = () => {
     if (user?.role === "admin") {
       return "/admin/add-admin-nutritionist";

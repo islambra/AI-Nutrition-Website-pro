@@ -302,6 +302,8 @@
 
 .action-btn {
   flex: 1;
+  min-width: 100px;
+  white-space: nowrap;
   padding: 10px 16px;
   border-radius: 10px;
   border: none;
@@ -311,13 +313,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 8px;
   transition: all 0.2s;
 }
 
 .action-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+  transform: none;
 }
 
 .action-btn.approve {
@@ -441,17 +444,278 @@
   border-radius: 8px;
 }
 
+.confirm-modal {
+  text-align: center;
+  padding: 32px 40px;
+  max-width: 400px;
+}
+
+.confirm-modal h3 {
+  margin: 12px 0 6px;
+  font-size: 18px;
+  color: #1a1a1a;
+}
+
+.confirm-modal p {
+  color: #6B7280;
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+
+.confirm-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.confirm-icon.approve {
+  background: #E8F5E9;
+  color: #2D5A27;
+}
+
+.confirm-icon.reject {
+  background: #FEF2F2;
+  color: #DC2626;
+}
+
+.confirm-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.confirm-actions .action-btn {
+  flex: 0 1 auto;
+  min-width: 100px;
+}
+
+.cancel-btn {
+  background: #F3F4F6 !important;
+  color: #4B5563 !important;
+  border: 1px solid #E5E7EB !important;
+}
+
+.cancel-btn:hover:not(:disabled) {
+  background: #E5E7EB !important;
+  transform: translateY(-1px);
+}
+
 @media (max-width: 768px) {
   .manage-diet-container {
-    padding: 16px;
+    padding: 12px;
   }
+
   .manage-diet-header {
     flex-direction: column;
+    gap: 12px;
   }
+
+  .header-left h1 {
+    font-size: 22px;
+  }
+
+  .manage-diet-card {
+    padding: 16px;
+    border-radius: 12px;
+  }
+
   .card-top {
     flex-wrap: wrap;
+    gap: 10px;
   }
+
+  .card-info {
+    min-width: calc(100% - 58px);
+    order: 0;
+  }
+
   .card-status {
     margin-left: auto;
+    order: 1;
+  }
+
+  .card-meta {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .card-tags {
+    gap: 6px;
+  }
+
+  .tag {
+    font-size: 11px;
+    padding: 3px 10px;
+  }
+
+  .card-diploma {
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 8px 12px;
+  }
+
+  .view-diploma-btn {
+    margin-left: 0;
+  }
+
+  .card-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .action-btn {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .manage-diet-toast {
+    top: 12px;
+    right: 12px;
+    left: 12px;
+    padding: 12px 16px;
+    font-size: 13px;
+  }
+
+  .manage-diet-empty {
+    padding: 48px 16px;
+  }
+
+  .empty-icon-wrapper {
+    width: 64px;
+    height: 64px;
+  }
+
+  .empty-icon-wrapper svg {
+    width: 36px;
+    height: 36px;
+  }
+
+  .manage-diet-empty h3 {
+    font-size: 18px;
+  }
+
+  .manage-diet-loading {
+    padding: 64px 16px;
+  }
+
+  .stat-badge {
+    padding: 10px 16px;
+    min-width: 72px;
+  }
+
+  .stat-number {
+    font-size: 20px;
+  }
+
+  .confirm-modal {
+    padding: 24px 20px;
+    max-width: 100%;
+    margin: 0 12px;
+  }
+
+  .confirm-modal h3 {
+    font-size: 16px;
+  }
+
+  .confirm-actions {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .confirm-actions .action-btn {
+    flex: 1;
+    width: 100%;
+  }
+
+  .modal-content {
+    padding: 12px;
+    max-height: 70vh;
+    margin: 0 12px;
+  }
+
+  .modal-close {
+    top: -8px;
+    right: -8px;
+    width: 28px;
+    height: 28px;
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .manage-diet-container {
+    padding: 8px;
+  }
+
+  .manage-diet-card {
+    padding: 14px;
+    border-radius: 10px;
+  }
+
+  .header-left h1 {
+    font-size: 18px;
+  }
+
+  .header-left p {
+    font-size: 12px;
+  }
+
+  .card-avatar {
+    width: 36px;
+    height: 36px;
+  }
+
+  .card-avatar svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .card-info h3 {
+    font-size: 14px;
+  }
+
+  .card-meta {
+    font-size: 11px;
+  }
+
+  .card-body {
+    margin-bottom: 12px;
+  }
+
+  .card-actions {
+    padding-top: 12px;
+    gap: 6px;
+  }
+
+  .action-btn {
+    padding: 8px 12px;
+    font-size: 12px;
+    gap: 6px;
+  }
+
+  .manage-diet-toast {
+    top: 8px;
+    right: 8px;
+    left: 8px;
+    padding: 10px 14px;
+    font-size: 12px;
+    border-radius: 10px;
+  }
+
+  .stat-badge {
+    padding: 8px 14px;
+    min-width: 64px;
+  }
+
+  .stat-number {
+    font-size: 18px;
+  }
+
+  .stat-label {
+    font-size: 10px;
   }
 }

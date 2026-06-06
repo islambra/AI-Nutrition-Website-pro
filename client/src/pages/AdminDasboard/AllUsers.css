@@ -273,7 +273,7 @@
 /* Stats Cards */
 .stats-cards {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 1rem;
   margin-bottom: 2rem;
 }
@@ -315,7 +315,7 @@
   color: #10b981;
 }
 
-.nutritionist-stat {
+.dieteticien-stat {
   background: #eff6ff;
   color: #3b82f6;
 }
@@ -323,6 +323,11 @@
 .client-stat {
   background: #fef3c7;
   color: #f59e0b;
+}
+
+.student-stat {
+  background: #f3e8ff;
+  color: #7c3aed;
 }
 
 .total-stat {
@@ -552,7 +557,7 @@
   border: 1px solid #a7f3d0;
 }
 
-.role-badge-nutritionist {
+.role-badge-dieteticien {
   background: #eff6ff;
   color: #3b82f6;
   border: 1px solid #bfdbfe;
@@ -562,6 +567,12 @@
   background: #fef3c7;
   color: #d97706;
   border: 1px solid #fde68a;
+}
+
+.role-badge-student {
+  background: #f3e8ff;
+  color: #7c3aed;
+  border: 1px solid #ddd6fe;
 }
 
 .role-badge-default {
@@ -653,7 +664,7 @@
 /* Responsive */
 @media (max-width: 1200px) {
   .stats-cards {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
