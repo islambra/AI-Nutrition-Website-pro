@@ -331,6 +331,29 @@ export const getCurrentUser = async (req, res) => {
   }
 };
 
+export const getUserPublicProfile = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const user = await User.findById(id).select("fullName email photo role");
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    let specialty = null;
+    if (user.role === "dieteticien") {
+      const dieteticien = await Dieteticien.findOne({ user: user._id });
+      specialty = dieteticien?.specialty || null;
+    }
+
+    res.status(200).json({
+      ...user.toObject(),
+      specialty
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 export const updateUser = async (req, res) => {
   try {
     const { id } = req.params;

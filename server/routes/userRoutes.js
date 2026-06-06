@@ -11,7 +11,8 @@ import {
   deleteUser,
   getAllStaffUsers,
   getAllClients,
-  incrementConsultations
+  incrementConsultations,
+  getUserPublicProfile
 } from "../controllers/userControllers.js";
 import upload from "../middleware/multer.js";
 import { protect } from "../middleware/auth.js";
@@ -26,6 +27,7 @@ userRouter.post("/login", loginUser);
 
 // Protected routes (authentication required)
 userRouter.get("/me", protect, getCurrentUser);
+userRouter.get("/public-profile/:id", getUserPublicProfile);
 userRouter.post("/create-staff", protect, createStaffUser);
 userRouter.get("/all", protect, getAllUsers);
 userRouter.get("/staff", protect, getAllStaffUsers);

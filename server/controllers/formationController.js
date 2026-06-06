@@ -2,6 +2,7 @@ import Formation from "../models/Formation.js";
 import FormationSession from "../models/FormationSession.js";
 import UserFormation from "../models/UserFormation.js";
 import Payment from "../models/Payment.js";
+import ChatRoom from "../models/ChatRoom.js";
 import { createZoomMeeting } from "../utils/zoom.js";
 import imagekit from "../configs/imageKit.js";
 
@@ -295,6 +296,23 @@ export const purchaseFormation = async (req, res) => {
       formation: formation._id,
       payment: payment._id
     });
+
+    const formationCreatorId = formation.createdBy;
+    if (formationCreatorId && formationCreatorId.toString() !== req.user.id.toString()) {
+      const existingRoom = await ChatRoom.findOne({
+        "participants.user": { $all: [req.user.id, formationCreatorId] }
+      });
+      if (!existingRoom) {
+        await ChatRoom.create({
+          participants: [
+            { user: req.user.id, role: req.user.role },
+            { user: formationCreatorId, role: "dieteticien" }
+          ],
+          type: "formation",
+          formation: formation._id
+        });
+      }
+    }
 
     res.status(201).json({ success: true, message: "Formation purchased successfully", data: { payment, userFormation } });
   } catch (error) {

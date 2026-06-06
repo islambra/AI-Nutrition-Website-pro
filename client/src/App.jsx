@@ -49,11 +49,14 @@ import MyCoursesPage from './pages/studentDashboard/MyCourses.jsx'
 import MyFormationsPage from './pages/studentDashboard/MyFormationsPage.jsx'
 import LoginGate from './components/LoginGate.jsx'
 import ProtectedRoute from './components/ProtectedRoute.jsx'
+import ChatBubble from './components/chat/ChatBubble.jsx'
+import { useChat } from './context/ChatContext.jsx'
 
 import './App.css'
 
 function App() {
   const location = useLocation();
+  const { chatOpen } = useChat();
   const isLoginRoute = location.pathname.startsWith('/login');
   const isSignupRoute = location.pathname.startsWith('/signup');
   
@@ -65,7 +68,7 @@ function App() {
       <ScrollToTop />
       <Toaster />
       <SonnerToaster position="top-center" richColors closeButton />
-      {(!isLoginRoute && !isSignupRoute) && <Header />}
+      {(!isLoginRoute && !isSignupRoute && !chatOpen) && <Header />}
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
           <Route index element={<PageTransition><HomePage /></PageTransition>} />
@@ -114,6 +117,7 @@ function App() {
           </Route>
         </Routes>
       </AnimatePresence>
+      <ChatBubble />
     </>
   )
 }

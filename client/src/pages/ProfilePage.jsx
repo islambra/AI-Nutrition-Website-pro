@@ -80,14 +80,14 @@ function ProfilePage() {
         allergies: Array.isArray(client.allergies) ? client.allergies.join(', ') : ''
       });
 
-      if (user.role === 'Client') {
+      if (user.role === 'client') {
         fetchUserPlans();
       }
     }
   }, [user]);
 
   useEffect(() => {
-    if (activeTab === 'bookings' && user?.role === 'Client') {
+    if (activeTab === 'bookings' && user?.role === 'client') {
       fetchAllConsultationsForUser();
     }
   }, [activeTab, user]);
@@ -240,7 +240,7 @@ function ProfilePage() {
       toast.error('Email is required');
       return false;
     }
-    if (user?.role === "Client") {
+    if (user?.role === "client") {
       if (!formData.age || formData.age < 1 || formData.age > 150) {
         toast.error('Age must be between 1 and 150');
         return false;
@@ -468,57 +468,101 @@ function ProfilePage() {
               </ScrollReveal>
 
               {/* Health Metrics - Client Only */}
-              {user?.role === "Client" && (
+              {user?.role === "client" && (
                 <ScrollReveal direction="left" delay={0.2} className="VXPR-MetricsPanel">
                   <h3 className="VXPR-PanelHeading">
                     <Activity size={18} />
                     HEALTH METRICS
                   </h3>
-                  <div className="VXPR-MetricsGrid">
-                    <div className="VXPR-MetricBox">
-                      <Scale size={20} />
-                      <span className="VXPR-MetricLabel">BMI</span>
-                      <span className="VXPR-MetricValue">{formatMetric(clientProfile.bmi)}</span>
-                      <span className={`VXPR-MetricBadge ${getStatusColor()}`}>
-                        {clientProfile.bmiCategory || 'Pending'}
-                      </span>
+                  <div className="VXPR-MetricsList">
+                    <div className="VXPR-MetricRow">
+                      <div className="VXPR-MetricRowIcon VXPR-MetricIconBmi">
+                        <Scale size={18} />
+                      </div>
+                      <div className="VXPR-MetricRowInfo">
+                        <div className="VXPR-MetricRowHeader">
+                          <span className="VXPR-MetricRowLabel">BMI</span>
+                          <span className={`VXPR-MetricRowBadge ${getStatusColor()}`}>
+                            {clientProfile.bmiCategory || 'Pending'}
+                          </span>
+                        </div>
+                        <div className="VXPR-MetricRowValueRow">
+                          <span className="VXPR-MetricRowValue">{formatMetric(clientProfile.bmi)}</span>
+                          <span className="VXPR-MetricRowSubtext">kg/m²</span>
+                        </div>
+                      </div>
                     </div>
-                    <div className="VXPR-MetricBox">
-                      <Flame size={20} />
-                      <span className="VXPR-MetricLabel">BMR</span>
-                      <span className="VXPR-MetricValue">{formatMetric(clientProfile.bmr)}</span>
-                      <span className="VXPR-MetricSubtext">kcal/day</span>
+                    <div className="VXPR-MetricDivider" />
+                    <div className="VXPR-MetricRow">
+                      <div className="VXPR-MetricRowIcon VXPR-MetricIconBmr">
+                        <Flame size={18} />
+                      </div>
+                      <div className="VXPR-MetricRowInfo">
+                        <span className="VXPR-MetricRowLabel">BMR</span>
+                        <div className="VXPR-MetricRowValueRow">
+                          <span className="VXPR-MetricRowValue">{formatMetric(clientProfile.bmr)}</span>
+                          <span className="VXPR-MetricRowSubtext">kcal/day</span>
+                        </div>
+                      </div>
                     </div>
-                    <div className="VXPR-MetricBox">
-                      <Zap size={20} />
-                      <span className="VXPR-MetricLabel">TDEE</span>
-                      <span className="VXPR-MetricValue">{formatMetric(clientProfile.tdee)}</span>
-                      <span className="VXPR-MetricSubtext">Active Burn</span>
+                    <div className="VXPR-MetricDivider" />
+                    <div className="VXPR-MetricRow">
+                      <div className="VXPR-MetricRowIcon VXPR-MetricIconTdee">
+                        <Zap size={18} />
+                      </div>
+                      <div className="VXPR-MetricRowInfo">
+                        <span className="VXPR-MetricRowLabel">TDEE</span>
+                        <div className="VXPR-MetricRowValueRow">
+                          <span className="VXPR-MetricRowValue">{formatMetric(clientProfile.tdee)}</span>
+                          <span className="VXPR-MetricRowSubtext">Active Burn</span>
+                        </div>
+                      </div>
                     </div>
-                    <div className="VXPR-MetricBox">
-                      <Target size={20} />
-                      <span className="VXPR-MetricLabel">IDEAL WT</span>
-                      <span className="VXPR-MetricValue">{formatMetric(clientProfile.idealWeightKg)}</span>
-                      <span className="VXPR-MetricSubtext">kg Optimal</span>
+                    <div className="VXPR-MetricDivider" />
+                    <div className="VXPR-MetricRow">
+                      <div className="VXPR-MetricRowIcon VXPR-MetricIconIdeal">
+                        <Target size={18} />
+                      </div>
+                      <div className="VXPR-MetricRowInfo">
+                        <span className="VXPR-MetricRowLabel">IDEAL WT</span>
+                        <div className="VXPR-MetricRowValueRow">
+                          <span className="VXPR-MetricRowValue">{formatMetric(clientProfile.idealWeightKg)}</span>
+                          <span className="VXPR-MetricRowSubtext">kg Optimal</span>
+                        </div>
+                      </div>
                     </div>
-                    <div className="VXPR-MetricBox">
-                      <Thermometer size={20} />
-                      <span className="VXPR-MetricLabel">FAT %</span>
-                      <span className="VXPR-MetricValue">{formatMetric(clientProfile.bodyFatPercentage)}</span>
-                      <span className="VXPR-MetricSubtext">Estimated</span>
+                    <div className="VXPR-MetricDivider" />
+                    <div className="VXPR-MetricRow">
+                      <div className="VXPR-MetricRowIcon VXPR-MetricIconFat">
+                        <Thermometer size={18} />
+                      </div>
+                      <div className="VXPR-MetricRowInfo">
+                        <span className="VXPR-MetricRowLabel">FAT %</span>
+                        <div className="VXPR-MetricRowValueRow">
+                          <span className="VXPR-MetricRowValue">{formatMetric(clientProfile.bodyFatPercentage)}</span>
+                          <span className="VXPR-MetricRowSubtext">Estimated</span>
+                        </div>
+                      </div>
                     </div>
-                    <div className="VXPR-MetricBox">
-                      <TrendingUp size={20} />
-                      <span className="VXPR-MetricLabel">STATUS</span>
-                      <span className="VXPR-MetricValue VXPR-StatusText">{getStatusText()}</span>
-                      <span className="VXPR-MetricSubtext">Current</span>
+                    <div className="VXPR-MetricDivider" />
+                    <div className="VXPR-MetricRow VXPR-MetricRowStatus">
+                      <div className="VXPR-MetricRowIcon VXPR-MetricIconStatus">
+                        <TrendingUp size={18} />
+                      </div>
+                      <div className="VXPR-MetricRowInfo">
+                        <span className="VXPR-MetricRowLabel">STATUS</span>
+                        <div className="VXPR-MetricRowValueRow">
+                          <span className="VXPR-MetricRowValue VXPR-StatusText">{getStatusText()}</span>
+                          <span className="VXPR-MetricRowSubtext">Current Assessment</span>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </ScrollReveal>
               )}
 
               {/* Staff Info */}
-              {user?.role !== "Client" && (
+              {(user?.role === "dieteticien" || user?.role === "admin") && (
                 <ScrollReveal direction="left" delay={0.2} className="VXPR-MetricsPanel">
                   <h3 className="VXPR-PanelHeading">
                     <Shield size={18} />
@@ -555,7 +599,7 @@ function ProfilePage() {
                     <FileText size={18} />
                     BIOGRAPHIC RECORDS
                   </button>
-                  {user?.role === "Client" && (
+                  {user?.role === "client" && (
                     <button 
                       className={`VXPR-TabBtn ${activeTab === 'risk' ? 'VXPR-TabActive' : ''}`}
                       onClick={() => setActiveTab('risk')}
@@ -565,7 +609,7 @@ function ProfilePage() {
                       RISK SENSITIVITIES
                     </button>
                   )}
-                  {user?.role === "Client" && (
+                  {user?.role === "client" && (
                     <button 
                       className={`VXPR-TabBtn ${activeTab === 'plans' ? 'VXPR-TabActive' : ''}`}
                       onClick={() => setActiveTab('plans')}
@@ -575,7 +619,7 @@ function ProfilePage() {
                       MY PLANS
                     </button>
                   )}
-                  {user?.role === "Client" && (
+                  {user?.role === "client" && (
                     <button 
                       className={`VXPR-TabBtn ${activeTab === 'bookings' ? 'VXPR-TabActive' : ''}`}
                       onClick={() => setActiveTab('bookings')}
@@ -647,7 +691,7 @@ function ProfilePage() {
                         </div>
                       </div>
 
-                      {user?.role === "Client" && (
+                      {user?.role === "client" && (
                         <>
                           <div className="VXPR-FormGroup">
                             <label htmlFor="age">AGE</label>
@@ -759,7 +803,7 @@ function ProfilePage() {
                         </>
                       )}
 
-                      {user?.role !== "Client" && isEditing && (
+                      {user?.role !== "client" && isEditing && (
                         <div className="VXPR-FormGroup VXPR-FullWidth">
                           <label htmlFor="password">NEW PASSWORD (OPTIONAL)</label>
                           <div className="VXPR-InputWrapper">
@@ -779,7 +823,7 @@ function ProfilePage() {
                   )}
 
                   {/* Risk Sensitivities Tab */}
-                  {activeTab === 'risk' && user?.role === "Client" && (
+                  {activeTab === 'risk' && user?.role === "client" && (
                     <div className="VXPR-FormGrid">
                       <div className="VXPR-FormGroup VXPR-FullWidth">
                         <label htmlFor="medicalConditions">MEDICAL CONDITIONS</label>
@@ -892,7 +936,7 @@ function ProfilePage() {
                   )}
 
                   {/* MY PLANS TAB */}
-                  {activeTab === 'plans' && user?.role === "Client" && (
+                  {activeTab === 'plans' && user?.role === "client" && (
                     <div className="VXPR-PlansContainer">
                       {plansLoading ? (
                         <div className="VXPR-PlansLoading">
@@ -993,7 +1037,7 @@ function ProfilePage() {
                   )}
 
                   {/* MY BOOKINGS TAB */}
-                  {activeTab === 'bookings' && user?.role === "Client" && (
+                  {activeTab === 'bookings' && user?.role === "client" && (
                     <div className="UPBK-Container">
                       {bookingsLoading ? (
                         <div className="UPBK-Loading">

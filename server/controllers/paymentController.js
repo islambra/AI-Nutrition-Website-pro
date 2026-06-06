@@ -3,6 +3,7 @@ import Payment from "../models/Payment.js";
 import Plan from "../models/Plan.js";
 import UserPlan from "../models/UserPlan.js";
 import Client from "../models/Client.js";
+import ChatRoom from "../models/ChatRoom.js";
 
 // Buy a plan - instant payment
 export const buyPlan = async (req, res) => {
@@ -53,6 +54,24 @@ export const buyPlan = async (req, res) => {
     if (client) {
       client.totalConsultations += plan.consultationIncluded;
       await client.save();
+    }
+
+    const planCreatorId = plan.createdBy;
+    if (planCreatorId && planCreatorId.toString() !== userId.toString()) {
+      const existingRoom = await ChatRoom.findOne({
+        "participants.user": { $all: [userId, planCreatorId] }
+      });
+      if (!existingRoom) {
+        const user = req.user;
+        await ChatRoom.create({
+          participants: [
+            { user: userId, role: user.role },
+            { user: planCreatorId, role: "dieteticien" }
+          ],
+          type: "plan",
+          plan: planId
+        });
+      }
     }
 
     res.status(201).json({

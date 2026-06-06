@@ -734,7 +734,8 @@ function ServicesPage() {
         </>
       )}
 
-      {/* FORMATIONS SECTION */}
+      {/* FORMATIONS SECTION - hidden for client accounts */}
+      {!userIsClient && (
       <section className="ServicesPage-Plans-Section">
         <div className="ServicesPage-Section-Header">
           <ScrollReveal>
@@ -906,6 +907,7 @@ function ServicesPage() {
           )}
         </AnimatePresence>
       </section>
+      )}
 
       {/* FINAL CTA */}
       <section className="ServicesPage-CTA-Section">

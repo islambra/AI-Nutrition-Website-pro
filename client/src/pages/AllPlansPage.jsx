@@ -11,6 +11,7 @@ import {
 import { getAllPlans, getPlanCategories } from '../api/planApi';
 import { checkPlanOwnership } from '../api/paymentApi';
 import { useAuth } from '../context/AuthContext';
+import { isClient } from '../api/userApi';
 import toast from 'react-hot-toast';
 import PageTransition from '../components/PageTransition';
 import ScrollReveal from '../components/ScrollReveal';
@@ -147,8 +148,7 @@ function AllPlansPage() {
       return;
     }
 
-    // Only clients can buy plans (optional - adjust if nutritionists/admins can also buy)
-    if (user?.role !== 'Client') {
+    if (!isClient(user)) {
       toast.error('Only clients can purchase plans');
       return;
     }

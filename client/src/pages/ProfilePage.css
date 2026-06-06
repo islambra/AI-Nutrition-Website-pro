@@ -429,76 +429,127 @@
   box-shadow: var(--vxpr-shadow-md);
 }
 
-.VXPR-MetricsGrid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-}
-
-.VXPR-MetricBox {
-  background: var(--vxpr-bg-tertiary);
-  padding: 18px 14px;
-  border-radius: var(--vxpr-radius-lg);
-  border: 1px solid var(--vxpr-border-light);
+.VXPR-MetricsList {
   display: flex;
   flex-direction: column;
+}
+
+.VXPR-MetricRow {
+  display: flex;
   align-items: center;
-  text-align: center;
+  gap: 16px;
+  padding: 14px 16px;
+  border-radius: var(--vxpr-radius-lg);
   transition: all var(--vxpr-trans-base);
 }
 
-.VXPR-MetricBox:hover {
-  background: var(--vxpr-white);
-  border-color: var(--vxpr-border-accent);
-  transform: translateY(-3px);
-  box-shadow: var(--vxpr-shadow-accent);
+.VXPR-MetricRow:hover {
+  background: var(--vxpr-bg-hover);
 }
 
-.VXPR-MetricBox svg {
-  color: var(--vxpr-accent);
-  margin-bottom: 10px;
-  opacity: 0.7;
-  transition: all var(--vxpr-trans-base);
+.VXPR-MetricRowIcon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
-.VXPR-MetricBox:hover svg {
-  opacity: 1;
-  transform: scale(1.1);
+.VXPR-MetricIconBmi {
+  background: #dbeafe;
+  color: #2563eb;
 }
 
-.VXPR-MetricLabel {
+.VXPR-MetricIconBmr {
+  background: #fef3c7;
+  color: #d97706;
+}
+
+.VXPR-MetricIconTdee {
+  background: #d1fae5;
+  color: #059669;
+}
+
+.VXPR-MetricIconIdeal {
+  background: #fce7f3;
+  color: #db2777;
+}
+
+.VXPR-MetricIconFat {
+  background: #ede9fe;
+  color: #7c3aed;
+}
+
+.VXPR-MetricIconStatus {
+  background: #e0e7ff;
+  color: #4f46e5;
+}
+
+.VXPR-MetricRowInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.VXPR-MetricRowHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2px;
+}
+
+.VXPR-MetricRowLabel {
   font-family: var(--vxpr-font-mono);
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 700;
   color: var(--vxpr-text-muted);
   letter-spacing: 0.08em;
-  margin-bottom: 6px;
   text-transform: uppercase;
 }
 
-.VXPR-MetricValue {
+.VXPR-MetricRowValueRow {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+
+.VXPR-MetricRowValue {
   font-size: 22px;
   font-weight: 700;
   color: var(--vxpr-gray-900);
-  line-height: 1.1;
+  line-height: 1.2;
   font-family: var(--vxpr-font-heading);
 }
 
-.VXPR-MetricSubtext {
-  font-size: 10px;
+.VXPR-MetricRowSubtext {
+  font-size: 11px;
   color: var(--vxpr-text-muted);
   font-weight: 500;
-  margin-top: 6px;
 }
 
-.VXPR-MetricBadge {
+.VXPR-MetricRowBadge {
   display: inline-block;
-  padding: 3px 10px;
+  padding: 2px 10px;
   border-radius: var(--vxpr-radius-full);
   font-size: 9px;
   font-weight: 700;
-  margin-top: 6px;
   letter-spacing: 0.04em;
+}
+
+.VXPR-MetricDivider {
+  height: 1px;
+  background: var(--vxpr-border-light);
+  margin: 0 16px;
+}
+
+.VXPR-MetricRowStatus {
+  background: var(--vxpr-accent-soft);
+  margin-top: 6px;
+}
+
+.VXPR-MetricRowStatus:hover {
+  background: var(--vxpr-accent-light) !important;
 }
 
 .VXPR-StatusOptimal {
@@ -517,7 +568,8 @@
 }
 
 .VXPR-StatusText {
-  font-size: 13px !important;
+  font-size: 14px !important;
+  letter-spacing: 0.02em;
 }
 
 .VXPR-TextLarge {
@@ -982,16 +1034,16 @@
     font-size: clamp(32px, 8vw, 48px);
   }
   
+  .VXPR-Form {
+    padding: 24px 20px;
+  }
+  
   .VXPR-SidebarColumn {
     grid-template-columns: 1fr;
   }
   
   .VXPR-ProfileCard {
     grid-column: 1;
-  }
-  
-  .VXPR-Form {
-    padding: 24px 20px;
   }
   
   .VXPR-FormHeader {
@@ -1007,10 +1059,6 @@
   
   .VXPR-FormGroup.VXPR-FullWidth {
     grid-column: 1;
-  }
-  
-  .VXPR-MetricsGrid {
-    grid-template-columns: 1fr 1fr;
   }
   
   .VXPR-TabBtn {
@@ -1060,9 +1108,16 @@
     padding: 22px;
   }
   
-  .VXPR-MetricsGrid {
-    grid-template-columns: 1fr;
-    gap: 10px;
+  .VXPR-MetricRow {
+    padding: 12px 12px;
+  }
+  
+  .VXPR-MetricRowValue {
+    font-size: 18px;
+  }
+  
+  .VXPR-MetricDivider {
+    margin: 0 12px;
   }
   
   .VXPR-FormInput,
@@ -1196,8 +1251,13 @@ input[type="number"] {
 }
 
 .VXPR-EmptyPlans {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 280px;
   text-align: center;
-  padding: 60px 0;
+  padding: 40px 20px;
   color: var(--vxpr-text-muted);
 }
 
@@ -1485,8 +1545,13 @@ input[type="number"] {
 }
 
 .UPBK-Empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 280px;
   text-align: center;
-  padding: 60px 0;
+  padding: 40px 20px;
   color: var(--vxpr-text-muted);
 }
 
