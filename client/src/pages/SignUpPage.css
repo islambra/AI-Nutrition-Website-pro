@@ -464,7 +464,33 @@
   .back-btn-stripe {
     top: 16px;
     left: 16px;
-    padding: 6px 12px;
+    padding: 6px 14px;
     font-size: 12px;
+  }
+}
+
+/* Mobile: make Back to Home button green */
+@media (max-width: 768px) {
+  .back-btn-stripe {
+    top: 16px;
+    left: 16px;
+    padding: 8px;
+    font-size: 12px;
+    gap: 6px;
+    background: #34C759;
+    color: white;
+    border: none;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border-radius: 8px;
+  }
+  .back-btn-stripe span {
+    display: none;
+  }
+  .back-btn-stripe:hover {
+    background: #28a745;
+    transform: none;
+    box-shadow: none;
   }
 }
