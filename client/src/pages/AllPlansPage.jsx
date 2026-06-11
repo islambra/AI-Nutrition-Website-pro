@@ -164,7 +164,7 @@ function AllPlansPage() {
         return;
       }
       // If not owned, proceed to checkout
-      navigate(`/checkout/${plan._id}`, { state: { plan } });
+      navigate(`/checkout/plan/${plan._id}`, { state: { plan } });
     } catch (err) {
       console.error('Error checking plan ownership:', err);
       toast.error('Unable to verify plan status. Please try again.');

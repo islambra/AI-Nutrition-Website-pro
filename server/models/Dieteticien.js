@@ -19,6 +19,21 @@ const dieteticienSchema = new mongoose.Schema({
   isApproved: {
     type: Boolean,
     default: true
+  },
+  ccpNumber: {
+    type: String,
+    default: null,
+    trim: true
+  },
+  ccpKey: {
+    type: String,
+    default: null,
+    trim: true,
+    match: [/^\d{2}$/, "CCP key must be exactly 2 digits"]
+  },
+  baridiMob: {
+    type: Number,
+    default: null
   }
 }, { timestamps: true });
 

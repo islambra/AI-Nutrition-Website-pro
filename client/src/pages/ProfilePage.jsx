@@ -8,7 +8,7 @@ import {
   Scale, Ruler, Calendar, Fingerprint, Droplets,
   UserCheck, Clock, Flame, Heart, FileText,
   Video, MessageCircle, ShoppingBag, ArrowRight, AlertCircle,
-  Trash2, Eye
+  Trash2, Eye, CreditCard
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { updateUser as updateUserService } from '../api/userApi';
@@ -44,7 +44,10 @@ function ProfilePage() {
     gender: 'Male',
     activityLevel: 'Moderate',
     medicalConditions: '',
-    allergies: ''
+    allergies: '',
+    ccpNumber: '',
+    ccpKey: '',
+    baridiMob: ''
   });
 
   // Plans & consultations
@@ -66,6 +69,7 @@ function ProfilePage() {
   useEffect(() => {
     if (user) {
       const client = user.clientProfile || {};
+      const dieteticien = user.dieteticienProfile || {};
       setFormData({
         fullName: user.fullName || user.name || '',
         email: user.email || '',
@@ -77,7 +81,10 @@ function ProfilePage() {
         gender: client.gender || 'Male',
         activityLevel: client.activityLevel || 'Moderate',
         medicalConditions: Array.isArray(client.medicalConditions) ? client.medicalConditions.join(', ') : '',
-        allergies: Array.isArray(client.allergies) ? client.allergies.join(', ') : ''
+        allergies: Array.isArray(client.allergies) ? client.allergies.join(', ') : '',
+        ccpNumber: dieteticien.ccpNumber || '',
+        ccpKey: dieteticien.ccpKey || '',
+        baridiMob: dieteticien.baridiMob || ''
       });
 
       if (user.role === 'client') {
@@ -284,7 +291,10 @@ function ProfilePage() {
         allergies: formData.allergies
           .split(',')
           .map(s => s.trim())
-          .filter(s => s)
+          .filter(s => s),
+        ccpNumber: formData.ccpNumber || undefined,
+        ccpKey: formData.ccpKey || undefined,
+        baridiMob: formData.baridiMob ? Number(formData.baridiMob) : undefined
       };
 
       if (formData.password) {
@@ -321,6 +331,7 @@ function ProfilePage() {
   const handleCancelEdit = () => {
     if (user) {
       const client = user.clientProfile || {};
+      const dieteticien = user.dieteticienProfile || {};
       setFormData({
         fullName: user.fullName || user.name || '',
         email: user.email || '',
@@ -332,7 +343,10 @@ function ProfilePage() {
         gender: client.gender || 'Male',
         activityLevel: client.activityLevel || 'Moderate',
         medicalConditions: Array.isArray(client.medicalConditions) ? client.medicalConditions.join(', ') : '',
-        allergies: Array.isArray(client.allergies) ? client.allergies.join(', ') : ''
+        allergies: Array.isArray(client.allergies) ? client.allergies.join(', ') : '',
+        ccpNumber: dieteticien.ccpNumber || '',
+        ccpKey: dieteticien.ccpKey || '',
+        baridiMob: dieteticien.baridiMob || ''
       });
     }
     setIsEditing(false);
@@ -816,6 +830,60 @@ function ProfilePage() {
                               placeholder="Leave blank to keep current password" 
                               className="VXPR-FormInput"
                             />
+                          </div>
+                        </div>
+                      )}
+
+                      {user?.role === "dieteticien" && (
+                        <div className="VXPR-FullWidth" style={{ marginTop: '24px' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
+                            <CreditCard size={18} />
+                            <h3 style={{ margin: 0, fontSize: '14px', letterSpacing: '0.5px' }}>PAYMENT INFORMATION</h3>
+                          </div>
+                          <div className="VXPR-FormGrid">
+                            <div className="VXPR-FormGroup">
+                              <label htmlFor="ccpNumber">CCP NUMBER</label>
+                              <div className="VXPR-InputWrapper">
+                                <input 
+                                  type="text" 
+                                  id="ccpNumber" 
+                                  value={formData.ccpNumber} 
+                                  onChange={handleChange} 
+                                  disabled={!isEditing || isSaving} 
+                                  placeholder="e.g. 12345678" 
+                                  className="VXPR-FormInput"
+                                />
+                              </div>
+                            </div>
+                            <div className="VXPR-FormGroup">
+                              <label htmlFor="ccpKey">CCP KEY (2 DIGITS)</label>
+                              <div className="VXPR-InputWrapper">
+                                <input 
+                                  type="text" 
+                                  id="ccpKey" 
+                                  value={formData.ccpKey} 
+                                  onChange={handleChange} 
+                                  disabled={!isEditing || isSaving} 
+                                  placeholder="12" 
+                                  maxLength={2}
+                                  className="VXPR-FormInput"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                          <div className="VXPR-FormGroup VXPR-FullWidth">
+                            <label htmlFor="baridiMob">BARIDIMOB NUMBER</label>
+                            <div className="VXPR-InputWrapper">
+                              <input 
+                                type="number" 
+                                id="baridiMob" 
+                                value={formData.baridiMob} 
+                                onChange={handleChange} 
+                                disabled={!isEditing || isSaving} 
+                                placeholder="e.g. 12345678901234567890" 
+                                className="VXPR-FormInput"
+                              />
+                            </div>
                           </div>
                         </div>
                       )}

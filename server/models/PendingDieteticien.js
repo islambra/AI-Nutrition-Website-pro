@@ -43,6 +43,20 @@ const pendingDieteticienSchema = new mongoose.Schema({
     enum: ["pending", "approved", "rejected"],
     default: "pending"
   },
+  ccpNumber: {
+    type: String,
+    default: null,
+    trim: true
+  },
+  ccpKey: {
+    type: String,
+    default: null,
+    trim: true
+  },
+  baridiMob: {
+    type: Number,
+    default: null
+  },
   createdAt: {
     type: Date,
     default: Date.now

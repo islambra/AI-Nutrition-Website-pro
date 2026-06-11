@@ -143,7 +143,7 @@ export const registerUser = async (req, res) => {
 
 export const registerDieteticien = async (req, res) => {
   try {
-    const { fullName, email, password, age, gender, specialty } = req.body;
+    const { fullName, email, password, age, gender, specialty, ccpNumber, ccpKey, baridiMob } = req.body;
 
     if (!fullName || !email || !password || !age || !gender || !specialty) {
       return res.status(400).json({ message: "All fields are required" });
@@ -182,6 +182,9 @@ export const registerDieteticien = async (req, res) => {
       specialty: specialty.trim(),
       diplomaUrl,
       diplomaFileId,
+      ccpNumber: ccpNumber || null,
+      ccpKey: ccpKey || null,
+      baridiMob: baridiMob ? Number(baridiMob) : null,
       status: "pending"
     });
     await pending.save();
@@ -197,7 +200,7 @@ export const registerDieteticien = async (req, res) => {
 
 export const createStaffUser = async (req, res) => {
   try {
-    const { fullName, email, password, role } = req.body;
+    const { fullName, email, password, role, specialty, ccpNumber, ccpKey, baridiMob } = req.body;
 
     if (!fullName || !email || !password || !role) {
       return res.status(400).json({
@@ -230,8 +233,11 @@ export const createStaffUser = async (req, res) => {
     if (role === "dieteticien") {
       await Dieteticien.create({
         user: newUser._id,
-        specialty: req.body.specialty || "General Nutrition",
-        isApproved: true
+        specialty: specialty || "General Nutrition",
+        isApproved: true,
+        ccpNumber: ccpNumber || null,
+        ccpKey: ccpKey || null,
+        baridiMob: baridiMob ? Number(baridiMob) : null
       });
     }
 
@@ -444,8 +450,13 @@ export const updateUser = async (req, res) => {
       }
     } else if (user.role === "dieteticien") {
       profile = await Dieteticien.findOne({ user: user._id });
-      if (profile && updateData.specialty) {
-        profile.specialty = updateData.specialty;
+      if (profile) {
+        const allowedDieteticienFields = ['specialty', 'ccpNumber', 'ccpKey', 'baridiMob'];
+        allowedDieteticienFields.forEach(field => {
+          if (updateData[field] !== undefined) {
+            profile[field] = updateData[field];
+          }
+        });
         await profile.save();
       }
     }
@@ -554,6 +565,28 @@ export const getAllClients = async (req, res) => {
     res.status(200).json(enriched);
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+
+export const getDieteticienPaymentInfo = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const dieteticien = await Dieteticien.findOne({ user: id }).select("ccpNumber ccpKey baridiMob");
+
+    if (!dieteticien) {
+      return res.status(404).json({ success: false, message: "Dieteticien not found" });
+    }
+
+    res.status(200).json({
+      success: true,
+      data: {
+        ccpNumber: dieteticien.ccpNumber,
+        ccpKey: dieteticien.ccpKey,
+        baridiMob: dieteticien.baridiMob
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 

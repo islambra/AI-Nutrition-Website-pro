@@ -1,4 +1,3 @@
-// models/Payment.js
 import mongoose from "mongoose";
 
 const paymentSchema = new mongoose.Schema({
@@ -7,19 +6,42 @@ const paymentSchema = new mongoose.Schema({
     ref: "User",
     required: true
   },
-plan: {
-  type: mongoose.Schema.Types.ObjectId,
-  ref: "Plan",
-  required: false      // optional now
-},
+  plan: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Plan",
+    default: null
+  },
+  formation: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Formation",
+    default: null
+  },
   amount: {
     type: Number,
     required: true
   },
   paymentMethod: {
     type: String,
-    enum: ["credit_card", "paypal"],
+    enum: ["ccp", "baridimob"],
     required: true
+  },
+  status: {
+    type: String,
+    enum: ["pending", "approved", "rejected"],
+    default: "pending"
+  },
+  proofImage: {
+    type: String,
+    default: null
+  },
+  proofImageFileId: {
+    type: String,
+    default: null
+  },
+  dieteticien: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    default: null
   }
 }, {
   timestamps: true

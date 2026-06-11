@@ -1,11 +1,9 @@
-// api/paymentApi.js
 import axiosInstance from './axiosInstance';
 
-// Buy a plan
-export const buyPlan = async (planId, paymentMethod = "credit_card") => {
-  const response = await axiosInstance.post("/payments/buy", {
-    planId,
-    paymentMethod
+// Initiate offline payment with proof image (works for both plans and formations)
+export const initiatePayment = async (formData) => {
+  const response = await axiosInstance.post("/payments/buy", formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
   });
   return response.data;
 };
@@ -21,17 +19,44 @@ export const getUserPlans = async () => {
   const response = await axiosInstance.get("/payments/my-plans");
   return response.data;
 };
-// Add to existing paymentApi.js
+
+// Dieteticien: get pending payments
+export const getPendingPayments = async () => {
+  const response = await axiosInstance.get("/payments/offline/pending");
+  return response.data;
+};
+
+// Dieteticien: approve a pending payment
+export const approvePayment = async (paymentId) => {
+  const response = await axiosInstance.post(`/payments/offline/approve/${paymentId}`);
+  return response.data;
+};
+
+// Dieteticien: reject a pending payment
+export const rejectPayment = async (paymentId) => {
+  const response = await axiosInstance.post(`/payments/offline/reject/${paymentId}`);
+  return response.data;
+};
+
+// Get a dieteticien's payment info (CCP, BaridiMob) by user ID
+export const getDieteticienPaymentInfo = async (dieteticienId) => {
+  const response = await axiosInstance.get(`/user/${dieteticienId}/payment-info`);
+  return response.data;
+};
+
+// Admin: get all payments
 export const getAllPaymentsAdmin = async () => {
   const response = await axiosInstance.get('/admin/payments');
   return response.data;
 };
 
+// Admin: delete payment
 export const deletePaymentAdmin = async (paymentId) => {
   const response = await axiosInstance.delete(`/admin/payments/${paymentId}`);
   return response.data;
 };
 
+// Dieteticien: get plan payments (for sales history)
 export const getDieteticienPlanPayments = async () => {
   const response = await axiosInstance.get('/dieteticien/payments/my-plan-payments');
   return response.data;

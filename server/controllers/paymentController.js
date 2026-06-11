@@ -1,94 +1,216 @@
-// controllers/paymentController.js
 import Payment from "../models/Payment.js";
 import Plan from "../models/Plan.js";
+import Formation from "../models/Formation.js";
 import UserPlan from "../models/UserPlan.js";
+import UserFormation from "../models/UserFormation.js";
 import Client from "../models/Client.js";
 import ChatRoom from "../models/ChatRoom.js";
+import imagekit from "../configs/imageKit.js";
 
-// Buy a plan - instant payment
-export const buyPlan = async (req, res) => {
+// Initiate offline payment with proof image
+export const initiateOfflinePayment = async (req, res) => {
   try {
-    const { planId, paymentMethod } = req.body;
+    const { planId, formationId, paymentMethod } = req.body;
     const userId = req.user.id;
 
-    // Find the plan
-    const plan = await Plan.findById(planId);
-    if (!plan) {
-      return res.status(404).json({
-        success: false,
-        message: "Plan not found"
-      });
+    if (!paymentMethod || !["ccp", "baridimob"].includes(paymentMethod)) {
+      return res.status(400).json({ success: false, message: "Invalid payment method. Use 'ccp' or 'baridimob'." });
     }
 
-    // Check if user already has this plan
-    const existingPlan = await UserPlan.findOne({
-      user: userId,
-      plan: planId
-    });
-
-    if (existingPlan) {
-      return res.status(400).json({
-        success: false,
-        message: "You already purchased this plan"
-      });
+    if (!planId && !formationId) {
+      return res.status(400).json({ success: false, message: "Either planId or formationId is required" });
     }
 
-    // Create payment (instant)
+    if (planId && formationId) {
+      return res.status(400).json({ success: false, message: "Provide only one of planId or formationId" });
+    }
+
+    let service = null;
+    if (planId) {
+      service = await Plan.findById(planId);
+      if (!service) return res.status(404).json({ success: false, message: "Plan not found" });
+    } else {
+      service = await Formation.findById(formationId);
+      if (!service) return res.status(404).json({ success: false, message: "Formation not found" });
+    }
+
+    const dieteticienId = service.createdBy;
+    if (!dieteticienId) {
+      return res.status(400).json({ success: false, message: "Service creator not found" });
+    }
+
+    let proofImage = null;
+    let proofImageFileId = null;
+    if (req.file) {
+      const base64 = req.file.buffer.toString("base64");
+      const upload = await imagekit.upload({
+        file: base64,
+        fileName: `payment-proof-${Date.now()}-${req.file.originalname}`,
+        folder: "/payment-proofs",
+      });
+      proofImage = upload.url;
+      proofImageFileId = upload.fileId;
+    }
+
     const payment = await Payment.create({
       user: userId,
-      plan: planId,
-      amount: plan.price,
-      paymentMethod: paymentMethod || "credit_card"
+      plan: planId || null,
+      formation: formationId || null,
+      amount: service.price,
+      paymentMethod,
+      status: "pending",
+      proofImage,
+      proofImageFileId,
+      dieteticien: dieteticienId
     });
-
-    // Create user plan with sessions
-    const userPlan = await UserPlan.create({
-      user: userId,
-      plan: planId,
-      payment: payment._id,
-      sessionsRemaining: plan.consultationIncluded
-    });
-
-    // Update client's total consultations
-    const client = await Client.findOne({ user: userId });
-    if (client) {
-      client.totalConsultations += plan.consultationIncluded;
-      await client.save();
-    }
-
-    const planCreatorId = plan.createdBy;
-    if (planCreatorId && planCreatorId.toString() !== userId.toString()) {
-      const existingRoom = await ChatRoom.findOne({
-        "participants.user": { $all: [userId, planCreatorId] }
-      });
-      if (!existingRoom) {
-        const user = req.user;
-        await ChatRoom.create({
-          participants: [
-            { user: userId, role: user.role },
-            { user: planCreatorId, role: "dieteticien" }
-          ],
-          type: "plan",
-          plan: planId
-        });
-      }
-    }
 
     res.status(201).json({
       success: true,
-      message: "Plan purchased successfully",
-      data: {
-        payment,
-        userPlan
-      }
+      message: "Payment proof submitted successfully. Waiting for dieteticien confirmation.",
+      data: payment
     });
-
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Purchase failed",
-      error: error.message
-    });
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// Get pending payments for the logged-in dieteticien
+export const getPendingPayments = async (req, res) => {
+  try {
+    const payments = await Payment.find({
+      dieteticien: req.user.id,
+      status: "pending"
+    })
+      .populate("user", "fullName email photo")
+      .populate("plan", "planName price")
+      .populate("formation", "title price")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({ success: true, data: payments });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// Approve a pending payment and activate the service
+export const approvePayment = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const payment = await Payment.findById(id);
+
+    if (!payment) {
+      return res.status(404).json({ success: false, message: "Payment not found" });
+    }
+
+    if (payment.dieteticien.toString() !== req.user.id) {
+      return res.status(403).json({ success: false, message: "Not authorized" });
+    }
+
+    if (payment.status !== "pending") {
+      return res.status(400).json({ success: false, message: `Payment already ${payment.status}` });
+    }
+
+    payment.status = "approved";
+    await payment.save();
+
+    // Activate service
+    if (payment.plan) {
+      const plan = await Plan.findById(payment.plan);
+      if (plan) {
+        await UserPlan.create({
+          user: payment.user,
+          plan: payment.plan,
+          payment: payment._id,
+          sessionsRemaining: plan.consultationIncluded || 0
+        });
+
+        const client = await Client.findOne({ user: payment.user });
+        if (client) {
+          client.totalConsultations += plan.consultationIncluded || 0;
+          await client.save();
+        }
+
+        const planCreatorId = plan.createdBy;
+        if (planCreatorId && planCreatorId.toString() !== payment.user.toString()) {
+          const existingRoom = await ChatRoom.findOne({
+            "participants.user": { $all: [payment.user, planCreatorId] }
+          });
+          if (!existingRoom) {
+            await ChatRoom.create({
+              participants: [
+                { user: payment.user, role: "client" },
+                { user: planCreatorId, role: "dieteticien" }
+              ],
+              type: "plan",
+              plan: payment.plan
+            });
+          }
+        }
+      }
+    }
+
+    if (payment.formation) {
+      const formation = await Formation.findById(payment.formation);
+      if (formation) {
+        await UserFormation.create({
+          user: payment.user,
+          formation: payment.formation,
+          payment: payment._id
+        });
+
+        const formationCreatorId = formation.createdBy;
+        if (formationCreatorId && formationCreatorId.toString() !== payment.user.toString()) {
+          const existingRoom = await ChatRoom.findOne({
+            "participants.user": { $all: [payment.user, formationCreatorId] }
+          });
+          if (!existingRoom) {
+            await ChatRoom.create({
+              participants: [
+                { user: payment.user, role: req.user.role === "student" ? "student" : "client" },
+                { user: formationCreatorId, role: "dieteticien" }
+              ],
+              type: "formation",
+              formation: payment.formation
+            });
+          }
+        }
+      }
+    }
+
+    res.status(200).json({ success: true, message: "Payment approved and service activated" });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// Reject a pending payment
+export const rejectPayment = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const payment = await Payment.findById(id);
+
+    if (!payment) {
+      return res.status(404).json({ success: false, message: "Payment not found" });
+    }
+
+    if (payment.dieteticien.toString() !== req.user.id) {
+      return res.status(403).json({ success: false, message: "Not authorized" });
+    }
+
+    if (payment.status !== "pending") {
+      return res.status(400).json({ success: false, message: `Payment already ${payment.status}` });
+    }
+
+    payment.status = "rejected";
+    await payment.save();
+
+    if (payment.proofImageFileId) {
+      try { await imagekit.deleteFile(payment.proofImageFileId); } catch (_) {}
+    }
+
+    res.status(200).json({ success: true, message: "Payment rejected" });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
 };
 
@@ -108,7 +230,6 @@ export const checkPlanOwnership = async (req, res) => {
       ownsPlan: !!userPlan,
       userPlan: userPlan || null
     });
-
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -132,7 +253,6 @@ export const getUserPlans = async (req, res) => {
       count: userPlans.length,
       data: userPlans
     });
-
   } catch (error) {
     res.status(500).json({
       success: false,

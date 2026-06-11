@@ -11,7 +11,8 @@ import ProfilePage from './pages/ProfilePage.jsx'
 import MyPlansPage from './pages/MyPlansPage.jsx'
 import AITrackerPage from './pages/AITrackerPage.jsx'
 import AllPlansPage from './pages/AllPlansPage.jsx'
-import CheckoutPage from './pages/CheckoutPage.jsx'
+import PlanCheckoutPage from './pages/PlanCheckoutPage.jsx'
+import FormationCheckoutPage from './pages/FormationCheckoutPage.jsx'
 import Header from './components/Header.jsx' 
 import Footer from './components/Footer.jsx' 
 import CustomCursor from './components/CustomCursor.jsx'
@@ -38,6 +39,7 @@ import AdminPayments from './pages/AdminDasboard/AdminPayments.jsx'
 import ManageDieteticiens from './pages/AdminDasboard/ManageDieteticiens.jsx'
 import ConsultationRequests from './pages/dieteticienDashboard/ConsultationRequests.jsx'
 import DieteticienPayments from './pages/dieteticienDashboard/DieteticienPayments.jsx'
+import PaymentApprovals from './pages/dieteticienDashboard/PaymentApprovals.jsx'
 import CreateCourse from './pages/dieteticienDashboard/CreateCourse.jsx'
 import AllCourses from './pages/dieteticienDashboard/AllCourses.jsx'
 import MyFormations from './pages/dieteticienDashboard/MyFormations.jsx'
@@ -84,7 +86,8 @@ function App() {
           <Route path='/ai-tracker' element={<LoginGate><PageTransition><AITrackerPage /></PageTransition></LoginGate>} /> 
           <Route path="/blog/:id" element={<LoginGate><PageTransition><BlogDetailsPage /></PageTransition></LoginGate>} />
           <Route path="/allPlans" element={<LoginGate><PageTransition><AllPlansPage /></PageTransition></LoginGate>} />
-          <Route path="/checkout/:planId" element={<LoginGate><PageTransition><CheckoutPage /></PageTransition></LoginGate>} />
+          <Route path="/checkout/plan/:planId" element={<LoginGate><PageTransition><PlanCheckoutPage /></PageTransition></LoginGate>} />
+          <Route path="/checkout/formation/:formationId" element={<LoginGate><PageTransition><FormationCheckoutPage /></PageTransition></LoginGate>} />
 
           <Route path="/dieteticien" element={<ProtectedRoute roles={['dieteticien', 'admin']}><Layout /></ProtectedRoute>}>
               <Route path="create-blog" element={<CreateBlog />} />
@@ -100,6 +103,7 @@ function App() {
               <Route path="contact-messages" element={<ContactMessages />} />
               <Route path="my-Profile" element={<EditUserProfile />} />
               <Route path="payments" element={<DieteticienPayments />} />
+              <Route path="payment-approvals" element={<PaymentApprovals />} />
               <Route path="all-clients" element={<ClientsPage />} />
               <Route path="consultation-requests" element={<ConsultationRequests />} />
           </Route>

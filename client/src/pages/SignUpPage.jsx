@@ -36,7 +36,8 @@ function SignUpPage() {
       fullName: '', email: '', password: '', confirmPassword: '',
       age: '', gender: '', heightCm: '', weightKg: '', activityLevel: '',
       medicalConditions: '', allergies: '', goals: '',
-      studentCardNumber: '', specialty: ''
+      studentCardNumber: '', specialty: '',
+      ccpNumber: '', ccpKey: '', baridiMob: ''
     }
   });
 
@@ -187,6 +188,9 @@ function SignUpPage() {
         formData.append('age', values.age);
         formData.append('gender', values.gender);
         formData.append('specialty', values.specialty);
+        if (values.ccpNumber) formData.append('ccpNumber', values.ccpNumber);
+        if (values.ccpKey) formData.append('ccpKey', values.ccpKey);
+        if (values.baridiMob) formData.append('baridiMob', Number(values.baridiMob));
         if (diplomaFile) formData.append('diploma', diplomaFile);
 
         await registerDieteticien(formData);
@@ -531,6 +535,33 @@ function SignUpPage() {
                     )}
                   </div>
                   {errors.diploma && <span className="error-message-stripe">Diploma file is required</span>}
+                </div>
+
+                <div className="form-section-title">Payment Information (Optional)</div>
+                <div style={{ fontSize: '13px', color: '#6B7280', marginBottom: '12px' }}>
+                  Add your payment details to receive payouts from clients. You can also add these later from your profile.
+                </div>
+
+                <div className="form-row-stripe">
+                  <div className="input-group-stripe">
+                    <label>CCP Number</label>
+                    <div className={clsx("input-container-stripe")}>
+                      <input {...register("ccpNumber")} placeholder="e.g., 12345678" disabled={loading} />
+                    </div>
+                  </div>
+                  <div className="input-group-stripe">
+                    <label>CCP Key (2 digits)</label>
+                    <div className={clsx("input-container-stripe")}>
+                      <input {...register("ccpKey")} placeholder="12" maxLength={2} disabled={loading} />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="input-group-stripe">
+                  <label>BaridiMob Number</label>
+                  <div className={clsx("input-container-stripe")}>
+                    <input type="number" {...register("baridiMob")} placeholder="e.g., 12345678901234567890" disabled={loading} />
+                  </div>
                 </div>
 
                 <div style={{ background: '#FFF3CD', border: '1px solid #FFEAA7', borderRadius: '12px', padding: '16px', margin: '16px 0', display: 'flex', gap: '12px', alignItems: 'flex-start' }}>

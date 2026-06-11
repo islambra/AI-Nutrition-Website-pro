@@ -36,7 +36,7 @@ import "../components/FormationCard.css";
 import { useAuth } from '../context/AuthContext';
 import { getAllPlans } from '../api/planApi';
 import { getAllCourses } from '../api/courseApi';
-import { getAllFormations, purchaseFormation } from '../api/formationApi';
+import { getAllFormations } from '../api/formationApi';
 import { useState, useEffect, useRef } from 'react';
 import toast from 'react-hot-toast';
 import { isStudent, isClient } from '../api/userApi';
@@ -132,20 +132,15 @@ function ServicesPage() {
     }
   };
 
-  const handlePurchaseFormation = async (formation) => {
+  const handlePurchaseFormation = (formation) => {
     if (!isAuthenticated) {
       toast.error("Please login to purchase");
       navigate('/login');
       return;
     }
-    try {
-      const res = await purchaseFormation(formation._id);
-      if (res.success) {
-        toast.success("Formation purchased successfully! Check My Formations.");
-      }
-    } catch (error) {
-      toast.error(error.response?.data?.message || "Purchase failed");
-    }
+    navigate(`/checkout/formation/${formation._id}`, {
+      state: { formation }
+    });
   };
 
   const fetchCourses = async () => {
@@ -207,7 +202,7 @@ function ServicesPage() {
       navigate('/login');
       return;
     }
-    navigate(`/checkout/${plan._id}`, {
+    navigate(`/checkout/plan/${plan._id}`, {
       state: { plan }
     });
   };

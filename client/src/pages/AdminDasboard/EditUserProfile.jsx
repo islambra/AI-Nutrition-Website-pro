@@ -14,11 +14,17 @@ const EditUserProfile = () => {
     email: "",
     password: "",
     confirmPassword: "",
-    photo: null
+    photo: null,
+    ccpNumber: "",
+    ccpKey: "",
+    baridiMob: ""
   });
   const [originalData, setOriginalData] = useState({
     fullName: "",
-    email: ""
+    email: "",
+    ccpNumber: "",
+    ccpKey: "",
+    baridiMob: ""
   });
   const [currentPhoto, setCurrentPhoto] = useState(null);
   const [photoPreview, setPhotoPreview] = useState(null);
@@ -57,20 +63,24 @@ const EditUserProfile = () => {
     
     const userName = userData.fullName || userData.name || "";
     const userEmail = userData.email || "";
-    
-    console.log("Loading - FullName:", userName);
-    console.log("Loading - Email:", userEmail);
+    const profile = userData.dieteticienProfile || {};
     
     setFormData({
       fullName: userName,
       email: userEmail,
       password: "",
       confirmPassword: "",
-      photo: null
+      photo: null,
+      ccpNumber: profile.ccpNumber || "",
+      ccpKey: profile.ccpKey || "",
+      baridiMob: profile.baridiMob || ""
     });
     setOriginalData({
       fullName: userName,
-      email: userEmail
+      email: userEmail,
+      ccpNumber: profile.ccpNumber || "",
+      ccpKey: profile.ccpKey || "",
+      baridiMob: profile.baridiMob || ""
     });
     setCurrentPhoto(userData.photo);
     setPhotoPreview(userData.photo);
@@ -167,6 +177,12 @@ const EditUserProfile = () => {
         userData.password = formData.password;
       }
       
+      if (userRole === "dieteticien") {
+        userData.ccpNumber = formData.ccpNumber || undefined;
+        userData.ccpKey = formData.ccpKey || undefined;
+        userData.baridiMob = formData.baridiMob ? Number(formData.baridiMob) : undefined;
+      }
+      
       console.log("Updating user with data:", userData);
       
       const response = await updateUser(userId, userData, formData.photo);
@@ -183,6 +199,12 @@ const EditUserProfile = () => {
         updateAuthUser(response.user);
         localStorage.setItem("user", JSON.stringify(response.user));
       } else {
+        if (userRole === "dieteticien") {
+          updatedUserData.dieteticienProfile = currentUser.dieteticienProfile || {};
+          if (formData.ccpNumber !== undefined) updatedUserData.dieteticienProfile.ccpNumber = formData.ccpNumber;
+          if (formData.ccpKey !== undefined) updatedUserData.dieteticienProfile.ccpKey = formData.ccpKey;
+          if (formData.baridiMob !== undefined) updatedUserData.dieteticienProfile.baridiMob = formData.baridiMob ? Number(formData.baridiMob) : null;
+        }
         if (formData.photo && photoPreview) {
           updatedUserData.photo = photoPreview;
         }
@@ -192,7 +214,10 @@ const EditUserProfile = () => {
       
       setOriginalData({
         fullName: formData.fullName,
-        email: formData.email
+        email: formData.email,
+        ccpNumber: formData.ccpNumber || "",
+        ccpKey: formData.ccpKey || "",
+        baridiMob: formData.baridiMob || ""
       });
       setCurrentPhoto(photoPreview);
       setFormData(prev => ({
@@ -217,7 +242,10 @@ const EditUserProfile = () => {
     return formData.fullName !== originalData.fullName ||
            formData.email !== originalData.email ||
            formData.password !== "" ||
-           formData.photo !== null;
+           formData.photo !== null ||
+           formData.ccpNumber !== originalData.ccpNumber ||
+           formData.ccpKey !== originalData.ccpKey ||
+           formData.baridiMob !== originalData.baridiMob;
   };
 
   const getRoleDisplay = () => {
@@ -427,6 +455,90 @@ const EditUserProfile = () => {
               </div>
             </div>
           </div>
+
+          {/* Payment Information - Dieteticien Only */}
+          {(userRole === "dieteticien" || userRole === "Dieteticien") && (
+            <div className="form-section">
+              <div className="section-header">
+                <div className="section-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
+                    <line x1="1" y1="10" x2="23" y2="10" />
+                  </svg>
+                </div>
+                <div className="section-title">
+                  <h3>Payment Information</h3>
+                  <p>Manage your CCP and BaridiMob account details for receiving payments</p>
+                </div>
+              </div>
+
+              <div className="password-grid">
+                <div className="form-group">
+                  <label>CCP Number</label>
+                  <div className="input-wrapper">
+                    <input
+                      type="text"
+                      name="ccpNumber"
+                      value={formData.ccpNumber}
+                      onChange={handleChange}
+                      placeholder="e.g. 12345678"
+                    />
+                    {formData.ccpNumber !== originalData.ccpNumber && (
+                      <div className="input-status changed">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34" />
+                          <polygon points="18 2 22 6 12 16 8 16 8 12 18 2" />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label>CCP Key (2 Digits)</label>
+                  <div className="input-wrapper">
+                    <input
+                      type="text"
+                      name="ccpKey"
+                      value={formData.ccpKey}
+                      onChange={handleChange}
+                      placeholder="12"
+                      maxLength={2}
+                    />
+                    {formData.ccpKey !== originalData.ccpKey && (
+                      <div className="input-status changed">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                          <path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34" />
+                          <polygon points="18 2 22 6 12 16 8 16 8 12 18 2" />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label>BaridiMob Number</label>
+                <div className="input-wrapper">
+                  <input
+                    type="number"
+                    name="baridiMob"
+                    value={formData.baridiMob}
+                    onChange={handleChange}
+                    placeholder="e.g. 12345678901234567890"
+                  />
+                  {formData.baridiMob !== originalData.baridiMob && (
+                    <div className="input-status changed">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34" />
+                        <polygon points="18 2 22 6 12 16 8 16 8 12 18 2" />
+                      </svg>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Form Actions */}
           <div className="form-actions">

@@ -1,13 +1,22 @@
-// routes/paymentRoutes.js
 import express from "express";
-import { buyPlan, checkPlanOwnership, getUserPlans } from "../controllers/paymentController.js";
 import { protect } from "../middleware/auth.js";
+import upload from "../middleware/multer.js";
+import {
+  initiateOfflinePayment,
+  getPendingPayments,
+  approvePayment,
+  rejectPayment,
+  checkPlanOwnership,
+  getUserPlans
+} from "../controllers/paymentController.js";
 
-const paymentRouter = express.Router();
+const router = express.Router();
 
-// All routes are protected
-paymentRouter.post("/buy", protect, buyPlan);
-paymentRouter.get("/check/:planId", protect, checkPlanOwnership);
-paymentRouter.get("/my-plans", protect, getUserPlans);
+router.post("/buy", protect, upload.single("proofImage"), initiateOfflinePayment);
+router.get("/check/:planId", protect, checkPlanOwnership);
+router.get("/my-plans", protect, getUserPlans);
+router.get("/offline/pending", protect, getPendingPayments);
+router.post("/offline/approve/:id", protect, approvePayment);
+router.post("/offline/reject/:id", protect, rejectPayment);
 
-export default paymentRouter;
+export default router;

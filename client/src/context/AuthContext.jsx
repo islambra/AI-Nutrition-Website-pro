@@ -113,7 +113,8 @@ export const AuthProvider = ({ children }) => {
     const mergedUser = {
       ...user,
       ...updatedUser,
-      clientProfile: updatedUser.clientProfile || user?.clientProfile
+      clientProfile: updatedUser.clientProfile || user?.clientProfile,
+      dieteticienProfile: updatedUser.dieteticienProfile || user?.dieteticienProfile
     };
     setUser(mergedUser);
     localStorage.setItem("user", JSON.stringify(mergedUser));

@@ -1,8 +1,6 @@
 import Formation from "../models/Formation.js";
 import FormationSession from "../models/FormationSession.js";
 import UserFormation from "../models/UserFormation.js";
-import Payment from "../models/Payment.js";
-import ChatRoom from "../models/ChatRoom.js";
 import { createZoomMeeting } from "../utils/zoom.js";
 import imagekit from "../configs/imageKit.js";
 
@@ -274,51 +272,7 @@ export const deleteSession = async (req, res) => {
   }
 };
 
-// --- PURCHASE ---
-
-export const purchaseFormation = async (req, res) => {
-  try {
-    const { paymentMethod } = req.body;
-    const formation = await Formation.findById(req.params.id);
-    if (!formation) return res.status(404).json({ success: false, message: "Formation not found" });
-
-    const existing = await UserFormation.findOne({ user: req.user.id, formation: formation._id });
-    if (existing) return res.status(400).json({ success: false, message: "Already purchased this formation" });
-
-    const payment = await Payment.create({
-      user: req.user.id,
-      amount: formation.price,
-      paymentMethod: paymentMethod || "credit_card"
-    });
-
-    const userFormation = await UserFormation.create({
-      user: req.user.id,
-      formation: formation._id,
-      payment: payment._id
-    });
-
-    const formationCreatorId = formation.createdBy;
-    if (formationCreatorId && formationCreatorId.toString() !== req.user.id.toString()) {
-      const existingRoom = await ChatRoom.findOne({
-        "participants.user": { $all: [req.user.id, formationCreatorId] }
-      });
-      if (!existingRoom) {
-        await ChatRoom.create({
-          participants: [
-            { user: req.user.id, role: req.user.role },
-            { user: formationCreatorId, role: "dieteticien" }
-          ],
-          type: "formation",
-          formation: formation._id
-        });
-      }
-    }
-
-    res.status(201).json({ success: true, message: "Formation purchased successfully", data: { payment, userFormation } });
-  } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
-  }
-};
+// --- PURCHASE (removed - now handled via unified /api/payments/buy endpoint) ---
 
 export const getMyPurchasedFormations = async (req, res) => {
   try {

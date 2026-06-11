@@ -12,7 +12,8 @@ import {
   getAllStaffUsers,
   getAllClients,
   incrementConsultations,
-  getUserPublicProfile
+  getUserPublicProfile,
+  getDieteticienPaymentInfo
 } from "../controllers/userControllers.js";
 import upload from "../middleware/multer.js";
 import { protect } from "../middleware/auth.js";
@@ -34,6 +35,9 @@ userRouter.get("/staff", protect, getAllStaffUsers);
 userRouter.get("/clients", protect, getAllClients);
 userRouter.put("/:id", protect, upload.single('profilePicture'), updateUser);
 userRouter.delete("/:id", protect, deleteUser);
+
+// Dieteticien payment info
+userRouter.get("/:id/payment-info", getDieteticienPaymentInfo);
 
 // Consultation routes
 userRouter.patch("/client/:id/increment-consultations", protect, incrementConsultations);
