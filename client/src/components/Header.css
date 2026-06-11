@@ -131,6 +131,29 @@
 }
 
 /* Mobile Menu Styles */
+
+.mobile-close-btn {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #2D5A27;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border-radius: 10px;
+  transition: all 0.2s;
+  z-index: 2001;
+}
+
+.mobile-close-btn:hover {
+  background: rgba(45, 90, 39, 0.08);
+  color: #34C759;
+}
+
 .mobile-menu {
     position: fixed;
     top: 0;

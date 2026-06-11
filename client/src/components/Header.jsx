@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { UserCircle, Menu, LogOut, Apple, LayoutDashboard, User, Zap } from "lucide-react";
+import { UserCircle, Menu, LogOut, Apple, LayoutDashboard, User, Zap, X } from "lucide-react";
 import toast from "react-hot-toast";
 import "./Header.css";
 
@@ -177,6 +177,9 @@ function Header() {
       </div>
 
       <nav className={`mobile-menu ${isMenuOpen ? "is-open" : ""}`}>
+        <button className="mobile-close-btn" onClick={toggleMenu} aria-label="Close menu">
+          <X size={28} />
+        </button>
         <NavLink to="/" className="mobile-nav-item">Home</NavLink>
         {user?.role !== "admin" && user?.role !== "dieteticien" && (
           <NavLink to="/services" className="mobile-nav-item">Services</NavLink>
