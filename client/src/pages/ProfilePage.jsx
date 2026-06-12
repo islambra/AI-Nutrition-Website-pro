@@ -7,19 +7,10 @@ import {
   Thermometer, TrendingUp, Zap, Award,
   Scale, Ruler, Calendar, Fingerprint, Droplets,
   UserCheck, Clock, Flame, Heart, FileText,
-  Video, MessageCircle, ShoppingBag, ArrowRight, AlertCircle,
-  Trash2, Eye, CreditCard
+  AlertCircle, CreditCard
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { updateUser as updateUserService } from '../api/userApi';
-import { getUserPlans } from '../api/paymentApi';
-import {
-  bookConsultation,
-  getConsultationsByUserPlan,
-  getUserConsultations,
-  cancelConsultation,     
-  deleteConsultation,
-} from '../api/consultationApi';
 import toast from 'react-hot-toast';
 import PageTransition from '../components/PageTransition';
 import ScrollReveal from '../components/ScrollReveal';
@@ -51,20 +42,7 @@ function ProfilePage() {
     studentCardNumber: ''
   });
 
-  // Plans & consultations
-  const [userPlans, setUserPlans] = useState([]);
-  const [plansLoading, setPlansLoading] = useState(false);
-  const [consultationsMap, setConsultationsMap] = useState({});
 
-  // Booking modal
-  const [bookingModal, setBookingModal] = useState({ open: false, userPlanId: null });
-  const [bookingDateTime, setBookingDateTime] = useState('');
-  const [bookingNote, setBookingNote] = useState('');
-  const [bookingLoading, setBookingLoading] = useState(false);
-
-  // All bookings for the "MY BOOKINGS" tab
-  const [allConsultations, setAllConsultations] = useState([]);
-  const [bookingsLoading, setBookingsLoading] = useState(false);
 
   // Load user data
   useEffect(() => {
@@ -91,108 +69,10 @@ function ProfilePage() {
       });
 
       if (user.role === 'client') {
-        fetchUserPlans();
+        // Plans now managed in /client/dashboard
       }
     }
   }, [user]);
-
-  useEffect(() => {
-    if (activeTab === 'bookings' && user?.role === 'client') {
-      fetchAllConsultationsForUser();
-    }
-  }, [activeTab, user]);
-
-  const fetchUserPlans = async () => {
-    try {
-      setPlansLoading(true);
-      const res = await getUserPlans();
-      if (res.success) {
-        const plans = res.data || [];
-        setUserPlans(plans);
-        fetchAllConsultations(plans);
-      }
-    } catch (err) {
-      toast.error('Failed to load plans');
-    } finally {
-      setPlansLoading(false);
-    }
-  };
-
-  const fetchAllConsultations = async (plans) => {
-    const map = {};
-    for (const userPlan of plans) {
-      try {
-        const res = await getConsultationsByUserPlan(userPlan._id);
-        if (res.success) map[userPlan._id] = res.data;
-      } catch (err) {
-        console.error(err);
-      }
-    }
-    setConsultationsMap(map);
-  };
-
-  const fetchAllConsultationsForUser = async () => {
-    try {
-      setBookingsLoading(true);
-      const res = await getUserConsultations();
-      if (res.success) setAllConsultations(res.data || []);
-    } catch (err) {
-      toast.error('Failed to load bookings');
-    } finally {
-      setBookingsLoading(false);
-    }
-  };
-
-  const openBookingModal = (userPlanId) => {
-    setBookingModal({ open: true, userPlanId });
-    setBookingDateTime('');
-    setBookingNote('');
-  };
-
-  const handleBookNow = async () => {
-    if (!bookingDateTime) return toast.error('Please select date and time');
-    setBookingLoading(true);
-    try {
-      await bookConsultation(
-        bookingModal.userPlanId,
-        new Date(bookingDateTime).toISOString(),
-        bookingNote
-      );
-      toast.success('Consultation booked!');
-      setBookingModal({ open: false, userPlanId: null });
-      fetchUserPlans();
-      fetchAllConsultationsForUser();
-    } catch (err) {
-      toast.error(err.response?.data?.message || 'Booking failed');
-    } finally {
-      setBookingLoading(false);
-    }
-  };
-
-  const handleCancelBooking = async (consultationId) => {
-    const confirmed = window.confirm('Cancel this booking? A session will be refunded.');
-    if (!confirmed) return;
-    try {
-      await cancelConsultation(consultationId);
-      toast.success('Booking cancelled – session restored');
-      fetchUserPlans();
-      fetchAllConsultationsForUser();
-    } catch (err) {
-      toast.error(err.response?.data?.message || 'Error cancelling');
-    }
-  };
-
-  const handleDeleteConsultation = async (consultationId) => {
-    const confirmed = window.confirm('Permanently delete this consultation record?');
-    if (!confirmed) return;
-    try {
-      await deleteConsultation(consultationId);
-      toast.success('Consultation deleted');
-      fetchAllConsultationsForUser();
-    } catch (err) {
-      toast.error(err.response?.data?.message || 'Error deleting');
-    }
-  };
 
   // unchanged handlers
   const handleChange = (e) => {
@@ -627,31 +507,11 @@ function ProfilePage() {
                       RISK SENSITIVITIES
                     </button>
                   )}
-                  {user?.role === "client" && (
-                    <button 
-                      className={`VXPR-TabBtn ${activeTab === 'plans' ? 'VXPR-TabActive' : ''}`}
-                      onClick={() => setActiveTab('plans')}
-                      type="button"
-                    >
-                      <ShoppingBag size={18} />
-                      MY PLANS
-                    </button>
-                  )}
-                  {user?.role === "client" && (
-                    <button 
-                      className={`VXPR-TabBtn ${activeTab === 'bookings' ? 'VXPR-TabActive' : ''}`}
-                      onClick={() => setActiveTab('bookings')}
-                      type="button"
-                    >
-                      <Eye size={18} />
-                      MY BOOKINGS
-                    </button>
-                  )}
+
                 </div>
 
                 {/* Form Header */}
-                {activeTab !== 'plans' && activeTab !== 'bookings' && (
-                  <div className="VXPR-FormHeader">
+                <div className="VXPR-FormHeader">
                     <div className="VXPR-FormTitle">
                       <Info size={22} />
                       <h3>
@@ -671,7 +531,6 @@ function ProfilePage() {
                       )}
                     </button>
                   </div>
-                )}
 
                 <form onSubmit={handleSubmit} className="VXPR-Form">
                   {/* Biographic Records Tab */}
@@ -1025,203 +884,9 @@ function ProfilePage() {
                     </div>
                   )}
 
-                  {/* MY PLANS TAB */}
-                  {activeTab === 'plans' && user?.role === "client" && (
-                    <div className="VXPR-PlansContainer">
-                      {plansLoading ? (
-                        <div className="VXPR-PlansLoading">
-                          <Loader2 className="VXPR-Spin" size={40} />
-                          <p>Loading your plans...</p>
-                        </div>
-                      ) : userPlans.length === 0 ? (
-                        <div className="VXPR-EmptyPlans">
-                          <ShoppingBag size={60} opacity={0.3} />
-                          <h3>No plans purchased yet</h3>
-                          <p>Buy a nutrition plan to start booking consultations.</p>
-                          <button
-                            className="VXPR-BrowsePlansBtn"
-                            onClick={() => window.location.href = '/allPlans'}
-                          >
-                            Browse Plans <ArrowRight size={18} />
-                          </button>
-                        </div>
-                      ) : (
-                        <div className="VXPR-PlansGrid">
-                          {userPlans.map((userPlan) => {
-                            const consultations = consultationsMap[userPlan._id] || [];
-                            const latestConsultation = consultations[0];
-
-                            return (
-                              <motion.div
-                                key={userPlan._id}
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                className="VXPR-PlanCard"
-                              >
-                                <div className="VXPR-PlanCardHeader">
-                                  <div>
-                                    <h4>{userPlan.plan?.planName || 'Nutrition Plan'}</h4>
-                                    <span className="VXPR-PlanCategory">
-                                      {userPlan.plan?.planCategory}
-                                    </span>
-                                  </div>
-                                  <div className="VXPR-SessionsBadge">
-                                    <MessageCircle size={14} />
-                                    <span>{userPlan.sessionsRemaining} sessions left</span>
-                                  </div>
-                                </div>
-
-                                {/* Consultation Status */}
-                                {latestConsultation && (
-                                  <div className="VXPR-ConsultationInfo">
-                                    <div className={`VXPR-ConsultBadge ${
-                                      latestConsultation.status === 'accepted'
-                                        ? 'accepted'
-                                        : latestConsultation.status === 'rejected'
-                                        ? 'rejected'
-                                        : 'pending'
-                                    }`}>
-                                      {latestConsultation.status.toUpperCase()}
-                                    </div>
-                                    <span className="VXPR-ConsultDate">
-                                      {new Date(latestConsultation.requestedDateTime).toLocaleString('en-US', {
-                                        weekday: 'short',
-                                        month: 'short',
-                                        day: 'numeric',
-                                        hour: '2-digit',
-                                        minute: '2-digit'
-                                      })}
-                                    </span>
-                                    {latestConsultation.status === 'accepted' && latestConsultation.zoomLink && (
-                                      <a
-                                        href={latestConsultation.zoomLink}
-                                        target="_blank"
-                                        rel="noreferrer"
-                                        className="VXPR-ZoomLink"
-                                      >
-                                        <Video size={14} /> Join Zoom
-                                      </a>
-                                    )}
-                                  </div>
-                                )}
-
-                                <div className="VXPR-PlanCardFooter">
-                                  <span className="VXPR-PurchaseDate">
-                                    Purchased {new Date(userPlan.purchasedAt).toLocaleDateString()}
-                                  </span>
-                                  {userPlan.sessionsRemaining > 0 && (
-                                    <button
-                                      className="VXPR-BookSessionBtn"
-                                      onClick={() => openBookingModal(userPlan._id)}
-                                    >
-                                      <Video size={14} /> Book Session
-                                    </button>
-                                  )}
-                                </div>
-                              </motion.div>
-                            );
-                          })}
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                  {/* MY BOOKINGS TAB */}
-                  {activeTab === 'bookings' && user?.role === "client" && (
-                    <div className="UPBK-Container">
-                      {bookingsLoading ? (
-                        <div className="UPBK-Loading">
-                          <Loader2 className="VXPR-Spin" size={40} />
-                          <p>Loading your bookings...</p>
-                        </div>
-                      ) : allConsultations.length === 0 ? (
-                        <div className="UPBK-Empty">
-                          <Eye size={60} opacity={0.3} />
-                          <h3>No bookings yet</h3>
-                          <p>Your consultation history will appear here.</p>
-                        </div>
-                      ) : (
-                        <div className="UPBK-List">
-                          {allConsultations.map((booking) => (
-                            <motion.div
-                              key={booking._id}
-                              initial={{ opacity: 0, y: 10 }}
-                              animate={{ opacity: 1, y: 0 }}
-                              className="UPBK-Card"
-                            >
-                              <div className="UPBK-CardHeader">
-                                <div>
-                                  <h4>{booking.plan?.planName || 'Consultation'}</h4>
-                                  <span className="UPBK-PlanCategory">
-                                    {booking.plan?.planCategory || 'N/A'}
-                                  </span>
-                                </div>
-                                <span className={`UPBK-StatusBadge UPBK-${booking.status}`}>
-                                  {booking.status.toUpperCase()}
-                                </span>
-                              </div>
-
-                              <div className="UPBK-Details">
-                                <div className="UPBK-DetailItem">
-                                  <Calendar size={14} />
-                                  <span>
-                                    {new Date(booking.requestedDateTime).toLocaleString('en-US', {
-                                      weekday: 'short',
-                                      month: 'short',
-                                      day: 'numeric',
-                                      hour: '2-digit',
-                                      minute: '2-digit',
-                                    })}
-                                  </span>
-                                </div>
-                                {booking.note && (
-                                  <div className="UPBK-DetailItem">
-                                    <MessageCircle size={14} />
-                                    <span>{booking.note}</span>
-                                  </div>
-                                )}
-                              </div>
-
-                              {booking.status === 'accepted' && booking.zoomLink && (
-                                <a
-                                  href={booking.zoomLink}
-                                  target="_blank"
-                                  rel="noreferrer"
-                                  className="UPBK-ZoomLink"
-                                >
-                                  <Video size={14} /> Join Zoom Meeting
-                                </a>
-                              )}
-
-                              {/* Cancel only if pending */}
-                              {booking.status === 'pending' && (
-                                <button
-                                  className="UPBK-CancelBtn"
-                                  onClick={() => handleCancelBooking(booking._id)}
-                                >
-                                  <Trash2 size={14} /> Cancel Booking
-                                </button>
-                              )}
-
-                              {/* Delete for any non-pending status (completed, cancelled, rejected) */}
-                              {booking.status !== 'pending' && (
-                                <button
-                                  className="UPBK-DeleteBtn"
-                                  onClick={() => handleDeleteConsultation(booking._id)}
-                                >
-                                  <Trash2 size={14} /> Delete Record
-                                </button>
-                              )}
-                            </motion.div>
-                          ))}
-                        </div>
-                      )}
-                    </div>
-                  )}
-
                   {/* Submit Button (only for biographic/risk editing) */}
                   <AnimatePresence>
-                    {isEditing && activeTab !== 'plans' && activeTab !== 'bookings' && (
+                    {isEditing && (
                       <motion.div 
                         initial={{ opacity: 0, y: 15 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -1253,76 +918,6 @@ function ProfilePage() {
           </div>
         </div>
 
-        {/* Booking Modal */}
-        <AnimatePresence>
-          {bookingModal.open && (
-            <motion.div
-              className="VXPR-ModalOverlay"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setBookingModal({ open: false, userPlanId: null })}
-            >
-              <motion.div
-                className="VXPR-BookingModal"
-                initial={{ scale: 0.95, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.95, opacity: 0 }}
-                onClick={(e) => e.stopPropagation()}
-              >
-                <button
-                  className="VXPR-BookingClose"
-                  onClick={() => setBookingModal({ open: false, userPlanId: null })}
-                >
-                  <X size={20} />
-                </button>
-                <h3>Book a Consultation Session</h3>
-                <p className="VXPR-BookingSubtext">
-                  Choose a date and time for your session. The nutritionist will review your request.
-                </p>
-                <div className="VXPR-FormGroup">
-                  <label>Date & Time *</label>
-                  <input
-                    type="datetime-local"
-                    value={bookingDateTime}
-                    onChange={(e) => setBookingDateTime(e.target.value)}
-                    className="VXPR-DateInput"
-                    min={new Date().toISOString().slice(0, 16)}
-                  />
-                </div>
-                <div className="VXPR-FormGroup">
-                  <label>Note (optional)</label>
-                  <textarea
-                    value={bookingNote}
-                    onChange={(e) => setBookingNote(e.target.value)}
-                    placeholder="Any specific topics or questions..."
-                    rows={3}
-                    className="VXPR-NoteInput"
-                  />
-                </div>
-                <div className="VXPR-BookingActions">
-                  <button
-                    className="VXPR-BookingCancelBtn"
-                    onClick={() => setBookingModal({ open: false, userPlanId: null })}
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    className="VXPR-BookingConfirmBtn"
-                    onClick={handleBookNow}
-                    disabled={bookingLoading}
-                  >
-                    {bookingLoading ? (
-                      <Loader2 size={18} className="VXPR-Spin" />
-                    ) : (
-                      'Confirm Booking'
-                    )}
-                  </button>
-                </div>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </div>
     </PageTransition>
   );

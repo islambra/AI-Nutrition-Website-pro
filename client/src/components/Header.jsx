@@ -135,13 +135,13 @@ function Header() {
                 {/* Profile & Plans links for Clients */}
                 {isClientRole() && (
                   <>
+                    <NavLink to="/client/dashboard" className="dropdown-item">
+                      <LayoutDashboard size={16} />
+                      Dashboard
+                    </NavLink>
                     <NavLink to="/profile" className="dropdown-item">
                       <User size={16} />
                       Profile
-                    </NavLink>
-                    <NavLink to="/my-plans" className="dropdown-item">
-                      <Apple size={16} />
-                      My Plans
                     </NavLink>
                     <NavLink to="/ai-tracker" className="dropdown-item">
                       <Zap size={16} />
@@ -214,13 +214,13 @@ function Header() {
             {/* Profile & Plans links for Clients on mobile */}
             {isClientRole() && (
               <>
+                <NavLink to="/client/dashboard" className="mobile-nav-item">
+                  <LayoutDashboard size={16} />
+                  Dashboard
+                </NavLink>
                 <NavLink to="/profile" className="mobile-nav-item">
                   <User size={16} />
                   Profile
-                </NavLink>
-                <NavLink to="/my-plans" className="mobile-nav-item">
-                  <Apple size={16} />
-                  My Plans
                 </NavLink>
                 <NavLink to="/ai-tracker" className="mobile-nav-item">
                   <Zap size={16} />

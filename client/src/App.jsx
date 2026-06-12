@@ -8,7 +8,9 @@ import ServicesPage from './pages/ServicesPage.jsx'
 import BlogsPage from './pages/BlogsPage.jsx'
 import BlogDetailsPage from './pages/BlogDetailsPage.jsx'
 import ProfilePage from './pages/ProfilePage.jsx'
-import MyPlansPage from './pages/MyPlansPage.jsx'
+import ClientLayout from './pages/clientDashboard/ClientLayout.jsx'
+import ClientDashboardHome from './pages/clientDashboard/ClientDashboardHome.jsx'
+import ClientPlans from './pages/clientDashboard/ClientPlans.jsx'
 import AITrackerPage from './pages/AITrackerPage.jsx'
 import AllPlansPage from './pages/AllPlansPage.jsx'
 import PlanCheckoutPage from './pages/PlanCheckoutPage.jsx'
@@ -81,13 +83,17 @@ function App() {
           <Route path='/services' element={<LoginGate><PageTransition><ServicesPage /></PageTransition></LoginGate>} /> 
           <Route path='/blogs' element={<LoginGate><PageTransition><BlogsPage /></PageTransition></LoginGate>} /> 
           <Route path='/profile' element={<LoginGate><PageTransition><ProfilePage /></PageTransition></LoginGate>} /> 
-          <Route path='/my-plans' element={<LoginGate><PageTransition><MyPlansPage /></PageTransition></LoginGate>} /> 
           <Route path='/my-formations' element={<LoginGate><PageTransition><MyFormationsPage /></PageTransition></LoginGate>} /> 
           <Route path='/ai-tracker' element={<LoginGate><PageTransition><AITrackerPage /></PageTransition></LoginGate>} /> 
           <Route path="/blog/:id" element={<LoginGate><PageTransition><BlogDetailsPage /></PageTransition></LoginGate>} />
           <Route path="/allPlans" element={<LoginGate><PageTransition><AllPlansPage /></PageTransition></LoginGate>} />
           <Route path="/checkout/plan/:planId" element={<LoginGate><PageTransition><PlanCheckoutPage /></PageTransition></LoginGate>} />
           <Route path="/checkout/formation/:formationId" element={<LoginGate><PageTransition><FormationCheckoutPage /></PageTransition></LoginGate>} />
+
+          <Route path="/client" element={<ProtectedRoute roles={['client']}><ClientLayout /></ProtectedRoute>}>
+              <Route path="dashboard" element={<ClientDashboardHome />} />
+              <Route path="my-plans" element={<ClientPlans />} />
+          </Route>
 
           <Route path="/dieteticien" element={<ProtectedRoute roles={['dieteticien', 'admin']}><Layout /></ProtectedRoute>}>
               <Route path="create-blog" element={<CreateBlog />} />

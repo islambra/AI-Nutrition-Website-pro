@@ -11,6 +11,7 @@ import bookOpenIcon from "./book-open.svg"
 import homeIcon from "./home.svg"
 import clockIcon from "./clock.svg"
 
+
 export const assets = {
   addIcon,
   listIcon,
@@ -44,4 +45,8 @@ export const adminMenuLinks = [
 export const studentMenuLinks = [
   { name: "My Courses", path: "/student/my-courses", icon: bookOpenIcon },
   { name: "My Formations", path: "/student/my-formations", icon: listIcon },
+];
+export const clientMenuLinks = [
+  { name: "Dashboard", path: "/client/dashboard", icon: homeIcon },
+  { name: "My Plans", path: "/client/my-plans", icon: listIcon },
 ];
