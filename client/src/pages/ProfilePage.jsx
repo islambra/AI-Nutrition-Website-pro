@@ -47,7 +47,8 @@ function ProfilePage() {
     allergies: '',
     ccpNumber: '',
     ccpKey: '',
-    baridiMob: ''
+    baridiMob: '',
+    studentCardNumber: ''
   });
 
   // Plans & consultations
@@ -70,6 +71,7 @@ function ProfilePage() {
     if (user) {
       const client = user.clientProfile || {};
       const dieteticien = user.dieteticienProfile || {};
+      const student = user.studentProfile || {};
       setFormData({
         fullName: user.fullName || user.name || '',
         email: user.email || '',
@@ -84,7 +86,8 @@ function ProfilePage() {
         allergies: Array.isArray(client.allergies) ? client.allergies.join(', ') : '',
         ccpNumber: dieteticien.ccpNumber || '',
         ccpKey: dieteticien.ccpKey || '',
-        baridiMob: dieteticien.baridiMob || ''
+        baridiMob: dieteticien.baridiMob || '',
+        studentCardNumber: student.studentCardNumber || ''
       });
 
       if (user.role === 'client') {
@@ -294,7 +297,8 @@ function ProfilePage() {
           .filter(s => s),
         ccpNumber: formData.ccpNumber || undefined,
         ccpKey: formData.ccpKey || undefined,
-        baridiMob: formData.baridiMob ? Number(formData.baridiMob) : undefined
+        baridiMob: formData.baridiMob ? Number(formData.baridiMob) : undefined,
+        studentCardNumber: formData.studentCardNumber || undefined
       };
 
       if (formData.password) {
@@ -705,6 +709,24 @@ function ProfilePage() {
                         </div>
                       </div>
 
+                      {user?.role === "student" && (
+                        <div className="VXPR-FormGroup">
+                          <label htmlFor="studentCardNumber">STUDENT CARD NUMBER</label>
+                          <div className="VXPR-InputWrapper">
+                            <Fingerprint className="VXPR-InputIcon" size={18} />
+                            <input 
+                              type="text" 
+                              id="studentCardNumber" 
+                              value={formData.studentCardNumber} 
+                              onChange={handleChange} 
+                              disabled={!isEditing || isSaving} 
+                              placeholder="e.g. STU2024001" 
+                              className="VXPR-FormInput"
+                            />
+                          </div>
+                        </div>
+                      )}
+
                       {user?.role === "client" && (
                         <>
                           <div className="VXPR-FormGroup">
@@ -817,7 +839,7 @@ function ProfilePage() {
                         </>
                       )}
 
-                      {user?.role !== "client" && isEditing && (
+                      {isEditing && (
                         <div className="VXPR-FormGroup VXPR-FullWidth">
                           <label htmlFor="password">NEW PASSWORD (OPTIONAL)</label>
                           <div className="VXPR-InputWrapper">

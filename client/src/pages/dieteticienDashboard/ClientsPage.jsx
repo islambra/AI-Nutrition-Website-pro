@@ -39,8 +39,8 @@ const ClientsPage = () => {
   const [error, setError] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedPatient, setSelectedPatient] = useState(null);
-  const [viewMode, setViewMode] = useState('grid');
   const [filterOpen, setFilterOpen] = useState(false);
+  const [roleFilter, setRoleFilter] = useState('all');
   const [filters, setFilters] = useState({
     bmiCategory: '',
     gender: '',
@@ -58,9 +58,11 @@ const ClientsPage = () => {
       
       const transformedData = data.map(client => {
         const profile = client.clientProfile || {};
+        const studentProfile = client.studentProfile || {};
         return {
           ...client,
           ...profile,
+          studentCardNumber: studentProfile.studentCardNumber || null,
           age: profile.age ?? null,
           gender: profile.gender ?? null,
           heightCm: profile.heightCm ?? null,
@@ -90,6 +92,7 @@ const ClientsPage = () => {
   };
 
   const filteredPatients = patients.filter(patient => {
+    const matchesRole = roleFilter === 'all' || patient.role === roleFilter;
     const matchesSearch = patient.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                           patient.email?.toLowerCase().includes(searchTerm.toLowerCase());
     
@@ -97,8 +100,11 @@ const ClientsPage = () => {
     const matchesGender = !filters.gender || patient.gender === filters.gender;
     const matchesActivity = !filters.activityLevel || patient.activityLevel === filters.activityLevel;
     
-    return matchesSearch && matchesBMI && matchesGender && matchesActivity;
+    return matchesRole && matchesSearch && matchesBMI && matchesGender && matchesActivity;
   });
+
+  const clientCount = patients.filter(p => p.role === 'client').length;
+  const studentCount = patients.filter(p => p.role === 'student').length;
 
   const getBMIColor = (category) => {
     switch(category?.toLowerCase()) {
@@ -168,7 +174,7 @@ const ClientsPage = () => {
         <div className="header-content">
           <div>
             <h1 className="page-title">Client Management</h1>
-            <p className="page-subtitle">View and manage all registered clients</p>
+            <p className="page-subtitle">View and manage all registered clients and students</p>
           </div>
           <div className="header-actions">
             <button onClick={fetchPatients} className="action-btn" title="Refresh">
@@ -176,10 +182,33 @@ const ClientsPage = () => {
             </button>
             <div className="stats-badge">
               <span className="stats-number">{patients.length}</span>
-              <span className="stats-label">Total Clients</span>
+              <span className="stats-label">
+                {roleFilter === 'all' ? 'Total' : roleFilter === 'client' ? 'Clients' : 'Students'}
+              </span>
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="role-tabs">
+        <button
+          className={`role-tab ${roleFilter === 'all' ? 'active' : ''}`}
+          onClick={() => setRoleFilter('all')}
+        >
+          All <span className="role-tab-count">{patients.length}</span>
+        </button>
+        <button
+          className={`role-tab ${roleFilter === 'client' ? 'active' : ''}`}
+          onClick={() => setRoleFilter('client')}
+        >
+          Clients <span className="role-tab-count">{clientCount}</span>
+        </button>
+        <button
+          className={`role-tab ${roleFilter === 'student' ? 'active' : ''}`}
+          onClick={() => setRoleFilter('student')}
+        >
+          Students <span className="role-tab-count">{studentCount}</span>
+        </button>
       </div>
 
       <div className="filters-section">
@@ -197,110 +226,102 @@ const ClientsPage = () => {
           )}
         </div>
 
-        <div className="filter-group">
-          <button 
-            className={`filter-trigger ${filterOpen ? 'active' : ''}`}
-            onClick={() => setFilterOpen(!filterOpen)}
-          >
-            <Icons.Filter /> Filter
-          </button>
-          
-          {filterOpen && (
-            <div className="filter-dropdown">
-              <div className="filter-item">
-                <label>BMI Category</label>
-                <select value={filters.bmiCategory} onChange={(e) => setFilters({...filters, bmiCategory: e.target.value})}>
-                  <option value="">All</option>
-                  <option value="underweight">Underweight</option>
-                  <option value="normal">Normal</option>
-                  <option value="overweight">Overweight</option>
-                  <option value="obese">Obese</option>
-                </select>
+        {roleFilter !== 'student' && (
+          <div className="filter-group">
+            <button 
+              className={`filter-trigger ${filterOpen ? 'active' : ''}`}
+              onClick={() => setFilterOpen(!filterOpen)}
+            >
+              <Icons.Filter /> Filter
+            </button>
+            
+            {filterOpen && (
+              <div className="filter-dropdown">
+                <div className="filter-item">
+                  <label>BMI Category</label>
+                  <select value={filters.bmiCategory} onChange={(e) => setFilters({...filters, bmiCategory: e.target.value})}>
+                    <option value="">All</option>
+                    <option value="underweight">Underweight</option>
+                    <option value="normal">Normal</option>
+                    <option value="overweight">Overweight</option>
+                    <option value="obese">Obese</option>
+                  </select>
+                </div>
+                <div className="filter-item">
+                  <label>Gender</label>
+                  <select value={filters.gender} onChange={(e) => setFilters({...filters, gender: e.target.value})}>
+                    <option value="">All</option>
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+                <div className="filter-item">
+                  <label>Activity Level</label>
+                  <select value={filters.activityLevel} onChange={(e) => setFilters({...filters, activityLevel: e.target.value})}>
+                    <option value="">All</option>
+                    <option value="sedentary">Sedentary</option>
+                    <option value="lightly active">Lightly Active</option>
+                    <option value="moderate">Moderate</option>
+                    <option value="active">Active</option>
+                    <option value="very active">Very Active</option>
+                  </select>
+                </div>
+                <button onClick={clearFilters} className="clear-filters-btn">Clear All</button>
               </div>
-              <div className="filter-item">
-                <label>Gender</label>
-                <select value={filters.gender} onChange={(e) => setFilters({...filters, gender: e.target.value})}>
-                  <option value="">All</option>
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                  <option value="other">Other</option>
-                </select>
-              </div>
-              <div className="filter-item">
-                <label>Activity Level</label>
-                <select value={filters.activityLevel} onChange={(e) => setFilters({...filters, activityLevel: e.target.value})}>
-                  <option value="">All</option>
-                  <option value="sedentary">Sedentary</option>
-                  <option value="lightly active">Lightly Active</option>
-                  <option value="moderate">Moderate</option>
-                  <option value="active">Active</option>
-                  <option value="very active">Very Active</option>
-                </select>
-              </div>
-              <button onClick={clearFilters} className="clear-filters-btn">Clear All</button>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
+        )}
 
-        <div className="view-toggle">
-          <button
-            onClick={() => setViewMode('grid')}
-            className={`toggle-btn ${viewMode === 'grid' ? 'active' : ''}`}
-          >
-            <Icons.Grid /> Grid
-          </button>
-          <button
-            onClick={() => setViewMode('list')}
-            className={`toggle-btn ${viewMode === 'list' ? 'active' : ''}`}
-          >
-            <Icons.List /> List
-          </button>
-        </div>
       </div>
 
       <div className="results-count">
-        Showing {filteredPatients.length} of {patients.length} clients
+        Showing {filteredPatients.length} of {roleFilter === 'all' ? patients.length : roleFilter === 'client' ? clientCount : studentCount} {roleFilter === 'all' ? 'people' : roleFilter === 'client' ? 'clients' : 'students'}
       </div>
 
       {filteredPatients.length === 0 ? (
         <div className="empty-state">
           <div className="empty-icon"><Icons.User /></div>
-          <h3>No clients found</h3>
+          <h3>No {roleFilter === 'student' ? 'students' : 'clients'} found</h3>
           <p>Try adjusting your search or filters</p>
         </div>
-      ) : viewMode === 'grid' ? (
+      ) : (
         <div className="patients-grid">
           {filteredPatients.map((patient) => (
-            <PatientCard
-              key={patient._id}
-              patient={patient}
-              onClick={() => setSelectedPatient(patient)}
-              getBMIColor={getBMIColor}
-              getActivityLabel={getActivityLabel}
-            />
-          ))}
-        </div>
-      ) : (
-        <div className="patients-list">
-          {filteredPatients.map((patient) => (
-            <PatientListItem
-              key={patient._id}
-              patient={patient}
-              onClick={() => setSelectedPatient(patient)}
-              getBMIColor={getBMIColor}
-            />
+            patient.role === 'student' ? (
+              <StudentCard
+                key={patient._id}
+                patient={patient}
+                onClick={() => setSelectedPatient(patient)}
+              />
+            ) : (
+              <PatientCard
+                key={patient._id}
+                patient={patient}
+                onClick={() => setSelectedPatient(patient)}
+                getBMIColor={getBMIColor}
+                getActivityLabel={getActivityLabel}
+              />
+            )
           ))}
         </div>
       )}
 
       {selectedPatient && (
-        <ModernPatientModal
-          patient={selectedPatient}
-          onClose={() => setSelectedPatient(null)}
-          getBMIColor={getBMIColor}
-          getBMIGradient={getBMIGradient}
-          getActivityLabel={getActivityLabel}
-        />
+        selectedPatient.role === 'student' ? (
+          <StudentModal
+            patient={selectedPatient}
+            onClose={() => setSelectedPatient(null)}
+          />
+        ) : (
+          <ModernPatientModal
+            patient={selectedPatient}
+            onClose={() => setSelectedPatient(null)}
+            getBMIColor={getBMIColor}
+            getBMIGradient={getBMIGradient}
+            getActivityLabel={getActivityLabel}
+          />
+        )
       )}
     </div>
   );
@@ -379,39 +400,95 @@ const PatientCard = ({ patient, onClick, getBMIColor, getActivityLabel }) => {
   );
 };
 
-const PatientListItem = ({ patient, onClick, getBMIColor }) => {
-  const bmiColor = getBMIColor(patient.bmiCategory);
-
+// Student Card — Simplified for phone, no health metrics
+const StudentCard = ({ patient, onClick }) => {
   return (
-    <div className="patient-list-item" onClick={onClick}>
-      <div className="list-avatar">
-        {patient.photo ? (
-          <img src={patient.photo} alt={patient.fullName} className="list-avatar-img" />
-        ) : (
-          <div className="list-avatar-placeholder" style={{ background: `linear-gradient(135deg, ${bmiColor}, ${bmiColor}dd)` }}>
-            {patient.fullName?.charAt(0).toUpperCase()}
-          </div>
-        )}
+    <div className="student-card" onClick={onClick}>
+      <div className="student-card-top">
+        <div className="student-avatar">
+          {patient.photo ? (
+            <img src={patient.photo} alt={patient.fullName} className="avatar-img" />
+          ) : (
+            <div className="avatar-placeholder" style={{ background: 'linear-gradient(135deg, #10b981, #059669)' }}>
+              {patient.fullName?.charAt(0).toUpperCase()}
+            </div>
+          )}
+        </div>
+        <span className="student-role-badge">Student</span>
       </div>
-
-      <div className="list-info">
-        <div className="list-name-row">
-          <h4 className="list-name">{patient.fullName}</h4>
-          <span className="list-bmi-badge" style={{ backgroundColor: bmiColor + '15', color: bmiColor }}>
-            BMI: {patient.bmi || '—'} ({patient.bmiCategory || 'N/A'})
+      <div className="card-body">
+        <h3 className="student-name">{patient.fullName}</h3>
+        <p className="patient-email"><Icons.Mail /> {patient.email}</p>
+        <div className="student-meta">
+          <span className="student-meta-item">
+            <Icons.Calendar /> Joined {patient.createdAt ? new Date(patient.createdAt).toLocaleDateString() : 'N/A'}
           </span>
-        </div>
-        <p className="list-email"><Icons.Mail /> {patient.email}</p>
-        <div className="list-details">
-          <span><Icons.Calendar /> {patient.age || '—'} yrs</span>
-          <span><Icons.User /> {patient.gender || '—'}</span>
-          <span><Icons.Flame /> {patient.bmr || '—'} kcal</span>
-          <span><Icons.Zap /> {patient.tdee || '—'} kcal</span>
-          <span><Icons.Target /> {patient.goals?.substring(0, 30) || 'No goal'}</span>
+          {patient.studentCardNumber && (
+            <span className="student-meta-item">
+              <Icons.User /> ID: {patient.studentCardNumber}
+            </span>
+          )}
         </div>
       </div>
+      <div className="card-footer">
+        <span className="view-detail">Details <Icons.ArrowRight /></span>
+      </div>
+    </div>
+  );
+};
 
-      <div className="list-arrow"><Icons.ArrowRight /></div>
+// Student Modal — Simplified, no health data
+const StudentModal = ({ patient, onClose }) => {
+  return (
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="student-modal" onClick={(e) => e.stopPropagation()}>
+        <button className="modern-modal-close" onClick={onClose}><Icons.Close /></button>
+        <div className="student-modal-hero">
+          <div className="hero-avatar-wrapper">
+            {patient.photo ? (
+              <img src={patient.photo} alt={patient.fullName} className="hero-avatar" />
+            ) : (
+              <div className="hero-avatar-placeholder" style={{ background: 'linear-gradient(135deg, #10b981, #059669)' }}>
+                {patient.fullName?.charAt(0).toUpperCase()}
+              </div>
+            )}
+          </div>
+          <div className="hero-content">
+            <h1 className="hero-name">{patient.fullName}</h1>
+            <p className="hero-role">Student</p>
+            <div className="hero-badge-group">
+              <span className="hero-badge"><Icons.Mail /> {patient.email}</span>
+              {patient.studentCardNumber && (
+                <span className="hero-badge"><Icons.User /> ID: {patient.studentCardNumber}</span>
+              )}
+              <span className="hero-badge"><Icons.Calendar /> Joined {patient.createdAt ? new Date(patient.createdAt).toLocaleDateString() : 'N/A'}</span>
+            </div>
+          </div>
+        </div>
+        <div className="modern-modal-body">
+          <div className="info-card">
+            <div className="info-card-header">
+              <Icons.Clock /> <h3>Account Timeline</h3>
+            </div>
+            <div className="info-card-content">
+              <div className="timeline-item">
+                <div className="timeline-dot"></div>
+                <div>
+                  <div className="timeline-title">Member Since</div>
+                  <div className="timeline-date">{patient.createdAt ? new Date(patient.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A'}</div>
+                </div>
+              </div>
+              <div className="timeline-item">
+                <div className="timeline-dot"></div>
+                <div>
+                  <div className="timeline-title">Last Updated</div>
+                  <div className="timeline-date">{patient.updatedAt ? new Date(patient.updatedAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : 'N/A'}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
