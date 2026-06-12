@@ -35,6 +35,7 @@ function ClientPlans() {
   const [bookingDateTime, setBookingDateTime] = useState("");
   const [bookingNote, setBookingNote] = useState("");
   const [bookingLoading, setBookingLoading] = useState(false);
+  const [confirmDialog, setConfirmDialog] = useState({ open: false, message: "", onConfirm: null });
 
   // Selected plan detail modal
   const [selectedPlan, setSelectedPlan] = useState(null);
@@ -95,28 +96,36 @@ function ClientPlans() {
   };
 
   const handleCancelBooking = async (consultationId) => {
-    const confirmed = window.confirm("Cancel this booking? A session will be refunded.");
-    if (!confirmed) return;
-    try {
-      await cancelConsultation(consultationId);
-      toast.success("Booking cancelled – session restored");
-      fetchUserPlans();
-      fetchAllConsultationsForUser();
-    } catch (err) {
-      toast.error(err.response?.data?.message || "Error cancelling");
-    }
+    setConfirmDialog({
+      open: true,
+      message: "Cancel this booking? A session will be refunded.",
+      onConfirm: async () => {
+        try {
+          await cancelConsultation(consultationId);
+          toast.success("Booking cancelled – session restored");
+          fetchUserPlans();
+          fetchAllConsultationsForUser();
+        } catch (err) {
+          toast.error(err.response?.data?.message || "Error cancelling");
+        }
+      }
+    });
   };
 
   const handleDeleteConsultation = async (consultationId) => {
-    const confirmed = window.confirm("Permanently delete this consultation record?");
-    if (!confirmed) return;
-    try {
-      await deleteConsultation(consultationId);
-      toast.success("Consultation deleted");
-      fetchAllConsultationsForUser();
-    } catch (err) {
-      toast.error(err.response?.data?.message || "Error deleting");
-    }
+    setConfirmDialog({
+      open: true,
+      message: "Permanently delete this consultation record?",
+      onConfirm: async () => {
+        try {
+          await deleteConsultation(consultationId);
+          toast.success("Consultation deleted");
+          fetchAllConsultationsForUser();
+        } catch (err) {
+          toast.error(err.response?.data?.message || "Error deleting");
+        }
+      }
+    });
   };
 
   return (
@@ -639,6 +648,51 @@ function ClientPlans() {
                   ) : (
                     "Confirm Booking"
                   )}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Confirm Dialog */}
+      <AnimatePresence>
+        {confirmDialog.open && (
+          <motion.div
+            className="aff-modal-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setConfirmDialog({ open: false, message: "", onConfirm: null })}
+          >
+            <motion.div
+              className="aff-confirm-modal"
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="aff-confirm-icon">
+                <AlertCircle size={28} />
+              </div>
+              <h3>Are you sure?</h3>
+              <p>{confirmDialog.message}</p>
+              <div className="aff-confirm-actions">
+                <button
+                  className="aff-confirm-cancel"
+                  onClick={() => setConfirmDialog({ open: false, message: "", onConfirm: null })}
+                >
+                  No, keep it
+                </button>
+                <button
+                  className="aff-confirm-confirm"
+                  onClick={() => {
+                    const cb = confirmDialog.onConfirm;
+                    setConfirmDialog({ open: false, message: "", onConfirm: null });
+                    if (cb) cb();
+                  }}
+                >
+                  Yes, proceed
                 </button>
               </div>
             </motion.div>

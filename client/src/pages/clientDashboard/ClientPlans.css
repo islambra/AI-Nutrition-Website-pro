@@ -1118,6 +1118,79 @@
   cursor: not-allowed;
 }
 
+/* ---------- CONFIRM DIALOG ---------- */
+.aff-confirm-modal {
+  background: #fff;
+  border-radius: 24px;
+  padding: 40px 36px 32px;
+  max-width: 400px;
+  width: 100%;
+  position: relative;
+  text-align: center;
+  box-shadow: 0 50px 100px -12px rgba(0,0,0,0.25);
+}
+
+.aff-confirm-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: #FEF3C7;
+  color: #D97706;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+}
+
+.aff-confirm-modal h3 {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0 0 8px;
+}
+
+.aff-confirm-modal p {
+  font-size: 14px;
+  color: #6B7280;
+  line-height: 1.6;
+  margin: 0 0 28px;
+}
+
+.aff-confirm-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.aff-confirm-cancel,
+.aff-confirm-confirm {
+  flex: 1;
+  padding: 14px;
+  border-radius: 12px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+  font-family: 'Outfit', sans-serif;
+}
+
+.aff-confirm-cancel {
+  background: #F3F4F6;
+  color: #4B5563;
+}
+
+.aff-confirm-cancel:hover {
+  background: #E5E7EB;
+}
+
+.aff-confirm-confirm {
+  background: #22C55E;
+  color: #fff;
+}
+
+.aff-confirm-confirm:hover {
+  background: #16A34A;
+}
+
 /* ---------- RESPONSIVE ---------- */
 @media (max-width: 768px) {
   .aff-plans-grid {
