@@ -100,8 +100,6 @@ function App() {
               <Route path="create-plan" element={<CreatePlan />} />
               <Route path="MyPlans" element={<MyPlans />} />
               <Route path="MyBlogs" element={<MyBlog />} />
-              <Route path="create-course" element={<CreateCourse />} />
-              <Route path="all-courses" element={<AllCourses />} />
               <Route path="formations" element={<MyFormations />} />
               <Route path="formations/create" element={<CreateFormation />} />
               <Route path="formations/edit/:id" element={<CreateFormation />} />
@@ -123,6 +121,8 @@ function App() {
               <Route path="all-users" element={<AllUsers />} />
               <Route path="payments" element={<AdminPayments />} />
               <Route path="manage-dieteticiens" element={<ManageDieteticiens />} />
+              <Route path="create-course" element={<CreateCourse />} />
+              <Route path="all-courses" element={<AllCourses />} />
               <Route path="my-Profile" element={<EditUserProfile />} />
           </Route>
         </Routes>

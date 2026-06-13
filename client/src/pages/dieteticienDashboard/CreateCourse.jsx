@@ -17,6 +17,7 @@ import "./CreateCourse.css";
 const CreateCourse = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const dashboardPrefix = user?.role === "admin" ? "/admin" : "/dieteticien";
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
@@ -95,7 +96,7 @@ const CreateCourse = () => {
       if (response.success) {
         setSuccess("Course created successfully! Redirecting...");
         setTimeout(() => {
-          navigate("/dieteticien/all-courses");
+          navigate(`${dashboardPrefix}/all-courses`);
         }, 2000);
       }
     } catch (err) {
@@ -265,7 +266,7 @@ const CreateCourse = () => {
           <button
             type="button"
             className="cc-cancel-btn"
-            onClick={() => navigate("/dieteticien/all-courses")}
+            onClick={() => navigate(`${dashboardPrefix}/all-courses`)}
           >
             Cancel
           </button>

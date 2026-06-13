@@ -25,8 +25,6 @@ export const dieteticienMenuLinks = [
   { name: "Create Plan", path: "/dieteticien/create-plan", icon: addIcon },
   { name: "My Plans", path: "/dieteticien/MyPlans", icon: updateIcon },
   { name: "My Blogs", path: "/dieteticien/MyBlogs", icon: updateIcon },
-  { name: "Create Course", path: "/dieteticien/create-course", icon: addIcon },
-  { name: "All Courses", path: "/dieteticien/all-courses", icon: listIcon },
   { name: "My Formations", path: "/dieteticien/formations", icon: listIcon },
   { name: "Consultation Requests", path: "/dieteticien/consultation-requests", icon: Consultation },
   { name: "Payments", path: "/dieteticien/payments", icon: payment },
@@ -40,6 +38,8 @@ export const adminMenuLinks = [
   { name: "All Users", path: "/admin/all-users", icon: allUsers },
   { name: "Payments", path: "/admin/payments", icon: payment },
   { name: "Manage Dieteticiens", path: "/admin/manage-dieteticiens", icon: messagesicon },
+  { name: "Create Course", path: "/admin/create-course", icon: addIcon },
+  { name: "All Courses", path: "/admin/all-courses", icon: listIcon },
   { name: "My Profile", path: "/admin/my-Profile", icon: userInfo },
 ];
 export const studentMenuLinks = [
