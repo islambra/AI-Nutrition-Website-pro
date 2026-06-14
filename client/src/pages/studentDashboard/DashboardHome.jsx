@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import {
   BookOpen,
@@ -9,8 +10,11 @@ import {
   Youtube,
   MessageCircle,
   FileText,
+  CheckCircle,
+  XCircle,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { getMySubscription } from "../../api/courseApi";
 import "./DashboardHome.css";
 
 const activeFeatures = [
@@ -61,6 +65,18 @@ const comingSoonFeatures = [
 
 const DashboardHome = () => {
   const navigate = useNavigate();
+  const [subscription, setSubscription] = useState(null);
+
+  useEffect(() => {
+    fetchSubscription();
+  }, []);
+
+  const fetchSubscription = async () => {
+    try {
+      const res = await getMySubscription();
+      if (res.success) setSubscription(res.data);
+    } catch {}
+  };
 
   return (
     <div className="sdh-container">
@@ -82,6 +98,29 @@ const DashboardHome = () => {
           </p>
         </motion.div>
       </div>
+
+      {/* Subscription Status Card */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className={`sdh-sub-card ${subscription?.isActive ? "active" : "inactive"}`}
+        onClick={() => navigate("/student/course-subscription")}
+      >
+        <div className="sdh-sub-icon">
+          {subscription?.isActive ? <CheckCircle size={24} /> : <XCircle size={24} />}
+        </div>
+        <div className="sdh-sub-info">
+          <span className="sdh-sub-label">Course Subscription</span>
+          <span className="sdh-sub-status">
+            {subscription?.isActive
+              ? `Active - ${subscription.daysRemaining} days remaining`
+              : subscription
+                ? "Expired - Renew now"
+                : "Not subscribed - Subscribe now"}
+          </span>
+        </div>
+        <ArrowRight size={18} className="sdh-sub-arrow" />
+      </motion.div>
 
       <section className="sdh-section">
         <h2 className="sdh-section-title">

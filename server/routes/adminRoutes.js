@@ -1,7 +1,13 @@
 import express from 'express';
 import { protect } from '../middleware/auth.js';
 import { adminOnly } from '../middleware/adminOnly.js';
-import { getAllPayments, deletePayment } from '../controllers/adminPaymentController.js';
+import {
+  getAllPayments,
+  deletePayment,
+  getPendingCourseSubscriptions,
+  approveCourseSubscription,
+  rejectCourseSubscription
+} from '../controllers/adminPaymentController.js';
 import {
   getPendingDieteticiens,
   approveDieteticien,
@@ -18,5 +24,10 @@ router.delete('/payments/:id', deletePayment);
 router.get('/dieteticiens/pending', getPendingDieteticiens);
 router.post('/dieteticiens/approve/:id', approveDieteticien);
 router.delete('/dieteticiens/reject/:id', rejectDieteticien);
+
+// Course subscription management
+router.get('/course-subscriptions/pending', getPendingCourseSubscriptions);
+router.post('/course-subscriptions/approve/:id', approveCourseSubscription);
+router.post('/course-subscriptions/reject/:id', rejectCourseSubscription);
 
 export default router;

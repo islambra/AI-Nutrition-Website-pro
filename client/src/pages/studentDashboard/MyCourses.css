@@ -581,6 +581,63 @@
   max-width: 320px;
 }
 
+/* ---- Access blocked ---- */
+.mc-access-blocked {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  min-height: 60vh;
+  padding: 48px 24px;
+}
+
+.mc-blocked-icon {
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: #fef2f2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ef4444;
+  margin-bottom: 24px;
+}
+
+.mc-access-blocked h2 {
+  font-size: 1.75rem;
+  color: #111827;
+  margin: 0 0 12px;
+}
+
+.mc-access-blocked p {
+  color: #6b7280;
+  max-width: 480px;
+  margin: 0 0 8px;
+  line-height: 1.6;
+}
+
+.mc-blocked-price {
+  font-size: 1.1rem;
+  color: #374151;
+  margin-bottom: 24px !important;
+}
+
+.mc-subscribe-btn {
+  padding: 14px 32px;
+  background: linear-gradient(135deg, #059669, #10b981);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.05rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.mc-subscribe-btn:hover {
+  background: linear-gradient(135deg, #047857, #059669);
+}
+
 /* ---- Responsive (Courses) ---- */
 
 @media (max-width: 768px) {

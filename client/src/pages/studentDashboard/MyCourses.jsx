@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 import {
   BookOpen,
   FileText,
@@ -12,8 +13,9 @@ import {
   Users,
   Clock,
   ChevronDown,
+  Lock,
 } from "lucide-react";
-import { getAllCourses } from "../../api/courseApi";
+import { getAllCourses, checkCourseAccess } from "../../api/courseApi";
 import "./MyCourses.css";
 
 const LEVEL_NAMES = {
@@ -31,6 +33,8 @@ const LEVEL_ICONS = {
 const MyCourses = () => {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [hasAccess, setHasAccess] = useState(false);
+  const [accessChecked, setAccessChecked] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [semesterFilter, setSemesterFilter] = useState("all");
   const [collapsedLevels, setCollapsedLevels] = useState(() => new Set());
@@ -45,19 +49,22 @@ const MyCourses = () => {
   };
 
   useEffect(() => {
-    fetchCourses();
+    fetchData();
   }, []);
 
-  const fetchCourses = async () => {
+  const fetchData = async () => {
     try {
       setLoading(true);
-      const response = await getAllCourses();
-      if (response.success) {
-        setCourses(response.courses);
-      }
+      const [accessRes, coursesRes] = await Promise.all([
+        checkCourseAccess(),
+        getAllCourses(),
+      ]);
+      if (accessRes.success) setHasAccess(accessRes.hasAccess);
+      if (coursesRes.success) setCourses(coursesRes.courses);
     } catch {
-      console.error("Failed to load courses");
+      console.error("Failed to load data");
     } finally {
+      setAccessChecked(true);
       setLoading(false);
     }
   };
@@ -113,6 +120,8 @@ const MyCourses = () => {
     { value: "2", label: "Semester 2" },
   ];
 
+  const navigate = useNavigate();
+
   if (loading) {
     return (
       <div className="mc-loader-wrapper">
@@ -130,6 +139,38 @@ const MyCourses = () => {
             </div>
           ))}
         </div>
+      </div>
+    );
+  }
+
+  if (accessChecked && !hasAccess) {
+    return (
+      <div className="mc-container">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mc-access-blocked"
+        >
+          <div className="mc-blocked-icon">
+            <Lock size={48} />
+          </div>
+          <h2>Subscription Required</h2>
+          <p>
+            You need an active yearly subscription to access course materials.
+          </p>
+          <p className="mc-blocked-price">
+            Subscribe for just <strong>2,499.99 DZD/year</strong> and unlock all
+            courses across all levels and semesters.
+          </p>
+          <motion.button
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            className="mc-subscribe-btn"
+            onClick={() => navigate("/student/course-subscription")}
+          >
+            Subscribe Now
+          </motion.button>
+        </motion.div>
       </div>
     );
   }

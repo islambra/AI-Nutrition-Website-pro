@@ -16,6 +16,10 @@ const paymentSchema = new mongoose.Schema({
     ref: "Formation",
     default: null
   },
+  courseSubscription: {
+    type: Boolean,
+    default: null
+  },
   amount: {
     type: Number,
     required: true

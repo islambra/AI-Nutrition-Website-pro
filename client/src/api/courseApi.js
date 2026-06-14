@@ -32,3 +32,42 @@ export const deleteCourse = async (courseId) => {
   const response = await axiosInstance.delete(`/courses/${courseId}`);
   return response.data;
 };
+
+// Course subscription
+export const getPlatformPaymentInfo = async () => {
+  const response = await axiosInstance.get("/courses/platform-payment-info");
+  return response.data;
+};
+
+export const initiateCourseSubscription = async (formData) => {
+  const response = await axiosInstance.post("/courses/subscribe", formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
+  return response.data;
+};
+
+export const checkCourseAccess = async () => {
+  const response = await axiosInstance.get("/courses/check-access");
+  return response.data;
+};
+
+export const getMySubscription = async () => {
+  const response = await axiosInstance.get("/courses/my-subscription");
+  return response.data;
+};
+
+// Admin course subscription management
+export const getPendingCourseSubscriptions = async () => {
+  const response = await axiosInstance.get("/admin/course-subscriptions/pending");
+  return response.data;
+};
+
+export const approveCourseSubscription = async (paymentId) => {
+  const response = await axiosInstance.post(`/admin/course-subscriptions/approve/${paymentId}`);
+  return response.data;
+};
+
+export const rejectCourseSubscription = async (paymentId) => {
+  const response = await axiosInstance.post(`/admin/course-subscriptions/reject/${paymentId}`);
+  return response.data;
+};

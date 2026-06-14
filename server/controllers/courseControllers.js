@@ -1,6 +1,10 @@
 import Course from "../models/Course.js";
 import User from "../models/User.js";
+import Payment from "../models/Payment.js";
+import CourseSubscription from "../models/CourseSubscription.js";
 import imagekit from "../configs/imageKit.js";
+
+const COURSE_SUBSCRIPTION_PRICE = 2499.99;
 
 export const createCourse = async (req, res) => {
   try {
@@ -100,5 +104,116 @@ export const deleteCourse = async (req, res) => {
     res.status(200).json({ success: true, message: "Course deleted successfully" });
   } catch (error) {
     res.status(500).json({ success: false, message: error.message || "Failed to delete course" });
+  }
+};
+
+// Get platform payment info for course subscriptions
+export const getPlatformPaymentInfo = async (req, res) => {
+  try {
+    res.status(200).json({
+      success: true,
+      data: {
+        ccpNumber: process.env.PLATFORM_CCP_NUMBER || null,
+        ccpKey: process.env.PLATFORM_CCP_KEY || null,
+        baridiMob: process.env.PLATFORM_BARIDI_MOB || null
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// Initiate course subscription (offline payment with proof)
+export const initiateCourseSubscription = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { paymentMethod } = req.body;
+
+    if (!paymentMethod || !["ccp", "baridimob"].includes(paymentMethod)) {
+      return res.status(400).json({ success: false, message: "Invalid payment method. Use 'ccp' or 'baridimob'." });
+    }
+
+    const existing = await CourseSubscription.findOne({ user: userId });
+    if (existing && existing.hasAccess && existing.endDate && new Date(existing.endDate) > new Date()) {
+      return res.status(400).json({ success: false, message: "You already have an active subscription" });
+    }
+
+    let proofImage = null;
+    let proofImageFileId = null;
+    if (req.file) {
+      const base64 = req.file.buffer.toString("base64");
+      const upload = await imagekit.upload({
+        file: base64,
+        fileName: `course-sub-proof-${Date.now()}-${req.file.originalname}`,
+        folder: "/payment-proofs",
+      });
+      proofImage = upload.url;
+      proofImageFileId = upload.fileId;
+    }
+
+    const payment = await Payment.create({
+      user: userId,
+      amount: COURSE_SUBSCRIPTION_PRICE,
+      paymentMethod,
+      status: "pending",
+      proofImage,
+      proofImageFileId,
+      courseSubscription: true
+    });
+
+    res.status(201).json({
+      success: true,
+      message: "Subscription payment proof submitted. Waiting for admin approval.",
+      data: payment
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// Check if current user has active course subscription access
+export const checkCourseAccess = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const sub = await CourseSubscription.findOne({ user: userId });
+
+    let hasAccess = false;
+    if (sub && sub.hasAccess && sub.endDate && new Date(sub.endDate) > new Date()) {
+      hasAccess = true;
+    }
+
+    res.status(200).json({ success: true, hasAccess });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// Get current user's subscription details
+export const getMySubscription = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const sub = await CourseSubscription.findOne({ user: userId })
+      .populate("payment", "amount status paymentMethod createdAt");
+
+    if (!sub) {
+      return res.status(200).json({ success: true, data: null });
+    }
+
+    const isActive = sub.hasAccess && sub.endDate && new Date(sub.endDate) > new Date();
+    const daysRemaining = isActive ? Math.ceil((new Date(sub.endDate) - new Date()) / (1000 * 60 * 60 * 24)) : 0;
+
+    res.status(200).json({
+      success: true,
+      data: {
+        hasAccess: sub.hasAccess,
+        isActive,
+        startDate: sub.startDate,
+        endDate: sub.endDate,
+        daysRemaining,
+        payment: sub.payment
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
   }
 };

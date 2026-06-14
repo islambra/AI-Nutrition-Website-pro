@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getAllPaymentsAdmin, deletePaymentAdmin } from '../../api/paymentApi';
-import { Trash2, Search, Filter, DollarSign, CreditCard, Package, TrendingUp, X, AlertTriangle, CheckCircle, XCircle } from 'lucide-react';
+import { Trash2, Search, Filter, DollarSign, CreditCard, Package, TrendingUp, X, AlertTriangle, CheckCircle, XCircle, BookOpen } from 'lucide-react';
 import './AdminPayments.css';
 
 const AdminPayments = () => {
@@ -114,8 +114,10 @@ const AdminPayments = () => {
   const totalRevenue = filteredPayments.reduce((sum, p) => sum + (p.amount || 0), 0);
   const planCount = filteredPayments.filter(p => p.type === 'Plan').length;
   const aiCount = filteredPayments.filter(p => p.type === 'AI Tracker').length;
+  const courseSubCount = filteredPayments.filter(p => p.type === 'Course Subscription').length;
   const planRevenue = filteredPayments.filter(p => p.type === 'Plan').reduce((sum, p) => sum + p.amount, 0);
   const aiRevenue = filteredPayments.filter(p => p.type === 'AI Tracker').reduce((sum, p) => sum + p.amount, 0);
+  const courseSubRevenue = filteredPayments.filter(p => p.type === 'Course Subscription').reduce((sum, p) => sum + p.amount, 0);
 
   if (loading) return (
     <div className="admin-loading">
@@ -204,6 +206,14 @@ const AdminPayments = () => {
           </div>
         </div>
         <div className="stat-card">
+          <div className="stat-icon" style={{ background: '#fef3c7', color: '#d97706' }}><BookOpen size={22} /></div>
+          <div className="stat-info">
+            <span className="stat-label">Course Subscriptions</span>
+            <span className="stat-value">{courseSubCount}</span>
+            <span className="stat-sub">{courseSubRevenue.toLocaleString()} DZD</span>
+          </div>
+        </div>
+        <div className="stat-card">
           <div className="stat-icon orange"><TrendingUp size={22} /></div>
           <div className="stat-info">
             <span className="stat-label">Total Transactions</span>
@@ -221,6 +231,7 @@ const AdminPayments = () => {
               <option value="all">All Types</option>
               <option value="Plan">Plan</option>
               <option value="AI Tracker">AI Tracker</option>
+              <option value="Course Subscription">Course Subscription</option>
             </select>
           </div>
           <div className="filter-group">
@@ -277,7 +288,7 @@ const AdminPayments = () => {
                   <td data-label="User">{p.user?.fullName || '—'}</td>
                   <td data-label="Email">{p.user?.email || '—'}</td>
                   <td data-label="Type">
-                    <span className={`type-badge ${p.type === 'Plan' ? 'plan' : 'ai'}`}>{p.type}</span>
+                    <span className={`type-badge ${p.type === 'Plan' ? 'plan' : p.type === 'Course Subscription' ? 'course-subscription' : 'ai'}`}>{p.type}</span>
                   </td>
                   <td data-label="Amount"><strong>{p.amount.toLocaleString()}</strong></td>
                   <td data-label="Method" className="capitalize">{p.paymentMethod}</td>

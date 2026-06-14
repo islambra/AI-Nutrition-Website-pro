@@ -1,0 +1,176 @@
+.mcs-container {
+  padding: 32px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.mcs-loader-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  color: #8b5cf6;
+}
+
+.mcs-header {
+  margin-bottom: 32px;
+}
+
+.mcs-header-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.mcs-header-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6366f1;
+}
+
+.mcs-header h1 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+}
+
+.mcs-header p {
+  color: #6b7280;
+  font-size: 0.875rem;
+  margin: 4px 0 0;
+}
+
+.mcs-empty {
+  text-align: center;
+  padding: 64px 32px;
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+}
+
+.mcs-empty-icon {
+  color: #10b981;
+  margin-bottom: 16px;
+}
+
+.mcs-empty h3 {
+  margin: 0 0 8px;
+  color: #111827;
+}
+
+.mcs-empty p {
+  color: #6b7280;
+  margin: 0;
+}
+
+.mcs-table-wrapper {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  overflow-x: auto;
+}
+
+.mcs-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.mcs-table th {
+  text-align: left;
+  padding: 16px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  background: #f9fafb;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.mcs-table td {
+  padding: 16px;
+  font-size: 0.9rem;
+  color: #374151;
+  border-bottom: 1px solid #f3f4f6;
+}
+
+.mcs-table tr:last-child td {
+  border-bottom: none;
+}
+
+.mcs-user-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.mcs-user-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.mcs-capitalize {
+  text-transform: capitalize;
+}
+
+.mcs-proof-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: #6366f1;
+  text-decoration: none;
+  font-size: 0.85rem;
+}
+
+.mcs-proof-link:hover {
+  text-decoration: underline;
+}
+
+.mcs-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.mcs-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.mcs-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.mcs-btn.approve {
+  background: #ecfdf5;
+  color: #059669;
+}
+
+.mcs-btn.approve:hover:not(:disabled) {
+  background: #d1fae5;
+}
+
+.mcs-btn.reject {
+  background: #fef2f2;
+  color: #dc2626;
+}
+
+.mcs-btn.reject:hover:not(:disabled) {
+  background: #fee2e2;
+}

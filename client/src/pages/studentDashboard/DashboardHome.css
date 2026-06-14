@@ -151,6 +151,68 @@
   gap: 0.75rem;
 }
 
+/* Subscription Status Card */
+.sdh-sub-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 8px;
+}
+
+.sdh-sub-card.active {
+  background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+  border: 1px solid #6ee7b7;
+}
+
+.sdh-sub-card.inactive {
+  background: linear-gradient(135deg, #fef2f2, #fee2e2);
+  border: 1px solid #fca5a5;
+}
+
+.sdh-sub-card:hover {
+  transform: translateY(-1px);
+}
+
+.sdh-sub-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sdh-sub-card.active .sdh-sub-icon {
+  color: #059669;
+}
+
+.sdh-sub-card.inactive .sdh-sub-icon {
+  color: #ef4444;
+}
+
+.sdh-sub-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.sdh-sub-label {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #111827;
+}
+
+.sdh-sub-status {
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+.sdh-sub-arrow {
+  color: #9ca3af;
+}
+
 @media (max-width: 768px) {
   .sdh-container {
     padding: 1rem;

@@ -1571,3 +1571,168 @@ body.modal-open .header-container {
   color: var(--health-accent);
   letter-spacing: 0.05em;
 }
+
+/* --- Course Subscription (student view) --- */
+.ServicesPage-Subscription-Container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.ServicesPage-Sub-Active-Card,
+.ServicesPage-Sub-Inactive-Card {
+  background: white;
+  border: 1px solid var(--S-Border);
+  border-radius: 20px;
+  padding: 40px 32px;
+  text-align: center;
+}
+
+.ServicesPage-Sub-Active-Card {
+  background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+  border-color: #6ee7b7;
+}
+
+.ServicesPage-Sub-Active-Header {
+  margin-bottom: 24px;
+}
+
+.ServicesPage-Sub-Active-Icon {
+  color: #059669;
+  margin-bottom: 12px;
+}
+
+.ServicesPage-Sub-Active-Header h3 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #065f46;
+  margin: 0 0 8px;
+}
+
+.ServicesPage-Sub-Active-Header p {
+  color: #047857;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.ServicesPage-Sub-Active-Details {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.ServicesPage-Sub-Detail {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #065f46;
+  font-size: 0.9rem;
+}
+
+.ServicesPage-Sub-Btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.ServicesPage-Sub-Active-Card .ServicesPage-Sub-Btn {
+  background: #059669;
+  color: white;
+}
+
+.ServicesPage-Sub-Active-Card .ServicesPage-Sub-Btn:hover {
+  background: #047857;
+}
+
+.ServicesPage-Sub-Inactive-Card {
+  padding: 32px;
+}
+
+.ServicesPage-Sub-Price-Header h3 {
+  font-size: 1.2rem;
+  color: #374151;
+  margin: 0 0 16px;
+}
+
+.ServicesPage-Sub-Price {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 4px;
+  margin-bottom: 8px;
+}
+
+.ServicesPage-Sub-Currency {
+  font-size: 1rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.ServicesPage-Sub-Amount {
+  font-size: 3rem;
+  font-weight: 800;
+  color: #059669;
+  line-height: 1;
+}
+
+.ServicesPage-Sub-Period {
+  font-size: 1rem;
+  color: #6b7280;
+}
+
+.ServicesPage-Sub-Price-Header p {
+  color: #6b7280;
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.ServicesPage-Sub-Benefits {
+  list-style: none;
+  padding: 0;
+  margin: 24px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: left;
+}
+
+.ServicesPage-Sub-Benefits li {
+  padding: 10px 14px;
+  background: #f9fafb;
+  border-radius: 10px;
+  color: #374151;
+  font-size: 0.9rem;
+  border-left: 3px solid #10b981;
+}
+
+.ServicesPage-Sub-Expired-Notice {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  background: #fef3c7;
+  border: 1px solid #fbbf24;
+  border-radius: 10px;
+  color: #92400e;
+  font-size: 0.85rem;
+  margin-bottom: 20px;
+}
+
+.ServicesPage-Sub-Btn.subscribe {
+  background: linear-gradient(135deg, #059669, #10b981);
+  color: white;
+}
+
+.ServicesPage-Sub-Btn.subscribe:hover {
+  background: linear-gradient(135deg, #047857, #059669);
+}
+
+

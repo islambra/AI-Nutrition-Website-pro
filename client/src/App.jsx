@@ -15,6 +15,7 @@ import AITrackerPage from './pages/AITrackerPage.jsx'
 import AllPlansPage from './pages/AllPlansPage.jsx'
 import PlanCheckoutPage from './pages/PlanCheckoutPage.jsx'
 import FormationCheckoutPage from './pages/FormationCheckoutPage.jsx'
+import CourseSubscriptionCheckout from './pages/CourseSubscriptionCheckout.jsx'
 import Header from './components/Header.jsx' 
 import Footer from './components/Footer.jsx' 
 import CustomCursor from './components/CustomCursor.jsx'
@@ -51,6 +52,7 @@ import StudentLayout from './pages/studentDashboard/StudentLayout.jsx'
 import DashboardHome from './pages/studentDashboard/DashboardHome.jsx'
 import MyCoursesPage from './pages/studentDashboard/MyCourses.jsx'
 import MyFormationsPage from './pages/studentDashboard/MyFormationsPage.jsx'
+import ManageCourseSubscriptions from './pages/AdminDasboard/ManageCourseSubscriptions.jsx'
 import LoginGate from './components/LoginGate.jsx'
 import ProtectedRoute from './components/ProtectedRoute.jsx'
 import ChatBubble from './components/chat/ChatBubble.jsx'
@@ -89,6 +91,7 @@ function App() {
           <Route path="/allPlans" element={<LoginGate><PageTransition><AllPlansPage /></PageTransition></LoginGate>} />
           <Route path="/checkout/plan/:planId" element={<LoginGate><PageTransition><PlanCheckoutPage /></PageTransition></LoginGate>} />
           <Route path="/checkout/formation/:formationId" element={<LoginGate><PageTransition><FormationCheckoutPage /></PageTransition></LoginGate>} />
+          <Route path="/checkout/course-subscription" element={<LoginGate><PageTransition><CourseSubscriptionCheckout /></PageTransition></LoginGate>} />
 
           <Route path="/client" element={<ProtectedRoute roles={['client']}><ClientLayout /></ProtectedRoute>}>
               <Route path="dashboard" element={<ClientDashboardHome />} />
@@ -123,6 +126,7 @@ function App() {
               <Route path="manage-dieteticiens" element={<ManageDieteticiens />} />
               <Route path="create-course" element={<CreateCourse />} />
               <Route path="all-courses" element={<AllCourses />} />
+              <Route path="course-subscriptions" element={<ManageCourseSubscriptions />} />
               <Route path="my-Profile" element={<EditUserProfile />} />
           </Route>
         </Routes>
