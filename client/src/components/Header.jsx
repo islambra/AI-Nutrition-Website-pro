@@ -152,7 +152,7 @@ function Header() {
                 {/* Student Dashboard links */}
                 {isStudent() && (
                   <>
-                    <NavLink to="/student/dashboard" className="dropdown-item">
+                    <NavLink to="/student/my-courses" className="dropdown-item">
                       <LayoutDashboard size={16} />
                       Dashboard
                     </NavLink>
@@ -231,7 +231,7 @@ function Header() {
             {/* Student Dashboard links on mobile */}
             {isStudent() && (
               <>
-                <NavLink to="/student/dashboard" className="mobile-nav-item">
+                <NavLink to="/student/my-courses" className="mobile-nav-item">
                   <LayoutDashboard size={16} />
                   Dashboard
                 </NavLink>

@@ -212,20 +212,29 @@ function CourseSubscriptionCheckout() {
                   onClick={() => document.getElementById('proof-input')?.click()}
                   style={{
                     border: '2px dashed #D1D5DB', borderRadius: '12px', padding: '24px',
-                    textAlign: 'center', cursor: 'pointer', background: '#FAFAFA'
+                    textAlign: 'center', cursor: 'pointer', background: '#FAFAFA',
+                    minHeight: '180px', display: 'flex', alignItems: 'center', justifyContent: 'center'
                   }}
                 >
                   <input id="proof-input" type="file" accept="image/*" onChange={handleFileChange} style={{ display: 'none' }} />
                   {proofPreview ? (
-                    <div>
-                      <img src={proofPreview} alt="Proof preview" style={{ maxHeight: '150px', borderRadius: '8px', marginBottom: '8px' }} />
-                      <div style={{ fontSize: '13px', color: '#6B7280' }}><FileText size={14} /> {proofFile?.name}</div>
+                    <div style={{ position: 'relative', display: 'inline-block', width: '100%' }}>
+                      <img src={proofPreview} alt="Proof preview" style={{ width: '100%', maxHeight: '180px', objectFit: 'cover', borderRadius: '8px', display: 'block' }} />
+                      <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.3)', borderRadius: '8px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '6px', color: '#fff', transition: 'background 0.2s' }}
+                        onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(0,0,0,0.45)'}
+                        onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(0,0,0,0.3)'}
+                      >
+                        <Upload size={28} />
+                        <span style={{ fontSize: '12px', fontWeight: 600 }}>Change file</span>
+                      </div>
                     </div>
                   ) : (
-                    <div>
-                      <Upload size={32} style={{ color: '#9CA3AF', marginBottom: '8px' }} />
-                      <p style={{ fontWeight: 600, color: '#374151' }}>Click to upload proof</p>
-                      <p style={{ fontSize: '12px', color: '#9CA3AF' }}>Screenshot or receipt image</p>
+                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
+                      <div style={{ width: 56, height: 56, borderRadius: '50%', background: '#E8F5E9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                        <Upload size={24} style={{ color: '#059669' }} />
+                      </div>
+                      <p style={{ fontWeight: 600, color: '#374151', margin: 0 }}>Click to upload proof</p>
+                      <p style={{ fontSize: '12px', color: '#9CA3AF', margin: 0 }}>Screenshot or receipt image</p>
                     </div>
                   )}
                 </div>

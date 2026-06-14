@@ -20,7 +20,7 @@ import Header from './components/Header.jsx'
 import Footer from './components/Footer.jsx' 
 import CustomCursor from './components/CustomCursor.jsx'
 import ScrollToTop from './utils/ScrollToTop.jsx'
-import { Routes, Route, useLocation } from 'react-router-dom' 
+import { Routes, Route, useLocation, Navigate } from 'react-router-dom' 
 import { Toaster } from 'react-hot-toast';
 import { Toaster as SonnerToaster } from 'sonner';
 import { AnimatePresence } from 'framer-motion';
@@ -49,7 +49,6 @@ import MyFormations from './pages/dieteticienDashboard/MyFormations.jsx'
 import CreateFormation from './pages/dieteticienDashboard/CreateFormation.jsx'
 import FormationSessions from './pages/dieteticienDashboard/FormationSessions.jsx'
 import StudentLayout from './pages/studentDashboard/StudentLayout.jsx'
-import DashboardHome from './pages/studentDashboard/DashboardHome.jsx'
 import MyCoursesPage from './pages/studentDashboard/MyCourses.jsx'
 import MyFormationsPage from './pages/studentDashboard/MyFormationsPage.jsx'
 import ManageCourseSubscriptions from './pages/AdminDasboard/ManageCourseSubscriptions.jsx'
@@ -115,7 +114,8 @@ function App() {
               <Route path="consultation-requests" element={<ConsultationRequests />} />
           </Route>
           <Route path="/student" element={<ProtectedRoute roles={['student']}><StudentLayout /></ProtectedRoute>}>
-              <Route path="dashboard" element={<DashboardHome />} />
+              <Route index element={<Navigate to="my-courses" replace />} />
+              <Route path="dashboard" element={<Navigate to="../my-courses" replace />} />
               <Route path="my-courses" element={<MyCoursesPage />} />
               <Route path="my-formations" element={<MyFormationsPage />} />
           </Route>
