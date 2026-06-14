@@ -316,7 +316,7 @@ const AllCourses = () => {
                       className="ac-grid-wrapper"
                     >
                       <div className="ac-grid">
-                        {levelCourses.map((course, idx) => (
+                        {levelCourses.map((course) => (
                           <motion.div
                             key={course._id}
                             variants={cardVariants}

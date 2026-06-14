@@ -25,6 +25,9 @@
   min-height:calc(100vh - 56px);
 
   overflow-y:auto;
+  overflow-x:hidden;
+  max-width:100%;
+  box-sizing:border-box;
 }
 
 /* mobile */
