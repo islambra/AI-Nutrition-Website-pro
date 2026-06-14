@@ -687,12 +687,249 @@
 }
 
 @media (max-width: 480px) {
+  .mc-container {
+    padding: 0.75rem;
+  }
+
+  .mc-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .mc-header-left {
+    gap: 0.75rem;
+  }
+
+  .mc-header-icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .mc-header-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .mc-header h1 {
+    font-size: 1.15rem;
+  }
+
+  .mc-header p {
+    font-size: 0.78rem;
+  }
+
   .mc-stats-row {
     grid-template-columns: 1fr;
+    gap: 0.6rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .mc-stat-card {
+    padding: 0.7rem 1rem;
+    gap: 0.6rem;
+  }
+
+  .mc-stat-icon {
+    width: 34px;
+    height: 34px;
+  }
+
+  .mc-stat-icon svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .mc-stat-value {
+    font-size: 1.05rem;
+  }
+
+  .mc-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.6rem;
+    margin-bottom: 1rem;
+  }
+
+  .mc-search-wrapper {
+    min-width: unset;
+  }
+
+  .mc-search-input {
+    padding: 0.6rem 1rem 0.6rem 2.2rem;
+    font-size: 0.82rem;
+  }
+
+  .mc-filter-group {
+    overflow-x: auto;
+    padding: 0.25rem;
+    -webkit-overflow-scrolling: touch;
+    gap: 0.25rem;
+    flex-wrap: nowrap;
+  }
+
+  .mc-filter-chip {
+    padding: 0.45rem 0.75rem;
+    font-size: 0.78rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  .mc-levels {
+    gap: 1rem;
+  }
+
+  .mc-level-header {
+    padding: 0.8rem 0.9rem;
+  }
+
+  .mc-level-badge {
+    width: 36px;
+    height: 36px;
+  }
+
+  .mc-level-badge svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .mc-level-header-left {
+    gap: 0.6rem;
+  }
+
+  .mc-level-name {
+    font-size: 0.82rem;
+  }
+
+  .mc-level-subtitle {
+    font-size: 0.7rem;
+  }
+
+  .mc-level-count {
+    min-width: 28px;
+    height: 28px;
+    font-size: 0.78rem;
+    padding: 0 0.5rem;
+  }
+
+  .mc-grid {
+    padding: 0.6rem 0.9rem 1rem;
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .mc-card-top {
+    padding: 0.55rem 0.75rem 0;
+  }
+
+  .mc-semester-badge {
+    font-size: 0.65rem;
+    padding: 0.2rem 0.55rem;
+  }
+
+  .mc-card-body {
+    padding: 0.6rem 0.75rem 0.55rem;
+  }
+
+  .mc-card-icon {
+    width: 34px;
+    height: 34px;
+  }
+
+  .mc-card-icon svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .mc-card-body h3 {
+    font-size: 0.85rem;
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+
+  .mc-card-meta {
+    gap: 0.15rem;
+  }
+
+  .mc-card-creator,
+  .mc-card-date {
+    font-size: 0.7rem;
   }
 
   .mc-card-actions {
+    padding: 0.5rem 0.75rem 0.65rem;
     flex-wrap: wrap;
+    gap: 0.35rem;
+  }
+
+  .mc-action-btn {
+    padding: 0.35rem 0.55rem;
+    font-size: 0.72rem;
+    flex: 1;
+    justify-content: center;
+  }
+
+  .mc-action-btn span {
+    font-size: 0.7rem;
+  }
+
+  .mc-empty {
+    padding: 3rem 1.5rem;
+  }
+
+  .mc-empty-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 16px;
+  }
+
+  .mc-empty-icon svg {
+    width: 32px;
+    height: 32px;
+  }
+
+  .mc-empty h3 {
+    font-size: 1.05rem;
+  }
+
+  .mc-empty p {
+    font-size: 0.82rem;
+  }
+
+  .mc-access-blocked {
+    padding: 32px 20px;
+    min-height: 50vh;
+  }
+
+  .mc-blocked-icon {
+    width: 72px;
+    height: 72px;
+  }
+
+  .mc-blocked-icon svg {
+    width: 32px;
+    height: 32px;
+  }
+
+  .mc-access-blocked h2 {
+    font-size: 1.35rem;
+  }
+
+  .mc-access-blocked p {
+    font-size: 0.85rem;
+  }
+
+  .mc-blocked-price {
+    font-size: 0.95rem;
+  }
+
+  .mc-subscribe-btn {
+    padding: 12px 24px;
+    font-size: 0.9rem;
+    width: 100%;
   }
 }
 
@@ -1497,109 +1734,7 @@
   }
 }
 
-/* ==============================
-   RESPONSIVE — ALL BREAKPOINTS
-   ============================== */
-
-@media (max-width: 768px) {
-  .mc-container {
-    padding: 1rem;
-  }
-
-  .mc-title {
-    font-size: 1.75rem;
-  }
-
-  .mc-subtitle {
-    font-size: 0.9375rem;
-  }
-
-  /* ---------- Courses ---------- */
-  .mc-semesters {
-    grid-template-columns: 1fr;
-    gap: 1rem;
-  }
-
-  .mc-level-header {
-    padding: 1rem;
-  }
-
-  .mc-level-info {
-    gap: 0.75rem;
-  }
-
-  .mc-level-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
-  }
-
-  .mc-level-info h2 {
-    font-size: 1.0625rem;
-  }
-
-  .mc-level-subtitle {
-    font-size: 0.8125rem;
-  }
-
-  .mc-level-stats {
-    gap: 0.5rem;
-  }
-
-  .mc-course-count {
-    display: none;
-  }
-
-  .mc-level-body {
-    padding: 0 1rem 1rem;
-  }
-
-  .mc-semester {
-    padding: 1rem;
-    border-radius: 0.625rem;
-  }
-
-  .mc-semester-header h3 {
-    font-size: 0.9375rem;
-  }
-
-  .mc-semester-count {
-    font-size: 0.6875rem;
-  }
-
-  .mc-course-item {
-    padding: 0.75rem;
-    gap: 0.625rem;
-    flex-wrap: wrap;
-  }
-
-  .mc-course-icon {
-    width: 36px;
-    height: 36px;
-    border-radius: 8px;
-  }
-
-  .mc-course-icon svg {
-    width: 18px;
-    height: 18px;
-  }
-
-  .mc-course-content h4 {
-    font-size: 0.875rem;
-  }
-
-  .mc-pdf-btn {
-    width: 100%;
-    justify-content: center;
-    padding: 0.625rem 0.75rem;
-    font-size: 0.8125rem;
-    margin-top: 4px;
-  }
-
-  .mc-pdf-btn span {
-    display: inline;
-  }
-
+@media (max-width: 900px) {
   /* ---------- Sessions (shared) ---------- */
   .mc-session-item {
     flex-direction: column;

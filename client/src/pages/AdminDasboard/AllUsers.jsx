@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { getAllUsers, deleteUser } from "../../api/userApi";
+import { AlertTriangle, X } from "lucide-react";
 import "./AllUsers.css";
 
 const AllUsers = () => {
@@ -224,43 +226,69 @@ const AllUsers = () => {
       </div>
 
       {/* Notification Toast */}
-      {notification && (
-        <div className={`notification-toast ${notification.type}`}>
-          <div className="notification-content">
-            {notification.type === "success" ? (
-              <svg className="notification-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
-                <path d="M20 6L9 17L4 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+      <AnimatePresence>
+        {notification && (
+          <motion.div
+            initial={{ opacity: 0, x: 100 }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: 100 }}
+            className={`notification-toast ${notification.type}`}
+          >
+            <div className="notification-content">
+              <svg className="notification-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                {notification.type === "success" ? (
+                  <path d="M20 6L9 17L4 12" strokeLinecap="round" strokeLinejoin="round"/>
+                ) : (
+                  <>
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="8" x2="12" y2="12" strokeLinecap="round"/>
+                    <circle cx="12" cy="16" r="0.5" fill="currentColor"/>
+                  </>
+                )}
               </svg>
-            ) : (
-              <svg className="notification-icon" width="20" height="20" viewBox="0 0 24 24" fill="none">
-                <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="2"/>
-                <line x1="12" y1="8" x2="12" y2="12" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
-                <circle cx="12" cy="16" r="0.5" fill="currentColor" stroke="currentColor"/>
-              </svg>
-            )}
-            <span>{notification.message}</span>
-          </div>
-          <button className="notification-close" onClick={() => setNotification(null)}>×</button>
-        </div>
-      )}
+              <span>{notification.message}</span>
+            </div>
+            <button className="notification-close" onClick={() => setNotification(null)}>
+              <X size={16} />
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Delete Confirmation Modal */}
-      {deleteConfirm && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <h3>Delete User</h3>
-            <p>Are you sure you want to delete <strong>{deleteConfirm.fullName}</strong>? This action cannot be undone.</p>
-            <div className="modal-actions">
-              <button onClick={() => setDeleteConfirm(null)} className="modal-btn-cancel">
-                Cancel
-              </button>
-              <button onClick={() => handleDeleteUser(deleteConfirm.id)} className="modal-btn-delete">
-                Delete
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <AnimatePresence>
+        {deleteConfirm && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="modal-overlay"
+            onClick={() => setDeleteConfirm(null)}
+          >
+            <motion.div
+              initial={{ opacity: 0, y: 40, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 40, scale: 0.95 }}
+              className="modal-content"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="modal-icon">
+                <AlertTriangle size={28} />
+              </div>
+              <h3>Delete User</h3>
+              <p>Are you sure you want to delete <strong>{deleteConfirm.fullName}</strong>? This action cannot be undone.</p>
+              <div className="modal-actions">
+                <button onClick={() => setDeleteConfirm(null)} className="modal-btn-cancel">
+                  Cancel
+                </button>
+                <button onClick={() => handleDeleteUser(deleteConfirm.id)} className="modal-btn-delete">
+                  Yes, Delete
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Header */}
       <div className="users-header">

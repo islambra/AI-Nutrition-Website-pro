@@ -166,7 +166,7 @@ const MyCourses = () => {
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
             className="mc-subscribe-btn"
-            onClick={() => navigate("/student/course-subscription")}
+            onClick={() => navigate("/checkout/course-subscription")}
           >
             Subscribe Now
           </motion.button>
