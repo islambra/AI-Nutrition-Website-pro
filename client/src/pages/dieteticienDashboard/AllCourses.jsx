@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import {
   BookOpen,
@@ -14,11 +14,13 @@ import {
   Layers,
   Users,
   Clock,
+  ChevronDown,
+  AlertTriangle,
+  X,
 } from "lucide-react";
 import { useAuth } from "../../context/AuthContext";
 import { getAllCourses, deleteCourse } from "../../api/courseApi";
 import toast from "react-hot-toast";
-import ConfirmModal from "../../components/ui/ConfirmModal";
 import "./AllCourses.css";
 
 const LEVEL_NAMES = {
@@ -41,6 +43,16 @@ const AllCourses = () => {
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [semesterFilter, setSemesterFilter] = useState("all");
+  const [collapsedLevels, setCollapsedLevels] = useState(() => new Set());
+
+  const toggleLevel = (level) => {
+    setCollapsedLevels((prev) => {
+      const next = new Set(prev);
+      if (next.has(level)) next.delete(level);
+      else next.add(level);
+      return next;
+    });
+  };
 
   const dashboardPrefix = user?.role === "admin" ? "/admin" : "/dieteticien";
 
@@ -187,28 +199,6 @@ const AllCourses = () => {
                 <span className="ac-stat-label">Total Courses</span>
               </div>
             </div>
-            <div className="ac-stat-card">
-              <div className="ac-stat-icon levels">
-                <Layers size={18} />
-              </div>
-              <div>
-                <span className="ac-stat-value">
-                  {Object.values(groupedByLevel).filter((g) => g.length > 0).length}
-                </span>
-                <span className="ac-stat-label">Levels Active</span>
-              </div>
-            </div>
-            <div className="ac-stat-card">
-              <div className="ac-stat-icon instructors">
-                <Users size={18} />
-              </div>
-              <div>
-                <span className="ac-stat-value">
-                  {new Set(courses.map((c) => c.createdBy)).size}
-                </span>
-                <span className="ac-stat-label">Instructors</span>
-              </div>
-            </div>
           </div>
 
           <div className="ac-toolbar">
@@ -281,9 +271,14 @@ const AllCourses = () => {
             const levelCourses = groupedByLevel[level];
             if (!levelCourses || levelCourses.length === 0) return null;
 
+            const isCollapsed = collapsedLevels.has(level);
+
             return (
               <div key={level} className="ac-level-section">
-                <div className={`ac-level-header level-${level}`}>
+                <button
+                  className={`ac-level-header level-${level}`}
+                  onClick={() => toggleLevel(level)}
+                >
                   <div className="ac-level-header-left">
                     <div className={`ac-level-badge level-${level}`}>
                       <GraduationCap size={20} />
@@ -298,17 +293,36 @@ const AllCourses = () => {
                       </span>
                     </div>
                   </div>
-                  <span className="ac-level-count">{levelCourses.length}</span>
-                </div>
-
-                <div className="ac-grid">
-                  {levelCourses.map((course, idx) => (
+                  <div className="ac-level-header-right">
+                    <span className="ac-level-count">{levelCourses.length}</span>
                     <motion.div
-                      key={course._id}
-                      variants={cardVariants}
-                      layout
-                      className="ac-course-card"
+                      animate={{ rotate: isCollapsed ? -90 : 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="ac-chevron"
                     >
+                      <ChevronDown size={18} />
+                    </motion.div>
+                  </div>
+                </button>
+
+                <AnimatePresence initial={false}>
+                  {!isCollapsed && (
+                    <motion.div
+                      key="grid"
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.25, ease: "easeInOut" }}
+                      className="ac-grid-wrapper"
+                    >
+                      <div className="ac-grid">
+                        {levelCourses.map((course, idx) => (
+                          <motion.div
+                            key={course._id}
+                            variants={cardVariants}
+                            layout
+                            className="ac-course-card"
+                          >
                       <div className="ac-card-top">
                         <span
                           className={`ac-semester-badge semester-${course.semester}`}
@@ -384,22 +398,74 @@ const AllCourses = () => {
                     </motion.div>
                   ))}
                 </div>
-              </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
             );
           })}
         </motion.div>
       )}
 
-      <ConfirmModal
-        isOpen={!!deleteTarget}
-        title="Delete Course"
-        message="Are you sure you want to delete this course? This action cannot be undone."
-        confirmLabel="Delete"
-        cancelLabel="Cancel"
-        variant="danger"
-        onConfirm={confirmDelete}
-        onCancel={() => setDeleteTarget(null)}
-      />
+      <AnimatePresence>
+        {deleteTarget && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="ac-modal-overlay"
+            onClick={() => setDeleteTarget(null)}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.92, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.92, y: 20 }}
+              transition={{ type: "spring", stiffness: 400, damping: 28 }}
+              className="ac-modal-card"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                className="ac-modal-close"
+                onClick={() => setDeleteTarget(null)}
+              >
+                <X size={18} />
+              </button>
+
+              <div className="ac-modal-icon-wrap">
+                <div className="ac-modal-icon">
+                  <AlertTriangle size={28} />
+                </div>
+              </div>
+
+              <h3 className="ac-modal-title">Delete Course</h3>
+              <p className="ac-modal-message">
+                Are you sure you want to delete this course? This action cannot be undone.
+              </p>
+
+              <div className="ac-modal-actions">
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.97 }}
+                  className="ac-modal-btn cancel"
+                  onClick={() => setDeleteTarget(null)}
+                >
+                  Cancel
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.97 }}
+                  className="ac-modal-btn confirm"
+                  onClick={confirmDelete}
+                >
+                  <Trash2 size={16} />
+                  Delete Course
+                </motion.button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

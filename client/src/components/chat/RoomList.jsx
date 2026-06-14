@@ -1,8 +1,11 @@
 import { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Trash2, X, AlertTriangle } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useSocket } from '../../context/SocketContext';
 import { deleteRoom as deleteRoomApi } from '../../api/chatApi';
-import ConfirmModal from '../ui/ConfirmModal';
+import toast from 'react-hot-toast';
+import './RoomList.css';
 
 export default function RoomList({ rooms, onSelectRoom, typingUsers, onShowProfile }) {
   const { removeRoom } = useSocket();
@@ -130,23 +133,73 @@ export default function RoomList({ rooms, onSelectRoom, typingUsers, onShowProfi
         })}
       </div>
 
-      <ConfirmModal
-        isOpen={!!confirmDeleteId}
-        title="Delete conversation"
-        message="All messages will be permanently deleted. This cannot be undone."
-        confirmLabel="Delete"
-        cancelLabel="Cancel"
-        variant="danger"
-        onConfirm={() => {
-          if (!confirmDeleteId) return;
-          setDeletingId(confirmDeleteId);
-          deleteRoomApi(confirmDeleteId)
-            .then(() => { removeRoom(confirmDeleteId); })
-            .catch(() => { alert("Failed to delete conversation"); })
-            .finally(() => { setDeletingId(null); setConfirmDeleteId(null); });
-        }}
-        onCancel={() => setConfirmDeleteId(null)}
-      />
+      <AnimatePresence>
+        {confirmDeleteId && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="rl-modal-overlay"
+            onClick={() => setConfirmDeleteId(null)}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.92, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.92, y: 20 }}
+              transition={{ type: "spring", stiffness: 400, damping: 28 }}
+              className="rl-modal-card"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                className="rl-modal-close"
+                onClick={() => setConfirmDeleteId(null)}
+              >
+                <X size={18} />
+              </button>
+
+              <div className="rl-modal-icon-wrap">
+                <div className="rl-modal-icon">
+                  <AlertTriangle size={28} />
+                </div>
+              </div>
+
+              <h3 className="rl-modal-title">Delete conversation</h3>
+              <p className="rl-modal-message">
+                All messages will be permanently deleted. This cannot be undone.
+              </p>
+
+              <div className="rl-modal-actions">
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.97 }}
+                  className="rl-modal-btn cancel"
+                  onClick={() => setConfirmDeleteId(null)}
+                >
+                  Cancel
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.97 }}
+                  className="rl-modal-btn confirm"
+                  disabled={deletingId === confirmDeleteId}
+                  onClick={() => {
+                    if (!confirmDeleteId) return;
+                    setDeletingId(confirmDeleteId);
+                    deleteRoomApi(confirmDeleteId)
+                      .then(() => { removeRoom(confirmDeleteId); })
+                      .catch(() => { toast.error("Failed to delete conversation"); })
+                      .finally(() => { setDeletingId(null); setConfirmDeleteId(null); });
+                  }}
+                >
+                  <Trash2 size={16} />
+                  {deletingId === confirmDeleteId ? "Deleting..." : "Delete"}
+                </motion.button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

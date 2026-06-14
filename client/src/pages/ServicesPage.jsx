@@ -21,15 +21,16 @@ import {
   Target,
   BookOpen,
   GraduationCap,
-  ChevronDown,
-  ChevronUp,
   ExternalLink,
   Loader2,
-  BookMarked,
+  ChevronDown,
   X,
   Clock,
   Eye,
   User,
+  Search,
+  Filter,
+  Layers,
 } from 'lucide-react';
 import ScrollReveal from '../components/ScrollReveal';
 import "../components/FormationCard.css";
@@ -37,7 +38,7 @@ import { useAuth } from '../context/AuthContext';
 import { getAllPlans } from '../api/planApi';
 import { getAllCourses } from '../api/courseApi';
 import { getAllFormations } from '../api/formationApi';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import toast from 'react-hot-toast';
 import { isStudent, isClient } from '../api/userApi';
 
@@ -77,14 +78,6 @@ const ServicesMarquee = () => (
   </div>
 );
 
-const LEVELS = [
-  { id: 1, title: "Level 1", subtitle: "Foundation Courses" },
-  { id: 2, title: "Level 2", subtitle: "Intermediate Courses" },
-  { id: 3, title: "Level 3", subtitle: "Advanced Courses" },
-];
-
-const SEMESTERS = [1, 2];
-
 function ServicesPage() {
   const { user, isAuthenticated } = useAuth();
   const navigate = useNavigate();
@@ -95,7 +88,9 @@ function ServicesPage() {
   const [planIndex, setPlanIndex] = useState(0);
   const [courses, setCourses] = useState([]);
   const [coursesLoading, setCoursesLoading] = useState(true);
-  const [expandedLevel, setExpandedLevel] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [semesterFilter, setSemesterFilter] = useState("all");
+  const [collapsedLevels, setCollapsedLevels] = useState(() => new Set());
   const [formations, setFormations] = useState([]);
   const [formationsLoading, setFormationsLoading] = useState(true);
   const [selectedFormation, setSelectedFormation] = useState(null);
@@ -238,12 +233,37 @@ function ServicesPage() {
     }
   };
 
-  const getCoursesForLevelSemester = (level, semester) => {
-    return courses.filter((c) => c.level === level && c.semester === semester);
-  };
+  const filteredCourses = useMemo(() => {
+    return courses.filter((course) => {
+      const matchesSearch =
+        course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (course.creatorInfo?.fullName || "")
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase());
+      const matchesSemester =
+        semesterFilter === "all" ||
+        course.semester === Number(semesterFilter);
+      return matchesSearch && matchesSemester;
+    });
+  }, [courses, searchQuery, semesterFilter]);
 
-  const toggleLevel = (levelId) => {
-    setExpandedLevel(expandedLevel === levelId ? null : levelId);
+  const groupedByLevel = useMemo(() => {
+    const groups = { 1: [], 2: [], 3: [] };
+    filteredCourses.forEach((course) => {
+      if (groups[course.level]) {
+        groups[course.level].push(course);
+      }
+    });
+    return groups;
+  }, [filteredCourses]);
+
+  const toggleLevel = (level) => {
+    setCollapsedLevels((prev) => {
+      const next = new Set(prev);
+      if (next.has(level)) next.delete(level);
+      else next.add(level);
+      return next;
+    });
   };
 
   if (user && !userIsStudent && !userIsClient) {
@@ -303,117 +323,164 @@ function ServicesPage() {
               </ScrollReveal>
             </div>
 
-            <div className="sc-levels">
-              {coursesLoading ? (
-                <div className="ServicesPage-Loading-State">
-                  <Loader2 className="AP-Spin" size={48} />
-                  <p>Loading courses...</p>
-                </div>
-              ) : (
-                LEVELS.map((level) => {
-                  const isExpanded = expandedLevel === level.id;
-                  const sem1Courses = getCoursesForLevelSemester(level.id, 1);
-                  const sem2Courses = getCoursesForLevelSemester(level.id, 2);
-
-                  return (
-                    <motion.div
-                      key={level.id}
-                      layout
-                      className={`sc-level-card ${isExpanded ? "expanded" : ""}`}
-                    >
+            {coursesLoading ? (
+              <div className="sp-loading-wrapper">
+                <motion.div
+                  animate={{ scale: [1, 1.1, 1], rotate: [0, 8, 0] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                  className="sp-loading-icon"
+                >
+                  <BookOpen size={52} />
+                </motion.div>
+              </div>
+            ) : courses.length > 0 ? (
+              <>
+                <div className="sp-toolbar">
+                  <div className="sp-search-wrapper">
+                    <Search size={16} className="sp-search-icon" />
+                    <input
+                      type="text"
+                      placeholder="Search by title or instructor..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="sp-search-input"
+                    />
+                  </div>
+                  <div className="sp-filter-group">
+                    <Filter size={16} className="sp-filter-icon" />
+                    {[{ value: "all", label: "All" }, { value: "1", label: "Sem 1" }, { value: "2", label: "Sem 2" }].map((opt) => (
                       <button
-                        className="sc-level-header"
-                        onClick={() => toggleLevel(level.id)}
+                        key={opt.value}
+                        className={`sp-filter-chip ${semesterFilter === opt.value ? "active" : ""}`}
+                        onClick={() => setSemesterFilter(opt.value)}
                       >
-                        <div className="sc-level-info">
-                          <div className="sc-level-icon">
-                            <BookMarked size={22} />
-                          </div>
-                          <div>
-                            <h3>{level.title}</h3>
-                            <span className="sc-level-subtitle">{level.subtitle}</span>
-                          </div>
-                        </div>
-                        <div className="sc-level-stats">
-                          <span className="sc-course-count">
-                            {sem1Courses.length + sem2Courses.length} courses
-                          </span>
-                          {isExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
-                        </div>
+                        {opt.label}
                       </button>
+                    ))}
+                  </div>
+                </div>
 
-                      <AnimatePresence>
-                        {isExpanded && (
-                          <motion.div
-                            initial={{ height: 0, opacity: 0 }}
-                            animate={{ height: "auto", opacity: 1 }}
-                            exit={{ height: 0, opacity: 0 }}
-                            transition={{ duration: 0.3 }}
-                            className="sc-level-body"
-                          >
-                            <div className="sc-semesters">
-                              {SEMESTERS.map((sem) => {
-                                const semCourses = sem === 1 ? sem1Courses : sem2Courses;
-                                return (
-                                  <div key={sem} className="sc-semester">
-                                    <div className="sc-semester-header">
-                                      <GraduationCap size={16} />
-                                      <h4>Semester {sem}</h4>
-                                      <span className="sc-semester-count">{semCourses.length} courses</span>
-                                    </div>
-                                    {semCourses.length === 0 ? (
-                                      <div className="sc-empty">
-                                        <BookOpen size={20} />
-                                        <p>No courses available yet</p>
-                                      </div>
-                                    ) : (
-                                      <div className="sc-course-list">
-                                        {semCourses.map((course) => (
-                                          <motion.div
-                                            key={course._id}
-                                            className="sc-course-item"
-                                            initial={{ opacity: 0, y: 10 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                          >
-                                            <BookOpen size={18} className="sc-course-item-icon" />
-                                            <div className="sc-course-content">
-                                              <h5>{course.title}</h5>
-                                              {course.createdAt && (
-                                                <span className="sc-course-date">
-                                                  Added {new Date(course.createdAt).toLocaleDateString()}
-                                                </span>
-                                              )}
-                                            </div>
-                                            {course.url && (
-                                              <a href={course.url} target="_blank" rel="noopener noreferrer" className="sc-pdf-btn">
-                                                <ExternalLink size={14} />
-                                                <span>Open</span>
-                                                <ExternalLink size={12} />
-                                              </a>
-                                            )}
-                                            {course.pdfUrl && (
-                                              <a href={course.pdfUrl} target="_blank" rel="noopener noreferrer" className="sc-pdf-btn">
-                                                <FileText size={14} />
-                                                <span>PDF</span>
-                                                <ExternalLink size={12} />
-                                              </a>
-                                            )}
-                                          </motion.div>
-                                        ))}
-                                      </div>
-                                    )}
-                                  </div>
-                                );
-                              })}
+                <motion.div
+                  initial="hidden"
+                  animate="visible"
+                  className="sc-levels"
+                >
+                  {[1, 2, 3].map((level) => {
+                    const levelCourses = groupedByLevel[level];
+                    if (!levelCourses || levelCourses.length === 0) return null;
+                    const isCollapsed = collapsedLevels.has(level);
+
+                    return (
+                      <div key={level} className="sc-level-section">
+                        <button
+                          className={`sc-level-header level-${level}`}
+                          onClick={() => toggleLevel(level)}
+                        >
+                          <div className="sc-level-header-left">
+                            <div className={`sc-level-badge level-${level}`}>
+                              <GraduationCap size={20} />
                             </div>
+                            <div>
+                              <h2 className="sc-level-name">
+                                Level {level} &mdash; {["Foundation", "Intermediate", "Advanced"][level - 1]}
+                              </h2>
+                              <span className="sc-level-subtitle">
+                                {["\u2605", "\u2605\u2605", "\u2605\u2605\u2605"][level - 1]} &middot; {levelCourses.length} course{levelCourses.length > 1 ? "s" : ""}
+                              </span>
+                            </div>
+                          </div>
+                          <div className="sc-level-header-right">
+                            <span className="sc-level-count">{levelCourses.length}</span>
+                            <motion.div
+                              animate={{ rotate: isCollapsed ? -90 : 0 }}
+                              transition={{ duration: 0.2 }}
+                              className="sc-chevron"
+                            >
+                              <ChevronDown size={18} />
+                            </motion.div>
+                          </div>
+                        </button>
+
+                        <AnimatePresence initial={false}>
+                          {!isCollapsed && (
+                            <motion.div
+                              key="grid"
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: "auto", opacity: 1 }}
+                              exit={{ height: 0, opacity: 0 }}
+                              transition={{ duration: 0.25, ease: "easeInOut" }}
+                              className="sc-grid-wrapper"
+                            >
+                              <div className="sc-grid">
+                                {levelCourses.map((course) => (
+                            <motion.div
+                              key={course._id}
+                              initial={{ opacity: 0, y: 16, scale: 0.97 }}
+                              animate={{ opacity: 1, y: 0, scale: 1 }}
+                              transition={{ duration: 0.35, ease: "easeOut" }}
+                              layout
+                              className="sc-course-card"
+                            >
+                              <div className="sc-card-top">
+                                <span className={`sc-semester-badge semester-${course.semester}`}>
+                                  Sem {course.semester}
+                                </span>
+                                <div className="sc-card-type-icon">
+                                  {course.pdfUrl ? <FileText size={14} /> : <ExternalLink size={14} />}
+                                </div>
+                              </div>
+
+                              <div className="sc-card-body">
+                                <div className={`sc-card-icon level-${level}`}>
+                                  <BookOpen size={22} />
+                                </div>
+                                <h3 title={course.title}>{course.title}</h3>
+                                <div className="sc-card-meta">
+                                  <span className="sc-card-creator">
+                                    <Users size={12} />
+                                    {course.creatorInfo?.fullName || "Unknown"}
+                                  </span>
+                                  {course.createdAt && (
+                                    <span className="sc-card-date">
+                                      <Clock size={12} />
+                                      {new Date(course.createdAt).toLocaleDateString()}
+                                    </span>
+                                  )}
+                                </div>
+                              </div>
+
+                              <div className="sc-card-actions">
+                                {course.url && (
+                                  <a href={course.url} target="_blank" rel="noopener noreferrer" className="sc-action-btn drive" title="Open Drive link">
+                                    <ExternalLink size={15} />
+                                    <span>Drive</span>
+                                  </a>
+                                )}
+                                {course.pdfUrl && (
+                                  <a href={course.pdfUrl} target="_blank" rel="noopener noreferrer" className="sc-action-btn pdf" title="View PDF">
+                                    <FileText size={15} />
+                                    <span>PDF</span>
+                                  </a>
+                                )}
+                              </div>
+                            </motion.div>
+                          ))}
+                        </div>
                           </motion.div>
                         )}
                       </AnimatePresence>
-                    </motion.div>
-                  );
-                })
-              )}
-            </div>
+                      </div>
+                    );
+                  })}
+                </motion.div>
+              </>
+            ) : (
+              <div className="sp-empty">
+                <BookOpen size={48} />
+                <h3>No courses available</h3>
+                <p>Courses will appear here once they are added</p>
+              </div>
+            )}
           </section>
         </>
       ) : userIsClient ? (

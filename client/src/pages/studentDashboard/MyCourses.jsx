@@ -1,30 +1,48 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   BookOpen,
-  ChevronDown,
-  ChevronUp,
   FileText,
   ExternalLink,
-  Loader2,
   GraduationCap,
-  BookMarked,
+  AlertCircle,
+  Search,
+  Filter,
+  Layers,
+  Users,
+  Clock,
+  ChevronDown,
 } from "lucide-react";
 import { getAllCourses } from "../../api/courseApi";
 import "./MyCourses.css";
 
-const LEVELS = [
-  { id: 1, title: "Level 1", subtitle: "Foundation Courses" },
-  { id: 2, title: "Level 2", subtitle: "Intermediate Courses" },
-  { id: 3, title: "Level 3", subtitle: "Advanced Courses" },
-];
+const LEVEL_NAMES = {
+  1: "Foundation",
+  2: "Intermediate",
+  3: "Advanced",
+};
 
-const SEMESTERS = [1, 2];
+const LEVEL_ICONS = {
+  1: "\u2605",
+  2: "\u2605\u2605",
+  3: "\u2605\u2605\u2605",
+};
 
 const MyCourses = () => {
   const [courses, setCourses] = useState([]);
-  const [loadingCourses, setLoadingCourses] = useState(true);
-  const [expandedLevel, setExpandedLevel] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [semesterFilter, setSemesterFilter] = useState("all");
+  const [collapsedLevels, setCollapsedLevels] = useState(() => new Set());
+
+  const toggleLevel = (level) => {
+    setCollapsedLevels((prev) => {
+      const next = new Set(prev);
+      if (next.has(level)) next.delete(level);
+      else next.add(level);
+      return next;
+    });
+  };
 
   useEffect(() => {
     fetchCourses();
@@ -32,168 +50,303 @@ const MyCourses = () => {
 
   const fetchCourses = async () => {
     try {
-      setLoadingCourses(true);
+      setLoading(true);
       const response = await getAllCourses();
-      if (response.success) setCourses(response.courses);
-    } catch (error) {
-      console.error("Error fetching courses:", error);
+      if (response.success) {
+        setCourses(response.courses);
+      }
+    } catch {
+      console.error("Failed to load courses");
     } finally {
-      setLoadingCourses(false);
+      setLoading(false);
     }
   };
 
-  const getCoursesForLevelSemester = (level, semester) => {
-    return courses.filter((c) => c.level === level && c.semester === semester);
+  const filteredCourses = useMemo(() => {
+    return courses.filter((course) => {
+      const matchesSearch =
+        course.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        (course.creatorInfo?.fullName || "")
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase());
+      const matchesSemester =
+        semesterFilter === "all" ||
+        course.semester === Number(semesterFilter);
+      return matchesSearch && matchesSemester;
+    });
+  }, [courses, searchQuery, semesterFilter]);
+
+  const groupedByLevel = useMemo(() => {
+    const groups = { 1: [], 2: [], 3: [] };
+    filteredCourses.forEach((course) => {
+      if (groups[course.level]) {
+        groups[course.level].push(course);
+      }
+    });
+    return groups;
+  }, [filteredCourses]);
+
+  const totalCourses = courses.length;
+  const hasCourses = totalCourses > 0;
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.05 },
+    },
   };
 
-  const toggleLevel = (levelId) => {
-    setExpandedLevel(expandedLevel === levelId ? null : levelId);
+  const cardVariants = {
+    hidden: { opacity: 0, y: 16, scale: 0.97 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: { duration: 0.35, ease: "easeOut" },
+    },
   };
+
+  const semesterOptions = [
+    { value: "all", label: "All Semesters" },
+    { value: "1", label: "Semester 1" },
+    { value: "2", label: "Semester 2" },
+  ];
+
+  if (loading) {
+    return (
+      <div className="mc-loader-wrapper">
+        <motion.div
+          animate={{ scale: [1, 1.1, 1], rotate: [0, 8, 0] }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          className="mc-loader-icon"
+        >
+          <BookOpen size={52} />
+        </motion.div>
+        <div className="mc-loader-skeleton-group">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="mc-skeleton-row">
+              <div className="mc-skeleton-block" style={{ width: `${60 + i * 10}%` }} />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="mc-container">
       <div className="mc-header">
-        <div className="mc-badge">
-          <GraduationCap size={20} />
-          <span>My Learning</span>
+        <div className="mc-header-left">
+          <div className="mc-header-icon">
+            <BookOpen size={22} />
+          </div>
+          <div>
+            <h1>My Courses</h1>
+            <p>Browse your course materials by level and semester</p>
+          </div>
         </div>
-        <h1 className="mc-title">
-          My <span className="mc-gradient">Courses</span>
-        </h1>
-        <p className="mc-subtitle">
-          Browse your academic courses by level and semester
-        </p>
       </div>
 
-      <div className="mc-levels">
-        {loadingCourses ? (
-          <div className="mc-loader-wrapper">
-            <motion.div
-              animate={{ scale: [1, 1.1, 1], rotate: [0, 10, 0] }}
-              transition={{ duration: 2, repeat: Infinity }}
-            >
-              <BookOpen size={60} color="#2D5A27" />
-            </motion.div>
-            <p>Loading courses...</p>
+      {hasCourses && (
+        <>
+          <div className="mc-stats-row">
+            <div className="mc-stat-card">
+              <div className="mc-stat-icon courses">
+                <BookOpen size={18} />
+              </div>
+              <div>
+                <span className="mc-stat-value">{totalCourses}</span>
+                <span className="mc-stat-label">Total Courses</span>
+              </div>
+            </div>
           </div>
-        ) : (
-          LEVELS.map((level) => {
-            const isExpanded = expandedLevel === level.id;
-            const sem1Courses = getCoursesForLevelSemester(level.id, 1);
-            const sem2Courses = getCoursesForLevelSemester(level.id, 2);
+
+          <div className="mc-toolbar">
+            <div className="mc-search-wrapper">
+              <Search size={16} className="mc-search-icon" />
+              <input
+                type="text"
+                placeholder="Search by title or instructor..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="mc-search-input"
+              />
+            </div>
+            <div className="mc-filter-group">
+              <Filter size={16} className="mc-filter-icon" />
+              {semesterOptions.map((opt) => (
+                <button
+                  key={opt.value}
+                  className={`mc-filter-chip ${semesterFilter === opt.value ? "active" : ""}`}
+                  onClick={() => setSemesterFilter(opt.value)}
+                >
+                  {opt.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        </>
+      )}
+
+      {!hasCourses ? (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mc-empty"
+        >
+          <div className="mc-empty-icon">
+            <BookOpen size={48} />
+          </div>
+          <h3>No courses available</h3>
+          <p>Courses will appear here once they are added</p>
+        </motion.div>
+      ) : filteredCourses.length === 0 ? (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="mc-empty"
+        >
+          <div className="mc-empty-icon">
+            <Search size={48} />
+          </div>
+          <h3>No matches found</h3>
+          <p>Try adjusting your search or filter</p>
+        </motion.div>
+      ) : (
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="mc-levels"
+        >
+          {[1, 2, 3].map((level) => {
+            const levelCourses = groupedByLevel[level];
+            if (!levelCourses || levelCourses.length === 0) return null;
+
+            const isCollapsed = collapsedLevels.has(level);
 
             return (
-              <motion.div
-                key={level.id}
-                layout
-                className={`mc-level-card ${isExpanded ? "expanded" : ""}`}
-              >
+              <div key={level} className="mc-level-section">
                 <button
-                  className="mc-level-header"
-                  onClick={() => toggleLevel(level.id)}
+                  className={`mc-level-header level-${level}`}
+                  onClick={() => toggleLevel(level)}
                 >
-                  <div className="mc-level-info">
-                    <div className="mc-level-icon">
-                      <BookMarked size={24} />
+                  <div className="mc-level-header-left">
+                    <div className={`mc-level-badge level-${level}`}>
+                      <GraduationCap size={20} />
                     </div>
                     <div>
-                      <h2>{level.title}</h2>
+                      <h2 className="mc-level-name">
+                        Level {level} &mdash; {LEVEL_NAMES[level]}
+                      </h2>
                       <span className="mc-level-subtitle">
-                        {level.subtitle}
+                        {LEVEL_ICONS[level]} &middot; {levelCourses.length} course
+                        {levelCourses.length > 1 ? "s" : ""}
                       </span>
                     </div>
                   </div>
-                  <div className="mc-level-stats">
-                    <span className="mc-course-count">
-                      {sem1Courses.length + sem2Courses.length} courses
-                    </span>
-                    {isExpanded ? (
-                      <ChevronUp size={20} />
-                    ) : (
-                      <ChevronDown size={20} />
-                    )}
+                  <div className="mc-level-header-right">
+                    <span className="mc-level-count">{levelCourses.length}</span>
+                    <motion.div
+                      animate={{ rotate: isCollapsed ? -90 : 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="mc-chevron"
+                    >
+                      <ChevronDown size={18} />
+                    </motion.div>
                   </div>
                 </button>
 
-                <AnimatePresence>
-                  {isExpanded && (
+                <AnimatePresence initial={false}>
+                  {!isCollapsed && (
                     <motion.div
+                      key="grid"
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: "auto", opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.3 }}
-                      className="mc-level-body"
+                      transition={{ duration: 0.25, ease: "easeInOut" }}
+                      className="mc-grid-wrapper"
                     >
-                      <div className="mc-semesters">
-                        {SEMESTERS.map((sem) => {
-                          const semCourses =
-                            sem === 1 ? sem1Courses : sem2Courses;
-                          return (
-                            <div key={sem} className="mc-semester">
-                              <div className="mc-semester-header">
-                                <GraduationCap size={18} />
-                                <h3>Semester {sem}</h3>
-                                <span className="mc-semester-count">
-                                  {semCourses.length} courses
-                                </span>
-                              </div>
+                      <div className="mc-grid">
+                        {levelCourses.map((course, idx) => (
+                          <motion.div
+                            key={course._id}
+                            variants={cardVariants}
+                            layout
+                            className="mc-course-card"
+                          >
+                      <div className="mc-card-top">
+                        <span
+                          className={`mc-semester-badge semester-${course.semester}`}
+                        >
+                          Sem {course.semester}
+                        </span>
+                        <div className="mc-card-type-icon">
+                          {course.pdfUrl ? (
+                            <FileText size={14} />
+                          ) : (
+                            <ExternalLink size={14} />
+                          )}
+                        </div>
+                      </div>
 
-                              {semCourses.length === 0 ? (
-                                <div className="mc-empty">
-                                  <BookOpen size={24} />
-                                  <p>No courses available yet for this semester</p>
-                                </div>
-                              ) : (
-                                <div className="mc-course-list">
-                                  {semCourses.map((course) => (
-                                    <motion.div
-                                      key={course._id}
-                                      className="mc-course-item"
-                                      initial={{ opacity: 0, y: 10 }}
-                                      animate={{ opacity: 1, y: 0 }}
-                                    >
-                                      <div className="mc-course-icon">
-                                        <FileText size={20} />
-                                      </div>
-                                      <div className="mc-course-content">
-                                        <h4>{course.title}</h4>
-                                        {course.createdAt && (
-                                          <span className="mc-course-date">
-                                            Added{" "}
-                                            {new Date(
-                                              course.createdAt
-                                            ).toLocaleDateString()}
-                                          </span>
-                                        )}
-                                      </div>
-                                      {course.pdfUrl && (
-                                        <a
-                                          href={course.pdfUrl}
-                                          target="_blank"
-                                          rel="noopener noreferrer"
-                                          className="mc-pdf-btn"
-                                        >
-                                          <FileText size={16} />
-                                          <span>View PDF</span>
-                                          <ExternalLink size={14} />
-                                        </a>
-                                      )}
-                                    </motion.div>
-                                  ))}
-                                </div>
-                              )}
-                            </div>
-                          );
-                        })}
+                      <div className="mc-card-body">
+                        <div className={`mc-card-icon level-${level}`}>
+                          <BookOpen size={22} />
+                        </div>
+                        <h3 title={course.title}>{course.title}</h3>
+                        <div className="mc-card-meta">
+                          <span className="mc-card-creator">
+                            <Users size={12} />
+                            {course.creatorInfo?.fullName || "Unknown"}
+                          </span>
+                          {course.createdAt && (
+                            <span className="mc-card-date">
+                              <Clock size={12} />
+                              {new Date(course.createdAt).toLocaleDateString()}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      <div className="mc-card-actions">
+                        {course.url && (
+                          <a
+                            href={course.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="mc-action-btn drive"
+                            title="Open Drive link"
+                          >
+                            <ExternalLink size={15} />
+                            <span>Drive</span>
+                          </a>
+                        )}
+                        {course.pdfUrl && (
+                          <a
+                            href={course.pdfUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="mc-action-btn pdf"
+                            title="View PDF"
+                          >
+                            <FileText size={15} />
+                            <span>PDF</span>
+                          </a>
+                        )}
                       </div>
                     </motion.div>
-                  )}
-                </AnimatePresence>
-              </motion.div>
+                  ))}
+                </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
             );
-          })
-        )}
-      </div>
+          })}
+        </motion.div>
+      )}
     </div>
   );
 };
