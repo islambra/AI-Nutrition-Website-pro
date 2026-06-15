@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import {
   ArrowLeft, Calendar, DollarSign, Loader2, Info,
-  Upload, Check, CreditCard, Smartphone, FileText, BookOpen, Clock
+  Upload, Check, CreditCard, Smartphone, FileText, BookOpen, Clock, ExternalLink
 } from 'lucide-react';
 import { initiatePayment, getDieteticienPaymentInfo } from '../api/paymentApi';
 import { getFormationById } from '../api/formationApi';
@@ -188,6 +188,9 @@ function FormationCheckoutPage() {
                   </div>
                 </div>
               </div>
+              <button className="summary-nav-link" onClick={() => navigate(`/services`)}>
+                <ExternalLink size={14} /> View Formation Details
+              </button>
             </div>
           </motion.div>
 
@@ -235,30 +238,34 @@ function FormationCheckoutPage() {
                 )}
               </div>
 
-              <div className="form-section-payment" style={{ marginTop: '24px' }}>
+              <div className="form-section-payment">
                 <h4>Upload Payment Proof</h4>
-                <p style={{ fontSize: '13px', color: '#6B7280', marginBottom: '12px' }}>
-                  After making the transfer, upload a screenshot or receipt as proof.
-                </p>
+                <p>After making the transfer, upload a screenshot or receipt as proof.</p>
                 <div
                   className="upload-zone"
                   onClick={() => document.getElementById('proof-input')?.click()}
-                  style={{
-                    border: '2px dashed #D1D5DB', borderRadius: '12px', padding: '24px',
-                    textAlign: 'center', cursor: 'pointer', background: '#FAFAFA'
-                  }}
                 >
                   <input id="proof-input" type="file" accept="image/*" onChange={handleFileChange} style={{ display: 'none' }} />
                   {proofPreview ? (
-                    <div>
-                      <img src={proofPreview} alt="Proof preview" style={{ maxHeight: '150px', borderRadius: '8px', marginBottom: '8px' }} />
-                      <div style={{ fontSize: '13px', color: '#6B7280' }}><FileText size={14} /> {proofFile?.name}</div>
+                    <div style={{ width: '100%' }}>
+                      <div className="upload-preview">
+                        <img src={proofPreview} alt="Proof preview" />
+                        <div className="upload-preview-overlay">
+                          <Upload size={28} />
+                          <span>Change file</span>
+                        </div>
+                      </div>
+                      <div className="upload-file-name">
+                        <FileText size={14} /> {proofFile?.name}
+                      </div>
                     </div>
                   ) : (
-                    <div>
-                      <Upload size={32} style={{ color: '#9CA3AF', marginBottom: '8px' }} />
-                      <p style={{ fontWeight: 600, color: '#374151' }}>Click to upload proof</p>
-                      <p style={{ fontSize: '12px', color: '#9CA3AF' }}>Screenshot or receipt image</p>
+                    <div className="upload-zone-content">
+                      <div className="upload-zone-icon-wrapper">
+                        <Upload size={24} />
+                      </div>
+                      <p>Click to upload proof</p>
+                      <p>Screenshot or receipt image</p>
                     </div>
                   )}
                 </div>

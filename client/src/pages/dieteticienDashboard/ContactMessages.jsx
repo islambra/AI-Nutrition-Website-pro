@@ -33,8 +33,6 @@ const ContactMessages = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
   const [refreshing, setRefreshing] = useState(false);
-  const [viewMode, setViewMode] = useState("table");
-
   // Fetch all contacts
   useEffect(() => {
     fetchContacts();
@@ -218,20 +216,6 @@ const ContactMessages = () => {
           animate={{ x: 0, opacity: 1 }}
           transition={{ delay: 0.2 }}
         >
-          <div className="view-toggle">
-            <button 
-              className={`view-btn ${viewMode === 'table' ? 'active' : ''}`}
-              onClick={() => setViewMode('table')}
-            >
-              Table View
-            </button>
-            <button 
-              className={`view-btn ${viewMode === 'grid' ? 'active' : ''}`}
-              onClick={() => setViewMode('grid')}
-            >
-              Grid View
-            </button>
-          </div>
           <button 
             onClick={refreshContacts} 
             className="refresh-btn"
@@ -340,7 +324,7 @@ const ContactMessages = () => {
         </div>
       </motion.div>
 
-      {/* Messages Content - Table View */}
+      {/* Messages Content - Grid View */}
       {currentContacts.length === 0 ? (
         <motion.div 
           className="empty-state"
@@ -362,74 +346,6 @@ const ContactMessages = () => {
             </button>
           )}
         </motion.div>
-      ) : viewMode === "table" ? (
-        <>
-          <div className="table-wrapper">
-            <table className="messages-table">
-              <thead>
-                <tr>
-                  <th>Customer</th>
-                  <th>Subject</th>
-                  <th>Message Preview</th>
-                  <th className="actions-header">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                <AnimatePresence>
-                  {currentContacts.map((contact, index) => (
-                    <motion.tr
-                      key={contact._id}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, x: -20 }}
-                      transition={{ delay: index * 0.03 }}
-                      className="message-row"
-                    >
-                      <td className="customer-cell">
-                        <div className="customer-avatar">
-                          {contact.name.charAt(0).toUpperCase()}
-                        </div>
-                        <div className="customer-info">
-                          <span className="customer-name">{contact.name}</span>
-                          <span className="customer-email">{contact.email}</span>
-                        </div>
-                      </td>
-                      <td className="subject-cell">
-                        <span className="subject-text">{contact.subject}</span>
-                      </td>
-                      <td className="preview-cell">
-                        <span className="preview-text">
-                          {contact.message.substring(0, 60)}
-                          {contact.message.length > 60 && "..."}
-                        </span>
-                      </td>
-                      <td className="actions-cell">
-                        <div className="action-buttons">
-                          <button
-                            onClick={() => handleView(contact)}
-                            className="action-btn view-btn"
-                            title="View Details"
-                          >
-                            <Eye size={16} />
-                            <span>View</span>
-                          </button>
-                          <button
-                            onClick={() => handleDelete(contact._id, contact.name)}
-                            className="action-btn delete-btn"
-                            title="Delete Message"
-                          >
-                            <Trash2 size={16} />
-                            <span>Delete</span>
-                          </button>
-                        </div>
-                      </td>
-                    </motion.tr>
-                  ))}
-                </AnimatePresence>
-              </tbody>
-            </table>
-          </div>
-        </>
       ) : (
         <div className="grid-view">
           <AnimatePresence>
