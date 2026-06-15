@@ -1,7 +1,6 @@
 import Payment from '../models/Payment.js';
 import UserPlan from '../models/UserPlan.js';
 import UserFormation from '../models/UserFormation.js';
-import AiAccess from '../models/AiAccess.js';
 import CourseSubscription from '../models/CourseSubscription.js';
 import Consultation from '../models/Consultation.js';
 import imagekit from '../configs/imageKit.js';
@@ -19,9 +18,6 @@ export const getAllPayments = async (req, res) => {
         type = 'Plan';
       } else if (payment.courseSubscription) {
         type = 'Course Subscription';
-      } else {
-        const aiAccess = await AiAccess.findOne({ payment: payment._id });
-        type = aiAccess ? 'AI Tracker' : 'Unknown';
       }
       return {
         ...payment.toJSON(),
@@ -51,7 +47,6 @@ export const deletePayment = async (req, res) => {
 
     await UserPlan.deleteMany({ payment: id });
     await UserFormation.deleteMany({ payment: id });
-    await AiAccess.deleteMany({ payment: id });
     await CourseSubscription.deleteMany({ payment: id });
 
     await Payment.findByIdAndDelete(id);
