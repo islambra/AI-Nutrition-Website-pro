@@ -28,6 +28,7 @@ const ManageCourseSubscriptions = () => {
   const [modalType, setModalType] = useState(null); // 'approve' | 'reject'
   const [selectedPayment, setSelectedPayment] = useState(null);
   const [processing, setProcessing] = useState(null);
+  const [previewImage, setPreviewImage] = useState(null);
 
   useEffect(() => {
     fetchPending();
@@ -109,6 +110,27 @@ const ManageCourseSubscriptions = () => {
   return (
     <div className="mcs-container">
       <AnimatePresence>
+        {previewImage && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="mcs-modal-overlay"
+            onClick={() => setPreviewImage(null)}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              className="mcs-image-modal"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button className="mcs-image-close" onClick={() => setPreviewImage(null)}>×</button>
+              <img src={previewImage} alt="Payment proof" className="mcs-proof-image" />
+            </motion.div>
+          </motion.div>
+        )}
+
         {modalOpen && selectedPayment && (
           <motion.div
             initial={{ opacity: 0 }}
@@ -250,14 +272,12 @@ const ManageCourseSubscriptions = () => {
                   <span className="mcs-date">{new Date(payment.createdAt).toLocaleDateString()}</span>
                   <div className="mcs-card-actions">
                     {payment.proofImage ? (
-                      <a
-                        href={payment.proofImage}
-                        target="_blank"
-                        rel="noopener noreferrer"
+                      <button
                         className="mcs-proof-btn"
+                        onClick={() => setPreviewImage(payment.proofImage)}
                       >
                         <Eye size={14} /> Proof
-                      </a>
+                      </button>
                     ) : (
                       <span className="mcs-no-proof">No proof</span>
                     )}

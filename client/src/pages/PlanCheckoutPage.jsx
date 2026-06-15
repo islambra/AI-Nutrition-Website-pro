@@ -94,7 +94,7 @@ function PlanCheckoutPage() {
       if (res.success) {
         setSubmitted(true);
         toast.success('Payment proof submitted! Waiting for confirmation.');
-        setTimeout(() => navigate('/my-plans'), 3000);
+        setTimeout(() => navigate('/client/my-requests'), 3000);
       }
     } catch (err) {
       toast.error(err.response?.data?.message || 'Submission failed');

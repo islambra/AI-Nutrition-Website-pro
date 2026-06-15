@@ -71,7 +71,7 @@ function CourseSubscriptionCheckout() {
       if (res.success) {
         setSubmitted(true);
         toast.success('Payment proof submitted! Waiting for admin approval.');
-        setTimeout(() => navigate('/student/my-courses'), 3000);
+        setTimeout(() => navigate('/student/my-requests'), 3000);
       }
     } catch (err) {
       toast.error(err.response?.data?.message || 'Submission failed');

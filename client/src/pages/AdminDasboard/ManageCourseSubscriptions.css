@@ -388,6 +388,49 @@
   background: #fee2e2;
 }
 
+/* Image Preview Modal */
+.mcs-image-modal {
+  background: white;
+  border-radius: 20px;
+  padding: 12px;
+  max-width: 600px;
+  width: 100%;
+  box-shadow: 0 30px 60px -15px rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+
+.mcs-image-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  transition: background 0.2s;
+}
+
+.mcs-image-close:hover {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.mcs-proof-image {
+  width: 100%;
+  height: auto;
+  max-height: 80vh;
+  object-fit: contain;
+  border-radius: 12px;
+  display: block;
+}
+
 /* Modal */
 .mcs-modal-overlay {
   position: fixed;

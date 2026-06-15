@@ -46,8 +46,10 @@ export const adminMenuLinks = [
 export const studentMenuLinks = [
   { name: "My Courses", path: "/student/my-courses", icon: bookOpenIcon },
   { name: "My Formations", path: "/student/my-formations", icon: listIcon },
+  { name: "My Requests", path: "/student/my-requests", icon: clockIcon },
 ];
 export const clientMenuLinks = [
   { name: "Dashboard", path: "/client/dashboard", icon: homeIcon },
   { name: "My Plans", path: "/client/my-plans", icon: listIcon },
+  { name: "My Requests", path: "/client/my-requests", icon: clockIcon },
 ];

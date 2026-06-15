@@ -239,6 +239,58 @@ export const checkPlanOwnership = async (req, res) => {
   }
 };
 
+// Get all payment requests for the logged-in user
+export const getMyRequests = async (req, res) => {
+  try {
+    const payments = await Payment.find({ user: req.user.id })
+      .populate("plan", "planName planImage price")
+      .populate("formation", "title image price")
+      .sort({ createdAt: -1 });
+
+    const enriched = payments.map(p => ({
+      _id: p._id,
+      serviceType: p.plan ? "plan" : p.formation ? "formation" : "course",
+      serviceName: p.plan?.planName || p.formation?.title || "Course Subscription",
+      serviceImage: p.plan?.planImage || p.formation?.image || null,
+      amount: p.amount,
+      paymentMethod: p.paymentMethod,
+      status: p.status,
+      proofImage: p.proofImage,
+      createdAt: p.createdAt,
+      updatedAt: p.updatedAt
+    }));
+
+    res.status(200).json({ success: true, data: enriched });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
+// Delete a user's own rejected payment request
+export const deleteMyRequest = async (req, res) => {
+  try {
+    const payment = await Payment.findOne({
+      _id: req.params.id,
+      user: req.user.id,
+      status: "rejected"
+    });
+
+    if (!payment) {
+      return res.status(404).json({ success: false, message: "Request not found or already deleted" });
+    }
+
+    if (payment.proofImageFileId) {
+      try { await imagekit.deleteFile(payment.proofImageFileId); } catch (_) {}
+    }
+
+    await Payment.findByIdAndDelete(payment._id);
+
+    res.status(200).json({ success: true, message: "Request deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
+
 // Get user's purchased plans
 export const getUserPlans = async (req, res) => {
   try {

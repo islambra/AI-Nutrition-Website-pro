@@ -11,6 +11,7 @@ import ProfilePage from './pages/ProfilePage.jsx'
 import ClientLayout from './pages/clientDashboard/ClientLayout.jsx'
 import ClientDashboardHome from './pages/clientDashboard/ClientDashboardHome.jsx'
 import ClientPlans from './pages/clientDashboard/ClientPlans.jsx'
+import ClientRequests from './pages/clientDashboard/ClientRequests.jsx'
 import AITrackerPage from './pages/AITrackerPage.jsx'
 import AllPlansPage from './pages/AllPlansPage.jsx'
 import PlanCheckoutPage from './pages/PlanCheckoutPage.jsx'
@@ -51,6 +52,7 @@ import FormationSessions from './pages/dieteticienDashboard/FormationSessions.js
 import StudentLayout from './pages/studentDashboard/StudentLayout.jsx'
 import MyCoursesPage from './pages/studentDashboard/MyCourses.jsx'
 import MyFormationsPage from './pages/studentDashboard/MyFormationsPage.jsx'
+import StudentRequests from './pages/studentDashboard/StudentRequests.jsx'
 import ManageCourseSubscriptions from './pages/AdminDasboard/ManageCourseSubscriptions.jsx'
 import LoginGate from './components/LoginGate.jsx'
 import ProtectedRoute from './components/ProtectedRoute.jsx'
@@ -95,6 +97,7 @@ function App() {
           <Route path="/client" element={<ProtectedRoute roles={['client']}><ClientLayout /></ProtectedRoute>}>
               <Route path="dashboard" element={<ClientDashboardHome />} />
               <Route path="my-plans" element={<ClientPlans />} />
+              <Route path="my-requests" element={<ClientRequests />} />
           </Route>
 
           <Route path="/dieteticien" element={<ProtectedRoute roles={['dieteticien', 'admin']}><Layout /></ProtectedRoute>}>
@@ -118,6 +121,7 @@ function App() {
               <Route path="dashboard" element={<Navigate to="../my-courses" replace />} />
               <Route path="my-courses" element={<MyCoursesPage />} />
               <Route path="my-formations" element={<MyFormationsPage />} />
+              <Route path="my-requests" element={<StudentRequests />} />
           </Route>
           <Route path="/admin" element={<ProtectedRoute roles={['admin']}><AdminLayout /></ProtectedRoute>}>
               <Route path="add-admin-nutritionist" element={<AddAdminNutritionist />} />

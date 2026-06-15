@@ -38,6 +38,18 @@ export const rejectPayment = async (paymentId) => {
   return response.data;
 };
 
+// Get all payment requests for the logged-in user
+export const getMyRequests = async () => {
+  const response = await axiosInstance.get('/payments/my-requests');
+  return response.data;
+};
+
+// Delete a user's own rejected payment request
+export const deleteMyRequest = async (requestId) => {
+  const response = await axiosInstance.delete(`/payments/my-requests/${requestId}`);
+  return response.data;
+};
+
 // Get a dieteticien's payment info (CCP, BaridiMob) by user ID
 export const getDieteticienPaymentInfo = async (dieteticienId) => {
   const response = await axiosInstance.get(`/user/${dieteticienId}/payment-info`);

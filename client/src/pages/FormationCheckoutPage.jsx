@@ -94,7 +94,7 @@ function FormationCheckoutPage() {
       if (res.success) {
         setSubmitted(true);
         toast.success('Payment proof submitted! Waiting for confirmation.');
-        setTimeout(() => navigate('/my-formations'), 3000);
+        setTimeout(() => navigate('/student/my-requests'), 3000);
       }
     } catch (err) {
       toast.error(err.response?.data?.message || 'Submission failed');
