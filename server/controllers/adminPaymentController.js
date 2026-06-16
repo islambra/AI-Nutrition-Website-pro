@@ -8,19 +8,22 @@ import imagekit from '../configs/imageKit.js';
 
 export const getAllPayments = async (req, res) => {
   try {
-    const payments = await Payment.find()
+    const payments = await Payment.find({ status: "approved" })
       .populate('user', 'fullName email')
       .populate('plan', 'name price')
+      .populate('formation', 'title price')
       .sort({ createdAt: -1 });
 
     const enrichedPayments = await Promise.all(payments.map(async (payment) => {
       let type = 'Unknown';
       if (payment.plan) {
         type = 'Plan';
+      } else if (payment.formation) {
+        type = 'Formation';
       } else if (payment.courseSubscription) {
         type = 'Course Subscription';
       } else if (payment.aiToolSubscription) {
-        type = 'AI Tool Subscription';
+        type = 'AI Tracker';
       }
       return {
         ...payment.toJSON(),

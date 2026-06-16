@@ -4,7 +4,8 @@ import { getAllPaymentsAdmin, deletePaymentAdmin } from '../../api/paymentApi';
 import {
   Trash2, Search, Filter, Package, CreditCard, DollarSign,
   X, AlertTriangle, CheckCircle, XCircle,
-  BookOpen, Calendar, ChevronDown, Wallet, ArrowUpRight
+  BookOpen, Calendar, ChevronDown, Wallet, ArrowUpRight,
+  GraduationCap
 } from 'lucide-react';
 import './AdminPayments.css';
 
@@ -26,6 +27,12 @@ const TYPE_CONFIG = {
     color: '#92400e',
     bg: '#fef3c7',
     gradient: 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
+  },
+  Formation: {
+    icon: GraduationCap,
+    color: '#7c3aed',
+    bg: '#ede9fe',
+    gradient: 'linear-gradient(135deg, #ede9fe 0%, #ddd6fe 100%)',
   },
 };
 
@@ -147,9 +154,11 @@ const AdminPayments = () => {
 
   const totalRevenue = filteredPayments.reduce((sum, p) => sum + (p.amount || 0), 0);
   const planCount = filteredPayments.filter(p => p.type === 'Plan').length;
+  const formationCount = filteredPayments.filter(p => p.type === 'Formation').length;
   const aiCount = filteredPayments.filter(p => p.type === 'AI Tracker').length;
   const courseSubCount = filteredPayments.filter(p => p.type === 'Course Subscription').length;
   const planRevenue = filteredPayments.filter(p => p.type === 'Plan').reduce((sum, p) => sum + p.amount, 0);
+  const formationRevenue = filteredPayments.filter(p => p.type === 'Formation').reduce((sum, p) => sum + p.amount, 0);
   const aiRevenue = filteredPayments.filter(p => p.type === 'AI Tracker').reduce((sum, p) => sum + p.amount, 0);
   const courseSubRevenue = filteredPayments.filter(p => p.type === 'Course Subscription').reduce((sum, p) => sum + p.amount, 0);
 
@@ -165,6 +174,12 @@ const AdminPayments = () => {
       value: `${planCount} · ${planRevenue.toLocaleString()} DZD`,
       icon: Package,
       cssClass: 'plan-stat',
+    },
+    {
+      label: 'Formation Sales',
+      value: `${formationCount} · ${formationRevenue.toLocaleString()} DZD`,
+      icon: GraduationCap,
+      cssClass: 'formation-stat',
     },
     {
       label: 'AI Tracker Sales',
@@ -300,6 +315,7 @@ const AdminPayments = () => {
                 <select value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)}>
                   <option value="all">All Types</option>
                   <option value="Plan">Plan</option>
+                  <option value="Formation">Formation</option>
                   <option value="AI Tracker">AI Tracker</option>
                   <option value="Course Subscription">Course Subscription</option>
                 </select>

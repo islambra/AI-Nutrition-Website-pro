@@ -166,7 +166,7 @@
 /* ---------- Stats ---------- */
 .ap-stats {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   gap: 10px;
   margin-bottom: 28px;
 }
@@ -223,6 +223,11 @@
 .ap-stat-icon.course-stat {
   background: #fef3c7;
   color: #f59e0b;
+}
+
+.ap-stat-icon.formation-stat {
+  background: #ede9fe;
+  color: #7c3aed;
 }
 
 .ap-stat-icon.transactions-stat {
