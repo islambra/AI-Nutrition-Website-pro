@@ -247,18 +247,32 @@ export const getMyRequests = async (req, res) => {
       .populate("formation", "title image price")
       .sort({ createdAt: -1 });
 
-    const enriched = payments.map(p => ({
-      _id: p._id,
-      serviceType: p.plan ? "plan" : p.formation ? "formation" : "course",
-      serviceName: p.plan?.planName || p.formation?.title || "Course Subscription",
-      serviceImage: p.plan?.planImage || p.formation?.image || null,
-      amount: p.amount,
-      paymentMethod: p.paymentMethod,
-      status: p.status,
-      proofImage: p.proofImage,
-      createdAt: p.createdAt,
-      updatedAt: p.updatedAt
-    }));
+    const enriched = payments.map(p => {
+      let serviceType = "ai-tool";
+      let serviceName = "AI Scanner";
+      if (p.plan) {
+        serviceType = "plan";
+        serviceName = p.plan?.planName || "Plan";
+      } else if (p.formation) {
+        serviceType = "formation";
+        serviceName = p.formation?.title || "Formation";
+      } else if (p.courseSubscription) {
+        serviceType = "course";
+        serviceName = "Course Subscription";
+      }
+      return {
+        _id: p._id,
+        serviceType,
+        serviceName,
+        serviceImage: p.plan?.planImage || p.formation?.image || null,
+        amount: p.amount,
+        paymentMethod: p.paymentMethod,
+        status: p.status,
+        proofImage: p.proofImage,
+        createdAt: p.createdAt,
+        updatedAt: p.updatedAt
+      };
+    });
 
     res.status(200).json({ success: true, data: enriched });
   } catch (error) {

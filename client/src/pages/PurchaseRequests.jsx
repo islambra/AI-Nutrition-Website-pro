@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useLocation } from 'react-router-dom';
 import {
   Search, X, Filter, Clock, XCircle, DollarSign, Trash2,
   CreditCard, Package, GraduationCap, BookOpen, Calendar,
@@ -16,11 +17,12 @@ const STATUS_CONFIG = {
 };
 
 const PurchaseRequests = ({ defaultType = 'all' }) => {
+  const locationState = useLocation().state;
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
-  const [typeFilter, setTypeFilter] = useState(defaultType);
+  const [typeFilter, setTypeFilter] = useState(locationState?.defaultType || defaultType);
   const [statusFilter, setStatusFilter] = useState('pending-rejected');
   const [sortBy, setSortBy] = useState('newest');
   const [showFilters, setShowFilters] = useState(false);
@@ -114,7 +116,8 @@ const PurchaseRequests = ({ defaultType = 'all' }) => {
     { value: 'all', label: 'All', icon: Layers },
     { value: 'plan', label: 'Plans', icon: Package },
     { value: 'formation', label: 'Formations', icon: GraduationCap },
-    { value: 'course', label: 'Courses', icon: BookOpen }
+    { value: 'course', label: 'Courses', icon: BookOpen },
+    { value: 'ai-tool', label: 'AI Scanner', icon: Sparkles }
   ];
 
   if (loading) return (
@@ -319,7 +322,7 @@ const PurchaseRequests = ({ defaultType = 'all' }) => {
           </p>
           {(searchTerm || typeFilter !== defaultType || statusFilter !== 'pending-rejected') && (
             <button
-              onClick={() => { setSearchTerm(''); setTypeFilter(defaultType); setStatusFilter('pending-rejected'); }}
+              onClick={() => { setSearchTerm(''); setTypeFilter(locationState?.defaultType || defaultType); setStatusFilter('pending-rejected'); }}
               className="pr-clear-filters-btn"
             >
               Clear all filters
@@ -349,11 +352,12 @@ const PurchaseRequests = ({ defaultType = 'all' }) => {
                         {req.serviceType === 'plan' && <Package size={20} />}
                         {req.serviceType === 'formation' && <GraduationCap size={20} />}
                         {req.serviceType === 'course' && <BookOpen size={20} />}
+                        {req.serviceType === 'ai-tool' && <Sparkles size={20} />}
                       </div>
                       <div className="pr-service-info">
                         <h3>{req.serviceName}</h3>
                         <span className="pr-service-type">
-                          {req.serviceType === 'plan' ? 'Nutrition Plan' : req.serviceType === 'formation' ? 'Formation' : 'Course Subscription'}
+                          {req.serviceType === 'plan' ? 'Nutrition Plan' : req.serviceType === 'formation' ? 'Formation' : req.serviceType === 'course' ? 'Course Subscription' : 'AI Scanner'}
                         </span>
                       </div>
                     </div>

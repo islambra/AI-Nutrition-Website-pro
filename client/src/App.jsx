@@ -12,11 +12,12 @@ import ClientLayout from './pages/clientDashboard/ClientLayout.jsx'
 import ClientDashboardHome from './pages/clientDashboard/ClientDashboardHome.jsx'
 import ClientPlans from './pages/clientDashboard/ClientPlans.jsx'
 import ClientRequests from './pages/clientDashboard/ClientRequests.jsx'
-import AITrackerPage from './pages/AITrackerPage.jsx'
 import AllPlansPage from './pages/AllPlansPage.jsx'
 import PlanCheckoutPage from './pages/PlanCheckoutPage.jsx'
 import FormationCheckoutPage from './pages/FormationCheckoutPage.jsx'
 import CourseSubscriptionCheckout from './pages/CourseSubscriptionCheckout.jsx'
+import AiToolPage from './pages/AiToolPage.jsx'
+import AiToolCheckout from './pages/AiToolCheckout.jsx'
 import Header from './components/Header.jsx' 
 import Footer from './components/Footer.jsx' 
 import CustomCursor from './components/CustomCursor.jsx'
@@ -54,6 +55,7 @@ import MyCoursesPage from './pages/studentDashboard/MyCourses.jsx'
 import MyFormationsPage from './pages/studentDashboard/MyFormationsPage.jsx'
 import StudentRequests from './pages/studentDashboard/StudentRequests.jsx'
 import ManageCourseSubscriptions from './pages/AdminDasboard/ManageCourseSubscriptions.jsx'
+import ManageAiToolSubscriptions from './pages/AdminDasboard/ManageAiToolSubscriptions.jsx'
 import LoginGate from './components/LoginGate.jsx'
 import ProtectedRoute from './components/ProtectedRoute.jsx'
 import ChatBubble from './components/chat/ChatBubble.jsx'
@@ -87,12 +89,13 @@ function App() {
           <Route path='/blogs' element={<LoginGate><PageTransition><BlogsPage /></PageTransition></LoginGate>} /> 
           <Route path='/profile' element={<LoginGate><PageTransition><ProfilePage /></PageTransition></LoginGate>} /> 
           <Route path='/my-formations' element={<LoginGate><PageTransition><MyFormationsPage /></PageTransition></LoginGate>} /> 
-          <Route path='/ai-tracker' element={<LoginGate><PageTransition><AITrackerPage /></PageTransition></LoginGate>} /> 
+          <Route path="/ai-tool" element={<LoginGate><PageTransition><AiToolPage /></PageTransition></LoginGate>} /> 
           <Route path="/blog/:id" element={<LoginGate><PageTransition><BlogDetailsPage /></PageTransition></LoginGate>} />
           <Route path="/allPlans" element={<LoginGate><PageTransition><AllPlansPage /></PageTransition></LoginGate>} />
           <Route path="/checkout/plan/:planId" element={<LoginGate><PageTransition><PlanCheckoutPage /></PageTransition></LoginGate>} />
           <Route path="/checkout/formation/:formationId" element={<LoginGate><PageTransition><FormationCheckoutPage /></PageTransition></LoginGate>} />
           <Route path="/checkout/course-subscription" element={<LoginGate><PageTransition><CourseSubscriptionCheckout /></PageTransition></LoginGate>} />
+          <Route path="/checkout/ai-tool" element={<LoginGate><PageTransition><AiToolCheckout /></PageTransition></LoginGate>} />
 
           <Route path="/client" element={<ProtectedRoute roles={['client']}><ClientLayout /></ProtectedRoute>}>
               <Route path="dashboard" element={<ClientDashboardHome />} />
@@ -131,6 +134,7 @@ function App() {
               <Route path="create-course" element={<CreateCourse />} />
               <Route path="all-courses" element={<AllCourses />} />
               <Route path="course-subscriptions" element={<ManageCourseSubscriptions />} />
+              <Route path="ai-tool-subscriptions" element={<ManageAiToolSubscriptions />} />
               <Route path="my-Profile" element={<EditUserProfile />} />
           </Route>
         </Routes>

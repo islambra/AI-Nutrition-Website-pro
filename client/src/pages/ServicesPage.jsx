@@ -396,7 +396,7 @@ function ServicesPage() {
                 <h2>SNAP SYNC <br /> <span className="ServicesPage-Accent-Text">THRIVE</span></h2>      
                 <p className="ServicesPage-AI-Description">Our neural networks eliminate the friction of data entry. Transform any meal into a high-fidelity metabolic readout instantly.</p>
 
-                <NavLink to="/ai-tracker" className="ServicesPage-AI-Btn">
+                <NavLink to="/ai-tool" className="ServicesPage-AI-Btn">
                   ACCESS AI ENGINE <Zap size={20} />
                 </NavLink>
 
@@ -552,7 +552,7 @@ function ServicesPage() {
                 <h2>SNAP SYNC <br /> <span className="ServicesPage-Accent-Text">THRIVE</span></h2>      
                 <p className="ServicesPage-AI-Description">Our neural networks eliminate the friction of data entry. Transform any meal into a high-fidelity metabolic readout instantly.</p>
 
-                <NavLink to="/ai-tracker" className="ServicesPage-AI-Btn">
+                <NavLink to="/ai-tool" className="ServicesPage-AI-Btn">
                   ACCESS AI ENGINE <Zap size={20} />
                 </NavLink>
 

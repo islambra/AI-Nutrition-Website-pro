@@ -143,9 +143,9 @@ function Header() {
                       <User size={16} />
                       Profile
                     </NavLink>
-                    <NavLink to="/ai-tracker" className="dropdown-item">
+                    <NavLink to="/ai-tool" className="dropdown-item">
                       <Zap size={16} />
-                      AI Tracker
+                      AI Scanner
                     </NavLink>
                   </>
                 )}
@@ -222,9 +222,9 @@ function Header() {
                   <User size={16} />
                   Profile
                 </NavLink>
-                <NavLink to="/ai-tracker" className="mobile-nav-item">
+                <NavLink to="/ai-tool" className="mobile-nav-item">
                   <Zap size={16} />
-                  AI Tracker
+                  AI Scanner
                 </NavLink>
               </>
             )}

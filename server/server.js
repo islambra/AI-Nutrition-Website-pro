@@ -15,6 +15,7 @@ import adminRoutes from './routes/adminRoutes.js';
 import dieteticienRoutes from './routes/dieteticienRoutes.js';
 import courseRoutes from './routes/courseRoutes.js';
 import formationRoutes from './routes/formationRoutes.js';
+import aiToolRoutes from './routes/aiToolRoutes.js';
 import chatRoutes from './routes/chatRoutes.js';
 import initializeSocket from './socket/socketServer.js';
 await connectDB();
@@ -35,6 +36,7 @@ app.use('/api/dieteticien', dieteticienRoutes);
 app.use('/api/courses', courseRoutes);
 app.use('/api/formations', formationRoutes);
 app.use('/api/chat', chatRoutes);
+app.use('/api/ai-tool', aiToolRoutes);
 
 const PORT = 5000;
 

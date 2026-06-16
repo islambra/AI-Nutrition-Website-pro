@@ -6,7 +6,10 @@ import {
   deletePayment,
   getPendingCourseSubscriptions,
   approveCourseSubscription,
-  rejectCourseSubscription
+  rejectCourseSubscription,
+  getPendingAiToolSubscriptions,
+  approveAiToolSubscription,
+  rejectAiToolSubscription
 } from '../controllers/adminPaymentController.js';
 import {
   getPendingDieteticiens,
@@ -29,5 +32,10 @@ router.delete('/dieteticiens/reject/:id', rejectDieteticien);
 router.get('/course-subscriptions/pending', getPendingCourseSubscriptions);
 router.post('/course-subscriptions/approve/:id', approveCourseSubscription);
 router.post('/course-subscriptions/reject/:id', rejectCourseSubscription);
+
+// AI tool subscription management
+router.get('/ai-tool-subscriptions/pending', getPendingAiToolSubscriptions);
+router.post('/ai-tool-subscriptions/approve/:id', approveAiToolSubscription);
+router.post('/ai-tool-subscriptions/reject/:id', rejectAiToolSubscription);
 
 export default router;

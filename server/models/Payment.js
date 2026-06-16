@@ -20,6 +20,10 @@ const paymentSchema = new mongoose.Schema({
     type: Boolean,
     default: null
   },
+  aiToolSubscription: {
+    type: Boolean,
+    default: null
+  },
   amount: {
     type: Number,
     required: true
