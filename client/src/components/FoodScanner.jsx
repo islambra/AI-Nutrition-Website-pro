@@ -1,6 +1,6 @@
 import { useState, useRef, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Upload, Camera, Image, Zap, RefreshCw, AlertCircle } from 'lucide-react';
+import { Upload, Camera, Image, Zap, RefreshCw, AlertCircle, FileImage } from 'lucide-react';
 import toast from 'react-hot-toast';
 import NutritionCard from './NutritionCard';
 import LoadingSpinner from './LoadingSpinner';
@@ -27,7 +27,13 @@ Rules:
 - If multiple foods, analyze the main dish
 - Return ONLY JSON, no explanations or extra text`;
 
-const MAX_IMAGE_SIZE = 4 * 1024 * 1024; // 4MB limit
+const MAX_IMAGE_SIZE = 4 * 1024 * 1024;
+
+const formatSize = (bytes) => {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+};
 
 const resizeImage = (file) =>
   new Promise((resolve, reject) => {
@@ -38,7 +44,6 @@ const resizeImage = (file) =>
       reader.readAsDataURL(file);
       return;
     }
-    // Resize large images to avoid WebSocket payload issues
     const img = new Image();
     img.onload = () => {
       const canvas = document.createElement('canvas');
@@ -64,7 +69,7 @@ const resizeImage = (file) =>
   });
 
 const FoodScanner = () => {
-  const [state, setState] = useState('idle'); // idle | preview | scanning | done
+  const [state, setState] = useState('idle');
   const [imageFile, setImageFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [results, setResults] = useState(null);
@@ -142,7 +147,6 @@ const FoodScanner = () => {
         throw new Error('All AI models failed. Please try again later.');
       }
 
-      // Extract text from response (OpenAI-compat format)
       let text = '';
       if (typeof response === 'string') {
         text = response;
@@ -156,14 +160,12 @@ const FoodScanner = () => {
         text = JSON.stringify(response);
       }
 
-      // Strip markdown code fences
       const cleaned = text.replace(/```(?:json)?\s*([\s\S]*?)```/g, '$1').trim();
 
       let parsed;
       try {
         parsed = JSON.parse(cleaned);
       } catch {
-        // Try to extract JSON from the response
         const jsonMatch = cleaned.match(/\{[\s\S]*"dish_name"[\s\S]*\}/);
         if (jsonMatch) {
           parsed = JSON.parse(jsonMatch[0]);
@@ -197,13 +199,21 @@ const FoodScanner = () => {
 
   return (
     <div className="fs-wrapper">
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="image/*"
+        onChange={(e) => handleFile(e.target.files[0])}
+        style={{ display: 'none' }}
+      />
       <AnimatePresence mode="wait">
         {state === 'idle' && (
           <motion.div
             key="idle"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.3 }}
             className={`fs-upload ${dragOver ? 'fs-drag-over' : ''}`}
             onDrop={handleDrop}
             onDragOver={handleDragOver}
@@ -211,37 +221,59 @@ const FoodScanner = () => {
             onClick={() => fileInputRef.current?.click()}
           >
             <div className="fs-upload-icon">
-              <Upload size={40} />
+              <Upload size={32} />
+              <Camera size={14} />
             </div>
-            <h3>Upload a food image</h3>
-            <p>Click or drag & drop a photo of your meal</p>
-            <span className="fs-hint">JPG, PNG, WEBP</span>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="image/*"
-              onChange={(e) => handleFile(e.target.files[0])}
-              style={{ display: 'none' }}
-            />
+            <h3>Upload a food photo</h3>
+            <p className="fs-sub">Click to browse or drag & drop your meal image</p>
+            <div className="fs-hint-row">
+              <span className="fs-hint"><FileImage size={12} /> JPG, PNG, WEBP</span>
+              <span className="fs-hint-dot" />
+              <span className="fs-hint fs-hint-green">Up to 4 MB</span>
+            </div>
+            {dragOver && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="fs-drag-overlay"
+              >
+                <Upload size={20} /> Drop your image here
+              </motion.div>
+            )}
           </motion.div>
         )}
 
         {(state === 'preview' || state === 'scanning') && (
           <motion.div
             key="preview"
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.3 }}
             className="fs-preview"
           >
             <div className="fs-image-wrap">
               <img src={previewUrl} alt="Food preview" className="fs-image" />
               {state === 'scanning' && (
                 <div className="fs-scan-overlay">
-                  <LoadingSpinner size={36} text="Analyzing with AI..." />
+                  <LoadingSpinner size={32} text="" />
+                  <div className="fs-scan-text">
+                    Analyzing
+                    <span>.</span><span>.</span><span>.</span>
+                  </div>
                 </div>
               )}
             </div>
+
+            {imageFile && state === 'preview' && (
+              <div className="fs-file-info">
+                <div className="fs-file-info-left">
+                  <FileImage size={14} />
+                  <span className="fs-file-info-name">{imageFile.name}</span>
+                </div>
+                <span className="fs-file-info-size">{formatSize(imageFile.size)}</span>
+              </div>
+            )}
 
             {error && (
               <div className="fs-error">
@@ -254,10 +286,10 @@ const FoodScanner = () => {
               {state === 'preview' && (
                 <>
                   <button className="fs-btn fs-btn-primary" onClick={startScan}>
-                    <Zap size={18} /> Analyze
+                    <Zap size={16} /> Analyze
                   </button>
                   <button className="fs-btn fs-btn-ghost" onClick={() => fileInputRef.current?.click()}>
-                    <Image size={18} /> Change
+                    <Image size={16} /> Change
                   </button>
                 </>
               )}
@@ -268,14 +300,15 @@ const FoodScanner = () => {
         {state === 'done' && results && (
           <motion.div
             key="done"
-            initial={{ opacity: 0, y: 10 }}
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
+            exit={{ opacity: 0, y: -12 }}
+            transition={{ duration: 0.3 }}
             className="fs-done"
           >
             <NutritionCard dishName={results.dishName} nutrition={results.nutrition} />
             <button className="fs-btn fs-btn-primary fs-reset-btn" onClick={reset}>
-              <RefreshCw size={18} /> Scan Another
+              <RefreshCw size={16} /> Scan Another
             </button>
           </motion.div>
         )}

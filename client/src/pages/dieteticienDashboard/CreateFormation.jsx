@@ -295,7 +295,20 @@ const CreateFormation = () => {
           ))}
         </div>
 
-        <button type="submit" disabled={loading} className="mc-pdf-btn" style={{ padding: "14px 24px", fontSize: 15, border: "none", cursor: loading ? "not-allowed" : "pointer", justifyContent: "center", marginTop: 8 }}>
+        <button type="submit" disabled={loading} style={{
+          padding: "14px 24px", fontSize: 15, border: "none", cursor: loading ? "not-allowed" : "pointer",
+          justifyContent: "center", marginTop: 8, width: "100%",
+          background: "linear-gradient(135deg, #059669, #10b981)",
+          color: "#fff", borderRadius: 10, fontWeight: 600,
+          display: "inline-flex", alignItems: "center", gap: 8,
+          fontFamily: "inherit",
+          boxShadow: loading ? "none" : "0 4px 12px rgba(16, 185, 129, 0.25)",
+          transition: "box-shadow 0.2s, transform 0.2s",
+          opacity: loading ? 0.7 : 1,
+        }}
+        onMouseEnter={(e) => { if (!loading) { e.currentTarget.style.boxShadow = "0 6px 20px rgba(16, 185, 129, 0.35)"; e.currentTarget.style.transform = "translateY(-1px)"; } }}
+        onMouseLeave={(e) => { e.currentTarget.style.boxShadow = loading ? "none" : "0 4px 12px rgba(16, 185, 129, 0.25)"; e.currentTarget.style.transform = "none"; }}
+        >
           {loading ? <Loader2 className="AP-Spin" size={18} /> : null}
           {isEdit ? "Update Formation" : "Create Formation"}
         </button>

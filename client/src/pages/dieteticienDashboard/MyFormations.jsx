@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { NavLink, useNavigate } from "react-router-dom";
-import { Plus, Edit, Trash2, Calendar, Users, Video, Loader2, Eye, Clock, User, Search } from "lucide-react";
+import { Plus, Edit, Trash2, Calendar, Users, Video, Loader2, Eye, Clock, User, Search, AlertTriangle, X } from "lucide-react";
 import { getMyFormations, deleteFormation } from "../../api/formationApi";
 import toast from "react-hot-toast";
 import "../../components/FormationCard.css";
@@ -10,6 +10,8 @@ const MyFormations = () => {
   const [formations, setFormations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [deleting, setDeleting] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => { fetchMyFormations(); }, []);
@@ -27,15 +29,18 @@ const MyFormations = () => {
   };
 
   const handleDelete = async (id) => {
-    if (!confirm("Delete this formation? This cannot be undone.")) return;
     try {
+      setDeleting(true);
       const res = await deleteFormation(id);
       if (res.success) {
-        toast.success("Formation deleted");
+        toast.success("Formation deleted successfully");
         fetchMyFormations();
       }
     } catch {
-      toast.error("Failed to delete");
+      toast.error("Failed to delete formation");
+    } finally {
+      setDeleting(false);
+      setDeleteTarget(null);
     }
   };
 
@@ -72,7 +77,7 @@ const MyFormations = () => {
       )}
 
       {formations.length === 0 ? (
-        <div style={{ textAlign: "center", padding: "80px 20px", color: "#9ca3af" }}>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "calc(100vh - 220px)", color: "#9ca3af" }}>
           <Video size={48} style={{ marginBottom: 12, opacity: 0.4 }} />
           <p style={{ fontSize: 18, fontWeight: 600 }}>No formations yet</p>
           <p style={{ fontSize: 14, marginTop: 4 }}>Create your first formation to get started.</p>
@@ -136,7 +141,7 @@ const MyFormations = () => {
                   <button onClick={() => navigate(`/dieteticien/formations/edit/${f._id}`)} className="fc-btn fc-btn-outline">
                     <Edit size={14} /> Edit
                   </button>
-                  <button onClick={() => handleDelete(f._id)} className="fc-btn fc-btn-danger">
+                  <button onClick={() => setDeleteTarget(f._id)} className="fc-btn fc-btn-danger">
                     <Trash2 size={14} />
                   </button>
                 </div>
@@ -145,6 +150,69 @@ const MyFormations = () => {
           ))}
         </div>
       )}
+
+      <AnimatePresence>
+        {deleteTarget && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="ac-modal-overlay"
+            onClick={() => !deleting && setDeleteTarget(null)}
+          >
+            <motion.div
+              initial={{ opacity: 0, scale: 0.92, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.92, y: 20 }}
+              transition={{ type: "spring", stiffness: 400, damping: 28 }}
+              className="ac-modal-card"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                className="ac-modal-close"
+                onClick={() => !deleting && setDeleteTarget(null)}
+                disabled={deleting}
+              >
+                <X size={18} />
+              </button>
+
+              <div className="ac-modal-icon-wrap">
+                <div className="ac-modal-icon">
+                  <AlertTriangle size={28} />
+                </div>
+              </div>
+
+              <h3 className="ac-modal-title">Delete Formation</h3>
+              <p className="ac-modal-message">
+                Are you sure you want to delete this formation? All sessions and associated data will be permanently removed. This action cannot be undone.
+              </p>
+
+              <div className="ac-modal-actions">
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.97 }}
+                  className="ac-modal-btn cancel"
+                  onClick={() => setDeleteTarget(null)}
+                  disabled={deleting}
+                >
+                  Cancel
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.97 }}
+                  className="ac-modal-btn confirm"
+                  onClick={() => handleDelete(deleteTarget)}
+                  disabled={deleting}
+                >
+                  {deleting ? <Loader2 className="AP-Spin" size={16} /> : <Trash2 size={16} />}
+                  {deleting ? "Deleting..." : "Delete Formation"}
+                </motion.button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

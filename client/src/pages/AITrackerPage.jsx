@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import FoodScanner from '../components/FoodScanner';
 import PageTransition from '../components/PageTransition';
+import BioTechBackground from '../components/BioTechBackground';
 import './AITrackerPage.css';
 
 function AITrackerPage() {
@@ -13,8 +14,8 @@ function AITrackerPage() {
   if (authLoading) {
     return (
       <div className="AIT-LoadingScreen">
-        <div className="AIT-Spin" style={{ width: 48, height: 48, borderRadius: '50%', border: '3px solid #eef2f6', borderTopColor: '#22C55E', animation: 'aitSpin 0.8s linear infinite' }} />
-        <p>Loading...</p>
+        <div className="AIT-LoadingSpinner" />
+        <p>Loading AI Tools...</p>
       </div>
     );
   }
@@ -23,6 +24,7 @@ function AITrackerPage() {
     return (
       <PageTransition>
         <div className="AIT-Wrapper">
+          <BioTechBackground />
           <div className="AIT-Container">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -34,7 +36,7 @@ function AITrackerPage() {
                 <Cpu size={40} className="AIT-LoginPromptCpu" />
               </div>
               <h2>Authentication Required</h2>
-              <p>Sign in to use the AI Food Scanner.</p>
+              <p>Sign in to access the AI Food Scanner and unlock nutritional insights.</p>
               <button className="AIT-PaywallBtn" onClick={() => navigate('/login')}>
                 <LogIn size={20} /> Sign In
               </button>
@@ -48,11 +50,12 @@ function AITrackerPage() {
   return (
     <PageTransition>
       <div className="AIT-Wrapper">
-        <div className="AIT-OrganicContainer" />
+        <BioTechBackground />
         <div className="AIT-Container">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: 'easeOut' }}
             className="AIT-ScannerSection"
           >
             <div className="AIT-Header">
@@ -61,7 +64,7 @@ function AITrackerPage() {
                 <span className="AIT-TitleGradient">Scanner</span>
               </h1>
               <p className="AIT-Subtitle">
-                Upload a photo of your meal and get instant nutritional analysis
+                Upload a photo of your meal and get instant nutritional analysis powered by advanced AI
               </p>
             </div>
             <FoodScanner />

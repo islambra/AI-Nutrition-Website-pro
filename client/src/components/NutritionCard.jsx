@@ -1,56 +1,128 @@
-import { Flame, Droplets, Beef, Wheat, Sparkles } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
+import { Flame, Droplets, Beef, Wheat, Sparkles, Hash } from 'lucide-react';
 
 const METRICS = [
-  { key: 'calories', label: 'Calories', unit: 'kcal', icon: Flame, color: '#f59e0b' },
-  { key: 'protein_g', label: 'Protein', unit: 'g', icon: Beef, color: '#22C55E' },
-  { key: 'fat_g', label: 'Fat', unit: 'g', icon: Droplets, color: '#ef4444' },
-  { key: 'carbohydrates_g', label: 'Carbs', unit: 'g', icon: Wheat, color: '#6366f1' },
+  { key: 'calories', label: 'Calories', unit: 'kcal', icon: Flame, color: '#f59e0b', bg: '#fffbeb' },
+  { key: 'protein_g', label: 'Protein', unit: 'g', icon: Beef, color: '#22C55E', bg: '#f0fdf4' },
+  { key: 'fat_g', label: 'Fat', unit: 'g', icon: Droplets, color: '#ef4444', bg: '#fef2f2' },
+  { key: 'carbohydrates_g', label: 'Carbs', unit: 'g', icon: Wheat, color: '#6366f1', bg: '#eef2ff' },
 ];
 
-const NutritionCard = ({ dishName, nutrition }) => (
-  <motion.div
-    initial={{ opacity: 0, y: 16 }}
-    animate={{ opacity: 1, y: 0 }}
-    className="nc-card"
-    style={{
-      background: 'white', borderRadius: 20, border: '1px solid #eef2f6',
-      padding: 28, boxShadow: '0 4px 20px rgba(0,0,0,0.04)'
-    }}
-  >
-    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
-      <Sparkles size={20} color="#22C55E" />
-      <h3 style={{ fontSize: 20, fontWeight: 700, color: '#0f172a', margin: 0 }}>
-        {dishName}
-      </h3>
-    </div>
-    <div className="nc-grid" style={{
-      display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 12
-    }}>
-      {METRICS.map(({ key, label, unit, icon: Icon, color }) => (
-        <div key={key} className="nc-metric" style={{
-          background: '#f8fafc', borderRadius: 14, padding: '16px 14px',
-          border: '1px solid #f1f5f9'
+const AnimatedNumber = ({ value, suffix = '' }) => {
+  const [display, setDisplay] = useState(0);
+  const frameRef = useRef(null);
+
+  useEffect(() => {
+    const start = performance.now();
+    const duration = 800;
+    const from = 0;
+    const to = value;
+
+    const animate = (now) => {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setDisplay(Math.round(from + (to - from) * eased));
+      if (progress < 1) frameRef.current = requestAnimationFrame(animate);
+    };
+
+    frameRef.current = requestAnimationFrame(animate);
+    return () => { if (frameRef.current) cancelAnimationFrame(frameRef.current); };
+  }, [value]);
+
+  return <>{display}{suffix}</>;
+};
+
+const NutritionCard = ({ dishName, nutrition }) => {
+  const vals = nutrition || {};
+  const cals = Number(vals.calories) || 0;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      style={{
+        background: '#fff',
+        borderRadius: 24,
+        border: '1px solid #e5e7eb',
+        padding: 24,
+        boxShadow: '0 4px 20px rgba(0,0,0,0.06)',
+      }}
+    >
+      {/* Header */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 20 }}>
+        <div style={{
+          width: 36, height: 36, borderRadius: 10,
+          background: 'linear-gradient(135deg, #22C55E, #16A34A)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          boxShadow: '0 4px 12px rgba(34,197,94,0.25)',
         }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 8 }}>
-            <Icon size={18} color={color} />
-            <span style={{ fontSize: 12, fontWeight: 600, color: '#94a3b8', textTransform: 'uppercase', letterSpacing: 0.4 }}>
-              {label}
-            </span>
-          </div>
-          <span style={{ fontSize: 24, fontWeight: 800, color: '#0f172a' }}>
-            {nutrition?.[key] ?? '—'}
-            <span style={{ fontSize: 13, fontWeight: 500, color: '#94a3b8', marginLeft: 4 }}>
-              /{unit}
-            </span>
-          </span>
+          <Sparkles size={18} color="#fff" />
         </div>
-      ))}
-    </div>
-    <p style={{ fontSize: 12, color: '#94a3b8', textAlign: 'center', marginTop: 16 }}>
-      Per 100g
-    </p>
-  </motion.div>
-);
+        <div>
+          <h3 style={{ fontSize: 18, fontWeight: 700, color: '#111827', margin: 0, lineHeight: 1.2 }}>
+            {dishName}
+          </h3>
+          <span style={{ fontSize: 11, color: '#9ca3af', fontWeight: 500 }}>Nutrition per 100g</span>
+        </div>
+      </div>
+
+      {/* Big Calorie Callout */}
+      <div style={{
+        textAlign: 'center',
+        padding: '16px 0 18px',
+        marginBottom: 18,
+        background: 'linear-gradient(135deg, #fefce8, #fef3c7)',
+        borderRadius: 16,
+        border: '1px solid #fde68a',
+      }}>
+        <span style={{ fontSize: 38, fontWeight: 900, color: '#d97706', lineHeight: 1 }}>
+          <AnimatedNumber value={cals} />
+        </span>
+        <div style={{ fontSize: 12, color: '#b45309', fontWeight: 600, marginTop: 2 }}>
+          kcal per 100g
+        </div>
+      </div>
+
+      {/* Metrics Grid */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 10 }}>
+        {METRICS.map(({ key, label, unit, icon: Icon, color, bg }, idx) => {
+          const val = Number(vals[key]) || 0;
+          return (
+            <motion.div
+              key={key}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 + idx * 0.06 }}
+              style={{
+                background: bg,
+                borderRadius: 14,
+                padding: '14px',
+                border: `1px solid ${color}15`,
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 8 }}>
+                <Icon size={14} color={color} />
+                <span style={{
+                  fontSize: 10, fontWeight: 600, color,
+                  textTransform: 'uppercase', letterSpacing: 0.5,
+                }}>
+                  {label}
+                </span>
+              </div>
+              <span style={{ fontSize: 22, fontWeight: 800, color: '#111827' }}>
+                <AnimatedNumber value={val} />
+                <span style={{ fontSize: 12, fontWeight: 500, color: '#9ca3af', marginLeft: 3 }}>
+                  /{unit}
+                </span>
+              </span>
+            </motion.div>
+          );
+        })}
+      </div>
+    </motion.div>
+  );
+};
 
 export default NutritionCard;
