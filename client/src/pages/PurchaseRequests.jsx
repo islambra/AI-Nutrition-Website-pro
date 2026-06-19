@@ -103,10 +103,10 @@ const PurchaseRequests = ({ defaultType = 'all' }) => {
   }, [requests, searchTerm, typeFilter, statusFilter, sortBy]);
 
   const stats = useMemo(() => {
-    const pending = requests.filter(r => r.status === 'pending').length;
-    const rejected = requests.filter(r => r.status === 'rejected').length;
+    const pending = filteredRequests.filter(r => r.status === 'pending').length;
+    const rejected = filteredRequests.filter(r => r.status === 'rejected').length;
     return { total: pending + rejected, pending, rejected };
-  }, [requests]);
+  }, [filteredRequests]);
 
   const formatDate = (date) => new Date(date).toLocaleDateString('en-US', {
     year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'

@@ -100,7 +100,6 @@ const MyFormationsPage = () => {
             <button
               onClick={() => navigate("/services")}
               className="mc-pdf-btn"
-              style={{ marginTop: 16, padding: "10px 20px", border: "none", cursor: "pointer" }}
             >
               Browse Formations
             </button>

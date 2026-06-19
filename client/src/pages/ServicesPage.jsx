@@ -1,6 +1,6 @@
-import React, { memo } from 'react';
+import React from 'react';
 import './ServicesPage.css';
-import { NavLink, useNavigate, Link } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Calendar, 
@@ -13,7 +13,6 @@ import {
   FileText, 
   ArrowRight,
   ChevronRight,
-  Leaf,
   Brain,
   Activity,
   Zap,
@@ -43,27 +42,6 @@ import { getMySubscription } from '../api/courseApi';
 import { useState, useEffect, useRef, useMemo } from 'react';
 import toast from 'react-hot-toast';
 import { isStudent, isClient } from '../api/userApi';
-
-// --- ORGANIC FLOATERS ---
-const ServicesOrganicFloaters = memo(() => (
-  <div className="ServicesPage-Organic-Container">
-    {[...Array(5)].map((_, i) => (
-      <motion.div
-        key={i}
-        className="ServicesPage-Floater"
-        initial={{ opacity: 0 }}
-        animate={{ 
-          opacity: [0, 0.15, 0], 
-          x: [Math.random() * 100 + 'vw', Math.random() * 100 + 'vw'],
-          y: [Math.random() * 100 + 'vh', Math.random() * 100 + 'vh']
-        }}
-        transition={{ duration: 25 + i, repeat: Infinity, ease: "linear" }}
-      >
-        <Leaf size={30 + i * 15} strokeWidth={1} />
-      </motion.div>
-    ))}
-  </div>
-));
 
 // --- VITALITY MARQUEE ---
 const ServicesMarquee = () => (
@@ -251,7 +229,6 @@ function ServicesPage() {
   return (
     <div className="ServicesPage-Wrapper">
       <div className="ServicesPage-Mesh-Bg" />
-      <ServicesOrganicFloaters />
 
       {/* 1. HERO */}
       <section className="ServicesPage-Hero">
@@ -276,7 +253,6 @@ function ServicesPage() {
         <>
           {/* STUDENT: COURSE SUBSCRIPTION */}
           <section className="ServicesPage-Student-Section">
-            <div className="sp-section-bg-orbs" />
             <div className="sp-section-header">
               <ScrollReveal>
                 <div className="sp-badge">
@@ -290,95 +266,88 @@ function ServicesPage() {
             </div>
 
             {subLoading ? (
-              <div className="sp-loading">
+              <div className="sub-loading">
                 <motion.div
-                  animate={{ scale: [1, 1.15, 1], rotate: [0, 10, 0] }}
+                  animate={{ scale: [1, 1.15, 1] }}
                   transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-                  className="sp-loading-icon"
+                  className="sub-loading-icon"
                 >
                   <BookOpen size={48} />
                 </motion.div>
               </div>
             ) : (
-              <div className="sp-card-container">
+              <div className="sub-card-wrap">
                 {subscription?.isActive ? (
                   <motion.div
-                    initial={{ opacity: 0, y: 30 }}
+                    initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ type: "spring", stiffness: 120, damping: 15 }}
-                    className="sp-card sp-card-active"
+                    transition={{ duration: 0.4, ease: "easeOut" }}
+                    className="sub-card sub-card-active"
                   >
-                    <div className="sp-active-illust">
-                      <div className="sp-active-illust-icon">
-                        <CheckCircle size={36} />
+                    <div className="sub-card-row">
+                      <div className="sub-card-icon">
+                        <CheckCircle size={22} />
                       </div>
+                      <span className="sub-badge sub-badge-green">Active</span>
                     </div>
-                    <div className="sp-active-body">
-                      <div className="sp-active-header-row">
-                        <h3 className="sp-active-title">Access Granted</h3>
-                        <span className="sp-active-pill">Active</span>
-                      </div>
-                      <p className="sp-active-desc">You have full access to all course materials across every level and semester.</p>
-                      <div className="sp-active-meta">
-                        <div className="sp-meta-item">
-                          <Clock size={14} />
-                          Expires {new Date(subscription.endDate).toLocaleDateString()}
-                        </div>
-                        <div className="sp-meta-dot" />
-                        <div className="sp-meta-item">
-                          <CheckCircle size={14} />
-                          {subscription.daysRemaining} days remaining
-                        </div>
-                      </div>
-                      <NavLink to="/student/my-courses" className="sp-btn sp-btn-active">
-                        Browse Courses <ArrowRight size={17} />
-                      </NavLink>
+                    <h3 className="sub-title">Access Granted</h3>
+                    <p className="sub-desc">You have full access to all course materials across every level and semester.</p>
+                    <div className="sub-meta">
+                      <span className="sub-meta-item">
+                        <Clock size={13} /> Expires {new Date(subscription.endDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
+                      </span>
+                      <span className="sub-meta-item">
+                        <CheckCircle size={13} /> {subscription.daysRemaining >= 365 ? `${Math.floor(subscription.daysRemaining / 365)} year${Math.floor(subscription.daysRemaining / 365) > 1 ? 's' : ''} remaining` : `${subscription.daysRemaining} days remaining`}
+                      </span>
                     </div>
+                    <NavLink to="/student/my-courses" className="sub-btn">
+                      Browse Courses <ArrowRight size={17} />
+                    </NavLink>
                   </motion.div>
                 ) : (
                   <motion.div
-                    initial={{ opacity: 0, y: 30 }}
+                    initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ type: "spring", stiffness: 120, damping: 15 }}
-                    className="sp-card sp-card-inactive"
+                    transition={{ duration: 0.4, ease: "easeOut" }}
+                    className="sub-card sub-card-inactive"
                   >
-                    <div className="sp-inactive-top">
-                      <div className="sp-inactive-icon-wrap">
+                    <div className="sub-card-row">
+                      <div className="sub-card-icon">
                         <GraduationCap size={22} />
                       </div>
-                      <span className="sp-inactive-badge">Yearly Plan</span>
+                      <span className="sub-badge">Yearly Plan</span>
                     </div>
-                    <div className="sp-price-block">
-                      <span className="sp-currency">DZD</span>
-                      <span className="sp-amount">2,499<small>.99</small></span>
-                      <span className="sp-period">/year</span>
+                    <div className="sub-price">
+                      <span className="sub-currency">DZD</span>
+                      <span className="sub-amount">2,499<small>.99</small></span>
+                      <span className="sub-period">/year</span>
                     </div>
-                    <p className="sp-inactive-desc">Unlock every course across all levels and semesters.</p>
-                    <div className="sp-benefits">
-                      <div className="sp-benefit">
-                        <div className="sp-benefit-icon"><BookOpen size={14} /></div>
+                    <p className="sub-desc">Unlock every course across all levels and semesters.</p>
+                    <div className="sub-benefits">
+                      <div className="sub-benefit">
+                        <CheckCircle size={14} />
                         <span>All levels (1, 2 &amp; 3)</span>
                       </div>
-                      <div className="sp-benefit">
-                        <div className="sp-benefit-icon"><FileText size={14} /></div>
+                      <div className="sub-benefit">
+                        <CheckCircle size={14} />
                         <span>Both semesters</span>
                       </div>
-                      <div className="sp-benefit">
-                        <div className="sp-benefit-icon"><ExternalLink size={14} /></div>
+                      <div className="sub-benefit">
+                        <CheckCircle size={14} />
                         <span>PDF materials &amp; Drive links</span>
                       </div>
-                      <div className="sp-benefit">
-                        <div className="sp-benefit-icon"><Clock size={14} /></div>
+                      <div className="sub-benefit">
+                        <CheckCircle size={14} />
                         <span>Full year of access</span>
                       </div>
                     </div>
                     {subscription && !subscription.isActive && (
-                      <div className="sp-expired">
-                        <XCircle size={15} />
+                      <div className="sub-expired">
+                        <Clock size={15} />
                         <span>Your previous subscription has expired. Renew to regain access.</span>
                       </div>
                     )}
-                    <NavLink to="/checkout/course-subscription" className="sp-btn sp-btn-subscribe">
+                    <NavLink to="/checkout/course-subscription" className="sub-btn">
                       Subscribe Now <ArrowRight size={17} />
                     </NavLink>
                   </motion.div>

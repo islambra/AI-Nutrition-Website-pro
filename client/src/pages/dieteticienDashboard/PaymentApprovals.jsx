@@ -2,9 +2,10 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   User, Package, Calendar, CreditCard, DollarSign, Loader2,
-  Check, X, Eye, Clock, Smartphone, FileText
+  Check, X, Eye, Clock, Smartphone, FileText, AlertCircle
 } from 'lucide-react';
 import { getPendingPayments, approvePayment, rejectPayment } from '../../api/paymentApi';
+import toast from 'react-hot-toast';
 import './PaymentApprovals.css';
 
 const PaymentApprovals = () => {
@@ -13,6 +14,7 @@ const PaymentApprovals = () => {
   const [error, setError] = useState('');
   const [actionLoading, setActionLoading] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
+  const [confirmReject, setConfirmReject] = useState(null);
 
   useEffect(() => { fetchPending(); }, []);
 
@@ -33,21 +35,23 @@ const PaymentApprovals = () => {
     try {
       await approvePayment(id);
       setPayments(prev => prev.filter(p => p._id !== id));
+      toast.success('Payment approved');
     } catch (err) {
-      alert(err.response?.data?.message || 'Failed to approve');
+      toast.error(err.response?.data?.message || 'Failed to approve');
     } finally {
       setActionLoading(null);
     }
   };
 
   const handleReject = async (id) => {
-    if (!window.confirm('Reject this payment proof?')) return;
     setActionLoading(id);
     try {
       await rejectPayment(id);
       setPayments(prev => prev.filter(p => p._id !== id));
+      setConfirmReject(null);
+      toast.success('Payment rejected');
     } catch (err) {
-      alert(err.response?.data?.message || 'Failed to reject');
+      toast.error(err.response?.data?.message || 'Failed to reject');
     } finally {
       setActionLoading(null);
     }
@@ -182,7 +186,7 @@ const PaymentApprovals = () => {
                     </button>
                     <button
                       className="pa-btn pa-btn-reject"
-                      onClick={() => handleReject(payment._id)}
+                      onClick={() => setConfirmReject(payment._id)}
                       disabled={actionLoading === payment._id}
                     >
                       {actionLoading === payment._id ? (
@@ -216,6 +220,46 @@ const PaymentApprovals = () => {
             >
               <button className="pa-modal-close" onClick={() => setPreviewImage(null)}>×</button>
               <img src={previewImage} alt="Proof full size" />
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <AnimatePresence>
+        {confirmReject && (
+          <motion.div
+            className="pa-modal-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setConfirmReject(null)}
+          >
+            <motion.div
+              className="pa-confirm-modal"
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              onClick={e => e.stopPropagation()}
+            >
+              <div className="pa-confirm-icon">
+                <AlertCircle size={28} />
+              </div>
+              <h3>Reject payment?</h3>
+              <p>This will mark the payment proof as rejected. The client will be notified.</p>
+              <div className="pa-confirm-actions">
+                <button
+                  className="pa-confirm-cancel"
+                  onClick={() => setConfirmReject(null)}
+                >
+                  Cancel
+                </button>
+                <button
+                  className="pa-confirm-reject"
+                  onClick={() => handleReject(confirmReject)}
+                >
+                  Reject
+                </button>
+              </div>
             </motion.div>
           </motion.div>
         )}

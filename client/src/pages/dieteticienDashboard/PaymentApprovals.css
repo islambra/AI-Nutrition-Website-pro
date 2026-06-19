@@ -430,6 +430,77 @@
 
 .pa-modal-close:hover { background: rgba(0,0,0,0.7); }
 
+.pa-confirm-modal {
+  background: #fff;
+  border-radius: 20px;
+  padding: 32px;
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 24px 48px rgba(0,0,0,0.2);
+}
+
+.pa-confirm-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #fef2f2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+  color: #dc2626;
+}
+
+.pa-confirm-modal h3 {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 8px;
+}
+
+.pa-confirm-modal p {
+  font-size: 0.88rem;
+  color: #64748b;
+  margin: 0 0 24px;
+  line-height: 1.5;
+}
+
+.pa-confirm-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.pa-confirm-cancel,
+.pa-confirm-reject {
+  flex: 1;
+  padding: 10px 20px;
+  border-radius: 40px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: none;
+}
+
+.pa-confirm-cancel {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.pa-confirm-cancel:hover {
+  background: #e2e8f0;
+}
+
+.pa-confirm-reject {
+  background: #dc2626;
+  color: #fff;
+}
+
+.pa-confirm-reject:hover {
+  background: #b91c1c;
+}
+
 @media (max-width: 768px) {
   .pa-container {
     padding: 80px 12px 40px;
