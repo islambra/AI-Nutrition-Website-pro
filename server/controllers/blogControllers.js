@@ -1,3 +1,5 @@
+import crypto from "crypto";
+import mongoose from "mongoose";
 import Blog from "../models/Blog.js";
 import User from "../models/User.js";
 import Comment from "../models/Comment.js";
@@ -19,10 +21,12 @@ export const createBlog = async (req, res) => {
         let photoUrl = null;
         let blogFileId = null;
         if (req.file) {
+            const ext = req.file.originalname.split('.').pop();
+            const safeFilename = `blog-${Date.now()}-${crypto.randomBytes(8).toString('hex')}.${ext}`;
             const base64Image = req.file.buffer.toString('base64');
             const uploadResponse = await imagekit.upload({
                 file: base64Image,
-                fileName: `${Date.now()}-${req.file.originalname}`,
+                fileName: safeFilename,
                 folder: "/blogs",
             });
             photoUrl = uploadResponse.url;
@@ -34,9 +38,9 @@ export const createBlog = async (req, res) => {
             imageKitFileId: blogFileId,
             type,
             author: user._id,
-            title,
-            content,
-            tags: tags ? JSON.parse(tags) : []
+            title: String(title || '').trim(),
+            content: String(content || '').trim(),
+            tags: tags ? (typeof tags === 'string' ? JSON.parse(tags) : tags) : []
         });
 
         const savedBlog = await newBlog.save();
@@ -51,7 +55,7 @@ export const createBlog = async (req, res) => {
         res.status(500).json({ 
             success: false,
             message: "Error creating blog", 
-            error: error.message 
+
         });
     }
 };
@@ -121,7 +125,7 @@ export const updateBlog = async (req, res) => {
         res.status(500).json({ 
             success: false,
             message: "Error updating blog", 
-            error: error.message 
+
         });
     }
 };
@@ -150,7 +154,7 @@ export const getAllBlogs = async (req, res) => {
         res.status(500).json({ 
             success: false,
             message: "Error fetching blogs", 
-            error: error.message 
+
         });
     }
 };
@@ -180,7 +184,7 @@ export const getMyBlogs = async (req, res) => {
         res.status(500).json({ 
             success: false,
             message: "Error fetching your blogs", 
-            error: error.message 
+
         });
     }
 };
@@ -221,7 +225,7 @@ export const getBlogsByAuthor = async (req, res) => {
         res.status(500).json({ 
             success: false,
             message: "Error fetching author's blogs", 
-            error: error.message 
+
         });
     }
 };
@@ -261,7 +265,7 @@ export const getBlogById = async (req, res) => {
         res.status(500).json({ 
             success: false,
             message: "Error fetching blog", 
-            error: error.message 
+
         });
     }
 };
@@ -300,7 +304,7 @@ export const deleteBlog = async (req, res) => {
         res.status(500).json({ 
             success: false,
             message: "Error deleting blog", 
-            error: error.message 
+
         });
     }
 };
@@ -309,12 +313,6 @@ export const deleteBlog = async (req, res) => {
 export const addComment = async (req, res) => {
     try {
         const { content } = req.body;
-        if (!content) {
-            return res.status(400).json({
-                success: false,
-                message: "Comment content is required"
-            });
-        }
         
         const blog = await Blog.findById(req.params.id);
         if (!blog) {
@@ -327,7 +325,7 @@ export const addComment = async (req, res) => {
         const comment = await Comment.create({
             blog: req.params.id,
             author: req.user.id,
-            content
+            content: String(content || '').trim().slice(0, 2000)
         });
         
         const populatedComment = await Comment.findById(comment._id)
@@ -342,7 +340,7 @@ export const addComment = async (req, res) => {
         res.status(500).json({ 
             success: false,
             message: "Error adding comment", 
-            error: error.message 
+
         });
     }
 };
@@ -362,7 +360,7 @@ export const getComments = async (req, res) => {
         res.status(500).json({ 
             success: false,
             message: "Error fetching comments", 
-            error: error.message 
+
         });
     }
 };
@@ -394,7 +392,7 @@ export const deleteComment = async (req, res) => {
         res.status(500).json({ 
             success: false,
             message: "Error deleting comment", 
-            error: error.message 
+
         });
     }
 };
@@ -438,7 +436,7 @@ export const likeBlog = async (req, res) => {
         res.status(500).json({ 
             success: false,
             message: "Error liking blog", 
-            error: error.message 
+
         });
     }
 };
@@ -469,7 +467,7 @@ export const unlikeBlog = async (req, res) => {
         res.status(500).json({ 
             success: false,
             message: "Error unliking blog", 
-            error: error.message 
+
         });
     }
 };
@@ -492,7 +490,7 @@ export const getLikeStatus = async (req, res) => {
         res.status(500).json({ 
             success: false,
             message: "Error fetching like status", 
-            error: error.message 
+
         });
     }
 };

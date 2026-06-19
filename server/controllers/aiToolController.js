@@ -15,7 +15,7 @@ export const getPlatformPaymentInfo = async (req, res) => {
       }
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: "Error fetching payment info" });
   }
 };
 
@@ -62,7 +62,7 @@ export const initiateAiToolSubscription = async (req, res) => {
       data: payment
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: "Error initiating subscription" });
   }
 };
 
@@ -78,7 +78,7 @@ export const checkAiToolAccess = async (req, res) => {
 
     res.status(200).json({ success: true, hasAccess });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: "Error checking access" });
   }
 };
 
@@ -107,6 +107,6 @@ export const getMySubscription = async (req, res) => {
       }
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: "Error fetching subscription" });
   }
 };

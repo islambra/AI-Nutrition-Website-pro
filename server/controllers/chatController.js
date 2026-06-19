@@ -14,7 +14,7 @@ export const getRooms = async (req, res) => {
 
     return res.json({ success: true, rooms });
   } catch (error) {
-    return res.status(500).json({ success: false, message: error.message });
+    return res.status(500).json({ success: false, message: "Error fetching rooms" });
   }
 };
 
@@ -59,7 +59,7 @@ export const getMessages = async (req, res) => {
       }
     });
   } catch (error) {
-    return res.status(500).json({ success: false, message: error.message });
+    return res.status(500).json({ success: false, message: "Error fetching messages" });
   }
 };
 
@@ -97,7 +97,7 @@ export const createRoom = async (req, res) => {
 
     return res.status(201).json({ success: true, room });
   } catch (error) {
-    return res.status(500).json({ success: false, message: error.message });
+    return res.status(500).json({ success: false, message: "Error creating room" });
   }
 };
 
@@ -123,6 +123,6 @@ export const deleteRoom = async (req, res) => {
 
     return res.json({ success: true, message: "Room deleted successfully" });
   } catch (error) {
-    return res.status(500).json({ success: false, message: error.message });
+    return res.status(500).json({ success: false, message: "Error deleting room" });
   }
 };

@@ -17,19 +17,26 @@ import {
 } from "../controllers/userControllers.js";
 import upload from "../middleware/multer.js";
 import { protect } from "../middleware/auth.js";
+import {
+  validateRegister,
+  validateLogin,
+  validateDieteticienRegister,
+  validateStaffCreate,
+  validateMongoId
+} from "../middleware/validate.js";
 
 const userRouter = express.Router();
 
 // Public routes (no authentication required)
-userRouter.post("/register-client", registerClient);
-userRouter.post("/register", registerUser);
-userRouter.post("/register-dieteticien", upload.single("diploma"), registerDieteticien);
-userRouter.post("/login", loginUser);
+userRouter.post("/register-client", validateRegister, registerClient);
+userRouter.post("/register", validateRegister, registerUser);
+userRouter.post("/register-dieteticien", upload.single("diploma"), validateDieteticienRegister, registerDieteticien);
+userRouter.post("/login", validateLogin, loginUser);
 
 // Protected routes (authentication required)
 userRouter.get("/me", protect, getCurrentUser);
 userRouter.get("/public-profile/:id", getUserPublicProfile);
-userRouter.post("/create-staff", protect, createStaffUser);
+userRouter.post("/create-staff", protect, validateStaffCreate, createStaffUser);
 userRouter.get("/all", protect, getAllUsers);
 userRouter.get("/staff", protect, getAllStaffUsers);
 userRouter.get("/clients", protect, getAllClients);

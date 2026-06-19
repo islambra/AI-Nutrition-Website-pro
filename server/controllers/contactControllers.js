@@ -25,8 +25,7 @@ export const submitContact = async (req, res) => {
         });
 
     } catch (error) {
-        console.log(error.message);
-        res.status(500).json({ success: false, message: error.message });
+        res.status(500).json({ success: false, message: "Error submitting message" });
     }
 };
 
@@ -41,10 +40,9 @@ export const getAllContacts = async (req, res) => {
         });
 
     } catch (error) {
-        console.log(error.message);
         res.status(500).json({
             success: false,
-            message: error.message,
+            message: "Error fetching messages",
         });
     }
 };
@@ -66,10 +64,9 @@ export const deleteContact = async (req, res) => {
         });
 
     } catch (error) {
-        console.log(error.message);
         res.status(500).json({
             success: false,
-            message: error.message,
+            message: "Error deleting message",
         });
     }
 };

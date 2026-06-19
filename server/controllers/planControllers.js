@@ -115,7 +115,6 @@ export const createPlan = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Error creating plan",
-      error: error.message,
     });
   }
 };
@@ -223,7 +222,6 @@ export const updatePlan = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Error updating plan",
-      error: error.message,
     });
   }
 };
@@ -263,7 +261,6 @@ export const deletePlan = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Error deleting plan",
-      error: error.message,
     });
   }
 };
@@ -283,7 +280,6 @@ export const getMyPlans = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Error fetching your plans",
-      error: error.message,
     });
   }
 };
@@ -324,7 +320,6 @@ export const getAllPlans = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Error fetching plans",
-      error: error.message,
     });
   }
 };
@@ -351,7 +346,6 @@ export const getPlanById = async (req, res) => {
     res.status(500).json({
       success: false,
       message: "Error fetching plan",
-      error: error.message,
     });
   }
 };

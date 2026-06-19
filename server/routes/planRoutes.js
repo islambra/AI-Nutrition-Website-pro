@@ -10,15 +10,15 @@ import {
   getAllPlans,
   getPlanById,
 } from "../controllers/planControllers.js";
-import { protect } from "../middleware/auth.js";
+import { protect, authorize } from "../middleware/auth.js";
+import { validatePlan, validateQueryParams } from "../middleware/validate.js";
 
 const planRouter = express.Router();
 
-// Configure multer for memory storage (since we send to ImageKit)
 const storage = multer.memoryStorage();
 const upload = multer({ 
   storage: storage,
-  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB limit
+  limits: { fileSize: 5 * 1024 * 1024 },
   fileFilter: (req, file, cb) => {
     if (file.mimetype.startsWith('image/')) {
       cb(null, true);
@@ -29,15 +29,14 @@ const upload = multer({
 });
 
 // Public routes
-planRouter.get("/", getAllPlans);
+planRouter.get("/", validateQueryParams, getAllPlans);
 
-// Protected routes (nutritionist only)
+// Protected routes (dieteticien/admin only)
 planRouter.get("/my-plans/list", protect, getMyPlans);
-planRouter.post("/", protect, upload.single("planImage"), createPlan);
-planRouter.put("/:id", protect, upload.single("planImage"), updatePlan);
+planRouter.post("/", protect, authorize('dieteticien', 'admin'), upload.single("planImage"), validatePlan, createPlan);
+planRouter.put("/:id", protect, authorize('dieteticien', 'admin'), upload.single("planImage"), updatePlan);
 planRouter.delete("/:id", protect, deletePlan);
 
-// Get single plan - move this after specific routes
 planRouter.get("/:id", getPlanById);
 
 export default planRouter;

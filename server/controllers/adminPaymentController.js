@@ -5,6 +5,7 @@ import CourseSubscription from '../models/CourseSubscription.js';
 import AiToolSubscription from '../models/AiToolSubscription.js';
 import Consultation from '../models/Consultation.js';
 import imagekit from '../configs/imageKit.js';
+import { securityLogger } from '../middleware/securityLogger.js';
 
 export const getAllPayments = async (req, res) => {
   try {
@@ -33,7 +34,7 @@ export const getAllPayments = async (req, res) => {
 
     res.status(200).json({ success: true, data: enrichedPayments });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: "Error fetching payments" });
   }
 };
 
@@ -44,6 +45,9 @@ export const deletePayment = async (req, res) => {
     if (!payment) {
       return res.status(404).json({ success: false, message: 'Payment not found' });
     }
+
+    securityLogger.adminAction(req.user._id.toString(), 'DELETE_PAYMENT', id, `User: ${payment.user}`);
+
     const userPlans = await UserPlan.find({ payment: id }, '_id');
     const userPlanIds = userPlans.map(up => up._id);
 
@@ -60,7 +64,7 @@ export const deletePayment = async (req, res) => {
 
     res.status(200).json({ success: true, message: 'Payment and all related records deleted' });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: 'Error deleting payment' });
   }
 };
 
@@ -76,7 +80,7 @@ export const getPendingCourseSubscriptions = async (req, res) => {
 
     res.status(200).json({ success: true, data: payments });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: "Error fetching subscriptions" });
   }
 };
 
@@ -101,6 +105,8 @@ export const approveCourseSubscription = async (req, res) => {
     payment.status = "approved";
     await payment.save();
 
+    securityLogger.adminAction(req.user._id.toString(), 'APPROVE_COURSE_SUB', id, `User: ${payment.user}`);
+
     const now = new Date();
     const endDate = new Date(now);
     endDate.setFullYear(endDate.getFullYear() + 1);
@@ -124,7 +130,7 @@ export const approveCourseSubscription = async (req, res) => {
 
     res.status(200).json({ success: true, message: "Course subscription approved. Student has access for 1 year." });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: 'Error approving course subscription' });
   }
 };
 
@@ -149,13 +155,15 @@ export const rejectCourseSubscription = async (req, res) => {
     payment.status = "rejected";
     await payment.save();
 
+    securityLogger.adminAction(req.user._id.toString(), 'REJECT_COURSE_SUB', id, `User: ${payment.user}`);
+
     if (payment.proofImageFileId) {
       try { await imagekit.deleteFile(payment.proofImageFileId); } catch (_) {}
     }
 
     res.status(200).json({ success: true, message: "Course subscription payment rejected" });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: 'Error rejecting course subscription' });
   }
 };
 
@@ -171,7 +179,7 @@ export const getPendingAiToolSubscriptions = async (req, res) => {
 
     res.status(200).json({ success: true, data: payments });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: "Error fetching subscriptions" });
   }
 };
 
@@ -196,6 +204,8 @@ export const approveAiToolSubscription = async (req, res) => {
     payment.status = "approved";
     await payment.save();
 
+    securityLogger.adminAction(req.user._id.toString(), 'APPROVE_AI_TOOL_SUB', id, `User: ${payment.user}`);
+
     const now = new Date();
     const endDate = new Date(now);
     endDate.setFullYear(endDate.getFullYear() + 1);
@@ -219,7 +229,7 @@ export const approveAiToolSubscription = async (req, res) => {
 
     res.status(200).json({ success: true, message: "AI Tool subscription approved. User has access for 1 year." });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: 'Error approving AI tool subscription' });
   }
 };
 
@@ -244,12 +254,14 @@ export const rejectAiToolSubscription = async (req, res) => {
     payment.status = "rejected";
     await payment.save();
 
+    securityLogger.adminAction(req.user._id.toString(), 'REJECT_AI_TOOL_SUB', id, `User: ${payment.user}`);
+
     if (payment.proofImageFileId) {
       try { await imagekit.deleteFile(payment.proofImageFileId); } catch (_) {}
     }
 
     res.status(200).json({ success: true, message: "AI Tool subscription payment rejected" });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: 'Error rejecting AI tool subscription' });
   }
 };

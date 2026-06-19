@@ -60,7 +60,7 @@ export const createCourse = async (req, res) => {
       course
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message || "Failed to create course" });
+    res.status(500).json({ success: false, message: "Failed to create course" });
   }
 };
 
@@ -69,7 +69,7 @@ export const getAllCourses = async (req, res) => {
     const courses = await Course.find().sort({ level: 1, semester: 1, createdAt: -1 });
     res.status(200).json({ success: true, courses });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message || "Failed to fetch courses" });
+    res.status(500).json({ success: false, message: "Failed to fetch courses" });
   }
 };
 
@@ -79,7 +79,7 @@ export const getCoursesByLevel = async (req, res) => {
     const courses = await Course.find({ level: parseInt(level) }).sort({ semester: 1, createdAt: -1 });
     res.status(200).json({ success: true, courses });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message || "Failed to fetch courses" });
+    res.status(500).json({ success: false, message: "Failed to fetch courses" });
   }
 };
 
@@ -103,7 +103,7 @@ export const deleteCourse = async (req, res) => {
     await Course.findByIdAndDelete(id);
     res.status(200).json({ success: true, message: "Course deleted successfully" });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message || "Failed to delete course" });
+    res.status(500).json({ success: false, message: "Failed to delete course" });
   }
 };
 
@@ -119,7 +119,7 @@ export const getPlatformPaymentInfo = async (req, res) => {
       }
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: "Error fetching course" });
   }
 };
 
@@ -167,7 +167,7 @@ export const initiateCourseSubscription = async (req, res) => {
       data: payment
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: "Error initiating subscription" });
   }
 };
 
@@ -184,7 +184,7 @@ export const checkCourseAccess = async (req, res) => {
 
     res.status(200).json({ success: true, hasAccess });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: "Error checking access" });
   }
 };
 
@@ -214,6 +214,6 @@ export const getMySubscription = async (req, res) => {
       }
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: "Error fetching subscription" });
   }
 };

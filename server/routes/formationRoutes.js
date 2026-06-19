@@ -5,24 +5,25 @@ import {
   createSession, getSessions, updateSession, deleteSession,
   getMyPurchasedFormations, checkFormationOwnership
 } from "../controllers/formationController.js";
-import { protect } from "../middleware/auth.js";
+import { protect, authorize } from "../middleware/auth.js";
 import upload from "../middleware/multer.js";
+import { validateFormation } from "../middleware/validate.js";
 
 const router = express.Router();
 
 router.use(protect);
 
-router.post("/", upload.any(), createFormation);
+router.post("/", authorize('dieteticien', 'admin'), upload.any(), validateFormation, createFormation);
 router.get("/", getFormations);
 router.get("/my-formations", getMyFormations);
 router.get("/my-purchased", getMyPurchasedFormations);
 router.get("/check/:id", checkFormationOwnership);
 router.get("/:id", getFormationById);
-router.put("/:id", upload.any(), updateFormation);
+router.put("/:id", authorize('dieteticien', 'admin'), upload.any(), updateFormation);
 router.delete("/:id", deleteFormation);
-router.post("/:formationId/sessions", createSession);
+router.post("/:formationId/sessions", authorize('dieteticien', 'admin'), createSession);
 router.get("/:formationId/sessions", getSessions);
-router.put("/sessions/:sessionId", updateSession);
-router.delete("/sessions/:sessionId", deleteSession);
+router.put("/sessions/:sessionId", authorize('dieteticien', 'admin'), updateSession);
+router.delete("/sessions/:sessionId", authorize('dieteticien', 'admin'), deleteSession);
 
 export default router;

@@ -35,7 +35,7 @@ export const bookConsultation = async (req, res) => {
 
     res.status(201).json({ success: true, message: "Consultation booked", data: consultation });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: "Error booking consultation" });
   }
 };
 
@@ -48,7 +48,7 @@ export const getUserConsultations = async (req, res) => {
       .sort({ createdAt: -1 });
     res.status(200).json({ success: true, data: consultations });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: "Error fetching consultations" });
   }
 };
 
@@ -62,7 +62,7 @@ export const getConsultationsByUserPlan = async (req, res) => {
     }).populate("nutritionist", "fullName email").sort({ createdAt: -1 });
     res.status(200).json({ success: true, data: consultations });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: "Error fetching consultations" });
   }
 };
 
@@ -79,7 +79,7 @@ export const getNutritionistRequests = async (req, res) => {
       .sort({ requestedDateTime: 1 });
     res.status(200).json({ success: true, data: consultations });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: "Error fetching requests" });
   }
 };
 
@@ -109,7 +109,7 @@ export const acceptConsultation = async (req, res) => {
     res.status(200).json({ success: true, data: consultation });
   } catch (error) {
     console.error("Accept consultation error:", error);
-    res.status(500).json({ success: false, message: error.message || "Failed to accept consultation" });
+    res.status(500).json({ success: false, message: "Failed to accept consultation" });
   }
 };
 
@@ -132,7 +132,7 @@ export const rejectConsultation = async (req, res) => {
 
     res.status(200).json({ success: true, data: consultation });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: "Error rejecting consultation" });
   }
 };
 
@@ -148,7 +148,7 @@ export const completeConsultation = async (req, res) => {
     if (!consultation) return res.status(404).json({ success: false, message: "Consultation not found" });
     res.status(200).json({ success: true, data: consultation });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: "Error completing consultation" });
   }
 };
 
@@ -172,7 +172,7 @@ export const cancelConsultation = async (req, res) => {
 
     res.status(200).json({ success: true, data: consultation });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: "Error cancelling consultation" });
   }
 };
 
@@ -186,6 +186,6 @@ export const deleteConsultation = async (req, res) => {
     await consultation.deleteOne();
     res.status(200).json({ success: true, message: "Consultation deleted" });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: "Error deleting consultation" });
   }
 };

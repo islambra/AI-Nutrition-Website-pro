@@ -11,10 +11,11 @@ import {
   getMyRequests,
   deleteMyRequest
 } from "../controllers/paymentController.js";
+import { validatePayment } from "../middleware/validate.js";
 
 const router = express.Router();
 
-router.post("/buy", protect, upload.single("proofImage"), initiateOfflinePayment);
+router.post("/buy", protect, upload.single("proofImage"), validatePayment, initiateOfflinePayment);
 router.get("/check/:planId", protect, checkPlanOwnership);
 router.get("/my-plans", protect, getUserPlans);
 router.get("/my-requests", protect, getMyRequests);

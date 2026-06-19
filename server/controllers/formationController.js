@@ -76,7 +76,7 @@ export const createFormation = async (req, res) => {
 
     res.status(201).json({ success: true, data: formation });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: "Error creating formation" });
   }
 };
 
@@ -85,7 +85,7 @@ export const getFormations = async (req, res) => {
     const formations = await Formation.find({ status: "active" }).sort({ createdAt: -1 });
     res.status(200).json({ success: true, data: formations });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: "Error fetching formations" });
   }
 };
 
@@ -95,7 +95,7 @@ export const getFormationById = async (req, res) => {
     if (!formation) return res.status(404).json({ success: false, message: "Formation not found" });
     res.status(200).json({ success: true, data: formation });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: "Error fetching formation" });
   }
 };
 
@@ -152,7 +152,7 @@ export const updateFormation = async (req, res) => {
     await formation.save();
     res.status(200).json({ success: true, data: formation });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: "Error updating formation" });
   }
 };
 
@@ -177,7 +177,7 @@ export const deleteFormation = async (req, res) => {
     await formation.deleteOne();
     res.status(200).json({ success: true, message: "Formation deleted" });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: "Error deleting formation" });
   }
 };
 
@@ -186,7 +186,7 @@ export const getMyFormations = async (req, res) => {
     const formations = await Formation.find({ createdBy: req.user.id }).sort({ createdAt: -1 });
     res.status(200).json({ success: true, data: formations });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: "Error fetching formations" });
   }
 };
 
@@ -228,7 +228,7 @@ export const createSession = async (req, res) => {
 
     res.status(201).json({ success: true, data: session });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: "Error creating session" });
   }
 };
 
@@ -237,7 +237,7 @@ export const getSessions = async (req, res) => {
     const sessions = await FormationSession.find({ formation: req.params.formationId }).sort({ order: 1 });
     res.status(200).json({ success: true, data: sessions });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: "Error fetching sessions" });
   }
 };
 
@@ -253,7 +253,7 @@ export const updateSession = async (req, res) => {
     await session.save();
     res.status(200).json({ success: true, data: session });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: "Error updating session" });
   }
 };
 
@@ -268,7 +268,7 @@ export const deleteSession = async (req, res) => {
     await session.deleteOne();
     res.status(200).json({ success: true, message: "Session deleted" });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: "Error deleting session" });
   }
 };
 
@@ -287,7 +287,7 @@ export const getMyPurchasedFormations = async (req, res) => {
 
     res.status(200).json({ success: true, data: result });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: "Error processing formation" });
   }
 };
 
@@ -296,6 +296,6 @@ export const checkFormationOwnership = async (req, res) => {
     const uf = await UserFormation.findOne({ user: req.user.id, formation: req.params.id });
     res.status(200).json({ success: true, owns: !!uf });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: "Error checking formation ownership" });
   }
 };

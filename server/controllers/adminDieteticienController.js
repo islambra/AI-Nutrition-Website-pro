@@ -3,13 +3,14 @@ import Dieteticien from "../models/Dieteticien.js";
 import PendingDieteticien from "../models/PendingDieteticien.js";
 import imagekit from "../configs/imageKit.js";
 import { sendApprovalEmail } from "../services/emailService.js";
+import { securityLogger } from "../middleware/securityLogger.js";
 
 export const getPendingDieteticiens = async (req, res) => {
   try {
     const pending = await PendingDieteticien.find({ status: "pending" }).sort({ createdAt: -1 });
     res.status(200).json({ success: true, data: pending });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: "Error fetching pending dieteticiens" });
   }
 };
 
@@ -48,6 +49,7 @@ export const approveDieteticien = async (req, res) => {
       baridiMob: pending.baridiMob || null
     });
 
+    securityLogger.adminAction(req.user._id.toString(), 'APPROVE_DIETETICIEN', id, pending.email);
     await sendApprovalEmail(pending.email, pending.fullName);
 
     await PendingDieteticien.findByIdAndDelete(id);
@@ -59,7 +61,7 @@ export const approveDieteticien = async (req, res) => {
       user: userSafe
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: "Error approving dieteticien" });
   }
 };
 
@@ -78,11 +80,12 @@ export const rejectDieteticien = async (req, res) => {
 
     await PendingDieteticien.findByIdAndDelete(id);
 
+    securityLogger.adminAction(req.user._id.toString(), 'REJECT_DIETETICIEN', id, pending.fullName);
     res.status(200).json({
       success: true,
       message: `Request from ${pending.fullName} has been rejected and removed.`
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: "Error rejecting dieteticien" });
   }
 };

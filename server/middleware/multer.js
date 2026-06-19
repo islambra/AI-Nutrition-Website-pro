@@ -1,23 +1,41 @@
 import multer from "multer";
+import { securityLogger } from "./securityLogger.js";
 
-// Configure multer for memory storage (since we'll upload directly to ImageKit)
+const ALLOWED_MIMETYPES = [
+  'image/jpeg',
+  'image/png',
+  'image/gif',
+  'image/webp',
+  'application/pdf'
+];
+
+const ALLOWED_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.pdf'];
+
 const storage = multer.memoryStorage();
 
-// File filter to only allow images and PDFs
 const fileFilter = (req, file, cb) => {
-    if (file.mimetype.startsWith('image/') || file.mimetype === 'application/pdf') {
-        cb(null, true);
-    } else {
-        cb(new Error('Only image and PDF files are allowed'), false);
-    }
+  const ext = file.originalname.toLowerCase().slice(file.originalname.lastIndexOf('.'));
+  if (!ALLOWED_MIMETYPES.includes(file.mimetype)) {
+    securityLogger.fileUpload(req.user?._id, file.originalname, file.size, 'rejected_mime');
+    return cb(new Error('Only JPEG, PNG, GIF, WebP images and PDF files are allowed'), false);
+  }
+  if (!ALLOWED_EXTENSIONS.includes(ext)) {
+    securityLogger.fileUpload(req.user?._id, file.originalname, file.size, 'rejected_extension');
+    return cb(new Error(`File extension ${ext} is not allowed`), false);
+  }
+  if (file.mimetype === 'image/svg+xml') {
+    securityLogger.fileUpload(req.user?._id, file.originalname, file.size, 'rejected_svg');
+    return cb(new Error('SVG files are not allowed'), false);
+  }
+  cb(null, true);
 };
 
-const upload = multer({ 
-    storage: storage,
-    fileFilter: fileFilter,
-    limits: {
-        fileSize: 5 * 1024 * 1024 // 5MB limit
-    }
+const upload = multer({
+  storage: storage,
+  fileFilter: fileFilter,
+  limits: {
+    fileSize: 5 * 1024 * 1024
+  }
 });
 
 export default upload;

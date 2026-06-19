@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Payment from "../models/Payment.js";
 import Plan from "../models/Plan.js";
 import Formation from "../models/Formation.js";
@@ -70,7 +71,7 @@ export const initiateOfflinePayment = async (req, res) => {
       data: payment
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: "Error submitting payment proof" });
   }
 };
 
@@ -88,7 +89,7 @@ export const getPendingPayments = async (req, res) => {
 
     res.status(200).json({ success: true, data: payments });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: "Error fetching payments" });
   }
 };
 
@@ -179,7 +180,7 @@ export const approvePayment = async (req, res) => {
 
     res.status(200).json({ success: true, message: "Payment approved and service activated" });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: "Error approving payment" });
   }
 };
 
@@ -210,7 +211,7 @@ export const rejectPayment = async (req, res) => {
 
     res.status(200).json({ success: true, message: "Payment rejected" });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: "Error rejecting payment" });
   }
 };
 
@@ -233,8 +234,7 @@ export const checkPlanOwnership = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Error checking plan",
-      error: error.message
+      message: "Error checking plan"
     });
   }
 };
@@ -276,7 +276,7 @@ export const getMyRequests = async (req, res) => {
 
     res.status(200).json({ success: true, data: enriched });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: "Error fetching requests" });
   }
 };
 
@@ -301,7 +301,7 @@ export const deleteMyRequest = async (req, res) => {
 
     res.status(200).json({ success: true, message: "Request deleted successfully" });
   } catch (error) {
-    res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({ success: false, message: "Error deleting request" });
   }
 };
 
@@ -322,8 +322,7 @@ export const getUserPlans = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Error fetching your plans",
-      error: error.message
+      message: "Error fetching your plans"
     });
   }
 };
