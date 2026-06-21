@@ -6,10 +6,12 @@ const ALLOWED_MIMETYPES = [
   'image/png',
   'image/gif',
   'image/webp',
+  'image/bmp',
+  'image/tiff',
   'application/pdf'
 ];
 
-const ALLOWED_EXTENSIONS = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.pdf'];
+const ALLOWED_EXTENSIONS = ['.jpg', '.jpeg', '.jpe', '.jfif', '.png', '.gif', '.webp', '.bmp', '.tiff', '.tif', '.pdf'];
 
 const storage = multer.memoryStorage();
 

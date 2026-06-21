@@ -1,0 +1,136 @@
+.fs-session-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.fs-session-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 18px;
+  background: white;
+  border-radius: 12px;
+  border: 2px solid #e5e7eb;
+  flex-wrap: wrap;
+  transition: all 0.2s;
+}
+
+.fs-session-item.past {
+  opacity: 0.55;
+}
+
+.fs-session-item.live {
+  background: #ecfdf5;
+  border-color: #10b981;
+  animation: fs-pulse-border 2s ease-in-out infinite;
+}
+
+.fs-session-item.next {
+  background: linear-gradient(135deg, #fffbeb, #fef3c7);
+  border-color: #f59e0b;
+  box-shadow: 0 0 0 1px rgba(245,158,11,0.15);
+}
+
+.fs-session-item.next .fs-order-badge {
+  background: #f59e0b;
+  color: #fff;
+}
+
+.fs-session-item.live .fs-order-badge {
+  background: #10b981;
+  color: white;
+}
+
+@keyframes fs-pulse-border {
+  0%, 100% { border-color: #10b981; }
+  50% { border-color: #34d399; }
+}
+
+.fs-order-badge {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+  flex-shrink: 0;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.fs-session-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.fs-session-info strong {
+  font-size: 14px;
+  color: #1f2937;
+}
+
+.fs-session-time {
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.fs-status-badge {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  width: fit-content;
+  margin-top: 4px;
+}
+
+.fs-status-badge.ended {
+  color: #9ca3af;
+  background: #f3f4f6;
+}
+
+.fs-status-badge.live {
+  color: #065f46;
+  background: #d1fae5;
+}
+
+.fs-status-badge.live::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #10b981;
+  animation: fs-pulse-dot 1.5s ease-in-out infinite;
+}
+
+.fs-status-badge.upcoming {
+  color: #b45309;
+  background: #fef3c7;
+  border: 1px solid #fde68a;
+}
+
+@keyframes fs-pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.fs-countdown {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: #fef3c7;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #d97706;
+  white-space: nowrap;
+}

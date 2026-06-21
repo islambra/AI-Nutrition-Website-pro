@@ -43,6 +43,7 @@ export const approveDieteticien = async (req, res) => {
       user: newUser._id,
       specialty: pending.specialty,
       diplomaUrl: pending.diplomaUrl,
+      diplomaFileId: pending.diplomaFileId,
       isApproved: true,
       ccpNumber: pending.ccpNumber || null,
       ccpKey: pending.ccpKey || null,

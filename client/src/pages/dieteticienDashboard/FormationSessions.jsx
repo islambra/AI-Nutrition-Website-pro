@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { motion } from "framer-motion";
-import { ArrowLeft, Plus, Trash2, Video, Clock, Loader2 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { ArrowLeft, Plus, Trash2, Video, Clock, Monitor, Loader2, AlertCircle } from "lucide-react";
 import { getFormationById, getSessions, createSession, deleteSession } from "../../api/formationApi";
+import CountdownTimer from "../../components/CountdownTimer";
 import toast from "react-hot-toast";
+import "./FormationSessions.css";
 
 const FormationSessions = () => {
   const { formationId } = useParams();
@@ -13,6 +15,23 @@ const FormationSessions = () => {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [deleteConfirm, setDeleteConfirm] = useState(null);
+  const canJoinSession = (session) => {
+    const now = new Date();
+    const start = new Date(session.startTime);
+    const end = new Date(session.endTime);
+    return now >= start && now <= end && session.zoomLink;
+  };
+
+  const sessionIsPast = (session) => {
+    return new Date(session.endTime) < new Date();
+  };
+
+  const getNextSessionIndex = (sessions) => {
+    const now = new Date();
+    return sessions.findIndex((s) => new Date(s.endTime) > now);
+  };
+
   const [sessionForm, setSessionForm] = useState({
     title: "", description: "", startTime: "", endTime: ""
   });
@@ -62,7 +81,6 @@ const FormationSessions = () => {
   };
 
   const handleDeleteSession = async (sessionId) => {
-    if (!confirm("Delete this session?")) return;
     try {
       const res = await deleteSession(sessionId);
       if (res.success) {
@@ -71,6 +89,8 @@ const FormationSessions = () => {
       }
     } catch {
       toast.error("Failed to delete");
+    } finally {
+      setDeleteConfirm(null);
     }
   };
 
@@ -157,55 +177,99 @@ const FormationSessions = () => {
       )}
 
       {sessions.length === 0 ? (
-        <div style={{ textAlign: "center", padding: "60px 20px", color: "#9ca3af" }}>
+        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", padding: "60px 20px", color: "#9ca3af" }}>
           <Clock size={48} style={{ marginBottom: 12, opacity: 0.4 }} />
           <p style={{ fontSize: 16, fontWeight: 600 }}>No sessions yet</p>
           <p style={{ fontSize: 13, marginTop: 4 }}>Click "Add Session" to create your first one.</p>
         </div>
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-          {sessions.map((session) => (
-            <motion.div
-              key={session._id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                gap: 12,
-                padding: "14px 18px",
-                background: "white",
-                borderRadius: 12,
-                border: "2px solid #e5e7eb",
-                flexWrap: "wrap",
-              }}
-            >
-              <div style={{ display: "flex", alignItems: "center", gap: 12, flex: 1, minWidth: 200 }}>
-                <div style={{ width: 36, height: 36, borderRadius: 10, background: "#ecfdf5", display: "flex", alignItems: "center", justifyContent: "center", color: "#059669", flexShrink: 0, fontWeight: 700, fontSize: 14 }}>
-                  {session.order}
-                </div>
-                <div>
-                  <strong style={{ fontSize: 14 }}>{session.title}</strong>
-                  <div style={{ fontSize: 12, color: "#6b7280", marginTop: 2 }}>
-                    {new Date(session.startTime).toLocaleDateString()} {new Date(session.startTime).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+        <div className="fs-session-list">
+          {sessions.map((session, i) => {
+            const isLive = canJoinSession(session);
+            const isPast = sessionIsPast(session);
+            const isNext = i === getNextSessionIndex(sessions) && !isPast;
+            return (
+              <motion.div
+                key={session._id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className={`fs-session-item ${isLive ? "live" : ""} ${isPast ? "past" : ""} ${isNext ? "next" : ""}`}
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: 12, flex: 1, minWidth: 200 }}>
+                  <div className="fs-order-badge">
+                    {isPast ? <Monitor size={18} /> : isLive ? <Video size={18} /> : <Clock size={18} />}
+                  </div>
+                  <div className="fs-session-info">
+                    <strong>{session.title}</strong>
+                    <span className="fs-session-time">
+                      {new Date(session.startTime).toLocaleDateString()} {new Date(session.startTime).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                      {" — "}
+                      {new Date(session.endTime).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                    </span>
+                    {isPast && <span className="fs-status-badge ended">Ended</span>}
+                    {isLive && <span className="fs-status-badge live">Live Now</span>}
+                    {isNext && !isPast && !isLive && <span className="fs-status-badge upcoming">Upcoming</span>}
                   </div>
                 </div>
+                <div style={{ display: "flex", gap: 8 }}>
+                  {isLive ? (
+                    <a href={session.zoomLink} target="_blank" rel="noopener noreferrer" className="mc-pdf-btn" style={{ padding: "8px 12px", fontSize: 12, textDecoration: "none", background: "linear-gradient(135deg, #10b981, #059669)", color: "white" }}>
+                      <Video size={14} /> Join Now
+                    </a>
+                  ) : !isPast && session.zoomLink ? (
+                    <div className="fs-countdown">
+                      <Clock size={12} />
+                      <CountdownTimer targetDate={session.startTime} />
+                    </div>
+                  ) : null}
+                  <button onClick={() => setDeleteConfirm(session._id)} style={{ background: "#fef2f2", border: "none", borderRadius: 8, cursor: "pointer", color: "#ef4444", padding: "8px 12px" }}>
+                    <Trash2 size={14} />
+                  </button>
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
+      )}
+      <AnimatePresence>
+        {deleteConfirm && (
+          <motion.div
+            className="pa-modal-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setDeleteConfirm(null)}
+          >
+            <motion.div
+              className="pa-confirm-modal"
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              onClick={e => e.stopPropagation()}
+            >
+              <div className="pa-confirm-icon">
+                <AlertCircle size={28} />
               </div>
-              <div style={{ display: "flex", gap: 8 }}>
-                {session.zoomLink && (
-                  <a href={session.zoomLink} target="_blank" rel="noopener noreferrer" className="mc-pdf-btn" style={{ padding: "8px 12px", fontSize: 12, textDecoration: "none" }}>
-                    <Video size={14} /> Zoom
-                  </a>
-                )}
-                <button onClick={() => handleDeleteSession(session._id)} style={{ background: "#fef2f2", border: "none", borderRadius: 8, cursor: "pointer", color: "#ef4444", padding: "8px 12px" }}>
-                  <Trash2 size={14} />
+              <h3>Delete this session?</h3>
+              <p>This action cannot be undone. The session and its Zoom link will be permanently removed.</p>
+              <div className="pa-confirm-actions">
+                <button
+                  className="pa-confirm-cancel"
+                  onClick={() => setDeleteConfirm(null)}
+                >
+                  Cancel
+                </button>
+                <button
+                  className="pa-confirm-reject"
+                  onClick={() => handleDeleteSession(deleteConfirm)}
+                >
+                  Delete
                 </button>
               </div>
             </motion.div>
-          ))}
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

@@ -48,6 +48,10 @@ export const deletePayment = async (req, res) => {
 
     securityLogger.adminAction(req.user._id.toString(), 'DELETE_PAYMENT', id, `User: ${payment.user}`);
 
+    if (payment.proofImageFileId) {
+      try { await imagekit.deleteFile(payment.proofImageFileId); } catch (_) {}
+    }
+
     const userPlans = await UserPlan.find({ payment: id }, '_id');
     const userPlanIds = userPlans.map(up => up._id);
 
@@ -126,6 +130,10 @@ export const approveCourseSubscription = async (req, res) => {
         endDate: endDate,
         payment: payment._id
       });
+    }
+
+    if (payment.proofImageFileId) {
+      try { await imagekit.deleteFile(payment.proofImageFileId); } catch (_) {}
     }
 
     res.status(200).json({ success: true, message: "Course subscription approved. Student has access for 1 year." });
@@ -225,6 +233,10 @@ export const approveAiToolSubscription = async (req, res) => {
         endDate: endDate,
         payment: payment._id
       });
+    }
+
+    if (payment.proofImageFileId) {
+      try { await imagekit.deleteFile(payment.proofImageFileId); } catch (_) {}
     }
 
     res.status(200).json({ success: true, message: "AI Tool subscription approved. User has access for 1 year." });

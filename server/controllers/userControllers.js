@@ -151,6 +151,7 @@ export const registerUser = async (req, res) => {
 };
 
 export const registerDieteticien = async (req, res) => {
+  let uploadedFileId = null;
   try {
     const { fullName, email, password, age, gender, specialty, ccpNumber, ccpKey, baridiMob } = req.body;
 
@@ -179,6 +180,7 @@ export const registerDieteticien = async (req, res) => {
       });
       diplomaUrl = upload.url;
       diplomaFileId = upload.fileId;
+      uploadedFileId = upload.fileId;
     }
 
     const pending = new PendingDieteticien({
@@ -201,6 +203,9 @@ export const registerDieteticien = async (req, res) => {
       data: { id: pending._id, status: "pending" }
     });
   } catch (error) {
+    if (uploadedFileId) {
+      try { await imagekit.deleteFile(uploadedFileId); } catch (_) {}
+    }
     res.status(500).json({ success: false, message: "Registration failed. Please try again." });
   }
 };
@@ -561,6 +566,10 @@ export const deleteUser = async (req, res) => {
     } else if (user.role === "student") {
       await Student.findOneAndDelete({ user: user._id });
     } else if (user.role === "dieteticien") {
+      const dieteticien = await Dieteticien.findOne({ user: user._id });
+      if (dieteticien?.diplomaFileId) {
+        try { await imagekit.deleteFile(dieteticien.diplomaFileId); } catch (_) {}
+      }
       await Dieteticien.findOneAndDelete({ user: user._id });
     }
 

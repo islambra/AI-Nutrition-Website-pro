@@ -10,6 +10,7 @@ import imagekit from "../configs/imageKit.js";
 
 // Initiate offline payment with proof image
 export const initiateOfflinePayment = async (req, res) => {
+  let uploadedFileId = null;
   try {
     const { planId, formationId, paymentMethod } = req.body;
     const userId = req.user.id;
@@ -51,6 +52,7 @@ export const initiateOfflinePayment = async (req, res) => {
       });
       proofImage = upload.url;
       proofImageFileId = upload.fileId;
+      uploadedFileId = upload.fileId;
     }
 
     const payment = await Payment.create({
@@ -71,6 +73,9 @@ export const initiateOfflinePayment = async (req, res) => {
       data: payment
     });
   } catch (error) {
+    if (uploadedFileId) {
+      try { await imagekit.deleteFile(uploadedFileId); } catch (_) {}
+    }
     res.status(500).json({ success: false, message: "Error submitting payment proof" });
   }
 };
@@ -176,6 +181,10 @@ export const approvePayment = async (req, res) => {
           }
         }
       }
+    }
+
+    if (payment.proofImageFileId) {
+      try { await imagekit.deleteFile(payment.proofImageFileId); } catch (_) {}
     }
 
     res.status(200).json({ success: true, message: "Payment approved and service activated" });

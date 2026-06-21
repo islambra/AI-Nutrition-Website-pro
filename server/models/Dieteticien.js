@@ -16,6 +16,10 @@ const dieteticienSchema = new mongoose.Schema({
     type: String,
     default: null
   },
+  diplomaFileId: {
+    type: String,
+    default: null
+  },
   isApproved: {
     type: Boolean,
     default: true

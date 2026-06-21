@@ -125,6 +125,7 @@ export const getPlatformPaymentInfo = async (req, res) => {
 
 // Initiate course subscription (offline payment with proof)
 export const initiateCourseSubscription = async (req, res) => {
+  let uploadedFileId = null;
   try {
     const userId = req.user.id;
     const { paymentMethod } = req.body;
@@ -149,6 +150,7 @@ export const initiateCourseSubscription = async (req, res) => {
       });
       proofImage = upload.url;
       proofImageFileId = upload.fileId;
+      uploadedFileId = upload.fileId;
     }
 
     const payment = await Payment.create({
@@ -167,6 +169,9 @@ export const initiateCourseSubscription = async (req, res) => {
       data: payment
     });
   } catch (error) {
+    if (uploadedFileId) {
+      try { await imagekit.deleteFile(uploadedFileId); } catch (_) {}
+    }
     res.status(500).json({ success: false, message: "Error initiating subscription" });
   }
 };
