@@ -2,7 +2,6 @@ import 'dotenv/config';
 import express from "express";
 import cors from "cors";
 import helmet from "helmet";
-import mongoSanitize from "express-mongo-sanitize";
 import hpp from "hpp";
 import { createServer } from "http";
 import { Server } from "socket.io";
@@ -61,12 +60,28 @@ app.use(cors({
 app.use(express.json({ limit: '10kb' }));
 app.use(express.urlencoded({ extended: true, limit: '10kb' }));
 
-app.use(mongoSanitize({
-  replaceWith: '_',
-  onSanitize: ({ req, key }) => {
-    console.warn(`[SECURITY] NoSQL injection attempt blocked on ${req.originalUrl}: key=${key}`);
+const sanitizeValue = (val, path = '') => {
+  if (!val || typeof val !== 'object') return;
+  if (Array.isArray(val)) {
+    val.forEach((item, i) => sanitizeValue(item, `${path}[${i}]`));
+    return;
   }
-}));
+  for (const key of Object.keys(val)) {
+    const sanitizedKey = key.replace(/[$]/g, '_').replace(/[.]/g, '_');
+    if (sanitizedKey !== key) {
+      val[sanitizedKey] = val[key];
+      delete val[key];
+      console.warn(`[SECURITY] NoSQL injection attempt blocked on ${path}: key=${key}`);
+    }
+    sanitizeValue(val[sanitizedKey], `${path}.${sanitizedKey}`);
+  }
+};
+app.use((req, _res, next) => {
+  if (req.body) sanitizeValue(req.body, 'req.body');
+  if (req.params) sanitizeValue(req.params, 'req.params');
+  if (req.query) sanitizeValue(req.query, 'req.query');
+  next();
+});
 
 app.use(hpp());
 

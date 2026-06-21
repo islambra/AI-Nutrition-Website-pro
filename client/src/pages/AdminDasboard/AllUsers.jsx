@@ -32,8 +32,8 @@ const AllUsers = () => {
     try {
       setLoading(true);
       const response = await getAllUsers();
-      setUsers(response);
-      setFilteredUsers(response);
+      setUsers(response.data);
+      setFilteredUsers(response.data);
     } catch (error) {
       console.error("Error fetching users:", error);
       showNotification("Failed to load users", "error");
