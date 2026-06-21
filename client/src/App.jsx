@@ -56,6 +56,7 @@ import MyFormationsPage from './pages/studentDashboard/MyFormationsPage.jsx'
 import StudentRequests from './pages/studentDashboard/StudentRequests.jsx'
 import ManageCourseSubscriptions from './pages/AdminDasboard/ManageCourseSubscriptions.jsx'
 import ManageAiToolSubscriptions from './pages/AdminDasboard/ManageAiToolSubscriptions.jsx'
+import PlatformPaymentSettings from './pages/AdminDasboard/PlatformPaymentSettings.jsx'
 import LoginGate from './components/LoginGate.jsx'
 import ProtectedRoute from './components/ProtectedRoute.jsx'
 import ChatBubble from './components/chat/ChatBubble.jsx'
@@ -135,6 +136,7 @@ function App() {
               <Route path="all-courses" element={<AllCourses />} />
               <Route path="course-subscriptions" element={<ManageCourseSubscriptions />} />
               <Route path="ai-tool-subscriptions" element={<ManageAiToolSubscriptions />} />
+              <Route path="platform-payment-settings" element={<PlatformPaymentSettings />} />
               <Route path="my-Profile" element={<EditUserProfile />} />
           </Route>
         </Routes>

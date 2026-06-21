@@ -1191,6 +1191,30 @@
   background: #16A34A;
 }
 
+/* ---------- COUNTDOWN ---------- */
+.aff-booking-countdown {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #22C55E;
+  background: #F0FDF4;
+  border-radius: 8px;
+  padding: 8px 14px;
+  margin: 4px 0;
+}
+
+.aff-countdown-live {
+  color: #EF4444;
+  animation: aff-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes aff-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
 /* ---------- RESPONSIVE ---------- */
 @media (max-width: 768px) {
   .aff-plans-grid {

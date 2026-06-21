@@ -76,7 +76,8 @@ export const initiateOfflinePayment = async (req, res) => {
     if (uploadedFileId) {
       try { await imagekit.deleteFile(uploadedFileId); } catch (_) {}
     }
-    res.status(500).json({ success: false, message: "Error submitting payment proof" });
+    const devMsg = process.env.NODE_ENV === 'development' ? error.message : undefined;
+    res.status(500).json({ success: false, message: "Error submitting payment proof", ...(devMsg && { error: devMsg }) });
   }
 };
 

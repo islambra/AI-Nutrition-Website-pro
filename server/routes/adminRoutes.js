@@ -16,6 +16,10 @@ import {
   approveDieteticien,
   rejectDieteticien
 } from '../controllers/adminDieteticienController.js';
+import {
+  getPlatformPaymentInfo,
+  updatePlatformPaymentInfo
+} from '../controllers/adminPlatformPaymentController.js';
 
 const router = express.Router();
 router.use(protect);
@@ -37,5 +41,9 @@ router.post('/course-subscriptions/reject/:id', rejectCourseSubscription);
 router.get('/ai-tool-subscriptions/pending', getPendingAiToolSubscriptions);
 router.post('/ai-tool-subscriptions/approve/:id', approveAiToolSubscription);
 router.post('/ai-tool-subscriptions/reject/:id', rejectAiToolSubscription);
+
+// Platform payment info management
+router.get('/platform-payment-info', getPlatformPaymentInfo);
+router.put('/platform-payment-info', updatePlatformPaymentInfo);
 
 export default router;

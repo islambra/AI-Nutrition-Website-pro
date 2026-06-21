@@ -45,6 +45,7 @@ export const getUserConsultations = async (req, res) => {
     const consultations = await Consultation.find({ user: req.user.id })
       .populate("userPlan")
       .populate("nutritionist", "fullName email")
+      .populate("plan", "planName planCategory")
       .sort({ createdAt: -1 });
     res.status(200).json({ success: true, data: consultations });
   } catch (error) {

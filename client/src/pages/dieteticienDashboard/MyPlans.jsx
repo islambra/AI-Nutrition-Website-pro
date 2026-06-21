@@ -297,7 +297,7 @@ const PlanDashboard = () => {
               <div className="dash-empty">
                 <div className="dash-empty-icon"><FiFolder size={44} /></div>
                 <p>You haven't created any plans yet.</p>
-                <button className="dash-empty-btn" onClick={() => window.location.href = '/dashboard/plans/new'}>
+                <button className="dash-empty-btn" onClick={() => window.location.href = '/dieteticien/create-plan'}>
                   <FiPlus size={16} /> Create Your First Plan
                 </button>
               </div>

@@ -128,6 +128,24 @@ function ClientPlans() {
     });
   };
 
+  const [now, setNow] = useState(Date.now());
+  useEffect(() => {
+    const id = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  const CountdownTimer = ({ targetDate }) => {
+    const diff = new Date(targetDate).getTime() - now;
+    if (diff <= 0) return <span className="aff-countdown-live">Live now</span>;
+    const d = Math.floor(diff / 86400000);
+    const h = Math.floor((diff % 86400000) / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    const s = Math.floor((diff % 60000) / 1000);
+    if (d > 0) return <span>{d}d {h}h {m}m</span>;
+    if (h > 0) return <span>{h}h {m}m {s}s</span>;
+    return <span>{m}m {s}s</span>;
+  };
+
   return (
     <div className="aff-wrapper">
       {/* Header */}
@@ -299,15 +317,36 @@ function ClientPlans() {
                         })}
                       </span>
                     </div>
-                    {booking.note && (
+                    <div className="aff-booking-detail">
+                      <ShoppingBag size={14} />
+                      <span>
+                        Plan: <strong>{booking.plan?.planName || "N/A"}</strong>
+                      </span>
+                    </div>
+                    {booking.userPlan?.sessionsRemaining !== undefined && (
                       <div className="aff-booking-detail">
                         <MessageCircle size={14} />
+                        <span>
+                          Sessions left: <strong>{booking.userPlan.sessionsRemaining}</strong>
+                        </span>
+                      </div>
+                    )}
+                    {booking.note && (
+                      <div className="aff-booking-detail">
+                        <FileText size={14} />
                         <span>{booking.note}</span>
                       </div>
                     )}
                   </div>
 
-                  {booking.status === "accepted" && booking.zoomLink && (
+                  {booking.status === "accepted" && (
+                    <div className="aff-booking-countdown">
+                      <Clock size={14} />
+                      <CountdownTimer targetDate={booking.requestedDateTime} />
+                    </div>
+                  )}
+
+                  {booking.status === "accepted" && booking.zoomLink && now >= new Date(booking.requestedDateTime).getTime() && (
                     <a
                       href={booking.zoomLink}
                       target="_blank"

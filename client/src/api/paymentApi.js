@@ -68,6 +68,18 @@ export const deletePaymentAdmin = async (paymentId) => {
   return response.data;
 };
 
+// Admin: get platform payment settings (CCP, BaridiMob)
+export const getPlatformPaymentSettings = async () => {
+  const response = await axiosInstance.get('/admin/platform-payment-info');
+  return response.data;
+};
+
+// Admin: update platform payment settings
+export const updatePlatformPaymentSettings = async (data) => {
+  const response = await axiosInstance.put('/admin/platform-payment-info', data);
+  return response.data;
+};
+
 // Dieteticien: get plan payments (for sales history)
 export const getDieteticienPlanPayments = async () => {
   const response = await axiosInstance.get('/dieteticien/payments/my-plan-payments');

@@ -19,6 +19,7 @@ export const getDieteticienPlanPayments = async (req, res) => {
     }
 
     const payments = await Payment.find({
+      status: "approved",
       $or: [
         { plan: { $in: myPlanIds } },
         { formation: { $in: myFormationIds } }

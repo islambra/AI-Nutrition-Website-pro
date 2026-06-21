@@ -1,6 +1,11 @@
+import { MulterError } from 'multer';
+
 const NODE_ENV = process.env.NODE_ENV || 'development';
 
 export const errorHandler = (err, req, res, _next) => {
+  if (err instanceof MulterError || (err.message && (err.message.includes('Only JPEG') || err.message.includes('not allowed') || err.message.includes('File too large')))) {
+    return res.status(400).json({ success: false, message: err.message });
+  }
   const statusCode = err.statusCode || 500;
   const message = err.isOperational ? err.message : 'Internal server error';
 

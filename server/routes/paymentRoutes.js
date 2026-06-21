@@ -12,10 +12,18 @@ import {
   deleteMyRequest
 } from "../controllers/paymentController.js";
 import { validatePayment } from "../middleware/validate.js";
+import { MulterError } from "multer";
 
 const router = express.Router();
 
-router.post("/buy", protect, upload.single("proofImage"), validatePayment, initiateOfflinePayment);
+const handleMulterError = (err, req, res, next) => {
+  if (err instanceof MulterError || err.message?.includes("Only JPEG")) {
+    return res.status(400).json({ success: false, message: err.message });
+  }
+  next(err);
+};
+
+router.post("/buy", protect, upload.single("proofImage"), handleMulterError, validatePayment, initiateOfflinePayment);
 router.get("/check/:planId", protect, checkPlanOwnership);
 router.get("/my-plans", protect, getUserPlans);
 router.get("/my-requests", protect, getMyRequests);
