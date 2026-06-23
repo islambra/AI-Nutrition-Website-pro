@@ -13,7 +13,6 @@ import {
   Users,
   Clock,
   ChevronDown,
-  Lock,
 } from "lucide-react";
 import { getAllCourses, checkCourseAccess } from "../../api/courseApi";
 import "./MyCourses.css";
@@ -146,31 +145,28 @@ const MyCourses = () => {
   if (accessChecked && !hasAccess) {
     return (
       <div className="mc-container">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mc-access-blocked"
-        >
-          <div className="mc-blocked-icon">
-            <Lock size={48} />
+          <div className="mc-access-blocked">
+            <div className="mc-blocked-icon">
+              <GraduationCap size={44} />
+            </div>
+            <h2>Subscription Required</h2>
+            <p className="mc-blocked-desc">
+              You need an active yearly subscription to access all course materials.
+            </p>
+            <div className="mc-blocked-price">
+              <span className="mc-price-amount">2,499.99 DZD</span>
+              <span className="mc-price-label">/year</span>
+            </div>
+            <p className="mc-blocked-features">
+              Unlock all courses across every level and semester.
+            </p>
+            <button
+              className="mc-subscribe-btn"
+              onClick={() => navigate("/checkout/course-subscription")}
+            >
+              Subscribe Now
+            </button>
           </div>
-          <h2>Subscription Required</h2>
-          <p>
-            You need an active yearly subscription to access course materials.
-          </p>
-          <p className="mc-blocked-price">
-            Subscribe for just <strong>2,499.99 DZD/year</strong> and unlock all
-            courses across all levels and semesters.
-          </p>
-          <motion.button
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.97 }}
-            className="mc-subscribe-btn"
-            onClick={() => navigate("/checkout/course-subscription")}
-          >
-            Subscribe Now
-          </motion.button>
-        </motion.div>
       </div>
     );
   }

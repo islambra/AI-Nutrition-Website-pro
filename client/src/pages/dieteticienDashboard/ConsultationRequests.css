@@ -76,14 +76,24 @@
 }
 
 .CR-EmptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
   text-align: center;
   padding: 80px 20px;
   color: var(--cr-gray-400);
 }
 
+.CR-EmptyIcon {
+  color: var(--cr-green-400);
+  margin-bottom: 8px;
+}
+
 .CR-EmptyState h3 {
   color: var(--cr-green-800);
-  margin: 20px 0 10px;
+  margin: 0 0 10px;
 }
 
 .CR-Grid {

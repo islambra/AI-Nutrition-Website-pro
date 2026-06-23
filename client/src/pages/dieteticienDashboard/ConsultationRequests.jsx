@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import {
   Loader2, Check, X, Link as LinkIcon, Calendar, User, FileText,
-  Clock, AlertCircle, MessageSquare, ExternalLink, Video
+  Clock, AlertCircle, MessageSquare, ExternalLink, Video, Inbox
 } from 'lucide-react';
 import {
   getDieteticienRequests,
@@ -105,7 +105,7 @@ function ConsultationRequests() {
               animate={{ opacity: 1, y: 0 }}
               className="CR-EmptyState"
             >
-              <AlertCircle size={64} opacity={0.3} />
+              <Inbox size={64} className="CR-EmptyIcon" />
               <h3>No Pending Requests</h3>
               <p>All consultation requests have been processed.</p>
             </motion.div>
