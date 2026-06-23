@@ -3,7 +3,6 @@ import { NavLink, useNavigate, Link } from 'react-router-dom';
 import { motion, useScroll, useTransform, useSpring, useVelocity, useAnimationFrame, AnimatePresence, useMotionValue } from 'framer-motion';
 import { Activity, Leaf, ChevronRight, ArrowUpRight, Quote, Users, Target, Dna, BookOpen } from 'lucide-react';
 import './HomePage.css';
-import Footer from '../components/Footer.jsx';
 import ScrollReveal from '../components/ScrollReveal.jsx';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
@@ -375,7 +374,6 @@ function HomePage() {
         </ScrollReveal>
       </section>
 
-      <Footer />
     </div>
   );
 }

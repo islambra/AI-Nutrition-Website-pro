@@ -1,7 +1,7 @@
 import React, { memo } from 'react';
 import { NavLink } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Target, Heart, Sparkles, Brain, Apple, ArrowUpRight, Leaf, ShieldCheck, Users } from 'lucide-react';
+import { Target, Heart, Sparkles, Brain, Apple, ArrowUpRight, Leaf, ShieldCheck, Users, Camera, TrendingUp, MessageCircle, Calendar, Activity, Zap } from 'lucide-react';
 import TiltCard from '../components/TiltCard';
 import ScrollReveal from '../components/ScrollReveal';
 import PageTransition from '../components/PageTransition';
@@ -31,24 +31,34 @@ const AboutUsOrganicFloaters = memo(() => (
 function AboutUsPage() {
   const features = [
     {
+      icon: <Camera className="AboutUsPage-Icon" size={32} />,
+      title: "AI Meal Recognition",
+      description: "Snap a photo and our AI instantly identifies ingredients, portions, and nutritional breakdown with high precision."
+    },
+    {
       icon: <Apple className="AboutUsPage-Icon" size={32} />,
-      title: "Dietary Consultations",
-      description: "Receive customized diet plans tailored to your unique health history and specific goals."
+      title: "Personalized Diet Plans",
+      description: "Tailored nutrition strategies built around your health profile, dietary preferences, and fitness goals."
     },
     {
-      icon: <Brain className="AboutUsPage-Icon" size={32} />,
-      title: "AI Calorie Tracking",
-      description: "Utilize cutting-edge AI-based food recognition system to estimate calorie content."
+      icon: <Activity className="AboutUsPage-Icon" size={32} />,
+      title: "Macro & Micro Tracking",
+      description: "Real-time dashboards tracking calories, macros, vitamins, and minerals to keep you on target."
     },
     {
-      icon: <Sparkles className="AboutUsPage-Icon" size={32} />,
-      title: "Engaging Content",
-      description: "Access insightful blogs, latest news, healthy recipes, and lifestyle tips."
+      icon: <MessageCircle className="AboutUsPage-Icon" size={32} />,
+      title: "Expert Chat Support",
+      description: "Direct messaging with certified nutritionists for real-time advice, meal adjustments, and accountability."
     },
     {
-      icon: <Target className="AboutUsPage-Icon" size={32} />,
-      title: "Structured Plans",
-      description: "Explore various dietary plans designed to fit your unique needs."
+      icon: <Calendar className="AboutUsPage-Icon" size={32} />,
+      title: "Smart Meal Planning",
+      description: "AI-generated weekly meal preps that adapt to your schedule, budget, and nutritional requirements."
+    },
+    {
+      icon: <Users className="AboutUsPage-Icon" size={32} />,
+      title: "Community Challenges",
+      description: "Join group challenges, share progress, and stay motivated with a like-minded wellness community."
     }
   ];
 
@@ -111,6 +121,8 @@ function AboutUsPage() {
           <section className="AboutUsPage-Section">
             <ScrollReveal>
               <h2 className="AboutUsPage-Heading center">SYSTEM OFFERINGS</h2>
+              <p className="AboutUsPage-Features-Subtitle">Next-generation tools engineered to transform how you interact with nutrition and wellness.</p>
+              <div className="AboutUsPage-Heading-Accent" />
             </ScrollReveal>
             <div className="AboutUsPage-Features-Grid">
               {features.map((feature, index) => (
@@ -118,9 +130,11 @@ function AboutUsPage() {
                   <div className="AboutUsPage-Feature-Card">
                     <div className="AboutUsPage-Feature-Icon-Wrapper">
                       {feature.icon}
+                      <div className="AboutUsPage-Icon-Glow" />
                     </div>
                     <h3>{feature.title.toUpperCase()}</h3>
                     <p>{feature.description}</p>
+                    <div className="AboutUsPage-Card-Accent" />
                   </div>
                 </ScrollReveal>
               ))}
