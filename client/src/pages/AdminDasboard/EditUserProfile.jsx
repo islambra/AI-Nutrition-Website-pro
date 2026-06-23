@@ -130,8 +130,8 @@ const EditUserProfile = () => {
     }
     
     if (formData.password) {
-      if (formData.password.length < 6) {
-        newErrors.password = "Password must be at least 6 characters";
+      if (formData.password.length < 8) {
+        newErrors.password = "Password must be at least 8 characters";
       }
       if (formData.password !== formData.confirmPassword) {
         newErrors.confirmPassword = "Passwords do not match";
@@ -432,7 +432,7 @@ const EditUserProfile = () => {
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
-                    placeholder="Enter new password (min. 6 characters)"
+                    placeholder="Enter new password (min. 8 characters)"
                     className={errors.password ? "error" : ""}
                   />
                 </div>

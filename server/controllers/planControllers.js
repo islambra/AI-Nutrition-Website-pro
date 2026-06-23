@@ -3,6 +3,8 @@
 import mongoose from "mongoose";
 import Plan from "../models/Plan.js";
 import User from "../models/User.js";
+import UserPlan from "../models/UserPlan.js";
+import Consultation from "../models/Consultation.js";
 import imagekit from "../configs/imageKit.js";
 
 export const createPlan = async (req, res) => {
@@ -239,8 +241,8 @@ export const deletePlan = async (req, res) => {
       });
     }
 
-    // Check if user is the creator
-    if (plan.createdBy.toString() !== req.user.id) {
+    // Check if user is the creator or an admin
+    if (plan.createdBy.toString() !== req.user.id && req.user.role !== 'admin') {
       return res.status(403).json({
         success: false,
         message: "You are not authorized to delete this plan",
@@ -250,6 +252,15 @@ export const deletePlan = async (req, res) => {
     if (plan.imageKitFileId) {
       try { await imagekit.deleteFile(plan.imageKitFileId); } catch (_) {}
     }
+
+    // Clean up UserPlan records referencing this plan
+    await UserPlan.deleteMany({ plan: id });
+
+    // Clean up Consultation records referencing this plan
+    await Consultation.updateMany(
+      { plan: id },
+      { $set: { plan: null } }
+    );
 
     await plan.deleteOne();
 

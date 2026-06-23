@@ -35,7 +35,7 @@ planRouter.get("/", validateQueryParams, getAllPlans);
 planRouter.get("/my-plans/list", protect, getMyPlans);
 planRouter.post("/", protect, authorize('dieteticien', 'admin'), upload.single("planImage"), validatePlan, createPlan);
 planRouter.put("/:id", protect, authorize('dieteticien', 'admin'), upload.single("planImage"), updatePlan);
-planRouter.delete("/:id", protect, deletePlan);
+planRouter.delete("/:id", protect, authorize('dieteticien', 'admin'), deletePlan);
 
 planRouter.get("/:id", getPlanById);
 

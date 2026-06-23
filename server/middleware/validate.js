@@ -15,11 +15,7 @@ export const validateRegister = [
   body('email').trim().isEmail().withMessage('Valid email is required')
     .normalizeEmail(),
   body('password')
-    .isLength({ min: 8 }).withMessage('Password must be at least 8 characters')
-    .matches(/[A-Z]/).withMessage('Password must contain an uppercase letter')
-    .matches(/[a-z]/).withMessage('Password must contain a lowercase letter')
-    .matches(/[0-9]/).withMessage('Password must contain a number')
-    .matches(/[^A-Za-z0-9]/).withMessage('Password must contain a special character'),
+    .isLength({ min: 8 }).withMessage('Password must be at least 8 characters'),
   body('role').isIn(['client', 'student']).withMessage('Role must be client or student'),
   handleValidationErrors
 ];
@@ -34,11 +30,7 @@ export const validateDieteticienRegister = [
   body('fullName').trim().notEmpty().withMessage('Full name is required'),
   body('email').trim().isEmail().withMessage('Valid email is required').normalizeEmail(),
   body('password')
-    .isLength({ min: 8 }).withMessage('Password must be at least 8 characters')
-    .matches(/[A-Z]/).withMessage('Password must contain an uppercase letter')
-    .matches(/[a-z]/).withMessage('Password must contain a lowercase letter')
-    .matches(/[0-9]/).withMessage('Password must contain a number')
-    .matches(/[^A-Za-z0-9]/).withMessage('Password must contain a special character'),
+    .isLength({ min: 8 }).withMessage('Password must be at least 8 characters'),
   body('age').isInt({ min: 18, max: 120 }).withMessage('Age must be between 18 and 120'),
   body('gender').isIn(['Male', 'Female']).withMessage('Gender must be Male or Female'),
   body('specialty').trim().notEmpty().withMessage('Specialty is required'),
@@ -49,10 +41,7 @@ export const validateStaffCreate = [
   body('fullName').trim().notEmpty().withMessage('Full name is required'),
   body('email').trim().isEmail().withMessage('Valid email is required').normalizeEmail(),
   body('password')
-    .isLength({ min: 8 }).withMessage('Password must be at least 8 characters')
-    .matches(/[A-Z]/).withMessage('Password must contain an uppercase letter')
-    .matches(/[a-z]/).withMessage('Password must contain a lowercase letter')
-    .matches(/[0-9]/).withMessage('Password must contain a number'),
+    .isLength({ min: 8 }).withMessage('Password must be at least 8 characters'),
   body('role').isIn(['admin', 'dieteticien']).withMessage('Role must be admin or dieteticien'),
   handleValidationErrors
 ];
@@ -123,11 +112,7 @@ export const validatePasswordReset = [
 
 export const validateNewPassword = [
   body('password')
-    .isLength({ min: 8 }).withMessage('Password must be at least 8 characters')
-    .matches(/[A-Z]/).withMessage('Password must contain an uppercase letter')
-    .matches(/[a-z]/).withMessage('Password must contain a lowercase letter')
-    .matches(/[0-9]/).withMessage('Password must contain a number')
-    .matches(/[^A-Za-z0-9]/).withMessage('Password must contain a special character'),
+    .isLength({ min: 8 }).withMessage('Password must be at least 8 characters'),
   handleValidationErrors
 ];
 

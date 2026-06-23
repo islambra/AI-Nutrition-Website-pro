@@ -16,7 +16,7 @@ import {
   getDieteticienPaymentInfo
 } from "../controllers/userControllers.js";
 import upload from "../middleware/multer.js";
-import { protect } from "../middleware/auth.js";
+import { protect, authorize } from "../middleware/auth.js";
 import {
   validateRegister,
   validateLogin,
@@ -36,15 +36,15 @@ userRouter.post("/login", validateLogin, loginUser);
 // Protected routes (authentication required)
 userRouter.get("/me", protect, getCurrentUser);
 userRouter.get("/public-profile/:id", getUserPublicProfile);
-userRouter.post("/create-staff", protect, validateStaffCreate, createStaffUser);
-userRouter.get("/all", protect, getAllUsers);
-userRouter.get("/staff", protect, getAllStaffUsers);
-userRouter.get("/clients", protect, getAllClients);
+userRouter.post("/create-staff", protect, authorize('admin'), validateStaffCreate, createStaffUser);
+userRouter.get("/all", protect, authorize('admin'), getAllUsers);
+userRouter.get("/staff", protect, authorize('admin'), getAllStaffUsers);
+userRouter.get("/clients", protect, authorize('dieteticien', 'admin'), getAllClients);
 userRouter.put("/:id", protect, upload.single('profilePicture'), updateUser);
 userRouter.delete("/:id", protect, deleteUser);
 
 // Dieteticien payment info
-userRouter.get("/:id/payment-info", getDieteticienPaymentInfo);
+userRouter.get("/:id/payment-info", protect, getDieteticienPaymentInfo);
 
 // Consultation routes
 userRouter.patch("/client/:id/increment-consultations", protect, incrementConsultations);
