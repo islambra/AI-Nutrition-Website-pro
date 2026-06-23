@@ -103,19 +103,19 @@ const FormationSessions = () => {
   }
 
   return (
-    <div className="mc-container" style={{ maxWidth: 800 }}>
-      <button onClick={() => navigate("/dieteticien/formations")} style={{ background: "none", border: "none", cursor: "pointer", display: "flex", alignItems: "center", gap: 6, color: "#6b7280", fontSize: 14, padding: 0, marginBottom: 20 }}>
+    <div className="mc-container fs-container">
+      <button onClick={() => navigate("/dieteticien/formations")} className="fs-back-btn">
         <ArrowLeft size={16} /> Back to Formations
       </button>
 
-      <div style={{ marginBottom: 24 }}>
-        <h2 style={{ margin: 0, fontSize: 28, fontWeight: 800 }}>{formation?.title}</h2>
-        <p style={{ margin: "4px 0 0", color: "#6b7280", fontSize: 14 }}>Manage sessions for this formation</p>
+      <div className="fs-header">
+        <h2 className="fs-title">{formation?.title}</h2>
+        <p className="fs-subtitle">Manage sessions for this formation</p>
       </div>
 
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-        <h3 style={{ margin: 0, fontSize: 18, fontWeight: 700 }}>Sessions ({sessions.length})</h3>
-        <button onClick={() => setShowForm(!showForm)} className="mc-pdf-btn" style={{ padding: "10px 18px", border: "none", cursor: "pointer", textDecoration: "none", fontSize: 13 }}>
+      <div className="fs-toolbar">
+        <h3 className="fs-count-label">Sessions ({sessions.length})</h3>
+        <button onClick={() => setShowForm(!showForm)} className="mc-pdf-btn fs-add-btn">
           <Plus size={16} /> {showForm ? "Cancel" : "Add Session"}
         </button>
       </div>
@@ -125,51 +125,42 @@ const FormationSessions = () => {
           initial={{ height: 0, opacity: 0 }}
           animate={{ height: "auto", opacity: 1 }}
           onSubmit={handleCreateSession}
-          style={{
-            background: "#f9fafb",
-            borderRadius: 12,
-            padding: 20,
-            marginBottom: 20,
-            border: "1px solid #e5e7eb",
-            display: "flex",
-            flexDirection: "column",
-            gap: 12,
-          }}
+          className="fs-form"
         >
           <input
+            className="fs-input"
             placeholder="Session Title *"
             value={sessionForm.title}
             onChange={(e) => setSessionForm((p) => ({ ...p, title: e.target.value }))}
-            style={{ padding: "10px 12px", borderRadius: 8, border: "1px solid #d1d5db", fontSize: 14 }}
           />
           <textarea
+            className="fs-textarea"
             placeholder="Description (optional)"
             rows={2}
             value={sessionForm.description}
             onChange={(e) => setSessionForm((p) => ({ ...p, description: e.target.value }))}
-            style={{ padding: "10px 12px", borderRadius: 8, border: "1px solid #d1d5db", fontSize: 14, resize: "vertical", fontFamily: "inherit" }}
           />
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+          <div className="fs-time-grid">
             <div>
-              <label style={{ display: "block", fontSize: 12, fontWeight: 600, marginBottom: 4, color: "#374151" }}>Start Time *</label>
+              <label className="fs-label">Start Time *</label>
               <input
+                className="fs-input"
                 type="datetime-local"
                 value={sessionForm.startTime}
                 onChange={(e) => setSessionForm((p) => ({ ...p, startTime: e.target.value }))}
-                style={{ width: "100%", padding: "10px 12px", borderRadius: 8, border: "1px solid #d1d5db", fontSize: 14, boxSizing: "border-box" }}
               />
             </div>
             <div>
-              <label style={{ display: "block", fontSize: 12, fontWeight: 600, marginBottom: 4, color: "#374151" }}>End Time *</label>
+              <label className="fs-label">End Time *</label>
               <input
+                className="fs-input"
                 type="datetime-local"
                 value={sessionForm.endTime}
                 onChange={(e) => setSessionForm((p) => ({ ...p, endTime: e.target.value }))}
-                style={{ width: "100%", padding: "10px 12px", borderRadius: 8, border: "1px solid #d1d5db", fontSize: 14, boxSizing: "border-box" }}
               />
             </div>
           </div>
-          <button type="submit" disabled={submitting} className="mc-pdf-btn" style={{ padding: "12px 20px", border: "none", cursor: submitting ? "not-allowed" : "pointer", justifyContent: "center", fontSize: 14 }}>
+          <button type="submit" disabled={submitting} className="mc-pdf-btn fs-submit-btn">
             {submitting ? <Loader2 className="AP-Spin" size={16} /> : null}
             Create Session (auto-generates Zoom link)
           </button>
@@ -177,10 +168,10 @@ const FormationSessions = () => {
       )}
 
       {sessions.length === 0 ? (
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", textAlign: "center", padding: "60px 20px", color: "#9ca3af" }}>
-          <Clock size={48} style={{ marginBottom: 12, opacity: 0.4 }} />
-          <p style={{ fontSize: 16, fontWeight: 600 }}>No sessions yet</p>
-          <p style={{ fontSize: 13, marginTop: 4 }}>Click "Add Session" to create your first one.</p>
+        <div className="fs-empty">
+          <Clock size={48} className="fs-empty-icon" />
+          <p className="fs-empty-title">No sessions yet</p>
+          <p className="fs-empty-sub">Click "Add Session" to create your first one.</p>
         </div>
       ) : (
         <div className="fs-session-list">
@@ -195,7 +186,7 @@ const FormationSessions = () => {
                 animate={{ opacity: 1, y: 0 }}
                 className={`fs-session-item ${isLive ? "live" : ""} ${isPast ? "past" : ""} ${isNext ? "next" : ""}`}
               >
-                <div style={{ display: "flex", alignItems: "center", gap: 12, flex: 1, minWidth: 200 }}>
+                <div className="fs-session-body">
                   <div className="fs-order-badge">
                     {isPast ? <Monitor size={18} /> : isLive ? <Video size={18} /> : <Clock size={18} />}
                   </div>
@@ -211,9 +202,9 @@ const FormationSessions = () => {
                     {isNext && !isPast && !isLive && <span className="fs-status-badge upcoming">Upcoming</span>}
                   </div>
                 </div>
-                <div style={{ display: "flex", gap: 8 }}>
+                <div className="fs-session-actions">
                   {isLive ? (
-                    <a href={session.zoomLink} target="_blank" rel="noopener noreferrer" className="mc-pdf-btn" style={{ padding: "8px 12px", fontSize: 12, textDecoration: "none", background: "linear-gradient(135deg, #10b981, #059669)", color: "white" }}>
+                    <a href={session.zoomLink} target="_blank" rel="noopener noreferrer" className="fs-join-btn">
                       <Video size={14} /> Join Now
                     </a>
                   ) : !isPast && session.zoomLink ? (
@@ -222,7 +213,7 @@ const FormationSessions = () => {
                       <CountdownTimer targetDate={session.startTime} />
                     </div>
                   ) : null}
-                  <button onClick={() => setDeleteConfirm(session._id)} style={{ background: "#fef2f2", border: "none", borderRadius: 8, cursor: "pointer", color: "#ef4444", padding: "8px 12px" }}>
+                  <button onClick={() => setDeleteConfirm(session._id)} className="fs-delete-btn">
                     <Trash2 size={14} />
                   </button>
                 </div>

@@ -1,3 +1,148 @@
+/* ── Layout ── */
+.fs-container {
+  max-width: 800px;
+}
+
+.fs-back-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #6b7280;
+  font-size: 14px;
+  padding: 0;
+  margin-bottom: 20px;
+  font-family: inherit;
+}
+
+.fs-header {
+  margin-bottom: 24px;
+}
+
+.fs-title {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.fs-subtitle {
+  margin: 4px 0 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.fs-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.fs-count-label {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.fs-add-btn {
+  padding: 10px 18px;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 13px;
+}
+
+/* ── Form ── */
+.fs-form {
+  background: #f9fafb;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 20px;
+  border: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.fs-input,
+.fs-textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  font-size: 14px;
+  font-family: inherit;
+  box-sizing: border-box;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.fs-input:focus,
+.fs-textarea:focus {
+  outline: none;
+  border-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+.fs-textarea {
+  resize: vertical;
+}
+
+.fs-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #374151;
+}
+
+.fs-time-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.fs-submit-btn {
+  padding: 12px 20px;
+  border: none;
+  cursor: pointer;
+  justify-content: center;
+  font-size: 14px;
+}
+
+.fs-submit-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* ── Empty ── */
+.fs-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 60px 20px;
+  color: #9ca3af;
+}
+
+.fs-empty-icon {
+  margin-bottom: 12px;
+  opacity: 0.4;
+}
+
+.fs-empty-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.fs-empty-sub {
+  font-size: 13px;
+  margin: 4px 0 0;
+}
+
+/* ── Session List ── */
 .fs-session-list {
   display: flex;
   flex-direction: column;
@@ -46,6 +191,20 @@
 @keyframes fs-pulse-border {
   0%, 100% { border-color: #10b981; }
   50% { border-color: #34d399; }
+}
+
+.fs-session-body {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  min-width: 200px;
+}
+
+.fs-session-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .fs-order-badge {
@@ -133,4 +292,139 @@
   font-weight: 700;
   color: #d97706;
   white-space: nowrap;
+}
+
+.fs-join-btn {
+  padding: 8px 12px;
+  font-size: 12px;
+  text-decoration: none;
+  background: linear-gradient(135deg, #10b981, #059669);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: inherit;
+}
+
+.fs-delete-btn {
+  background: #fef2f2;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  color: #ef4444;
+  padding: 8px 12px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.fs-delete-btn:hover {
+  background: #fee2e2;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .fs-title {
+    font-size: 22px;
+  }
+
+  .fs-time-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .fs-form {
+    padding: 14px;
+  }
+
+  .fs-session-body {
+    min-width: 0;
+    width: 100%;
+  }
+
+  .fs-session-actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .fs-session-item {
+    padding: 12px 14px;
+  }
+
+  .fs-count-label {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .fs-container {
+    padding: 0 4px;
+  }
+
+  .fs-title {
+    font-size: 18px;
+  }
+
+  .fs-toolbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .fs-add-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 10px 14px;
+  }
+
+  .fs-form {
+    padding: 12px;
+    gap: 10px;
+  }
+
+  .fs-input,
+  .fs-textarea {
+    padding: 8px 10px;
+    font-size: 13px;
+  }
+
+  .fs-label {
+    font-size: 12px;
+  }
+
+  .fs-submit-btn {
+    padding: 10px 16px;
+    font-size: 13px;
+    width: 100%;
+  }
+
+  .fs-session-body {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .fs-session-actions {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .fs-session-actions > * {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .fs-session-item {
+    padding: 10px 12px;
+  }
+
+  .fs-empty {
+    padding: 40px 16px;
+  }
+
+  .fs-empty-icon {
+    width: 36px;
+    height: 36px;
+  }
 }
