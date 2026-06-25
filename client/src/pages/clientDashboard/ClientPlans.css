@@ -1245,3 +1245,168 @@
     font-size: 22px;
   }
 }
+
+@media (max-width: 480px) {
+  .aff-header {
+    margin-bottom: 20px;
+  }
+  .aff-title {
+    font-size: 22px;
+  }
+  .aff-subtitle {
+    font-size: 14px;
+  }
+
+  .aff-tab {
+    padding: 12px 14px;
+    font-size: 13px;
+  }
+
+  .aff-plan-card {
+    border-radius: 16px;
+  }
+  .aff-plan-image,
+  .aff-plan-image-placeholder {
+    height: 140px;
+  }
+  .aff-plan-body {
+    padding: 14px;
+  }
+  .aff-plan-header {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .aff-plan-name {
+    font-size: 16px;
+  }
+  .aff-plan-meta {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .aff-plan-meta span {
+    font-size: 11px;
+  }
+  .aff-plan-footer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .aff-plan-date {
+    text-align: center;
+    font-size: 11px;
+  }
+  .aff-book-btn {
+    justify-content: center;
+    padding: 10px 16px;
+    font-size: 13px;
+  }
+
+  .aff-booking-card {
+    padding: 14px;
+    border-radius: 14px;
+  }
+  .aff-booking-header {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .aff-booking-header h4 {
+    font-size: 14px;
+  }
+  .aff-booking-detail {
+    font-size: 12px;
+  }
+  .aff-booking-actions {
+    flex-direction: column;
+  }
+  .aff-cancel-btn,
+  .aff-delete-btn {
+    justify-content: center;
+    padding: 10px;
+    font-size: 13px;
+  }
+
+  .aff-plan-modal {
+    border-radius: 20px;
+    max-height: 92vh;
+  }
+  .aff-modal-hero {
+    height: 150px;
+  }
+  .aff-modal-body {
+    padding: 16px;
+  }
+  .aff-modal-hero-overlay {
+    padding: 14px;
+  }
+  .aff-modal-price {
+    font-size: 20px;
+  }
+  .aff-modal-category {
+    font-size: 10px;
+    padding: 4px 12px;
+  }
+  .aff-modal-title {
+    font-size: 20px;
+  }
+  .aff-modal-session-banner {
+    flex-wrap: wrap;
+    gap: 6px;
+    font-size: 12px;
+    padding: 10px 14px;
+  }
+  .aff-modal-sep {
+    display: none;
+  }
+  .aff-modal-creator {
+    flex-wrap: wrap;
+    padding: 12px 14px;
+  }
+  .aff-modal-stat {
+    padding: 10px 12px;
+    font-size: 12px;
+  }
+  .aff-modal-book-btn {
+    padding: 14px;
+    font-size: 14px;
+  }
+
+  .aff-booking-modal {
+    padding: 20px;
+    border-radius: 20px;
+  }
+  .aff-booking-modal h3 {
+    font-size: 18px;
+  }
+  .aff-form-group input,
+  .aff-form-group textarea {
+    padding: 10px 12px;
+    font-size: 16px;
+  }
+  .aff-booking-actions {
+    flex-direction: column;
+  }
+  .aff-booking-cancel,
+  .aff-booking-confirm {
+    padding: 12px;
+  }
+
+  .aff-confirm-modal {
+    padding: 28px 20px 24px;
+  }
+  .aff-confirm-actions {
+    flex-direction: column;
+  }
+  .aff-confirm-cancel,
+  .aff-confirm-confirm {
+    padding: 12px;
+  }
+
+  .aff-booking-countdown {
+    font-size: 13px;
+    padding: 6px 12px;
+  }
+
+  .aff-modal-overlay {
+    padding: 10px;
+  }
+}

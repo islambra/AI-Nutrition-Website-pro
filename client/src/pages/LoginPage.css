@@ -180,12 +180,12 @@
   font-weight: 500;
 }
 
-.btn-stripe-primary {
+.btn-signin-stripe {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
-  background-color: #111;
+  background: #34C759;
   color: white;
   border: none;
   padding: 16px;
@@ -193,17 +193,18 @@
   font-weight: 700;
   font-size: 16px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   margin-top: 8px;
 }
 
-.btn-stripe-primary:hover {
-  background-color: #333;
-  transform: translateY(-1px);
+.btn-signin-stripe:hover:not(:disabled) {
+  background: #28a745;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px rgba(52, 199, 89, 0.2);
 }
 
-.btn-stripe-primary:disabled {
-  background-color: #ccc;
+.btn-signin-stripe:disabled {
+  opacity: 0.6;
   cursor: not-allowed;
 }
 

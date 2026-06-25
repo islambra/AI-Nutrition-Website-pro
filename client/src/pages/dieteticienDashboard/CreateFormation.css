@@ -1,32 +1,90 @@
 /* ── Create Formation ── */
+
 .cf-container {
-  max-width: 700px;
+  max-width: 720px;
+  animation: cfFadeIn 0.4s ease;
 }
 
+@keyframes cfFadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ── Back Button ── */
 .cf-back {
   background: none;
   border: none;
   cursor: pointer;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   color: #6b7280;
   font-size: 14px;
-  padding: 0;
-  margin-bottom: 20px;
+  padding: 8px 12px;
+  margin-bottom: 24px;
   font-family: inherit;
+  border-radius: 10px;
+  transition: all 0.2s;
 }
 
+.cf-back:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+/* ── Title ── */
 .cf-title {
-  margin: 0 0 24px;
-  font-size: 28px;
+  margin: 0 0 8px;
+  font-size: 26px;
   font-weight: 800;
+  color: #111827;
+  letter-spacing: -0.02em;
 }
 
+.cf-subtitle {
+  margin: 0 0 28px;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+/* ── Form ── */
 .cf-form {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 24px;
+}
+
+.cf-section {
+  background: #fff;
+  border: 1px solid #f0f0f0;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+  transition: box-shadow 0.2s;
+}
+
+.cf-section:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+}
+
+.cf-section-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cf-section-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
 }
 
 .cf-grid {
@@ -44,21 +102,36 @@
   display: block;
   font-size: 13px;
   font-weight: 600;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
   color: #374151;
+  letter-spacing: 0.01em;
+}
+
+.cf-label-required::after {
+  content: " *";
+  color: #ef4444;
 }
 
 .cf-input,
 .cf-select,
 .cf-textarea {
   width: 100%;
-  padding: 10px 12px;
-  border-radius: 8px;
-  border: 1px solid #d1d5db;
+  padding: 11px 14px;
+  border-radius: 10px;
+  border: 1.5px solid #e2e8f0;
   font-size: 14px;
   box-sizing: border-box;
   font-family: inherit;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition: all 0.2s;
+  background: #fafbfc;
+  color: #111827;
+}
+
+.cf-input:hover,
+.cf-select:hover,
+.cf-textarea:hover {
+  border-color: #cbd5e1;
+  background: #fff;
 }
 
 .cf-input:focus,
@@ -66,128 +139,196 @@
 .cf-textarea:focus {
   outline: none;
   border-color: #10b981;
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.08);
+}
+
+.cf-input::placeholder,
+.cf-textarea::placeholder {
+  color: #9ca3af;
 }
 
 .cf-textarea {
   resize: vertical;
+  min-height: 100px;
+  line-height: 1.5;
 }
 
+/* ── Image ── */
 .cf-image-zone {
   position: relative;
   width: 100%;
-  max-width: 320px;
-  border-radius: 8px;
+  max-width: 100%;
+  border-radius: 12px;
   overflow: hidden;
 }
 
 .cf-image-preview {
   width: 100%;
-  height: 180px;
+  height: 200px;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: 12px;
   border: 1px solid #e5e7eb;
 }
 
 .cf-image-remove-btn {
   position: absolute;
-  top: 6px;
-  right: 6px;
-  background: #ef4444;
+  top: 10px;
+  right: 10px;
+  background: rgba(239, 68, 68, 0.9);
   border: none;
   border-radius: 50%;
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   color: #fff;
+  transition: all 0.2s;
+  backdrop-filter: blur(4px);
+}
+
+.cf-image-remove-btn:hover {
+  background: #ef4444;
+  transform: scale(1.1);
 }
 
 .cf-image-upload-btn {
   width: 100%;
-  max-width: 320px;
-  height: 140px;
-  border: 2px dashed #d1d5db;
-  border-radius: 8px;
-  background: #f9fafb;
+  min-height: 160px;
+  border: 2px dashed #e2e8f0;
+  border-radius: 12px;
+  background: #fafbfc;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 12px;
   color: #6b7280;
-  font-size: 13px;
+  font-size: 14px;
   font-family: inherit;
-  transition: border-color 0.2s;
+  transition: all 0.25s;
 }
 
 .cf-image-upload-btn:hover {
   border-color: #10b981;
-  color: #10b981;
+  background: #f0fdf4;
+  color: #059669;
 }
 
+.cf-image-upload-btn svg {
+  transition: transform 0.25s;
+}
+
+.cf-image-upload-btn:hover svg {
+  transform: translateY(-3px);
+}
+
+.cf-image-upload-hint {
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+/* ── Files Section ── */
 .cf-file-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
 }
 
 .cf-file-add-btn {
-  background: none;
-  border: none;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
   cursor: pointer;
   color: #059669;
   font-size: 13px;
   font-weight: 600;
   display: flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   font-family: inherit;
+  padding: 8px 14px;
+  border-radius: 8px;
+  transition: all 0.2s;
+}
+
+.cf-file-add-btn:hover {
+  background: #dcfce7;
+  border-color: #86efac;
 }
 
 .cf-file-row {
   display: flex;
-  gap: 8px;
-  margin-bottom: 8px;
+  gap: 10px;
+  margin-bottom: 10px;
   align-items: center;
+  background: #fafbfc;
+  border-radius: 10px;
+  padding: 8px;
+  border: 1px solid #f0f0f0;
+  transition: all 0.2s;
+}
+
+.cf-file-row:hover {
+  background: #fff;
+  border-color: #e2e8f0;
 }
 
 .cf-file-name {
   flex: 1;
   min-width: 0;
-  padding: 8px 10px;
-  border-radius: 6px;
-  border: 1px solid #d1d5db;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1.5px solid #e2e8f0;
   font-size: 13px;
   font-family: inherit;
+  background: #fff;
+  transition: border-color 0.2s;
+}
+
+.cf-file-name:focus {
+  outline: none;
+  border-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.08);
 }
 
 .cf-file-url {
   flex: 2;
   min-width: 0;
-  padding: 8px 10px;
-  border-radius: 6px;
-  border: 1px solid #d1d5db;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1.5px solid #e2e8f0;
   font-size: 13px;
   font-family: inherit;
+  background: #fff;
+  transition: border-color 0.2s;
+}
+
+.cf-file-url:focus {
+  outline: none;
+  border-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.08);
 }
 
 .cf-file-pdf-label {
   flex: 2;
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 10px;
-  border-radius: 6px;
-  border: 1px solid #d1d5db;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1.5px solid #bbf7d0;
   font-size: 13px;
   background: #f0fdf4;
   color: #16a34a;
   min-width: 0;
+}
+
+.cf-file-pdf-label svg {
+  flex-shrink: 0;
 }
 
 .cf-file-pdf-label span {
@@ -201,22 +342,35 @@
   border: none;
   cursor: pointer;
   color: #ef4444;
-  padding: 0;
+  padding: 4px;
   margin-left: auto;
+  border-radius: 4px;
+  display: flex;
+  transition: all 0.2s;
+}
+
+.cf-file-pdf-clear:hover {
+  background: #fef2f2;
 }
 
 .cf-file-pdf-link {
   flex: 2;
   display: flex;
   align-items: center;
-  gap: 6px;
-  padding: 8px 10px;
-  border-radius: 6px;
-  border: 1px solid #d1d5db;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1.5px solid #e2e8f0;
   font-size: 13px;
   color: #2563eb;
   text-decoration: none;
   min-width: 0;
+  background: #fff;
+  transition: border-color 0.2s;
+}
+
+.cf-file-pdf-link:hover {
+  border-color: #2563eb;
 }
 
 .cf-file-pdf-link span {
@@ -227,77 +381,104 @@
 
 .cf-file-pdf-choose {
   flex: 2;
-  padding: 8px 10px;
-  border-radius: 6px;
-  border: 1px dashed #d1d5db;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1.5px dashed #d1d5db;
   font-size: 13px;
-  background: #f9fafb;
+  background: #fff;
   cursor: pointer;
   color: #6b7280;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 6px;
   min-width: 0;
   font-family: inherit;
+  transition: all 0.2s;
 }
 
 .cf-file-pdf-choose:hover {
   border-color: #10b981;
-  color: #10b981;
+  color: #059669;
+  background: #f0fdf4;
 }
 
 .cf-file-type {
   padding: 8px 10px;
-  border-radius: 6px;
-  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  border: 1.5px solid #e2e8f0;
   font-size: 13px;
   font-family: inherit;
+  background: #fff;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.cf-file-type:focus {
+  outline: none;
+  border-color: #10b981;
 }
 
 .cf-file-delete {
   background: #fef2f2;
   border: none;
-  border-radius: 6px;
+  border-radius: 8px;
   cursor: pointer;
   color: #ef4444;
   padding: 8px 10px;
   display: flex;
   align-items: center;
+  transition: all 0.2s;
 }
 
 .cf-file-delete:hover {
   background: #fee2e2;
+  transform: scale(1.05);
 }
 
+/* ── Submit Button ── */
 .cf-submit {
-  padding: 14px 24px;
+  padding: 15px 28px;
   font-size: 15px;
   border: none;
   cursor: pointer;
   justify-content: center;
-  margin-top: 8px;
   width: 100%;
   background: linear-gradient(135deg, #059669, #10b981);
   color: #fff;
-  border-radius: 10px;
-  font-weight: 600;
+  border-radius: 12px;
+  font-weight: 700;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   font-family: inherit;
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
-  transition: box-shadow 0.2s, transform 0.2s;
+  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
+  transition: all 0.25s;
+  letter-spacing: 0.01em;
+  position: relative;
+  overflow: hidden;
+}
+
+.cf-submit::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
+  pointer-events: none;
 }
 
 .cf-submit:hover:not(:disabled) {
-  box-shadow: 0 6px 20px rgba(16, 185, 129, 0.35);
-  transform: translateY(-1px);
+  box-shadow: 0 8px 28px rgba(16, 185, 129, 0.4);
+  transform: translateY(-2px);
+}
+
+.cf-submit:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 .cf-submit:disabled {
   cursor: not-allowed;
-  opacity: 0.7;
+  opacity: 0.6;
   box-shadow: none;
 }
 
@@ -305,21 +486,20 @@
 @media (max-width: 768px) {
   .cf-title {
     font-size: 22px;
-    margin-bottom: 18px;
+  }
+
+  .cf-section {
+    padding: 18px;
   }
 
   .cf-grid {
     grid-template-columns: 1fr;
-    gap: 12px;
-  }
-
-  .cf-image-zone,
-  .cf-image-upload-btn {
-    max-width: 100%;
+    gap: 14px;
   }
 
   .cf-file-row {
     flex-wrap: wrap;
+    gap: 8px;
   }
 
   .cf-file-name {
@@ -331,7 +511,7 @@
   .cf-file-pdf-label,
   .cf-file-pdf-link,
   .cf-file-pdf-choose {
-    flex: 1 1 calc(50% - 40px);
+    flex: 1 1 calc(50% - 44px);
     order: 2;
   }
 
@@ -344,36 +524,50 @@
   }
 
   .cf-submit {
-    padding: 12px 20px;
+    padding: 13px 22px;
     font-size: 14px;
+  }
+
+  .cf-image-preview {
+    height: 170px;
+  }
+
+  .cf-image-upload-btn {
+    min-height: 130px;
   }
 }
 
 @media (max-width: 480px) {
   .cf-title {
-    font-size: 18px;
+    font-size: 20px;
   }
 
   .cf-container {
-    padding: 0 4px;
+    padding: 0 2px;
+  }
+
+  .cf-section {
+    padding: 14px;
+    border-radius: 12px;
   }
 
   .cf-file-row {
     gap: 6px;
+    padding: 6px;
   }
 
   .cf-file-url,
   .cf-file-pdf-label,
   .cf-file-pdf-link,
   .cf-file-pdf-choose {
-    flex: 1 1 calc(50% - 36px);
+    flex: 1 1 calc(50% - 40px);
     font-size: 12px;
-    padding: 6px 8px;
+    padding: 6px 10px;
   }
 
   .cf-file-name {
     font-size: 12px;
-    padding: 6px 8px;
+    padding: 6px 10px;
   }
 
   .cf-file-type {
@@ -388,19 +582,16 @@
   .cf-input,
   .cf-select,
   .cf-textarea {
-    padding: 8px 10px;
+    padding: 10px 12px;
     font-size: 13px;
   }
 
   .cf-label {
-    font-size: 13px;
-    font-weight: 700;
-    color: #111827;
-    margin-bottom: 6px;
+    font-size: 12px;
   }
 
   .cf-submit {
-    padding: 10px 16px;
+    padding: 12px 18px;
     font-size: 13px;
   }
 
@@ -409,6 +600,6 @@
   }
 
   .cf-image-upload-btn {
-    height: 110px;
+    min-height: 110px;
   }
 }

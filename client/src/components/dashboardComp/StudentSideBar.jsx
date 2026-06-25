@@ -1,5 +1,6 @@
 import { useLocation, NavLink } from "react-router-dom";
 import { studentMenuLinks } from "../../assets/assets";
+import "./SideBar.css";
 import "./StudentSideBar.css";
 
 const StudentSideBar = () => {

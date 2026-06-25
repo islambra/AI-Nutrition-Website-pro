@@ -1,38 +1,54 @@
 /* ── Layout ── */
 .fs-container {
   max-width: 800px;
+  animation: fsFadeIn 0.4s ease;
+}
+
+@keyframes fsFadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .fs-back-btn {
   background: none;
   border: none;
   cursor: pointer;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: 8px;
   color: #6b7280;
   font-size: 14px;
-  padding: 0;
-  margin-bottom: 20px;
+  padding: 8px 12px;
+  margin-bottom: 24px;
   font-family: inherit;
+  border-radius: 10px;
+  transition: all 0.2s;
+}
+
+.fs-back-btn:hover {
+  background: #f3f4f6;
+  color: #374151;
 }
 
 .fs-header {
-  margin-bottom: 24px;
+  margin-bottom: 28px;
 }
 
 .fs-title {
   margin: 0;
-  font-size: 28px;
+  font-size: 26px;
   font-weight: 800;
+  color: #111827;
+  letter-spacing: -0.02em;
 }
 
 .fs-subtitle {
-  margin: 4px 0 0;
+  margin: 6px 0 0;
   color: #6b7280;
   font-size: 14px;
 }
 
+/* ── Toolbar ── */
 .fs-toolbar {
   display: flex;
   justify-content: space-between;
@@ -44,76 +60,132 @@
   margin: 0;
   font-size: 18px;
   font-weight: 700;
+  color: #111827;
 }
 
 .fs-add-btn {
-  padding: 10px 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #059669, #10b981);
+  color: #fff;
   border: none;
-  cursor: pointer;
-  text-decoration: none;
+  border-radius: 10px;
   font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+  box-shadow: 0 3px 10px rgba(16, 185, 129, 0.25);
+  transition: all 0.2s;
+}
+
+.fs-add-btn:hover {
+  background: linear-gradient(135deg, #047857, #059669);
+  box-shadow: 0 5px 16px rgba(16, 185, 129, 0.35);
+  transform: translateY(-1px);
+}
+
+.fs-add-btn svg {
+  flex-shrink: 0;
 }
 
 /* ── Form ── */
 .fs-form {
-  background: #f9fafb;
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 20px;
-  border: 1px solid #e5e7eb;
+  background: #fff;
+  border-radius: 14px;
+  padding: 24px;
+  margin-bottom: 24px;
+  border: 1px solid #f0f0f0;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
 }
 
 .fs-input,
 .fs-textarea {
   width: 100%;
-  padding: 10px 12px;
-  border-radius: 8px;
-  border: 1px solid #d1d5db;
+  padding: 11px 14px;
+  border-radius: 10px;
+  border: 1.5px solid #e2e8f0;
   font-size: 14px;
   font-family: inherit;
   box-sizing: border-box;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  background: #fafbfc;
+  color: #111827;
+  transition: all 0.2s;
+}
+
+.fs-input:hover,
+.fs-textarea:hover {
+  border-color: #cbd5e1;
+  background: #fff;
 }
 
 .fs-input:focus,
 .fs-textarea:focus {
   outline: none;
   border-color: #10b981;
-  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+  background: #fff;
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.08);
 }
 
 .fs-textarea {
   resize: vertical;
+  min-height: 70px;
+  line-height: 1.5;
 }
 
 .fs-label {
   display: block;
   font-size: 12px;
   font-weight: 600;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
   color: #374151;
 }
 
 .fs-time-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  gap: 14px;
 }
 
 .fs-submit-btn {
-  padding: 12px 20px;
-  border: none;
-  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
   justify-content: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: linear-gradient(135deg, #059669, #10b981);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
   font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  box-shadow: 0 3px 10px rgba(16, 185, 129, 0.25);
+  transition: all 0.2s;
+}
+
+.fs-submit-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #047857, #059669);
+  box-shadow: 0 5px 16px rgba(16, 185, 129, 0.35);
+  transform: translateY(-1px);
 }
 
 .fs-submit-btn:disabled {
   cursor: not-allowed;
-  opacity: 0.7;
+  opacity: 0.6;
+  box-shadow: none;
+}
+
+.fs-submit-btn svg {
+  flex-shrink: 0;
 }
 
 /* ── Empty ── */
@@ -122,54 +194,62 @@
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 60px 20px;
+  padding: 80px 20px;
   color: #9ca3af;
 }
 
 .fs-empty-icon {
-  margin-bottom: 12px;
+  margin-bottom: 16px;
   opacity: 0.4;
 }
 
 .fs-empty-title {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: 600;
   margin: 0;
+  color: #6b7280;
 }
 
 .fs-empty-sub {
-  font-size: 13px;
-  margin: 4px 0 0;
+  font-size: 14px;
+  margin: 6px 0 0;
+  color: #9ca3af;
 }
 
 /* ── Session List ── */
 .fs-session-list {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 }
 
 .fs-session-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 12px;
-  padding: 14px 18px;
+  gap: 16px;
+  padding: 16px 20px;
   background: white;
-  border-radius: 12px;
-  border: 2px solid #e5e7eb;
+  border-radius: 14px;
+  border: 1.5px solid #f0f0f0;
   flex-wrap: wrap;
   transition: all 0.2s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+}
+
+.fs-session-item:hover {
+  border-color: #e2e8f0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
 }
 
 .fs-session-item.past {
-  opacity: 0.55;
+  opacity: 0.5;
 }
 
 .fs-session-item.live {
   background: #ecfdf5;
   border-color: #10b981;
-  animation: fs-pulse-border 2s ease-in-out infinite;
+  box-shadow: 0 0 0 1px rgba(16,185,129,0.15), 0 4px 16px rgba(16,185,129,0.1);
 }
 
 .fs-session-item.next {
@@ -188,15 +268,10 @@
   color: white;
 }
 
-@keyframes fs-pulse-border {
-  0%, 100% { border-color: #10b981; }
-  50% { border-color: #34d399; }
-}
-
 .fs-session-body {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 14px;
   flex: 1;
   min-width: 200px;
 }
@@ -208,8 +283,8 @@
 }
 
 .fs-order-badge {
-  width: 36px;
-  height: 36px;
+  width: 38px;
+  height: 38px;
   border-radius: 10px;
   background: #e5e7eb;
   display: flex;
@@ -224,7 +299,7 @@
 .fs-session-info {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
   min-width: 0;
 }
 
@@ -295,7 +370,7 @@
 }
 
 .fs-join-btn {
-  padding: 8px 12px;
+  padding: 8px 14px;
   font-size: 12px;
   text-decoration: none;
   background: linear-gradient(135deg, #10b981, #059669);
@@ -307,6 +382,13 @@
   align-items: center;
   gap: 6px;
   font-family: inherit;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.fs-join-btn:hover {
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+  transform: translateY(-1px);
 }
 
 .fs-delete-btn {
@@ -318,6 +400,7 @@
   padding: 8px 12px;
   display: inline-flex;
   align-items: center;
+  transition: all 0.2s;
 }
 
 .fs-delete-btn:hover {
@@ -326,66 +409,78 @@
 
 /* ── Responsive ── */
 @media (max-width: 768px) {
-  .fs-title {
-    font-size: 22px;
-  }
+  .fs-title { font-size: 22px; }
 
-  .fs-time-grid {
-    grid-template-columns: 1fr;
-  }
+  .fs-time-grid { grid-template-columns: 1fr; }
 
-  .fs-form {
-    padding: 14px;
-  }
+  .fs-form { padding: 18px; }
 
-  .fs-session-body {
-    min-width: 0;
-    width: 100%;
-  }
+  .fs-session-body { min-width: 0; width: 100%; }
 
-  .fs-session-actions {
-    width: 100%;
-    justify-content: flex-end;
-  }
+  .fs-session-actions { width: 100%; justify-content: flex-end; }
 
-  .fs-session-item {
-    padding: 12px 14px;
-  }
+  .fs-session-item { padding: 14px 16px; }
 
-  .fs-count-label {
-    font-size: 16px;
-  }
+  .fs-count-label { font-size: 16px; }
 }
 
 @media (max-width: 480px) {
   .fs-container {
-    padding: 0 4px;
+    padding: 0 2px;
+  }
+
+  .fs-back-btn {
+    padding: 6px 10px;
+    margin-bottom: 16px;
+    font-size: 13px;
   }
 
   .fs-title {
-    font-size: 18px;
+    font-size: 20px;
+  }
+
+  .fs-subtitle {
+    font-size: 13px;
+  }
+
+  .fs-header {
+    margin-bottom: 20px;
   }
 
   .fs-toolbar {
-    flex-direction: column;
-    align-items: flex-start;
+    flex-direction: row;
+    align-items: center;
     gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .fs-count-label {
+    font-size: 15px;
+    white-space: nowrap;
   }
 
   .fs-add-btn {
-    width: 100%;
-    justify-content: center;
-    padding: 10px 14px;
+    padding: 10px 16px;
+    font-size: 13px;
+    min-width: 0;
+    flex-shrink: 0;
+  }
+
+  .fs-add-btn svg {
+    width: 16px;
+    height: 16px;
   }
 
   .fs-form {
-    padding: 12px;
-    gap: 10px;
+    padding: 16px;
+    gap: 12px;
+    border-radius: 12px;
+    margin-bottom: 16px;
   }
 
   .fs-input,
   .fs-textarea {
-    padding: 8px 10px;
+    padding: 10px 12px;
     font-size: 13px;
   }
 
@@ -394,20 +489,36 @@
   }
 
   .fs-submit-btn {
-    padding: 10px 16px;
+    padding: 12px 16px;
     font-size: 13px;
     width: 100%;
+  }
+
+  .fs-session-item {
+    padding: 14px;
+    gap: 12px;
+    border-radius: 12px;
   }
 
   .fs-session-body {
     flex-direction: column;
     align-items: flex-start;
     gap: 8px;
+    width: 100%;
+  }
+
+  .fs-session-info strong {
+    font-size: 14px;
+  }
+
+  .fs-session-time {
+    font-size: 12px;
   }
 
   .fs-session-actions {
     width: 100%;
     justify-content: stretch;
+    gap: 8px;
   }
 
   .fs-session-actions > * {
@@ -415,16 +526,96 @@
     justify-content: center;
   }
 
-  .fs-session-item {
-    padding: 10px 12px;
+  .fs-session-actions .fs-delete-btn {
+    flex: 0 0 44px;
+    justify-content: center;
+    padding: 10px;
+  }
+
+  .fs-join-btn {
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+
+  .fs-countdown {
+    padding: 10px 14px;
+    font-size: 13px;
+    justify-content: center;
   }
 
   .fs-empty {
-    padding: 40px 16px;
+    padding: 50px 16px;
   }
 
   .fs-empty-icon {
     width: 36px;
     height: 36px;
+  }
+
+  .fs-empty-title {
+    font-size: 16px;
+  }
+
+  .fs-empty-sub {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 380px) {
+  .fs-container {
+    padding: 0;
+  }
+
+  .fs-title {
+    font-size: 17px;
+  }
+
+  .fs-toolbar {
+    gap: 8px;
+  }
+
+  .fs-add-btn {
+    padding: 8px 12px;
+    font-size: 12px;
+    gap: 5px;
+  }
+
+  .fs-add-btn svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  .fs-count-label {
+    font-size: 14px;
+  }
+
+  .fs-form {
+    padding: 12px;
+    border-radius: 10px;
+  }
+
+  .fs-session-item {
+    padding: 12px;
+    border-radius: 10px;
+  }
+
+  .fs-order-badge {
+    width: 32px;
+    height: 32px;
+    font-size: 12px;
+  }
+
+  .fs-session-actions {
+    flex-wrap: nowrap;
+  }
+
+  .fs-session-actions .fs-countdown {
+    font-size: 11px;
+    padding: 8px 10px;
+  }
+
+  .fs-session-actions .fs-join-btn {
+    font-size: 12px;
+    padding: 8px 10px;
   }
 }

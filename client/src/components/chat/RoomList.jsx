@@ -121,7 +121,7 @@ export default function RoomList({ rooms, onSelectRoom, typingUsers, onShowProfi
                   setConfirmDeleteId(room._id);
                 }}
                 disabled={deletingId === room._id}
-                className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg bg-white/80 text-gray-400 hover:text-red-500 hover:bg-red-50 opacity-0 group-hover:opacity-100 transition-all duration-200 flex items-center justify-center shadow-sm border border-gray-200"
+                className="rl-delete-btn absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg bg-white/80 text-gray-400 hover:text-red-500 hover:bg-red-50 opacity-0 group-hover:opacity-100 transition-all duration-200 flex items-center justify-center shadow-sm border border-gray-200"
                 title="Delete conversation"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>

@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { ArrowLeft, Plus, Trash2, Loader2, Upload, X, FileText } from "lucide-react";
+import { ArrowLeft, Plus, Trash2, Loader2, Upload, X, FileText, Info, Calendar, Image, Paperclip } from "lucide-react";
 import { createFormation, updateFormation, getFormationById } from "../../api/formationApi";
 import toast from "react-hot-toast";
 import "./CreateFormation.css";
@@ -136,7 +136,7 @@ const CreateFormation = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!form.title || !form.description || !form.price || !form.durationWeeks || !form.startDate || !form.endDate) {
+    if (!form.title || !form.description || !form.price || !form.durationWeeks || !form.startDate) {
       toast.error("Please fill in all required fields");
       return;
     }
@@ -181,66 +181,99 @@ const CreateFormation = () => {
       </button>
 
       <h2 className="cf-title">
-        {isEdit ? "Edit Formation" : "Create New Formation"}
+        {isEdit ? "Edit Formation" : "New Formation"}
       </h2>
+      <p className="cf-subtitle">
+        {isEdit ? "Update the details of your formation" : "Fill in the details to create a new formation"}
+      </p>
 
       <form onSubmit={handleSubmit} className="cf-form">
-        <div className="cf-grid">
-          <div className="cf-field">
-            <label className="cf-label">Title *</label>
-            <input className="cf-input" value={form.title} onChange={(e) => setForm((p) => ({ ...p, title: e.target.value }))} />
+        <div className="cf-section">
+          <div className="cf-section-title">
+            <span className="cf-section-icon" style={{ background: "#f0fdf4", color: "#16a34a" }}>
+              <Info size={15} />
+            </span>
+            Basic Information
           </div>
-          <div className="cf-field">
-            <label className="cf-label">Price (DZD) *</label>
-            <input className="cf-input" type="number" value={form.price} onChange={(e) => setForm((p) => ({ ...p, price: e.target.value }))} />
-          </div>
-          <div className="cf-field">
-            <label className="cf-label">Duration (weeks) *</label>
-            <input className="cf-input" type="number" value={form.durationWeeks} onChange={(e) => setForm((p) => ({ ...p, durationWeeks: e.target.value }))} />
-          </div>
-          <div className="cf-field">
-            <label className="cf-label">Number of Sessions</label>
-            <input className="cf-input" type="number" value={form.sessionsCount} onChange={(e) => setForm((p) => ({ ...p, sessionsCount: e.target.value }))} />
-          </div>
-        </div>
-
-        <div className="cf-grid">
-          <div className="cf-field">
-            <label className="cf-label">Start Date *</label>
-            <input className="cf-input" type="datetime-local" value={form.startDate} onChange={(e) => setForm((p) => ({ ...p, startDate: e.target.value }))} />
-          </div>
-          <div className="cf-field">
-            <label className="cf-label">End Date *</label>
-            <input className="cf-input" type="datetime-local" value={form.endDate} onChange={(e) => setForm((p) => ({ ...p, endDate: e.target.value }))} />
-          </div>
-        </div>
-
-        <div className="cf-field">
-          <label className="cf-label">Description *</label>
-          <textarea className="cf-textarea" rows={4} value={form.description} onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))} />
-        </div>
-
-        <div className="cf-field">
-          <label className="cf-label">Image (optional)</label>
-          <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageChange} style={{ display: "none" }} />
-          {imagePreview ? (
-            <div className="cf-image-zone">
-              <img src={imagePreview} alt="Preview" className="cf-image-preview" />
-              <button type="button" onClick={handleRemoveImage} className="cf-image-remove-btn">
-                <X size={16} />
-              </button>
+          <div className="cf-grid">
+            <div className="cf-field">
+              <label className="cf-label cf-label-required">Title</label>
+              <input className="cf-input" placeholder="e.g. Nutrition & Dietetics Masterclass" value={form.title} onChange={(e) => setForm((p) => ({ ...p, title: e.target.value }))} />
             </div>
-          ) : (
-            <button type="button" onClick={handleImageClick} className="cf-image-upload-btn">
-              <Upload size={24} />
-              <span>Click to upload image</span>
-            </button>
-          )}
+            <div className="cf-field">
+              <label className="cf-label cf-label-required">Price (DZD)</label>
+              <input className="cf-input" type="number" placeholder="e.g. 15000" value={form.price} onChange={(e) => setForm((p) => ({ ...p, price: e.target.value }))} />
+            </div>
+            <div className="cf-field">
+              <label className="cf-label cf-label-required">Duration (weeks)</label>
+              <input className="cf-input" type="number" placeholder="e.g. 8" value={form.durationWeeks} onChange={(e) => setForm((p) => ({ ...p, durationWeeks: e.target.value }))} />
+            </div>
+            <div className="cf-field">
+              <label className="cf-label">Number of Sessions</label>
+              <input className="cf-input" type="number" placeholder="e.g. 16" value={form.sessionsCount} onChange={(e) => setForm((p) => ({ ...p, sessionsCount: e.target.value }))} />
+            </div>
+          </div>
+          <div className="cf-field" style={{ marginTop: 4 }}>
+            <label className="cf-label cf-label-required">Description</label>
+            <textarea className="cf-textarea" rows={4} placeholder="Describe what students will learn, prerequisites, and what makes this formation unique..." value={form.description} onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))} />
+          </div>
         </div>
 
-        <div className="cf-field">
+        <div className="cf-section">
+          <div className="cf-section-title">
+            <span className="cf-section-icon" style={{ background: "#fef3c7", color: "#d97706" }}>
+              <Calendar size={15} />
+            </span>
+            Schedule
+          </div>
+          <div className="cf-grid">
+            <div className="cf-field">
+              <label className="cf-label cf-label-required">Start Date</label>
+              <input className="cf-input" type="datetime-local" value={form.startDate} onChange={(e) => setForm((p) => ({ ...p, startDate: e.target.value }))} />
+            </div>
+            <div className="cf-field">
+              <label className="cf-label">End Date</label>
+              <input className="cf-input" type="datetime-local" value={form.endDate} onChange={(e) => setForm((p) => ({ ...p, endDate: e.target.value }))} />
+            </div>
+          </div>
+        </div>
+
+        <div className="cf-section">
+          <div className="cf-section-title">
+            <span className="cf-section-icon" style={{ background: "#dbeafe", color: "#2563eb" }}>
+              <Image size={15} />
+            </span>
+            Cover Image
+          </div>
+          <div className="cf-field">
+            <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageChange} style={{ display: "none" }} />
+            {imagePreview ? (
+              <div className="cf-image-zone">
+                <img src={imagePreview} alt="Preview" className="cf-image-preview" />
+                <button type="button" onClick={handleRemoveImage} className="cf-image-remove-btn">
+                  <X size={16} />
+                </button>
+              </div>
+            ) : (
+              <button type="button" onClick={handleImageClick} className="cf-image-upload-btn">
+                <Upload size={28} />
+                <span>Click to upload image</span>
+                <span className="cf-image-upload-hint">PNG, JPG, WebP — up to 10MB</span>
+              </button>
+            )}
+          </div>
+        </div>
+
+        <div className="cf-section">
+          <div className="cf-section-title">
+            <span className="cf-section-icon" style={{ background: "#f3e8ff", color: "#9333ea" }}>
+              <Paperclip size={15} />
+            </span>
+            Files & Resources
+          </div>
+          <div className="cf-field">
           <div className="cf-file-header">
-            <label className="cf-label">Files / Resources (optional)</label>
+            <label className="cf-label">Add PDFs, Drive links, or external resources</label>
             <button type="button" onClick={addFile} className="cf-file-add-btn">
               <Plus size={14} /> Add File
             </button>
@@ -303,6 +336,7 @@ const CreateFormation = () => {
               </button>
             </div>
           ))}
+          </div>
         </div>
 
         <button type="submit" disabled={loading} className="cf-submit">

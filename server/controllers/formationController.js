@@ -33,7 +33,7 @@ const handleFileUploads = async (files, uploadedMap) => {
 
 export const createFormation = async (req, res) => {
   try {
-    const { title, description, price, files, sessionsCount, durationWeeks, startDate } = req.body;
+    const { title, description, price, files, sessionsCount, durationWeeks, startDate, endDate } = req.body;
     const user = req.user;
 
     const imageFile = req.files?.find(f => f.fieldname === "image");
@@ -70,6 +70,7 @@ export const createFormation = async (req, res) => {
       sessionsCount: Number(sessionsCount) || 0,
       durationWeeks: Number(durationWeeks),
       startDate,
+      endDate,
       createdBy: user.id,
       creatorInfo: {
         fullName: user.fullName,

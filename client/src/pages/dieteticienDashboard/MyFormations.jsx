@@ -4,6 +4,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { Plus, Edit, Trash2, Calendar, Users, Video, Loader2, Eye, Clock, User, Search, AlertTriangle, X } from "lucide-react";
 import { getMyFormations, deleteFormation } from "../../api/formationApi";
 import toast from "react-hot-toast";
+import "./MyFormations.css";
 import "../../components/FormationCard.css";
 
 const MyFormations = () => {
@@ -53,19 +54,19 @@ const MyFormations = () => {
   }
 
   return (
-    <div className="mc-container">
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 24, flexWrap: "wrap", gap: 12 }}>
-        <div>
-          <h2 style={{ margin: 0, fontSize: 28, fontWeight: 800 }}>My Formations</h2>
-          <p style={{ margin: "4px 0 0", color: "#6b7280", fontSize: 14 }}>Manage your online training programs</p>
+    <div className="mf-container">
+      <div className="mf-header">
+        <div className="mf-header-left">
+          <h2 className="mf-header-title">My Formations</h2>
+          <p className="mf-header-sub">Manage your online training programs</p>
         </div>
-        <NavLink to="/dieteticien/formations/create" className="mc-pdf-btn" style={{ padding: "12px 24px", textDecoration: "none" }}>
+        <NavLink to="/dieteticien/formations/create" className="mf-create-btn">
           <Plus size={18} /> New Formation
         </NavLink>
       </div>
 
       {!loading && formations.length > 0 && (
-        <div className="mc-search-bar" style={{ marginBottom: 20 }}>
+        <div className="mf-search-bar">
           <Search size={18} />
           <input
             type="text"
@@ -77,13 +78,13 @@ const MyFormations = () => {
       )}
 
       {formations.length === 0 ? (
-        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "calc(100vh - 220px)", color: "#9ca3af" }}>
-          <Video size={48} style={{ marginBottom: 12, opacity: 0.4 }} />
-          <p style={{ fontSize: 18, fontWeight: 600 }}>No formations yet</p>
-          <p style={{ fontSize: 14, marginTop: 4 }}>Create your first formation to get started.</p>
+        <div className="mf-empty">
+          <Video size={56} className="mf-empty-icon" />
+          <p className="mf-empty-title">No formations yet</p>
+          <p className="mf-empty-sub">Create your first formation to get started.</p>
         </div>
       ) : (
-        <div style={{ display: "flex", flexDirection: "column", gap: 20 }}>
+        <div className="mf-list">
           {formations.filter((f) =>
             f.title?.toLowerCase().includes(searchQuery.toLowerCase())
           ).map((f) => (
@@ -158,7 +159,7 @@ const MyFormations = () => {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="ac-modal-overlay"
+            className="mf-modal-overlay"
             onClick={() => !deleting && setDeleteTarget(null)}
           >
             <motion.div
@@ -166,33 +167,33 @@ const MyFormations = () => {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.92, y: 20 }}
               transition={{ type: "spring", stiffness: 400, damping: 28 }}
-              className="ac-modal-card"
+              className="mf-modal-card"
               onClick={(e) => e.stopPropagation()}
             >
               <button
-                className="ac-modal-close"
+                className="mf-modal-close"
                 onClick={() => !deleting && setDeleteTarget(null)}
                 disabled={deleting}
               >
                 <X size={18} />
               </button>
 
-              <div className="ac-modal-icon-wrap">
-                <div className="ac-modal-icon">
+              <div className="mf-modal-icon-wrap">
+                <div className="mf-modal-icon">
                   <AlertTriangle size={28} />
                 </div>
               </div>
 
-              <h3 className="ac-modal-title">Delete Formation</h3>
-              <p className="ac-modal-message">
+              <h3 className="mf-modal-title">Delete Formation</h3>
+              <p className="mf-modal-message">
                 Are you sure you want to delete this formation? All sessions and associated data will be permanently removed. This action cannot be undone.
               </p>
 
-              <div className="ac-modal-actions">
+              <div className="mf-modal-actions">
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.97 }}
-                  className="ac-modal-btn cancel"
+                  className="mf-modal-btn cancel"
                   onClick={() => setDeleteTarget(null)}
                   disabled={deleting}
                 >
@@ -201,7 +202,7 @@ const MyFormations = () => {
                 <motion.button
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.97 }}
-                  className="ac-modal-btn confirm"
+                  className="mf-modal-btn confirm"
                   onClick={() => handleDelete(deleteTarget)}
                   disabled={deleting}
                 >

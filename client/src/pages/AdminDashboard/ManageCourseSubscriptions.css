@@ -690,6 +690,25 @@
   .mcs-card-actions {
     width: 100%;
     justify-content: flex-end;
+    gap: 6px;
+  }
+
+  .mcs-proof-btn {
+    padding: 6px 10px;
+    font-size: 11px;
+    gap: 4px;
+  }
+
+  .mcs-action-btn {
+    padding: 6px 10px;
+    font-size: 11px;
+    gap: 4px;
+  }
+
+  .mcs-action-btn svg,
+  .mcs-proof-btn svg {
+    width: 13px;
+    height: 13px;
   }
 
   .mcs-amount {
@@ -742,8 +761,32 @@
     font-size: 0.8rem;
   }
 
+  .mcs-card-bottom {
+    gap: 8px;
+  }
+
   .mcs-card-actions {
-    flex-wrap: wrap;
-    justify-content: flex-start;
+    gap: 5px;
+    justify-content: stretch;
+  }
+
+  .mcs-proof-btn,
+  .mcs-action-btn {
+    flex: 1;
+    justify-content: center;
+    padding: 8px 6px;
+    font-size: 11px;
+  }
+
+  .mcs-proof-btn {
+    max-width: fit-content;
+    flex: 0 1 auto;
+    padding: 8px 10px;
+  }
+
+  .mcs-action-btn svg,
+  .mcs-proof-btn svg {
+    width: 13px;
+    height: 13px;
   }
 }

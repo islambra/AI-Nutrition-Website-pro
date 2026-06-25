@@ -155,7 +155,7 @@ function LoginPage() {
               {errors.password && <span className="error-message-stripe">{errors.password.message}</span>}
             </div>
 
-            <button type="submit" className="btn-stripe-primary" disabled={loading}>
+            <button type="submit" className="btn-signin-stripe" disabled={loading}>
               {loading ? (
                 <>
                   <span className="spinner"></span>

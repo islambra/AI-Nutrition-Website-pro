@@ -28,6 +28,7 @@ export const createFormation = async (data) => {
   formData.append("price", data.price);
   formData.append("durationWeeks", data.durationWeeks);
   formData.append("startDate", data.startDate);
+  if (data.endDate) formData.append("endDate", data.endDate);
   formData.append("sessionsCount", data.sessionsCount || 0);
   if (data.files) appendFilesToFormData(formData, data.files);
   if (data.image) formData.append("image", data.image);
@@ -44,6 +45,7 @@ export const updateFormation = async (id, data) => {
   if (data.price !== undefined) formData.append("price", data.price);
   if (data.durationWeeks !== undefined) formData.append("durationWeeks", data.durationWeeks);
   if (data.startDate !== undefined) formData.append("startDate", data.startDate);
+  if (data.endDate !== undefined) formData.append("endDate", data.endDate);
   if (data.sessionsCount !== undefined) formData.append("sessionsCount", data.sessionsCount);
   if (data.files) appendFilesToFormData(formData, data.files);
   if (data.image) formData.append("image", data.image);

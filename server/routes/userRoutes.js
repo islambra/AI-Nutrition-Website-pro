@@ -43,8 +43,8 @@ userRouter.get("/clients", protect, authorize('dieteticien', 'admin'), getAllCli
 userRouter.put("/:id", protect, upload.single('profilePicture'), updateUser);
 userRouter.delete("/:id", protect, deleteUser);
 
-// Dieteticien payment info (only the dieteticien themselves or admin)
-userRouter.get("/:id/payment-info", protect, authorize('admin', 'dieteticien'), getDieteticienPaymentInfo);
+// Dieteticien payment info (clients/students need it to pay)
+userRouter.get("/:id/payment-info", protect, authorize('admin', 'dieteticien', 'client', 'student'), getDieteticienPaymentInfo);
 
 // Consultation routes
 userRouter.patch("/client/:id/increment-consultations", protect, incrementConsultations);

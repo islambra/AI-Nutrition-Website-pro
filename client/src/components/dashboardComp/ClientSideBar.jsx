@@ -1,12 +1,13 @@
 import { useLocation, NavLink } from "react-router-dom";
 import { clientMenuLinks } from "../../assets/assets";
-import "./StudentSideBar.css";
+import "./SideBar.css";
+import "./ClientSideBar.css";
 
 const ClientSideBar = () => {
   const location = useLocation();
 
   return (
-    <div className="sidebar student-sidebar">
+    <div className="sidebar client-sidebar">
       {clientMenuLinks.map((link, i) => (
         <NavLink
           key={i}

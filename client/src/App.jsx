@@ -1,6 +1,7 @@
 import { lazy, Suspense } from 'react'
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom'
 import { Toaster } from 'sonner'
+import { Toaster as HotToaster } from 'react-hot-toast'
 import { AnimatePresence } from 'framer-motion'
 
 const PAGE_TRANSITION_DURATION = 0.15
@@ -92,6 +93,7 @@ function App() {
       <ProgressBar />
       <ScrollToTop />
       <Toaster position="top-center" richColors closeButton />
+      <HotToaster position="top-center" toastOptions={{ duration: 4000 }} />
       {(!isLoginRoute && !isSignupRoute && !chatOpen) && <Header />}
       <AnimatePresence mode="sync">
         <Suspense fallback={<PageLoader />}>

@@ -122,6 +122,14 @@
   cursor: not-allowed;
 }
 
+/* Show delete button on touch devices (no hover) */
+@media (hover: none) and (pointer: coarse) {
+  .rl-delete-btn {
+    opacity: 1 !important;
+    background: rgba(255,255,255,0.95);
+  }
+}
+
 @media (max-width: 480px) {
   .rl-modal-card {
     padding: 1.5rem 1.25rem 1.25rem;

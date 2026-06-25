@@ -115,8 +115,8 @@ const FormationSessions = () => {
 
       <div className="fs-toolbar">
         <h3 className="fs-count-label">Sessions ({sessions.length})</h3>
-        <button onClick={() => setShowForm(!showForm)} className="mc-pdf-btn fs-add-btn">
-          <Plus size={16} /> {showForm ? "Cancel" : "Add Session"}
+        <button onClick={() => setShowForm(!showForm)} className="fs-add-btn">
+          {!showForm && <Plus size={18} />} {showForm ? "Cancel" : "Add Session"}
         </button>
       </div>
 
@@ -160,7 +160,7 @@ const FormationSessions = () => {
               />
             </div>
           </div>
-          <button type="submit" disabled={submitting} className="mc-pdf-btn fs-submit-btn">
+          <button type="submit" disabled={submitting} className="fs-submit-btn">
             {submitting ? <Loader2 className="AP-Spin" size={16} /> : null}
             Create Session (auto-generates Zoom link)
           </button>
