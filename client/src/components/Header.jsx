@@ -3,11 +3,11 @@ import { useState, useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { UserCircle, Menu, LogOut, Apple, LayoutDashboard, User, Zap, X } from "lucide-react";
-import toast from "react-hot-toast";
 import "./Header.css";
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showLogout, setShowLogout] = useState(false);
   const location = useLocation();
   const { user, logout } = useAuth();
 
@@ -16,49 +16,14 @@ function Header() {
   };
 
   const handleLogout = () => {
-    toast((t) => (
-      <div style={{ fontFamily: "Arial, sans-serif", color: "#333" }}>
-        <p style={{ margin: 0, fontWeight: "bold", marginBottom: "10px" }}>
-          Are you sure you want to logout?
-        </p>
+    setShowLogout(true);
+  };
 
-        <div style={{ display: "flex", justifyContent: "flex-end", gap: "10px" }}>
-          <button
-            onClick={() => {
-              logout();
-              toast.dismiss(t.id);
-              toast.success("Logged out successfully");
-            }}
-            style={{
-              backgroundColor: "#4CAF50",
-              color: "#fff",
-              border: "none",
-              padding: "6px 12px",
-              borderRadius: "5px",
-              cursor: "pointer",
-            }}
-          >
-            Yes
-          </button>
+  const closeLogout = () => setShowLogout(false);
 
-          <button
-            onClick={() => toast.dismiss(t.id)}
-            style={{
-              backgroundColor: "#f44336",
-              color: "#fff",
-              border: "none",
-              padding: "6px 12px",
-              borderRadius: "5px",
-              cursor: "pointer",
-            }}
-          >
-            Cancel
-          </button>
-        </div>
-      </div>
-    ), {
-      style: { padding: "15px", borderRadius: "10px", background: "#f0f0f0" }
-    });
+  const confirmLogout = () => {
+    logout();
+    setShowLogout(false);
   };
 
   const getDashboardPath = () => {
@@ -86,7 +51,15 @@ function Header() {
 
   useEffect(() => {
     setIsMenuOpen(false);
+    setShowLogout(false);
   }, [location.pathname]);
+
+  useEffect(() => {
+    if (!showLogout) return;
+    const onKey = (e) => { if (e.key === "Escape") setShowLogout(false); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [showLogout]);
 
   return (
     <>
@@ -248,6 +221,29 @@ function Header() {
           </div>
         )}
       </nav>
+
+      {showLogout && (
+        <div className="logout-modal" onClick={closeLogout}>
+          <div className="logout-modal-card" onClick={e => e.stopPropagation()}>
+            <div className="logout-modal-icon">
+              <LogOut size={22} />
+            </div>
+            <h3 className="logout-modal-title">Sign out</h3>
+            <p className="logout-modal-desc">
+              You&apos;ll need to sign back in to access your account.
+            </p>
+            <div className="logout-modal-actions">
+              <button className="logout-modal-secondary" onClick={closeLogout}>
+                Cancel
+              </button>
+              <button className="logout-modal-primary" onClick={confirmLogout}>
+                <LogOut size={16} />
+                Sign out
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

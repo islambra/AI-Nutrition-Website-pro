@@ -506,7 +506,7 @@ export const updateUser = async (req, res) => {
       healthMetrics
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Error fetching public profile" });
+    res.status(500).json({ success: false, message: "Error updating user profile" });
   }
 };
 

@@ -17,6 +17,8 @@
 
   padding:20px 12px;
   gap:6px;
+
+  overflow-y:auto;
 }
 
 /* links */

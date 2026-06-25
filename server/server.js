@@ -5,6 +5,7 @@ import helmet from "helmet";
 import hpp from "hpp";
 import { createServer } from "http";
 import { Server } from "socket.io";
+import mongoose from "mongoose";
 import connectDB from "./configs/db.js";
 import { globalLimiter, authLimiter, apiLimiter } from "./middleware/rateLimiter.js";
 import { errorHandler } from "./middleware/errorHandler.js";
@@ -35,7 +36,7 @@ app.use(helmet({
   contentSecurityPolicy: {
     directives: {
       defaultSrc: ["'self'"],
-      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
+      scriptSrc: ["'self'", "'unsafe-inline'"],
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
       imgSrc: ["'self'", "data:", "blob:", "https://ik.imagekit.io", "https://*.cloudinary.com"],
       fontSrc: ["'self'", "https://fonts.gstatic.com"],
@@ -90,6 +91,7 @@ app.use(globalLimiter);
 app.disable('x-powered-by');
 
 app.use("/api/user/login", authLimiter);
+app.use("/api/password-reset/forgot", authLimiter);
 app.use("/api/user", apiLimiter);
 app.use("/api/admin", apiLimiter);
 
@@ -131,6 +133,24 @@ const io = new Server(httpServer, {
 
 initializeSocket(io);
 
-httpServer.listen(PORT, () => {
+const server = httpServer.listen(PORT, () => {
   console.log(`Server running on port ${PORT} [${NODE_ENV}]`);
 });
+
+const gracefulShutdown = (signal) => {
+  console.log(`\n${signal} received. Shutting down gracefully...`);
+  server.close(() => {
+    console.log('HTTP server closed.');
+    mongoose.connection.close(false).then(() => {
+      console.log('MongoDB connection closed.');
+      process.exit(0);
+    });
+  });
+  setTimeout(() => {
+    console.error('Forced shutdown after timeout.');
+    process.exit(1);
+  }, 10000);
+};
+
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));

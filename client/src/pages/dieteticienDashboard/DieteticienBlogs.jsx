@@ -168,7 +168,7 @@ const DieteticienBlogs = () => {
 
   if (error) return (
     <div className="Dieteticien-blogs-error">
-      <div className="error-icon">⚠️</div>
+      <div className="error-icon"><AlertTriangle size={24} /></div>
       <h3>Unable to load blogs</h3>
       <p>{error}</p>
       <button onClick={fetchBlogs} className="retry-btn">Retry</button>

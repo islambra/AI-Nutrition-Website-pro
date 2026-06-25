@@ -38,7 +38,6 @@ const EditUserProfile = () => {
     if (storedUser) {
       try {
         const parsedUser = JSON.parse(storedUser);
-        console.log("Loaded user data:", parsedUser);
         setUserRole(parsedUser.role || "");
         loadUserData(parsedUser);
       } catch (error) {
@@ -183,11 +182,7 @@ const EditUserProfile = () => {
         userData.baridiMob = formData.baridiMob ? Number(formData.baridiMob) : undefined;
       }
       
-      console.log("Updating user with data:", userData);
-      
       const response = await updateUser(userId, userData, formData.photo);
-      
-      console.log("Update response:", response);
       
       const updatedUserData = {
         ...currentUser,

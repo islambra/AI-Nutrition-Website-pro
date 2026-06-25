@@ -330,7 +330,7 @@ const CreatePlan = () => {
       };
       
       const response = await createPlan(planData);
-      console.log('Plan created with creator info:', response.data?.creatorInfo);
+
       
       setSuccess("Plan created successfully! Redirecting...");
       setTimeout(() => {

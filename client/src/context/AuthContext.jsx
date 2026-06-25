@@ -47,7 +47,7 @@ export const AuthProvider = ({ children }) => {
           setAuthError(null);
         } else {
           // Don't logout immediately if API fails - keep the stored user
-          if (result.error && result.error.includes("invalid") || result.error?.includes("expired")) {
+          if ((result.error && result.error.includes("invalid")) || result.error?.includes("expired")) {
             console.warn("Token invalid/expired, logging out");
             logoutUser();
             setUser(null);

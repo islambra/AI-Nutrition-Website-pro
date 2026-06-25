@@ -11,7 +11,7 @@ export const getAllPayments = async (req, res) => {
   try {
     const payments = await Payment.find({ status: "approved" })
       .populate('user', 'fullName email')
-      .populate('plan', 'name price')
+      .populate('plan', 'planName price')
       .populate('formation', 'title price')
       .sort({ createdAt: -1 });
 

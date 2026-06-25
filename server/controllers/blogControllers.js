@@ -6,6 +6,11 @@ import Comment from "../models/Comment.js";
 import Like from "../models/Like.js";
 import imagekit from "../configs/imageKit.js";
 
+const safeJsonParse = (str, fallback) => {
+  if (typeof str !== 'string') return str;
+  try { return JSON.parse(str); } catch { return fallback; }
+};
+
 export const createBlog = async (req, res) => {
     try {
         const { type, title, content, tags } = req.body;
@@ -40,7 +45,7 @@ export const createBlog = async (req, res) => {
             author: user._id,
             title: String(title || '').trim(),
             content: String(content || '').trim(),
-            tags: tags ? (typeof tags === 'string' ? JSON.parse(tags) : tags) : []
+            tags: tags ? (typeof tags === 'string' ? safeJsonParse(tags, []) : tags) : []
         });
 
         const savedBlog = await newBlog.save();
@@ -54,8 +59,7 @@ export const createBlog = async (req, res) => {
     } catch (error) {
         res.status(500).json({ 
             success: false,
-            message: "Error creating blog", 
-
+            message: "Error creating blog"
         });
     }
 };
@@ -111,7 +115,7 @@ export const updateBlog = async (req, res) => {
                 type, 
                 title, 
                 content, 
-                tags: tags ? JSON.parse(tags) : blog.tags 
+                tags: tags ? safeJsonParse(tags, blog.tags) : blog.tags 
             },
             { new: true, runValidators: true }
         );
@@ -124,8 +128,7 @@ export const updateBlog = async (req, res) => {
     } catch (error) {
         res.status(500).json({ 
             success: false,
-            message: "Error updating blog", 
-
+            message: "Error updating blog"
         });
     }
 };
@@ -153,8 +156,7 @@ export const getAllBlogs = async (req, res) => {
     } catch (error) {
         res.status(500).json({ 
             success: false,
-            message: "Error fetching blogs", 
-
+            message: "Error fetching blogs"
         });
     }
 };
@@ -183,8 +185,7 @@ export const getMyBlogs = async (req, res) => {
     } catch (error) {
         res.status(500).json({ 
             success: false,
-            message: "Error fetching your blogs", 
-
+            message: "Error fetching your blogs"
         });
     }
 };
@@ -224,8 +225,7 @@ export const getBlogsByAuthor = async (req, res) => {
     } catch (error) {
         res.status(500).json({ 
             success: false,
-            message: "Error fetching author's blogs", 
-
+            message: "Error fetching author's blogs"
         });
     }
 };
@@ -264,8 +264,7 @@ export const getBlogById = async (req, res) => {
     } catch (error) {
         res.status(500).json({ 
             success: false,
-            message: "Error fetching blog", 
-
+            message: "Error fetching blog"
         });
     }
 };
@@ -303,8 +302,7 @@ export const deleteBlog = async (req, res) => {
     } catch (error) {
         res.status(500).json({ 
             success: false,
-            message: "Error deleting blog", 
-
+            message: "Error deleting blog"
         });
     }
 };
@@ -339,8 +337,7 @@ export const addComment = async (req, res) => {
     } catch (error) {
         res.status(500).json({ 
             success: false,
-            message: "Error adding comment", 
-
+            message: "Error adding comment"
         });
     }
 };
@@ -359,8 +356,7 @@ export const getComments = async (req, res) => {
     } catch (error) {
         res.status(500).json({ 
             success: false,
-            message: "Error fetching comments", 
-
+            message: "Error fetching comments"
         });
     }
 };
@@ -391,8 +387,7 @@ export const deleteComment = async (req, res) => {
     } catch (error) {
         res.status(500).json({ 
             success: false,
-            message: "Error deleting comment", 
-
+            message: "Error deleting comment"
         });
     }
 };
@@ -435,8 +430,7 @@ export const likeBlog = async (req, res) => {
     } catch (error) {
         res.status(500).json({ 
             success: false,
-            message: "Error liking blog", 
-
+            message: "Error liking blog"
         });
     }
 };
@@ -466,8 +460,7 @@ export const unlikeBlog = async (req, res) => {
     } catch (error) {
         res.status(500).json({ 
             success: false,
-            message: "Error unliking blog", 
-
+            message: "Error unliking blog"
         });
     }
 };
@@ -489,8 +482,7 @@ export const getLikeStatus = async (req, res) => {
     } catch (error) {
         res.status(500).json({ 
             success: false,
-            message: "Error fetching like status", 
-
+            message: "Error fetching like status"
         });
     }
 };

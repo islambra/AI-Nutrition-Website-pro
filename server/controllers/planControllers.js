@@ -7,6 +7,11 @@ import UserPlan from "../models/UserPlan.js";
 import Consultation from "../models/Consultation.js";
 import imagekit from "../configs/imageKit.js";
 
+const safeJsonParse = (str, fallback) => {
+  if (typeof str !== 'string') return str;
+  try { return JSON.parse(str); } catch { return fallback; }
+};
+
 export const createPlan = async (req, res) => {
   try {
     const {
@@ -40,7 +45,8 @@ export const createPlan = async (req, res) => {
     }
 
     // Validate macronutrients sum to 100
-    const { carbs, protein, fat } = JSON.parse(macronutrientRatio);
+    const parsedRatio = safeJsonParse(macronutrientRatio, { carbs: 0, protein: 0, fat: 0 });
+    const { carbs, protein, fat } = parsedRatio;
     if (carbs + protein + fat !== 100) {
       return res.status(400).json({
         success: false,
@@ -83,12 +89,19 @@ export const createPlan = async (req, res) => {
       price,
       consultationIncluded: consultationIncluded || 0,
       followUpFrequency,
-      dailyCalorieRange: JSON.parse(dailyCalorieRange),
-      macronutrientRatio: JSON.parse(macronutrientRatio),
-      recommendedFoods: JSON.parse(recommendedFoods),
+      dailyCalorieRange: safeJsonParse(dailyCalorieRange, {}),
+      macronutrientRatio: safeJsonParse(macronutrientRatio, {}),
+      recommendedFoods: safeJsonParse(recommendedFoods, []),
       mealsPerDay,
-      mealStructure: JSON.parse(mealStructure),
-      weeklyGroceryList: weeklyGroceryList ? JSON.parse(weeklyGroceryList) : {
+      mealStructure: safeJsonParse(mealStructure, {}),
+      weeklyGroceryList: weeklyGroceryList ? safeJsonParse(weeklyGroceryList, {
+        protein: [],
+        vegetables: [],
+        carbs: [],
+        fats: [],
+        fruits: [],
+        other: [],
+      }) : {
         protein: [],
         vegetables: [],
         carbs: [],
@@ -96,8 +109,8 @@ export const createPlan = async (req, res) => {
         fruits: [],
         other: [],
       },
-      foodsToAvoid: JSON.parse(foodsToAvoid),
-      supplementsSuggested: supplementsSuggested ? JSON.parse(supplementsSuggested) : [],
+      foodsToAvoid: safeJsonParse(foodsToAvoid, []),
+      supplementsSuggested: supplementsSuggested ? safeJsonParse(supplementsSuggested, []) : [],
       exerciseRecommendation: exerciseRecommendation || "",
       createdBy: req.user.id,
       creatorInfo: {
@@ -152,38 +165,39 @@ export const updatePlan = async (req, res) => {
 
     // Parse JSON fields if they exist
     if (req.body.macronutrientRatio) {
-      const { carbs, protein, fat } = JSON.parse(req.body.macronutrientRatio);
+      const parsedRatio = safeJsonParse(req.body.macronutrientRatio, { carbs: 0, protein: 0, fat: 0 });
+      const { carbs, protein, fat } = parsedRatio;
       if (carbs + protein + fat !== 100) {
         return res.status(400).json({
           success: false,
           message: "Macronutrient ratio must sum to 100%",
         });
       }
-      updateData.macronutrientRatio = JSON.parse(req.body.macronutrientRatio);
+      updateData.macronutrientRatio = parsedRatio;
     }
 
     if (req.body.dailyCalorieRange) {
-      updateData.dailyCalorieRange = JSON.parse(req.body.dailyCalorieRange);
+      updateData.dailyCalorieRange = safeJsonParse(req.body.dailyCalorieRange, {});
     }
 
     if (req.body.recommendedFoods) {
-      updateData.recommendedFoods = JSON.parse(req.body.recommendedFoods);
+      updateData.recommendedFoods = safeJsonParse(req.body.recommendedFoods, []);
     }
 
     if (req.body.mealStructure) {
-      updateData.mealStructure = JSON.parse(req.body.mealStructure);
+      updateData.mealStructure = safeJsonParse(req.body.mealStructure, {});
     }
 
     if (req.body.weeklyGroceryList) {
-      updateData.weeklyGroceryList = JSON.parse(req.body.weeklyGroceryList);
+      updateData.weeklyGroceryList = safeJsonParse(req.body.weeklyGroceryList, []);
     }
 
     if (req.body.foodsToAvoid) {
-      updateData.foodsToAvoid = JSON.parse(req.body.foodsToAvoid);
+      updateData.foodsToAvoid = safeJsonParse(req.body.foodsToAvoid, []);
     }
 
     if (req.body.supplementsSuggested) {
-      updateData.supplementsSuggested = JSON.parse(req.body.supplementsSuggested);
+      updateData.supplementsSuggested = safeJsonParse(req.body.supplementsSuggested, []);
     }
 
     // Upload new image if provided

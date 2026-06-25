@@ -1,13 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
+import { useSocket } from '../../context/SocketContext';
 
 export default function MessageList({ messages, room, onSendMessage, typingUser, otherParticipant, onShowProfile }) {
   const { user } = useAuth();
+  const { emitTyping, emitStopTyping } = useSocket();
   const userId = user?._id;
   const bottomRef = useRef(null);
   const [input, setInput] = useState('');
   const typingTimeoutRef = useRef(null);
-  const { emitTyping, emitStopTyping } = room;
+  const roomId = room?._id;
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -15,11 +17,11 @@ export default function MessageList({ messages, room, onSendMessage, typingUser,
 
   const handleInputChange = (e) => {
     setInput(e.target.value);
-    if (room.emitTyping) {
-      room.emitTyping();
+    if (emitTyping && roomId) {
+      emitTyping(roomId);
       if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
       typingTimeoutRef.current = setTimeout(() => {
-        if (room.emitStopTyping) room.emitStopTyping();
+        if (emitStopTyping && roomId) emitStopTyping(roomId);
       }, 2000);
     }
   };
@@ -28,7 +30,7 @@ export default function MessageList({ messages, room, onSendMessage, typingUser,
     if (!input.trim()) return;
     onSendMessage(input.trim());
     setInput('');
-    if (room.emitStopTyping) room.emitStopTyping();
+    if (emitStopTyping && roomId) emitStopTyping(roomId);
   };
 
   const handleKeyDown = (e) => {

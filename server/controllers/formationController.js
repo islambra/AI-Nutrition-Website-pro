@@ -4,6 +4,11 @@ import UserFormation from "../models/UserFormation.js";
 import { createZoomMeeting } from "../utils/zoom.js";
 import imagekit from "../configs/imageKit.js";
 
+const safeJsonParse = (str, fallback) => {
+  if (typeof str !== 'string') return str;
+  try { return JSON.parse(str); } catch { return fallback; }
+};
+
 // --- FORMATIONS ---
 
 const handleFileUploads = async (files, uploadedMap) => {
@@ -45,7 +50,7 @@ export const createFormation = async (req, res) => {
       imageKitFileId = uploadResponse.fileId;
     }
 
-    const parsedFiles = typeof files === "string" ? JSON.parse(files) : files || [];
+    const parsedFiles = typeof files === "string" ? safeJsonParse(files, []) : files || [];
 
     const uploadedMap = {};
     for (const f of req.files || []) {
@@ -126,7 +131,7 @@ export const updateFormation = async (req, res) => {
     Object.assign(formation, rest);
 
     if (files !== undefined) {
-      const parsedFiles = typeof files === "string" ? JSON.parse(files) : files;
+      const parsedFiles = typeof files === "string" ? safeJsonParse(files, []) : files;
 
       for (const oldFile of formation.files || []) {
         if (oldFile.fileId) {

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getBlogById, addComment, deleteComment, likeBlog, unlikeBlog } from '../api/blogApi';
 import { useAuth } from '../context/AuthContext';
+import { Utensils, FileText, Users, File, TriangleAlert, MessageCircle } from 'lucide-react';
 import './BlogDetailsPage.css';
 
 function BlogDetailsPage() {
@@ -28,14 +29,11 @@ function BlogDetailsPage() {
     try {
       setLoading(true);
       const response = await getBlogById(id);
-      console.log('Blog data:', response.data);
-      console.log('Current user:', currentUser);
       setBlog(response.data);
       setLiked(response.data.userLiked || false);
       setLikesCount(response.data.likesCount || 0);
       setError('');
     } catch (err) {
-      console.error('Error fetching blog:', err);
       setError('Failed to load blog. Please try again later.');
     } finally {
       setLoading(false);
@@ -135,10 +133,10 @@ function BlogDetailsPage() {
 
   const getTypeIcon = (type) => {
     switch(type) {
-      case 'Recipe': return '🍳';
-      case 'Article': return '📝';
-      case 'Community': return '👥';
-      default: return '📄';
+      case 'Recipe': return <Utensils size={18} />;
+      case 'Article': return <FileText size={18} />;
+      case 'Community': return <Users size={18} />;
+      default: return <File size={18} />;
     }
   };
 
@@ -166,7 +164,7 @@ function BlogDetailsPage() {
     return (
       <div className="blog-details-container">
         <div className="error-container">
-          <div className="error-icon">⚠️</div>
+          <div className="error-icon"><TriangleAlert size={40} /></div>
           <h3>Something went wrong</h3>
           <p>{error || 'Blog not found'}</p>
           <button className="btn bl-btn-primary" onClick={() => navigate('/blogs')}>
@@ -371,7 +369,7 @@ function BlogDetailsPage() {
                   ))
                 ) : (
                   <div className="no-comments">
-                    <div className="no-comments-icon">💬</div>
+                    <div className="no-comments-icon"><MessageCircle size={40} /></div>
                     <p>No comments yet. Be the first to share your thoughts!</p>
                   </div>
                 )}
