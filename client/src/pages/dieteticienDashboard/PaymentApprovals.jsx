@@ -157,18 +157,17 @@ const PaymentApprovals = () => {
                   </div>
 
                   <div className="pa-proof-section">
-                    {payment.proofImage ? (
-                      <div className="pa-proof-thumb" onClick={() => setPreviewImage(payment.proofImage)}>
-                        <img src={payment.proofImage} alt="Payment proof" />
-                        <div className="pa-proof-overlay">
-                          <Eye size={20} />
-                        </div>
-                      </div>
-                    ) : (
-                      <div className="pa-proof-missing">No proof image</div>
-                    )}
+                    <div className="pa-proof-left">
+                      {payment.proofImage ? (
+                        <button className="pa-proof-btn" onClick={() => setPreviewImage(payment.proofImage)}>
+                          <Eye size={18} /> View Proof
+                        </button>
+                      ) : (
+                        <span className="pa-no-proof">No proof</span>
+                      )}
+                    </div>
                     <div className="pa-proof-date">
-                      <Calendar size={12} />
+                      <Calendar size={14} />
                       <span>Submitted {formatDate(payment.createdAt)}</span>
                     </div>
                   </div>
@@ -212,14 +211,14 @@ const PaymentApprovals = () => {
             onClick={() => setPreviewImage(null)}
           >
             <motion.div
-              className="pa-modal-content"
+              className="pa-image-modal"
               initial={{ scale: 0.9 }}
               animate={{ scale: 1 }}
               exit={{ scale: 0.9 }}
               onClick={e => e.stopPropagation()}
             >
-              <button className="pa-modal-close" onClick={() => setPreviewImage(null)}>×</button>
-              <img src={previewImage} alt="Proof full size" />
+              <button className="pa-image-close" onClick={() => setPreviewImage(null)}>×</button>
+              <img src={previewImage} alt="Proof full size" className="pa-proof-image" />
             </motion.div>
           </motion.div>
         )}

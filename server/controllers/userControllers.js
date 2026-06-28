@@ -127,7 +127,9 @@ export const registerUser = async (req, res) => {
       }
       studentProfile = new Student({
         user: newUser._id,
-        studentCardNumber: String(studentCardNumber)
+        studentCardNumber: String(studentCardNumber),
+        age: age ? Number(age) : null,
+        gender: gender || null
       });
       await studentProfile.save();
     }
@@ -476,8 +478,10 @@ export const updateUser = async (req, res) => {
       await profile.save();
     } else if (user.role === "student") {
       profile = await Student.findOne({ user: user._id });
-      if (profile && updateData.studentCardNumber) {
-        profile.studentCardNumber = updateData.studentCardNumber;
+      if (profile) {
+        if (updateData.studentCardNumber !== undefined) profile.studentCardNumber = updateData.studentCardNumber;
+        if (updateData.age !== undefined) profile.age = Number(updateData.age);
+        if (updateData.gender !== undefined) profile.gender = updateData.gender;
         await profile.save();
       }
     } else if (user.role === "dieteticien") {

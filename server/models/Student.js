@@ -11,6 +11,15 @@ const studentSchema = new mongoose.Schema({
     type: String,
     required: true,
     trim: true
+  },
+  age: {
+    type: Number,
+    default: null
+  },
+  gender: {
+    type: String,
+    enum: ["Male", "Female", null],
+    default: null
   }
 }, { timestamps: true });
 

@@ -54,17 +54,19 @@ const ClientsPage = () => {
   const fetchPatients = async () => {
     try {
       setLoading(true);
-      const data = await getAllClients();
+      const response = await getAllClients();
+      const data = Array.isArray(response) ? response : (response.data || []);
       
       const transformedData = data.map(client => {
         const profile = client.clientProfile || {};
         const studentProfile = client.studentProfile || {};
+        const isStudent = client.role === 'student';
         return {
           ...client,
           ...profile,
           studentCardNumber: studentProfile.studentCardNumber || null,
-          age: profile.age ?? null,
-          gender: profile.gender ?? null,
+          age: isStudent ? (studentProfile.age ?? null) : (profile.age ?? null),
+          gender: isStudent ? (studentProfile.gender ?? null) : (profile.gender ?? null),
           heightCm: profile.heightCm ?? null,
           weightKg: profile.weightKg ?? null,
           activityLevel: profile.activityLevel ?? null,
@@ -400,7 +402,7 @@ const PatientCard = ({ patient, onClick, getBMIColor, getActivityLabel }) => {
   );
 };
 
-// Student Card — Simplified for phone, no health metrics
+// Student Card
 const StudentCard = ({ patient, onClick }) => {
   return (
     <div className="student-card" onClick={onClick}>
@@ -419,6 +421,16 @@ const StudentCard = ({ patient, onClick }) => {
       <div className="card-body">
         <h3 className="student-name">{patient.fullName}</h3>
         <p className="patient-email"><Icons.Mail /> {patient.email}</p>
+        <div className="metrics-row">
+          <div className="metric">
+            <span className="metric-value">{patient.age || '—'}</span>
+            <span className="metric-label">Age</span>
+          </div>
+          <div className="metric">
+            <span className="metric-value">{patient.gender?.charAt(0) || '—'}</span>
+            <span className="metric-label">Gender</span>
+          </div>
+        </div>
         <div className="student-meta">
           <span className="student-meta-item">
             <Icons.Calendar /> Joined {patient.createdAt ? new Date(patient.createdAt).toLocaleDateString() : 'N/A'}
@@ -437,7 +449,7 @@ const StudentCard = ({ patient, onClick }) => {
   );
 };
 
-// Student Modal — Simplified, no health data
+// Student Modal
 const StudentModal = ({ patient, onClose }) => {
   return (
     <div className="modal-overlay" onClick={onClose}>
@@ -466,6 +478,21 @@ const StudentModal = ({ patient, onClose }) => {
           </div>
         </div>
         <div className="modern-modal-body">
+          <div className="info-card">
+            <div className="info-card-header">
+              <Icons.User /> <h3>Personal Information</h3>
+            </div>
+            <div className="info-card-content">
+              <div className="info-row">
+                <span className="info-label">Age</span>
+                <span className="info-value">{patient.age || 'Not specified'} years</span>
+              </div>
+              <div className="info-row">
+                <span className="info-label">Gender</span>
+                <span className="info-value">{patient.gender || 'Not specified'}</span>
+              </div>
+            </div>
+          </div>
           <div className="info-card">
             <div className="info-card-header">
               <Icons.Clock /> <h3>Account Timeline</h3>

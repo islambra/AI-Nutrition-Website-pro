@@ -2,7 +2,7 @@ import User from "../models/User.js";
 import Dieteticien from "../models/Dieteticien.js";
 import PendingDieteticien from "../models/PendingDieteticien.js";
 import imagekit from "../configs/imageKit.js";
-import { sendApprovalEmail } from "../services/emailService.js";
+import { sendApprovalEmail, sendRejectionEmail } from "../services/emailService.js";
 import { securityLogger } from "../middleware/securityLogger.js";
 
 export const getPendingDieteticiens = async (req, res) => {
@@ -78,6 +78,8 @@ export const rejectDieteticien = async (req, res) => {
     if (pending.diplomaFileId) {
       try { await imagekit.deleteFile(pending.diplomaFileId); } catch (_) {}
     }
+
+    await sendRejectionEmail(pending.email, pending.fullName);
 
     await PendingDieteticien.findByIdAndDelete(id);
 

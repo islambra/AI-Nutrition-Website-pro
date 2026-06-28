@@ -52,15 +52,16 @@ function ProfilePage() {
       const client = user.clientProfile || {};
       const dieteticien = user.dieteticienProfile || {};
       const student = user.studentProfile || {};
+      const profile = user.role === 'client' ? client : student;
       setFormData({
         fullName: user.fullName || user.name || '',
         email: user.email || '',
         password: '',
-        age: client.age || '',
+        age: profile.age || client.age || '',
         weightKg: client.weightKg || '',
         heightCm: client.heightCm || '',
         goals: client.goals || '',
-        gender: client.gender || 'Male',
+        gender: profile.gender || 'Male',
         activityLevel: client.activityLevel || 'Moderate',
         medicalConditions: Array.isArray(client.medicalConditions) ? client.medicalConditions.join(', ') : '',
         allergies: Array.isArray(client.allergies) ? client.allergies.join(', ') : '',
@@ -132,11 +133,13 @@ function ProfilePage() {
       toast.error('Email is required');
       return false;
     }
-    if (user?.role === "client") {
+    if (user?.role === "client" || user?.role === "student") {
       if (!formData.age || formData.age < 1 || formData.age > 150) {
         toast.error('Age must be between 1 and 150');
         return false;
       }
+    }
+    if (user?.role === "client") {
       if (!formData.heightCm || formData.heightCm < 50 || formData.heightCm > 300) {
         toast.error('Height must be between 50 and 300 cm');
         return false;
@@ -218,21 +221,24 @@ function ProfilePage() {
     if (user) {
       const client = user.clientProfile || {};
       const dieteticien = user.dieteticienProfile || {};
+      const student = user.studentProfile || {};
+      const profile = user.role === 'client' ? client : student;
       setFormData({
         fullName: user.fullName || user.name || '',
         email: user.email || '',
         password: '',
-        age: client.age || '',
+        age: profile.age || client.age || '',
         weightKg: client.weightKg || '',
         heightCm: client.heightCm || '',
         goals: client.goals || '',
-        gender: client.gender || 'Male',
+        gender: profile.gender || 'Male',
         activityLevel: client.activityLevel || 'Moderate',
         medicalConditions: Array.isArray(client.medicalConditions) ? client.medicalConditions.join(', ') : '',
         allergies: Array.isArray(client.allergies) ? client.allergies.join(', ') : '',
         ccpNumber: dieteticien.ccpNumber || '',
         ccpKey: dieteticien.ccpKey || '',
-        baridiMob: dieteticien.baridiMob || ''
+        baridiMob: dieteticien.baridiMob || '',
+        studentCardNumber: student.studentCardNumber || ''
       });
     }
     setIsEditing(false);
@@ -588,7 +594,7 @@ function ProfilePage() {
                         </div>
                       )}
 
-                      {user?.role === "client" && (
+                      {(user?.role === "client" || user?.role === "student") && (
                         <>
                           <div className="VXPR-FormGroup">
                             <label htmlFor="age">AGE</label>
@@ -624,7 +630,11 @@ function ProfilePage() {
                               </select>
                             </div>
                           </div>
+                        </>
+                      )}
 
+                      {user?.role === "client" && (
+                        <>
                           <div className="VXPR-FormGroup">
                             <label htmlFor="heightCm">HEIGHT (CM)</label>
                             <div className="VXPR-InputWrapper">
