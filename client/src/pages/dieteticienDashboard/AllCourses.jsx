@@ -305,102 +305,97 @@ const AllCourses = () => {
                   </div>
                 </button>
 
-                <AnimatePresence initial={false}>
-                  {!isCollapsed && (
-                    <motion.div
-                      key="grid"
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.25, ease: "easeInOut" }}
-                      className="ac-grid-wrapper"
+                <motion.div
+                  animate={{ height: isCollapsed ? 0 : "auto", opacity: isCollapsed ? 0 : 1 }}
+                  initial={false}
+                  transition={{ duration: 0.25, ease: "easeInOut" }}
+                  className="ac-grid-wrapper"
+                  style={{ overflow: "hidden" }}
+                >
+                  <div className="ac-grid">
+                    {levelCourses.map((course) => (
+                      <motion.div
+                        key={course._id}
+                        variants={cardVariants}
+                        layout
+                        className="ac-course-card"
+                      >
+                  <div className="ac-card-top">
+                    <span
+                      className={`ac-semester-badge semester-${course.semester}`}
                     >
-                      <div className="ac-grid">
-                        {levelCourses.map((course) => (
-                          <motion.div
-                            key={course._id}
-                            variants={cardVariants}
-                            layout
-                            className="ac-course-card"
-                          >
-                      <div className="ac-card-top">
-                        <span
-                          className={`ac-semester-badge semester-${course.semester}`}
-                        >
-                          Sem {course.semester}
+                      Sem {course.semester}
+                    </span>
+                    <div className="ac-card-type-icon">
+                      {course.pdfUrl ? (
+                        <FileText size={14} />
+                      ) : (
+                        <ExternalLink size={14} />
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="ac-card-body">
+                    <div className={`ac-card-icon level-${level}`}>
+                      <BookOpen size={22} />
+                    </div>
+                    <h3 title={course.title}>{course.title}</h3>
+                    <div className="ac-card-meta">
+                      <span className="ac-card-creator">
+                        <Users size={12} />
+                        {course.creatorInfo?.fullName || "Unknown"}
+                      </span>
+                      {course.createdAt && (
+                        <span className="ac-card-date">
+                          <Clock size={12} />
+                          {new Date(course.createdAt).toLocaleDateString()}
                         </span>
-                        <div className="ac-card-type-icon">
-                          {course.pdfUrl ? (
-                            <FileText size={14} />
-                          ) : (
-                            <ExternalLink size={14} />
-                          )}
-                        </div>
-                      </div>
+                      )}
+                    </div>
+                  </div>
 
-                      <div className="ac-card-body">
-                        <div className={`ac-card-icon level-${level}`}>
-                          <BookOpen size={22} />
-                        </div>
-                        <h3 title={course.title}>{course.title}</h3>
-                        <div className="ac-card-meta">
-                          <span className="ac-card-creator">
-                            <Users size={12} />
-                            {course.creatorInfo?.fullName || "Unknown"}
-                          </span>
-                          {course.createdAt && (
-                            <span className="ac-card-date">
-                              <Clock size={12} />
-                              {new Date(course.createdAt).toLocaleDateString()}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="ac-card-actions">
-                        {course.url && (
-                          <a
-                            href={course.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="ac-action-btn drive"
-                            title="Open Drive link"
-                          >
-                            <ExternalLink size={15} />
-                            <span>Drive</span>
-                          </a>
-                        )}
-                        {course.pdfUrl && (
-                          <a
-                            href={course.pdfUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="ac-action-btn pdf"
-                            title="View PDF"
-                          >
-                            <FileText size={15} />
-                            <span>PDF</span>
-                          </a>
-                        )}
-                        {user &&
-                          (course.createdBy === user._id ||
-                            user.role === "admin") && (
-                            <button
-                              className="ac-action-btn delete"
-                              onClick={() => setDeleteTarget(course._id)}
-                              title="Delete course"
-                            >
-                              <Trash2 size={15} />
-                              <span>Delete</span>
-                            </button>
-                          )}
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                  <div className="ac-card-actions">
+                    {course.url && (
+                      <a
+                        href={course.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="ac-action-btn drive"
+                        title="Open Drive link"
+                      >
+                        <ExternalLink size={15} />
+                        <span>Drive</span>
+                      </a>
+                    )}
+                    {course.pdfUrl && (
+                      <a
+                        href={course.pdfUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="ac-action-btn pdf"
+                        title="View PDF"
+                      >
+                        <FileText size={15} />
+                        <span>PDF</span>
+                      </a>
+                    )}
+                    {user &&
+                      (course.createdBy === user._id ||
+                        user.role === "admin") && (
+                        <button
+                          className="ac-action-btn delete"
+                          onClick={() => setDeleteTarget(course._id)}
+                          title="Delete course"
+                        >
+                          <Trash2 size={15} />
+                          <span>Delete</span>
+                        </button>
+                      )}
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+                </motion.div>
             </div>
             );
           })}

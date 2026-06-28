@@ -53,5 +53,8 @@ const consultationSchema = new mongoose.Schema({
   timestamps: true
 });
 
+consultationSchema.index({ user: 1, createdAt: -1 });
+consultationSchema.index({ nutritionist: 1, status: 1 });
+
 const Consultation = mongoose.model("Consultation", consultationSchema);
 export default Consultation;

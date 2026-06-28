@@ -29,5 +29,8 @@ const userPlanSchema = new mongoose.Schema({
   timestamps: true
 });
 
+userPlanSchema.index({ user: 1 });
+userPlanSchema.index({ plan: 1 });
+
 const UserPlan = mongoose.model("UserPlan", userPlanSchema);
 export default UserPlan;

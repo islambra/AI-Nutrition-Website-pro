@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-  baseURL: 'http://localhost:5000/api',
+  baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api',
   timeout: 10000,
 });
 
@@ -19,15 +19,26 @@ axiosInstance.interceptors.request.use(
   }
 );
 
-// Response interceptor (handle token expiration)
+// Response interceptor (handle token expiration + global error logging)
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    const url = error.config?.url || 'unknown';
+    const status = error.response?.status;
+    const message = error.response?.data?.message || error.message || 'Unknown error';
+
+    if (!error.response) {
+      console.error(`[API Network Error] ${url}: ${message}`);
+    } else if (status !== 401) {
+      console.error(`[API Error ${status}] ${url}: ${message}`);
+    }
+
+    if (status === 401) {
       localStorage.removeItem("token");
       localStorage.removeItem("user");
       window.location.href = '/login';
     }
+
     return Promise.reject(error);
   }
 );

@@ -8,6 +8,7 @@ import {
 import { initiatePayment, getDieteticienPaymentInfo } from '../api/paymentApi';
 import { getFormationById } from '../api/formationApi';
 import { useAuth } from '../context/AuthContext';
+import { useSafeTimeout } from '../hooks/useSafeTimeout';
 import toast from 'react-hot-toast';
 import PageTransition from '../components/PageTransition';
 import './CheckoutPage.css';
@@ -17,6 +18,7 @@ function FormationCheckoutPage() {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, isAuthenticated, authLoading } = useAuth();
+  const { setTimeoutSafe } = useSafeTimeout();
 
   const [formation, setFormation] = useState(location.state?.formation || null);
   const [loadingFormation, setLoadingFormation] = useState(!location.state?.formation);
@@ -94,7 +96,7 @@ function FormationCheckoutPage() {
       if (res.success) {
         setSubmitted(true);
         toast.success('Payment proof submitted! Waiting for confirmation.');
-        setTimeout(() => navigate('/student/my-requests'), 3000);
+        setTimeoutSafe(() => navigate('/student/my-requests'), 3000);
       }
     } catch (err) {
       toast.error(err.response?.data?.message || 'Submission failed');

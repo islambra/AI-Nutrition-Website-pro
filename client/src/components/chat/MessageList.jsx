@@ -13,6 +13,9 @@ export default function MessageList({ messages, room, onSendMessage, typingUser,
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+    return () => {
+      if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+    };
   }, [messages]);
 
   const handleInputChange = (e) => {

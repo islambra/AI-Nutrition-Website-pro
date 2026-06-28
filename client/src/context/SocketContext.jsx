@@ -15,7 +15,7 @@ export const SocketProvider = ({ children }) => {
   const [activeRoomId, setActiveRoomId] = useState(null);
 
   useEffect(() => {
-    if (!isAuthenticated || isAdmin()) {
+    if (!isAuthenticated || isAdmin) {
       if (socketRef.current) {
         socketRef.current.disconnect();
         socketRef.current = null;
@@ -29,9 +29,13 @@ export const SocketProvider = ({ children }) => {
     const token = localStorage.getItem('token');
     if (!token) return;
 
-    const socket = io('http://localhost:5000', {
+    const SOCKET_URL = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace('/api', '');
+    const socket = io(SOCKET_URL, {
       auth: { token },
-      transports: ['websocket', 'polling']
+      transports: ['websocket', 'polling'],
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 5000,
+      randomizationFactor: 0.5
     });
 
     socket.on('connect', () => {
@@ -91,8 +95,6 @@ export const SocketProvider = ({ children }) => {
         return next;
       });
     });
-
-    socket.on('joined:chat', ({ roomId }) => {});
 
     socket.on('error', ({ message }) => {
       console.error('Socket error:', message);
@@ -172,7 +174,6 @@ export const SocketProvider = ({ children }) => {
   }, []);
 
   const value = {
-    socket: socketRef.current,
     connected,
     rooms,
     messages,

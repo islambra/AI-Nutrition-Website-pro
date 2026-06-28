@@ -7,6 +7,7 @@ import {
   BookOpen, Calendar, ChevronDown, Wallet, ArrowUpRight,
   GraduationCap
 } from 'lucide-react';
+import { useSafeTimeout } from '../../hooks/useSafeTimeout';
 import './AdminPayments.css';
 
 const TYPE_CONFIG = {
@@ -47,6 +48,7 @@ const PAYMENT_METHOD_LABELS = {
 };
 
 const AdminPayments = () => {
+  const { setTimeoutSafe } = useSafeTimeout();
   const [payments, setPayments] = useState([]);
   const [filteredPayments, setFilteredPayments] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -140,7 +142,7 @@ const AdminPayments = () => {
 
   const showToast = (message, type = 'success') => {
     setToast({ show: true, message, type });
-    setTimeout(() => {
+    setTimeoutSafe(() => {
       setToast({ show: false, message: '', type: '' });
     }, 4000);
   };

@@ -8,9 +8,11 @@ import {
   FiHeart, FiTrendingUp, FiActivity, FiArrowLeft,
   FiInfo
 } from 'react-icons/fi';
+import { useSafeTimeout } from '../../hooks/useSafeTimeout';
 import './MyPlans.css';
 
 const PlanDashboard = () => {
+  const { setTimeoutSafe } = useSafeTimeout();
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -61,10 +63,10 @@ const PlanDashboard = () => {
   const notify = (message, type = 'success') => {
     if (type === 'success') {
       setSuccess(message);
-      setTimeout(() => setSuccess(null), 3000);
+      setTimeoutSafe(() => setSuccess(null), 3000);
     } else {
       setError(message);
-      setTimeout(() => setError(null), 3000);
+      setTimeoutSafe(() => setError(null), 3000);
     }
   };
 

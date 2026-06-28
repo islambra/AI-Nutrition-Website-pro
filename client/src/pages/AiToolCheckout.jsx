@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { getPlatformPaymentInfo, initiateAiToolSubscription } from '../api/aiToolApi';
 import { useAuth } from '../context/AuthContext';
+import { useSafeTimeout } from '../hooks/useSafeTimeout';
 import toast from 'react-hot-toast';
 import PageTransition from '../components/PageTransition';
 import './CheckoutPage.css';
@@ -15,6 +16,7 @@ function AiToolCheckout() {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, isAuthenticated, authLoading } = useAuth();
+  const { setTimeoutSafe } = useSafeTimeout();
 
   const [paymentMethod, setPaymentMethod] = useState('ccp');
   const [proofFile, setProofFile] = useState(null);
@@ -73,7 +75,7 @@ function AiToolCheckout() {
         toast.success('Payment proof submitted! Waiting for admin approval.');
         const role = user?.role;
         const requestsPath = role === 'student' ? '/student/my-requests' : '/client/my-requests';
-        setTimeout(() => navigate(requestsPath, { state: { defaultType: 'ai-tool' } }), 3000);
+        setTimeoutSafe(() => navigate(requestsPath, { state: { defaultType: 'ai-tool' } }), 3000);
       }
     } catch (err) {
       toast.error(err.response?.data?.message || 'Submission failed');

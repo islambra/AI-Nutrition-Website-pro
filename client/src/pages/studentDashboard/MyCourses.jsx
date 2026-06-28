@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import {
   BookOpen,
@@ -295,90 +295,85 @@ const MyCourses = () => {
                   </div>
                 </button>
 
-                <AnimatePresence initial={false}>
-                  {!isCollapsed && (
-                    <motion.div
-                      key="grid"
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.25, ease: "easeInOut" }}
-                      className="mc-grid-wrapper"
+                <motion.div
+                  animate={{ height: isCollapsed ? 0 : "auto", opacity: isCollapsed ? 0 : 1 }}
+                  initial={false}
+                  transition={{ duration: 0.25, ease: "easeInOut" }}
+                  className="mc-grid-wrapper"
+                  style={{ overflow: "hidden" }}
+                >
+                  <div className="mc-grid">
+                    {levelCourses.map((course, idx) => (
+                      <motion.div
+                        key={course._id}
+                        variants={cardVariants}
+                        layout
+                        className="mc-course-card"
+                      >
+                  <div className="mc-card-top">
+                    <span
+                      className={`mc-semester-badge semester-${course.semester}`}
                     >
-                      <div className="mc-grid">
-                        {levelCourses.map((course, idx) => (
-                          <motion.div
-                            key={course._id}
-                            variants={cardVariants}
-                            layout
-                            className="mc-course-card"
-                          >
-                      <div className="mc-card-top">
-                        <span
-                          className={`mc-semester-badge semester-${course.semester}`}
-                        >
-                          Sem {course.semester}
+                      Sem {course.semester}
+                    </span>
+                    <div className="mc-card-type-icon">
+                      {course.pdfUrl ? (
+                        <FileText size={14} />
+                      ) : (
+                        <ExternalLink size={14} />
+                      )}
+                    </div>
+                  </div>
+
+                  <div className="mc-card-body">
+                    <div className={`mc-card-icon level-${level}`}>
+                      <BookOpen size={22} />
+                    </div>
+                    <h3 title={course.title}>{course.title}</h3>
+                    <div className="mc-card-meta">
+                      <span className="mc-card-creator">
+                        <Users size={12} />
+                        {course.creatorInfo?.fullName || "Unknown"}
+                      </span>
+                      {course.createdAt && (
+                        <span className="mc-card-date">
+                          <Clock size={12} />
+                          {new Date(course.createdAt).toLocaleDateString()}
                         </span>
-                        <div className="mc-card-type-icon">
-                          {course.pdfUrl ? (
-                            <FileText size={14} />
-                          ) : (
-                            <ExternalLink size={14} />
-                          )}
-                        </div>
-                      </div>
+                      )}
+                    </div>
+                  </div>
 
-                      <div className="mc-card-body">
-                        <div className={`mc-card-icon level-${level}`}>
-                          <BookOpen size={22} />
-                        </div>
-                        <h3 title={course.title}>{course.title}</h3>
-                        <div className="mc-card-meta">
-                          <span className="mc-card-creator">
-                            <Users size={12} />
-                            {course.creatorInfo?.fullName || "Unknown"}
-                          </span>
-                          {course.createdAt && (
-                            <span className="mc-card-date">
-                              <Clock size={12} />
-                              {new Date(course.createdAt).toLocaleDateString()}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-
-                      <div className="mc-card-actions">
-                        {course.url && (
-                          <a
-                            href={course.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="mc-action-btn drive"
-                            title="Open Drive link"
-                          >
-                            <ExternalLink size={15} />
-                            <span>Drive</span>
-                          </a>
-                        )}
-                        {course.pdfUrl && (
-                          <a
-                            href={course.pdfUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="mc-action-btn pdf"
-                            title="View PDF"
-                          >
-                            <FileText size={15} />
-                            <span>PDF</span>
-                          </a>
-                        )}
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                  <div className="mc-card-actions">
+                    {course.url && (
+                      <a
+                        href={course.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mc-action-btn drive"
+                        title="Open Drive link"
+                      >
+                        <ExternalLink size={15} />
+                        <span>Drive</span>
+                      </a>
+                    )}
+                    {course.pdfUrl && (
+                      <a
+                        href={course.pdfUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="mc-action-btn pdf"
+                        title="View PDF"
+                      >
+                        <FileText size={15} />
+                        <span>PDF</span>
+                      </a>
+                    )}
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+                </motion.div>
             </div>
             );
           })}

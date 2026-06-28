@@ -586,11 +586,28 @@ export const deleteUser = async (req, res) => {
 
 export const getAllStaffUsers = async (req, res) => {
   try {
-    const users = await User.find({
-      role: { "$in": ["admin", "dieteticien"] }
-    }).select("-password");
+    const page = Math.max(1, parseInt(req.query.page) || 1);
+    const limit = Math.min(50, Math.max(1, parseInt(req.query.limit) || 20));
+    const skip = (page - 1) * limit;
 
-    res.status(200).json(users);
+    const [users, total] = await Promise.all([
+      User.find({ role: { $in: ["admin", "dieteticien"] } })
+        .select("-password")
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean(),
+      User.countDocuments({ role: { $in: ["admin", "dieteticien"] } })
+    ]);
+
+    res.status(200).json({
+      success: true,
+      count: users.length,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit),
+      data: users
+    });
   } catch (error) {
     res.status(500).json({ success: false, message: "Error fetching staff users" });
   }
@@ -598,23 +615,47 @@ export const getAllStaffUsers = async (req, res) => {
 
 export const getAllClients = async (req, res) => {
   try {
-    const users = await User.find({ role: { "$in": ["client", "student"] } }).select("-password").lean();
+    const page = Math.max(1, parseInt(req.query.page) || 1);
+    const limit = Math.min(50, Math.max(1, parseInt(req.query.limit) || 20));
+    const skip = (page - 1) * limit;
 
-    const enriched = await Promise.all(users.map(async (user) => {
-      let profile = null;
-      if (user.role === "client") {
-        profile = await Client.findOne({ user: user._id }).lean();
-      } else if (user.role === "student") {
-        profile = await Student.findOne({ user: user._id }).lean();
-      }
-      return {
-        ...user,
-        clientProfile: user.role === "client" ? profile : null,
-        studentProfile: user.role === "student" ? profile : null
-      };
+    const [users, total] = await Promise.all([
+      User.find({ role: { $in: ["client", "student"] } })
+        .select("-password")
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .lean(),
+      User.countDocuments({ role: { $in: ["client", "student"] } })
+    ]);
+
+    const clientUserIds = users.filter(u => u.role === "client").map(u => u._id);
+    const studentUserIds = users.filter(u => u.role === "student").map(u => u._id);
+
+    const [clients, students] = await Promise.all([
+      clientUserIds.length ? Client.find({ user: { $in: clientUserIds } }).lean() : [],
+      studentUserIds.length ? Student.find({ user: { $in: studentUserIds } }).lean() : []
+    ]);
+
+    const clientMap = {};
+    for (const c of clients) clientMap[c.user.toString()] = c;
+    const studentMap = {};
+    for (const s of students) studentMap[s.user.toString()] = s;
+
+    const enriched = users.map(user => ({
+      ...user,
+      clientProfile: user.role === "client" ? clientMap[user._id.toString()] || null : null,
+      studentProfile: user.role === "student" ? studentMap[user._id.toString()] || null : null
     }));
 
-    res.status(200).json(enriched);
+    res.status(200).json({
+      success: true,
+      count: enriched.length,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit),
+      data: enriched
+    });
   } catch (error) {
     res.status(500).json({ success: false, message: "Error fetching clients" });
   }

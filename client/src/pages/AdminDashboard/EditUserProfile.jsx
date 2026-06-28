@@ -2,9 +2,11 @@ import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { updateUser } from "../../api/userApi";
 import { useAuth } from "../../context/AuthContext";
+import { useSafeTimeout } from "../../hooks/useSafeTimeout";
 import "./EditUserProfile.css";
 
 const EditUserProfile = () => {
+  const { setTimeoutSafe } = useSafeTimeout();
   const navigate = useNavigate();
   const { user, updateUser: updateAuthUser } = useAuth();
   const [loading, setLoading] = useState(false);
@@ -54,7 +56,7 @@ const EditUserProfile = () => {
 
   const showNotification = (message, type = "success") => {
     setNotification({ message, type });
-    setTimeout(() => setNotification(null), 3000);
+    setTimeoutSafe(() => setNotification(null), 3000);
   };
 
   const loadUserData = (userData) => {

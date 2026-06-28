@@ -3,9 +3,11 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { getBlogById, addComment, deleteComment, likeBlog, unlikeBlog } from '../api/blogApi';
 import { useAuth } from '../context/AuthContext';
 import { Utensils, FileText, Users, File, TriangleAlert, MessageCircle } from 'lucide-react';
+import { useSafeTimeout } from '../hooks/useSafeTimeout';
 import './BlogDetailsPage.css';
 
 function BlogDetailsPage() {
+  const { setTimeoutSafe } = useSafeTimeout();
   const { id } = useParams();
   const navigate = useNavigate();
   const { user: currentUser } = useAuth();
@@ -111,7 +113,7 @@ function BlogDetailsPage() {
     setNotificationMessage(message);
     setNotificationType(type);
     setShowNotification(true);
-    setTimeout(() => {
+    setTimeoutSafe(() => {
       setShowNotification(false);
     }, 3000);
   };

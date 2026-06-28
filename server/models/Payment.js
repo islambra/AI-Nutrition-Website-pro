@@ -55,5 +55,10 @@ const paymentSchema = new mongoose.Schema({
   timestamps: true
 });
 
+paymentSchema.index({ user: 1, createdAt: -1 });
+paymentSchema.index({ dieteticien: 1, status: 1 });
+paymentSchema.index({ status: 1 });
+paymentSchema.index({ plan: 1, status: 1 });
+
 const Payment = mongoose.model("Payment", paymentSchema);
 export default Payment;

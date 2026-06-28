@@ -3,9 +3,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { getAllUsers, deleteUser } from "../../api/userApi";
 import { AlertTriangle, X } from "lucide-react";
+import { useSafeTimeout } from "../../hooks/useSafeTimeout";
 import "./AllUsers.css";
 
 const AllUsers = () => {
+  const { setTimeoutSafe } = useSafeTimeout();
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
@@ -25,7 +27,7 @@ const AllUsers = () => {
 
   const showNotification = (message, type = "success") => {
     setNotification({ message, type });
-    setTimeout(() => setNotification(null), 3000);
+    setTimeoutSafe(() => setNotification(null), 3000);
   };
 
   const fetchUsers = async () => {

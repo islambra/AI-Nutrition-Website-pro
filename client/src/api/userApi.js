@@ -135,12 +135,17 @@ export const getCurrentUserFromStorage = () => {
 };
 
 // Get current user from API
-export const getCurrentUser = async () => {
+export const getCurrentUser = async (options = {}) => {
   try {
-    const response = await axiosInstance.get("/user/me");
+    const response = await axiosInstance.get("/user/me", {
+      signal: options.signal || undefined
+    });
     localStorage.setItem("user", JSON.stringify(response.data));
     return { success: true, user: response.data };
   } catch (error) {
+    if (error.name === 'CanceledError' || error.code === 'ERR_CANCELED') {
+      return { success: false, error: 'Request cancelled' };
+    }
     return {
       success: false,
       error: error.response?.data?.message || 'Failed to fetch user data'

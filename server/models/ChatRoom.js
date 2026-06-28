@@ -15,5 +15,7 @@ const chatRoomSchema = new mongoose.Schema({
   }
 }, { timestamps: true });
 
+chatRoomSchema.index({ "participants.user": 1 });
+
 const ChatRoom = mongoose.model("ChatRoom", chatRoomSchema);
 export default ChatRoom;

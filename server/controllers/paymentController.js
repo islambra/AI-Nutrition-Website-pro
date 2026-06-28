@@ -101,88 +101,95 @@ export const getPendingPayments = async (req, res) => {
 
 // Approve a pending payment and activate the service
 export const approvePayment = async (req, res) => {
+  const mongoSession = await mongoose.startSession();
+  mongoSession.startTransaction();
   try {
     const { id } = req.params;
-    const payment = await Payment.findById(id);
+    const payment = await Payment.findById(id).session(mongoSession);
 
     if (!payment) {
+      await mongoSession.abortTransaction();
       return res.status(404).json({ success: false, message: "Payment not found" });
     }
 
     if (payment.dieteticien.toString() !== req.user.id) {
+      await mongoSession.abortTransaction();
       return res.status(403).json({ success: false, message: "Not authorized" });
     }
 
     if (payment.status !== "pending") {
+      await mongoSession.abortTransaction();
       return res.status(400).json({ success: false, message: `Payment already ${payment.status}` });
     }
 
     payment.status = "approved";
-    await payment.save();
+    await payment.save({ session: mongoSession });
 
-    // Activate service
+    // Activate service (all within the same transaction)
     if (payment.plan) {
-      const plan = await Plan.findById(payment.plan);
+      const plan = await Plan.findById(payment.plan).session(mongoSession);
       if (plan) {
-        await UserPlan.create({
+        await UserPlan.create([{
           user: payment.user,
           plan: payment.plan,
           payment: payment._id,
           sessionsRemaining: plan.consultationIncluded || 0
-        });
+        }], { session: mongoSession });
 
-        const client = await Client.findOne({ user: payment.user });
+        const client = await Client.findOne({ user: payment.user }).session(mongoSession);
         if (client) {
           client.totalConsultations += plan.consultationIncluded || 0;
-          await client.save();
+          await client.save({ session: mongoSession });
         }
 
         const planCreatorId = plan.createdBy;
         if (planCreatorId && planCreatorId.toString() !== payment.user.toString()) {
           const existingRoom = await ChatRoom.findOne({
             "participants.user": { $all: [payment.user, planCreatorId] }
-          });
+          }).session(mongoSession);
           if (!existingRoom) {
-            await ChatRoom.create({
+            await ChatRoom.create([{
               participants: [
                 { user: payment.user, role: "client" },
                 { user: planCreatorId, role: "dieteticien" }
               ],
               type: "plan",
               plan: payment.plan
-            });
+            }], { session: mongoSession });
           }
         }
       }
     }
 
     if (payment.formation) {
-      const formation = await Formation.findById(payment.formation);
+      const formation = await Formation.findById(payment.formation).session(mongoSession);
       if (formation) {
-        await UserFormation.create({
+        await UserFormation.create([{
           user: payment.user,
           formation: payment.formation,
           payment: payment._id
-        });
+        }], { session: mongoSession });
 
         const formationCreatorId = formation.createdBy;
         if (formationCreatorId && formationCreatorId.toString() !== payment.user.toString()) {
           const existingRoom = await ChatRoom.findOne({
             "participants.user": { $all: [payment.user, formationCreatorId] }
-          });
+          }).session(mongoSession);
           if (!existingRoom) {
-            await ChatRoom.create({
+            await ChatRoom.create([{
               participants: [
                 { user: payment.user, role: req.user.role === "student" ? "student" : "client" },
                 { user: formationCreatorId, role: "dieteticien" }
               ],
               type: "formation",
               formation: payment.formation
-            });
+            }], { session: mongoSession });
           }
         }
       }
     }
+
+    await mongoSession.commitTransaction();
 
     if (payment.proofImageFileId) {
       try { await imagekit.deleteFile(payment.proofImageFileId); } catch (_) {}
@@ -190,7 +197,10 @@ export const approvePayment = async (req, res) => {
 
     res.status(200).json({ success: true, message: "Payment approved and service activated" });
   } catch (error) {
+    await mongoSession.abortTransaction();
     res.status(500).json({ success: false, message: "Error approving payment" });
+  } finally {
+    mongoSession.endSession();
   }
 };
 

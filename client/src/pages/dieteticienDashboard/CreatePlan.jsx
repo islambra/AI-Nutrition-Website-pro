@@ -7,9 +7,11 @@ import {
   getPlanCategories,
   getFollowUpOptions,
 } from "../../api/planApi";
+import { useSafeTimeout } from "../../hooks/useSafeTimeout";
 import "./CreatePlan.css";
 
 const CreatePlan = () => {
+  const { setTimeoutSafe } = useSafeTimeout();
   const navigate = useNavigate();
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
@@ -333,7 +335,7 @@ const CreatePlan = () => {
 
       
       setSuccess("Plan created successfully! Redirecting...");
-      setTimeout(() => {
+      setTimeoutSafe(() => {
         navigate("/dieteticien/MyPlans");
       }, 2000);
     } catch (err) {

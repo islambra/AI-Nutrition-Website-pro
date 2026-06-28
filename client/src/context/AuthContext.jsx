@@ -1,5 +1,5 @@
 // contexts/AuthContext.jsx
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useMemo } from "react";
 import {
   loginUser as apiLoginUser,
   getCurrentUser,
@@ -22,6 +22,8 @@ export const AuthProvider = ({ children }) => {
   const [authError, setAuthError] = useState(null);
 
   useEffect(() => {
+    let cancelled = false;
+
     const fetchUser = async () => {
       const token = localStorage.getItem("token");
 
@@ -34,12 +36,14 @@ export const AuthProvider = ({ children }) => {
       try {
         // Try to get user from localStorage first for faster loading
         const storedUser = getCurrentUserFromStorage();
-        if (storedUser) {
+        if (storedUser && !cancelled) {
           setUser(storedUser);
         }
 
         // Then verify with API
         const result = await getCurrentUser();
+
+        if (cancelled) return;
 
         if (result.success && result.user) {
           setUser(result.user);
@@ -58,6 +62,7 @@ export const AuthProvider = ({ children }) => {
           }
         }
       } catch (error) {
+        if (cancelled) return;
         console.error("Failed to fetch user data:", error);
         if (error.response?.status === 401) {
           logoutUser();
@@ -68,11 +73,15 @@ export const AuthProvider = ({ children }) => {
           setAuthError(null);
         }
       } finally {
-        setLoading(false);
+        if (!cancelled) {
+          setLoading(false);
+        }
       }
     };
 
     fetchUser();
+
+    return () => { cancelled = true; };
   }, []);
 
   // Login function
@@ -130,27 +139,15 @@ export const AuthProvider = ({ children }) => {
     return userRole === roles;
   };
 
-  const checkIsAdmin = () => isAdmin(user);
-  const checkIsDieteticien = () => isDieteticien(user);
-  const checkIsClient = () => isClient(user);
-  const checkIsStudent = () => isStudent(user);
-  const checkIsStaff = () => isStaff(user);
+  // Stable booleans derived from user state — prevents infinite useEffect loops in consumers
+  const isAdminValue = !!user && isAdmin(user);
+  const isDieteticienValue = !!user && isDieteticien(user);
+  const isClientValue = !!user && isClient(user);
+  const isStudentValue = !!user && isStudent(user);
+  const isStaffValue = !!user && isStaff(user);
+  const userType = user?.role || null;
 
-  // Backward compatibility
-  const checkIsNutritionist = checkIsDieteticien;
-  const isPatient = checkIsClient;
-
-  // Get profiles
-  const clientProfile = () => getClientProfile(user);
-  const studentProfile = () => getStudentProfile(user);
-
-  // Get user type for display
-  const getUserType = () => {
-    if (!user) return null;
-    return user.role || "client";
-  };
-
-  const value = {
+  const value = useMemo(() => ({
     user,
     setUser,
     login,
@@ -160,19 +157,15 @@ export const AuthProvider = ({ children }) => {
     updateUser,
     isAuthenticated: !!user,
     hasRole,
-    isAdmin: checkIsAdmin,
-    isDieteticien: checkIsDieteticien,
-    isClient: checkIsClient,
-    isStudent: checkIsStudent,
-    isStaff: checkIsStaff,
-    clientProfile,
-    studentProfile,
-    // Backward compatibility
-    isNutritionist: checkIsNutritionist,
-    isPatient,
-    patientProfile: clientProfile,
-    userType: getUserType(),
-  };
+    isAdmin: isAdminValue,
+    isDieteticien: isDieteticienValue,
+    isClient: isClientValue,
+    isStudent: isStudentValue,
+    isStaff: isStaffValue,
+    isNutritionist: isDieteticienValue,
+    isPatient: isClientValue,
+    userType,
+  }), [user, loading, authError, isAdminValue, isDieteticienValue, isClientValue, isStudentValue, isStaffValue, userType]);
 
   return (
     <AuthContext.Provider value={value}>

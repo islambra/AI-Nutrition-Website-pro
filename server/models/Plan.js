@@ -156,6 +156,9 @@ const planSchema = new mongoose.Schema(
   }
 );
 
+planSchema.index({ createdBy: 1, createdAt: -1 });
+planSchema.index({ planCategory: 1, price: 1 });
+
 const Plan = mongoose.model("Plan", planSchema);
 
 export default Plan;

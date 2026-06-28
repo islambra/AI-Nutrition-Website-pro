@@ -13,5 +13,7 @@ const formationSessionSchema = new mongoose.Schema({
   order: { type: Number, default: 0 }
 }, { timestamps: true });
 
+formationSessionSchema.index({ formation: 1, order: 1 });
+
 const FormationSession = mongoose.model("FormationSession", formationSessionSchema);
 export default FormationSession;

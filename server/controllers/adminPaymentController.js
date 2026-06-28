@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import Payment from '../models/Payment.js';
 import UserPlan from '../models/UserPlan.js';
 import UserFormation from '../models/UserFormation.js';
@@ -90,24 +91,29 @@ export const getPendingCourseSubscriptions = async (req, res) => {
 
 // Approve course subscription
 export const approveCourseSubscription = async (req, res) => {
+  const mongoSession = await mongoose.startSession();
+  mongoSession.startTransaction();
   try {
     const { id } = req.params;
-    const payment = await Payment.findById(id);
+    const payment = await Payment.findById(id).session(mongoSession);
 
     if (!payment) {
+      await mongoSession.abortTransaction();
       return res.status(404).json({ success: false, message: "Payment not found" });
     }
 
     if (!payment.courseSubscription) {
+      await mongoSession.abortTransaction();
       return res.status(400).json({ success: false, message: "Not a course subscription payment" });
     }
 
     if (payment.status !== "pending") {
+      await mongoSession.abortTransaction();
       return res.status(400).json({ success: false, message: `Payment already ${payment.status}` });
     }
 
     payment.status = "approved";
-    await payment.save();
+    await payment.save({ session: mongoSession });
 
     securityLogger.adminAction(req.user._id.toString(), 'APPROVE_COURSE_SUB', id, `User: ${payment.user}`);
 
@@ -115,22 +121,24 @@ export const approveCourseSubscription = async (req, res) => {
     const endDate = new Date(now);
     endDate.setFullYear(endDate.getFullYear() + 1);
 
-    const existing = await CourseSubscription.findOne({ user: payment.user });
+    const existing = await CourseSubscription.findOne({ user: payment.user }).session(mongoSession);
     if (existing) {
       existing.hasAccess = true;
       existing.startDate = now;
       existing.endDate = endDate;
       existing.payment = payment._id;
-      await existing.save();
+      await existing.save({ session: mongoSession });
     } else {
-      await CourseSubscription.create({
+      await CourseSubscription.create([{
         user: payment.user,
         hasAccess: true,
         startDate: now,
         endDate: endDate,
         payment: payment._id
-      });
+      }], { session: mongoSession });
     }
+
+    await mongoSession.commitTransaction();
 
     if (payment.proofImageFileId) {
       try { await imagekit.deleteFile(payment.proofImageFileId); } catch (_) {}
@@ -138,7 +146,10 @@ export const approveCourseSubscription = async (req, res) => {
 
     res.status(200).json({ success: true, message: "Course subscription approved. Student has access for 1 year." });
   } catch (error) {
+    await mongoSession.abortTransaction();
     res.status(500).json({ success: false, message: 'Error approving course subscription' });
+  } finally {
+    mongoSession.endSession();
   }
 };
 
@@ -193,24 +204,29 @@ export const getPendingAiToolSubscriptions = async (req, res) => {
 
 // Approve AI tool subscription
 export const approveAiToolSubscription = async (req, res) => {
+  const mongoSession = await mongoose.startSession();
+  mongoSession.startTransaction();
   try {
     const { id } = req.params;
-    const payment = await Payment.findById(id);
+    const payment = await Payment.findById(id).session(mongoSession);
 
     if (!payment) {
+      await mongoSession.abortTransaction();
       return res.status(404).json({ success: false, message: "Payment not found" });
     }
 
     if (!payment.aiToolSubscription) {
+      await mongoSession.abortTransaction();
       return res.status(400).json({ success: false, message: "Not an AI tool subscription payment" });
     }
 
     if (payment.status !== "pending") {
+      await mongoSession.abortTransaction();
       return res.status(400).json({ success: false, message: `Payment already ${payment.status}` });
     }
 
     payment.status = "approved";
-    await payment.save();
+    await payment.save({ session: mongoSession });
 
     securityLogger.adminAction(req.user._id.toString(), 'APPROVE_AI_TOOL_SUB', id, `User: ${payment.user}`);
 
@@ -218,22 +234,24 @@ export const approveAiToolSubscription = async (req, res) => {
     const endDate = new Date(now);
     endDate.setFullYear(endDate.getFullYear() + 1);
 
-    const existing = await AiToolSubscription.findOne({ user: payment.user });
+    const existing = await AiToolSubscription.findOne({ user: payment.user }).session(mongoSession);
     if (existing) {
       existing.hasAccess = true;
       existing.startDate = now;
       existing.endDate = endDate;
       existing.payment = payment._id;
-      await existing.save();
+      await existing.save({ session: mongoSession });
     } else {
-      await AiToolSubscription.create({
+      await AiToolSubscription.create([{
         user: payment.user,
         hasAccess: true,
         startDate: now,
         endDate: endDate,
         payment: payment._id
-      });
+      }], { session: mongoSession });
     }
+
+    await mongoSession.commitTransaction();
 
     if (payment.proofImageFileId) {
       try { await imagekit.deleteFile(payment.proofImageFileId); } catch (_) {}
@@ -241,7 +259,10 @@ export const approveAiToolSubscription = async (req, res) => {
 
     res.status(200).json({ success: true, message: "AI Tool subscription approved. User has access for 1 year." });
   } catch (error) {
+    await mongoSession.abortTransaction();
     res.status(500).json({ success: false, message: 'Error approving AI tool subscription' });
+  } finally {
+    mongoSession.endSession();
   }
 };
 

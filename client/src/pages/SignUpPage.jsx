@@ -11,9 +11,11 @@ import {
 } from 'lucide-react';
 import { clsx } from 'clsx';
 import { registerUser, registerDieteticien } from "../api/userApi";
+import { useSafeTimeout } from '../hooks/useSafeTimeout';
 import './SignUpPage.css';
 
 function SignUpPage() {
+  const { setTimeoutSafe } = useSafeTimeout();
   const [mode, setMode] = useState("client"); // "client" or "dieteticien"
   const [userType, setUserType] = useState("client"); // "client" or "student" (only in client mode)
   const [loading, setLoading] = useState(false);
@@ -174,12 +176,12 @@ function SignUpPage() {
         const response = await registerUser(payload);
 
         confetti({ particleCount: 200, spread: 100, origin: { y: 0.6 }, colors: ['#34C759', '#000000', '#5856D6'] });
-        setTimeout(() => confetti({ particleCount: 100, spread: 70, origin: { y: 0.6, x: 0.3 }, colors: ['#34C759', '#FF9500'] }), 150);
+        setTimeoutSafe(() => confetti({ particleCount: 100, spread: 70, origin: { y: 0.6, x: 0.3 }, colors: ['#34C759', '#FF9500'] }), 150);
         toast.success('Account created successfully!', {
           description: `Welcome ${response.user?.fullName || values.fullName}!`,
           duration: 5000,
         });
-        setTimeout(() => navigate('/login'), 2000);
+        setTimeoutSafe(() => navigate('/login'), 2000);
       } else {
         const formData = new FormData();
         formData.append('fullName', values.fullName);
@@ -199,7 +201,7 @@ function SignUpPage() {
           description: 'You will receive an email once your account is approved.',
           duration: 6000,
         });
-        setTimeout(() => navigate('/login'), 3000);
+        setTimeoutSafe(() => navigate('/login'), 3000);
       }
     } catch (err) {
       toast.error('Registration failed', {

@@ -25,5 +25,8 @@ const formationSchema = new mongoose.Schema({
   status: { type: String, enum: ["active", "completed", "cancelled"], default: "active" }
 }, { timestamps: true });
 
+formationSchema.index({ status: 1, createdAt: -1 });
+formationSchema.index({ createdBy: 1 });
+
 const Formation = mongoose.model("Formation", formationSchema);
 export default Formation;

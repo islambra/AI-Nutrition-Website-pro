@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { getPendingDieteticiens, approveDieteticien, rejectDieteticien } from '../../api/userApi';
 import { Check, X, Eye, Loader, Clock, Shield, Mail, User, Stethoscope, GraduationCap, FileText } from 'lucide-react';
+import { useSafeTimeout } from '../../hooks/useSafeTimeout';
 import './ManageDieteticiens.css';
 
 const ManageDieteticiens = () => {
+  const { setTimeoutSafe } = useSafeTimeout();
   const [pendingList, setPendingList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(null);
@@ -12,7 +14,7 @@ const ManageDieteticiens = () => {
   const [notification, setNotification] = useState(null);
   const showNotification = (message, type = 'success') => {
     setNotification({ message, type });
-    setTimeout(() => setNotification(null), 3000);
+    setTimeoutSafe(() => setNotification(null), 3000);
   };
 
   const fetchPending = async () => {

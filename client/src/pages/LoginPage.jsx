@@ -9,6 +9,7 @@ import { motion } from 'framer-motion';
 import { clsx } from 'clsx';
 import { Mail, Lock, ArrowRight, ChevronLeft } from 'lucide-react';
 import { useAuth } from "../context/AuthContext";
+import { useSafeTimeout } from "../hooks/useSafeTimeout";
 import "./LoginPage.css";
 
 const loginSchema = z.object({
@@ -20,6 +21,7 @@ function LoginPage() {
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
+  const { setTimeoutSafe } = useSafeTimeout();
 
   const {
     register,
@@ -53,7 +55,7 @@ function LoginPage() {
         });
         
         // Navigate to home page only
-        setTimeout(() => navigate("/"), 1500);
+        setTimeoutSafe(() => navigate("/"), 1500);
       } else {
         throw new Error(result.error || "Login failed");
       }

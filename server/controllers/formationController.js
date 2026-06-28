@@ -128,8 +128,12 @@ export const updateFormation = async (req, res) => {
       formation.imageKitFileId = uploadResponse.fileId;
     }
 
-    const { files, price, sessionsCount, durationWeeks, ...rest } = req.body;
-    Object.assign(formation, rest);
+    const allowedFields = ['title', 'description', 'startDate', 'status'];
+    for (const field of allowedFields) {
+      if (req.body[field] !== undefined) {
+        formation[field] = req.body[field];
+      }
+    }
 
     if (files !== undefined) {
       const parsedFiles = typeof files === "string" ? safeJsonParse(files, []) : files;
@@ -255,7 +259,12 @@ export const updateSession = async (req, res) => {
       return res.status(403).json({ success: false, message: "Not authorized" });
     }
 
-    Object.assign(session, req.body);
+    const allowedFields = ['title', 'description', 'videoUrl', 'order', 'isPreview', 'startTime', 'endTime'];
+    for (const field of allowedFields) {
+      if (req.body[field] !== undefined) {
+        session[field] = req.body[field];
+      }
+    }
     await session.save();
     res.status(200).json({ success: true, data: session });
   } catch (error) {
@@ -284,11 +293,25 @@ export const getMyPurchasedFormations = async (req, res) => {
   try {
     const userFormations = await UserFormation.find({ user: req.user.id })
       .populate("formation")
-      .sort({ purchasedAt: -1 });
+      .sort({ purchasedAt: -1 })
+      .lean();
 
-    const result = await Promise.all(userFormations.map(async (uf) => {
-      const sessions = await FormationSession.find({ formation: uf.formation._id }).sort({ order: 1 });
-      return { ...uf.toObject(), sessions };
+    const formationIds = userFormations.map(uf => uf.formation._id);
+
+    const sessions = await FormationSession.find({ formation: { $in: formationIds } })
+      .sort({ order: 1 })
+      .lean();
+
+    const sessionsByFormation = {};
+    for (const session of sessions) {
+      const fid = session.formation.toString();
+      if (!sessionsByFormation[fid]) sessionsByFormation[fid] = [];
+      sessionsByFormation[fid].push(session);
+    }
+
+    const result = userFormations.map(uf => ({
+      ...uf,
+      sessions: sessionsByFormation[uf.formation._id.toString()] || []
     }));
 
     res.status(200).json({ success: true, data: result });

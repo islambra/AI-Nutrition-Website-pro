@@ -135,23 +135,53 @@ export const updateBlog = async (req, res) => {
 
 export const getAllBlogs = async (req, res) => {
     try {
-        const blogs = await Blog.find()
-            .populate('author', 'fullName email photo')  // ✅ Populates full user object
-            .sort({ createdAt: -1 });
-        
-        const blogsWithStats = await Promise.all(blogs.map(async (blog) => {
-            const likesCount = await Like.countDocuments({ blog: blog._id });
-            const commentsCount = await Comment.countDocuments({ blog: blog._id });
-            return {
-                ...blog.toJSON(),
-                likesCount,
-                commentsCount
-            };
-        }));
-        
+        const page = Math.max(1, parseInt(req.query.page) || 1);
+        const limit = Math.min(50, Math.max(1, parseInt(req.query.limit) || 20));
+        const skip = (page - 1) * limit;
+
+        const [blogs, total] = await Promise.all([
+            Blog.aggregate([
+                { $sort: { createdAt: -1 } },
+                { $skip: skip },
+                { $limit: limit },
+                {
+                    $lookup: {
+                        from: 'likes',
+                        localField: '_id',
+                        foreignField: 'blog',
+                        as: 'likes'
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'comments',
+                        localField: '_id',
+                        foreignField: 'blog',
+                        as: 'comments'
+                    }
+                },
+                {
+                    $addFields: {
+                        likesCount: { $size: '$likes' },
+                        commentsCount: { $size: '$comments' }
+                    }
+                },
+                {
+                    $project: { likes: 0, comments: 0 }
+                }
+            ]),
+            Blog.countDocuments()
+        ]);
+
+        const populatedBlogs = await User.populate(blogs, { path: 'author', select: 'fullName email photo' });
+
         res.status(200).json({
             success: true,
-            data: blogsWithStats
+            count: blogs.length,
+            total,
+            page,
+            totalPages: Math.ceil(total / limit),
+            data: populatedBlogs
         });
     } catch (error) {
         res.status(500).json({ 
@@ -163,24 +193,54 @@ export const getAllBlogs = async (req, res) => {
 
 export const getMyBlogs = async (req, res) => {
     try {
-        const blogs = await Blog.find({ author: req.user.id })
-            .populate('author', 'fullName email photo')
-            .sort({ createdAt: -1 });
-        
-        const blogsWithStats = await Promise.all(blogs.map(async (blog) => {
-            const likesCount = await Like.countDocuments({ blog: blog._id });
-            const commentsCount = await Comment.countDocuments({ blog: blog._id });
-            return {
-                ...blog.toJSON(),
-                likesCount,
-                commentsCount
-            };
-        }));
-        
+        const page = Math.max(1, parseInt(req.query.page) || 1);
+        const limit = Math.min(50, Math.max(1, parseInt(req.query.limit) || 20));
+        const skip = (page - 1) * limit;
+
+        const [blogs, total] = await Promise.all([
+            Blog.aggregate([
+                { $match: { author: new mongoose.Types.ObjectId(req.user.id) } },
+                { $sort: { createdAt: -1 } },
+                { $skip: skip },
+                { $limit: limit },
+                {
+                    $lookup: {
+                        from: 'likes',
+                        localField: '_id',
+                        foreignField: 'blog',
+                        as: 'likes'
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'comments',
+                        localField: '_id',
+                        foreignField: 'blog',
+                        as: 'comments'
+                    }
+                },
+                {
+                    $addFields: {
+                        likesCount: { $size: '$likes' },
+                        commentsCount: { $size: '$comments' }
+                    }
+                },
+                {
+                    $project: { likes: 0, comments: 0 }
+                }
+            ]),
+            Blog.countDocuments({ author: req.user.id })
+        ]);
+
+        const populatedBlogs = await User.populate(blogs, { path: 'author', select: 'fullName email photo' });
+
         res.status(200).json({
             success: true,
-            count: blogsWithStats.length,
-            data: blogsWithStats
+            count: blogs.length,
+            total,
+            page,
+            totalPages: Math.ceil(total / limit),
+            data: populatedBlogs
         });
     } catch (error) {
         res.status(500).json({ 
@@ -193,34 +253,67 @@ export const getMyBlogs = async (req, res) => {
 export const getBlogsByAuthor = async (req, res) => {
     try {
         const { authorId } = req.params;
-        const user = await User.findById(authorId);
-        
+
+        const [user, page, limit] = await Promise.all([
+            User.findById(authorId).select('fullName'),
+            Promise.resolve(Math.max(1, parseInt(req.query.page) || 1)),
+            Promise.resolve(Math.min(50, Math.max(1, parseInt(req.query.limit) || 20)))
+        ]);
+
         if (!user) {
             return res.status(404).json({
                 success: false,
                 message: "Author not found"
             });
         }
-        
-        const blogs = await Blog.find({ author: authorId })
-            .populate('author', 'fullName email photo')
-            .sort({ createdAt: -1 });
-        
-        const blogsWithStats = await Promise.all(blogs.map(async (blog) => {
-            const likesCount = await Like.countDocuments({ blog: blog._id });
-            const commentsCount = await Comment.countDocuments({ blog: blog._id });
-            return {
-                ...blog.toJSON(),
-                likesCount,
-                commentsCount
-            };
-        }));
-        
+
+        const skip = (page - 1) * limit;
+
+        const [blogs, total] = await Promise.all([
+            Blog.aggregate([
+                { $match: { author: new mongoose.Types.ObjectId(authorId) } },
+                { $sort: { createdAt: -1 } },
+                { $skip: skip },
+                { $limit: limit },
+                {
+                    $lookup: {
+                        from: 'likes',
+                        localField: '_id',
+                        foreignField: 'blog',
+                        as: 'likes'
+                    }
+                },
+                {
+                    $lookup: {
+                        from: 'comments',
+                        localField: '_id',
+                        foreignField: 'blog',
+                        as: 'comments'
+                    }
+                },
+                {
+                    $addFields: {
+                        likesCount: { $size: '$likes' },
+                        commentsCount: { $size: '$comments' }
+                    }
+                },
+                {
+                    $project: { likes: 0, comments: 0 }
+                }
+            ]),
+            Blog.countDocuments({ author: authorId })
+        ]);
+
+        const populatedBlogs = await User.populate(blogs, { path: 'author', select: 'fullName email photo' });
+
         res.status(200).json({
             success: true,
             author: user.fullName,
-            count: blogsWithStats.length,
-            data: blogsWithStats
+            count: blogs.length,
+            total,
+            page,
+            totalPages: Math.ceil(total / limit),
+            data: populatedBlogs
         });
     } catch (error) {
         res.status(500).json({ 

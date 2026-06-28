@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { getPlatformPaymentInfo, initiateCourseSubscription } from '../api/courseApi';
 import { useAuth } from '../context/AuthContext';
+import { useSafeTimeout } from '../hooks/useSafeTimeout';
 import toast from 'react-hot-toast';
 import PageTransition from '../components/PageTransition';
 import './CheckoutPage.css';
@@ -15,6 +16,7 @@ function CourseSubscriptionCheckout() {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, isAuthenticated, authLoading } = useAuth();
+  const { setTimeoutSafe } = useSafeTimeout();
 
   const [paymentMethod, setPaymentMethod] = useState('ccp');
   const [proofFile, setProofFile] = useState(null);
@@ -71,7 +73,7 @@ function CourseSubscriptionCheckout() {
       if (res.success) {
         setSubmitted(true);
         toast.success('Payment proof submitted! Waiting for admin approval.');
-        setTimeout(() => navigate('/student/my-requests'), 3000);
+        setTimeoutSafe(() => navigate('/student/my-requests'), 3000);
       }
     } catch (err) {
       toast.error(err.response?.data?.message || 'Submission failed');

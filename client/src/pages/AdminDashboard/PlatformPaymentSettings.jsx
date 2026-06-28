@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
 import { getPlatformPaymentSettings, updatePlatformPaymentSettings } from "../../api/paymentApi";
+import { useSafeTimeout } from "../../hooks/useSafeTimeout";
 import "./PlatformPaymentSettings.css";
 
 const PlatformPaymentSettings = () => {
+  const { setTimeoutSafe } = useSafeTimeout();
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
   const [notification, setNotification] = useState(null);
@@ -14,7 +16,7 @@ const PlatformPaymentSettings = () => {
 
   const showNotification = (message, type = "success") => {
     setNotification({ message, type });
-    setTimeout(() => setNotification(null), 3000);
+    setTimeoutSafe(() => setNotification(null), 3000);
   };
 
   useEffect(() => {

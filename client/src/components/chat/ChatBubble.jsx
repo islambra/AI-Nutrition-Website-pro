@@ -9,7 +9,7 @@ export default function ChatBubble() {
   const { rooms } = useSocket();
   const { chatOpen, toggleChat } = useChat();
 
-  if (!isAuthenticated || isAdmin()) return null;
+  if (!isAuthenticated || isAdmin) return null;
 
   const totalUnread = rooms?.filter(r => {
     const lastMsg = r.lastMessage;

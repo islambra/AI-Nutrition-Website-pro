@@ -9,20 +9,26 @@ export const bookConsultation = async (req, res) => {
     const { userPlanId, requestedDateTime, note } = req.body;
     const userId = req.user.id;
 
-    const userPlan = await UserPlan.findById(userPlanId).populate("plan");
-    if (!userPlan) return res.status(404).json({ success: false, message: "User plan not found" });
-    if (userPlan.user.toString() !== userId) return res.status(403).json({ success: false, message: "Not authorized" });
-    if (userPlan.sessionsRemaining <= 0) return res.status(400).json({ success: false, message: "No sessions remaining" });
-
-    const plan = await Plan.findById(userPlan.plan);
-    if (!plan || !plan.createdBy) return res.status(400).json({ success: false, message: "Plan has no assigned nutritionist" });
-
     if (new Date(requestedDateTime) <= new Date()) {
       return res.status(400).json({ success: false, message: "Date must be in the future" });
     }
 
-    userPlan.sessionsRemaining -= 1;
-    await userPlan.save();
+    // Atomic decrement — prevents race condition where 2 users book the last session
+    const userPlan = await UserPlan.findOneAndUpdate(
+      { _id: userPlanId, user: userId, sessionsRemaining: { $gt: 0 } },
+      { $inc: { sessionsRemaining: -1 } },
+      { new: true }
+    ).populate("plan");
+
+    if (!userPlan) {
+      const exists = await UserPlan.findById(userPlanId);
+      if (!exists) return res.status(404).json({ success: false, message: "User plan not found" });
+      if (exists.user.toString() !== userId) return res.status(403).json({ success: false, message: "Not authorized" });
+      return res.status(400).json({ success: false, message: "No sessions remaining" });
+    }
+
+    const plan = userPlan.plan;
+    if (!plan || !plan.createdBy) return res.status(400).json({ success: false, message: "Plan has no assigned nutritionist" });
 
     const consultation = await Consultation.create({
       user: userId,
@@ -125,11 +131,10 @@ export const rejectConsultation = async (req, res) => {
     );
     if (!consultation) return res.status(404).json({ success: false, message: "Request not found or already processed" });
 
-    const userPlan = await UserPlan.findById(consultation.userPlan);
-    if (userPlan) {
-      userPlan.sessionsRemaining += 1;
-      await userPlan.save();
-    }
+    await UserPlan.findOneAndUpdate(
+      { _id: consultation.userPlan },
+      { $inc: { sessionsRemaining: 1 } }
+    );
 
     res.status(200).json({ success: true, data: consultation });
   } catch (error) {
@@ -157,19 +162,17 @@ export const completeConsultation = async (req, res) => {
 export const cancelConsultation = async (req, res) => {
   try {
     const { id } = req.params;
-    const consultation = await Consultation.findById(id);
-    if (!consultation) return res.status(404).json({ success: false, message: "Consultation not found" });
-    if (consultation.user.toString() !== req.user.id) return res.status(403).json({ success: false, message: "Not authorized" });
-    if (consultation.status !== "pending") return res.status(400).json({ success: false, message: "Only pending bookings can be cancelled" });
+    const consultation = await Consultation.findOneAndUpdate(
+      { _id: id, user: req.user.id, status: "pending" },
+      { status: "cancelled" },
+      { new: true }
+    );
+    if (!consultation) return res.status(404).json({ success: false, message: "Consultation not found or already processed" });
 
-    consultation.status = "cancelled";
-    await consultation.save();
-
-    const userPlan = await UserPlan.findById(consultation.userPlan);
-    if (userPlan) {
-      userPlan.sessionsRemaining += 1;
-      await userPlan.save();
-    }
+    await UserPlan.findOneAndUpdate(
+      { _id: consultation.userPlan },
+      { $inc: { sessionsRemaining: 1 } }
+    );
 
     res.status(200).json({ success: true, data: consultation });
   } catch (error) {

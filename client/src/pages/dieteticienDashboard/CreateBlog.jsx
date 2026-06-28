@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { createBlog } from "../../api/blogApi";
+import { useSafeTimeout } from "../../hooks/useSafeTimeout";
 import "./CreateBlog.css";
 
 // SVG Icon Components - Modern Minimalist
@@ -23,6 +24,7 @@ const Icons = {
 };
 
 const CreateBlog = () => {
+  const { setTimeoutSafe } = useSafeTimeout();
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
   const formRef = useRef(null);
@@ -213,7 +215,7 @@ const CreateBlog = () => {
       await createBlog(blogData);
       setSuccess("Blog created successfully!");
       scrollToTop();
-      setTimeout(() => {
+      setTimeoutSafe(() => {
         resetForm();
         setSuccess("");
         navigate("/dieteticien/MyBlogs");

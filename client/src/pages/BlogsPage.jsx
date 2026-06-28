@@ -5,6 +5,7 @@ import {
   Search, Heart, MessageCircle, Share2, Clock, User, Leaf, Sparkles, Zap, ArrowUpRight
 } from 'lucide-react';
 import { getAllBlogs, likeBlog, unlikeBlog, getLikeStatus } from '../api/blogApi';
+import { useSafeTimeout } from '../hooks/useSafeTimeout';
 import './BlogsPage.css';
 
 // Helper functions for author data
@@ -41,6 +42,7 @@ const BlogsOrganicFloaters = memo(() => (
 ));
 
 function BlogsPage() {
+  const { setTimeoutSafe } = useSafeTimeout();
   const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -122,7 +124,7 @@ function BlogsPage() {
     try {
       await navigator.clipboard.writeText(`${window.location.origin}/blog/${blog._id}`);
       setShowNotification(true);
-      setTimeout(() => setShowNotification(false), 3000);
+      setTimeoutSafe(() => setShowNotification(false), 3000);
     } catch (err) {
       console.error('Error copying to clipboard:', err);
     }

@@ -10,9 +10,11 @@ import { getPlanById } from '../api/planApi';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 import PageTransition from '../components/PageTransition';
+import { useSafeTimeout } from '../hooks/useSafeTimeout';
 import './CheckoutPage.css';
 
 function PlanCheckoutPage() {
+  const { setTimeoutSafe } = useSafeTimeout();
   const { planId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
@@ -94,7 +96,7 @@ function PlanCheckoutPage() {
       if (res.success) {
         setSubmitted(true);
         toast.success('Payment proof submitted! Waiting for confirmation.');
-        setTimeout(() => navigate('/client/my-requests'), 3000);
+        setTimeoutSafe(() => navigate('/client/my-requests'), 3000);
       }
     } catch (err) {
       toast.error(err.response?.data?.message || 'Submission failed');

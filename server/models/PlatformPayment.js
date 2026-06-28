@@ -12,9 +12,8 @@ const platformPaymentSchema = new mongoose.Schema({
     trim: true,
   },
   baridiMob: {
-    type: String,
+    type: Number,
     default: null,
-    trim: true,
   },
 }, { timestamps: true });
 

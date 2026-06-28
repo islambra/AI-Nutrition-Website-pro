@@ -1,9 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createStaffUser } from "../../api/userApi";
+import { useSafeTimeout } from "../../hooks/useSafeTimeout";
 import "./AddAdminNutritionist.css";
 
 const AddUser = () => {
+  const { setTimeoutSafe } = useSafeTimeout();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [notification, setNotification] = useState(null);
@@ -17,7 +19,7 @@ const AddUser = () => {
 
   const showNotification = (message, type = "success") => {
     setNotification({ message, type });
-    setTimeout(() => setNotification(null), 3000);
+    setTimeoutSafe(() => setNotification(null), 3000);
   };
 
   const handleChange = (e) => {
@@ -60,7 +62,7 @@ const AddUser = () => {
         confirmPassword: "",
       });
 
-      setTimeout(() => {
+      setTimeoutSafe(() => {
         navigate("/admin/all-users");
       }, 1500);
 

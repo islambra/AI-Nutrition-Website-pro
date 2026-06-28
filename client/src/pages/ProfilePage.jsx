@@ -13,12 +13,14 @@ import { useAuth } from '../context/AuthContext';
 import { updateUser as updateUserService } from '../api/userApi';
 import toast from 'react-hot-toast';
 import PageTransition from '../components/PageTransition';
+import { useSafeTimeout } from '../hooks/useSafeTimeout';
 import ScrollReveal from '../components/ScrollReveal';
 import './ProfilePage.css';
 
 function ProfilePage() {
   const { user, updateUser } = useAuth();
   const fileInputRef = useRef(null);
+  const { setTimeoutSafe } = useSafeTimeout();
   const [isEditing, setIsEditing] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
@@ -195,7 +197,7 @@ function ProfilePage() {
       toast.success('Profile updated successfully');
       
       if (result.healthMetrics) {
-        setTimeout(() => {
+        setTimeoutSafe(() => {
           toast.success('Health metrics recalculated', { duration: 3000 });
         }, 1000);
       }

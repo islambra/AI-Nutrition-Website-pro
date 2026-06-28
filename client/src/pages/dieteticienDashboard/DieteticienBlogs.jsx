@@ -6,9 +6,11 @@ import {
   Edit, Trash2, Image, X, AlertTriangle, CheckCircle, XCircle,
   FileText, Zap, Users, Sparkles, Clock, User 
 } from 'lucide-react';
+import { useSafeTimeout } from '../../hooks/useSafeTimeout';
 import './DieteticienBlogs.css';
 
 const DieteticienBlogs = () => {
+  const { setTimeoutSafe } = useSafeTimeout();
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -51,7 +53,7 @@ const DieteticienBlogs = () => {
 
   const showToast = (message, type = 'success') => {
     setToast({ show: true, message, type });
-    setTimeout(() => setToast({ show: false, message: '', type: '' }), 4000);
+    setTimeoutSafe(() => setToast({ show: false, message: '', type: '' }), 4000);
   };
 
   // Open edit modal

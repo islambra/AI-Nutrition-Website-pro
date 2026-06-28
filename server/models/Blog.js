@@ -10,5 +10,7 @@ const blogSchema = new mongoose.Schema({
   tags: [{ type: String, trim: true }]
 }, { timestamps: true });
 
+blogSchema.index({ author: 1, createdAt: -1 });
+
 const Blog = mongoose.model("Blog", blogSchema);
 export default Blog;
