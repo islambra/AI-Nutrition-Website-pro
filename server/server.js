@@ -40,7 +40,7 @@ app.use(helmet({
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
       imgSrc: ["'self'", "data:", "blob:", "https://ik.imagekit.io", "https://*.cloudinary.com"],
       fontSrc: ["'self'", "https://fonts.gstatic.com"],
-      connectSrc: ["'self'", "https://ik.imagekit.io", "https://api.zoom.us", "wss://*.localhost:*"],
+      connectSrc: ["'self'", "https://ik.imagekit.io", "https://api.zoom.us", "wss://*.localhost:*", "https://bite-wise-ten.vercel.app", "wss://bitewise-m3oi.onrender.com"],
       frameSrc: ["'self'", "https://zoom.us"],
       objectSrc: ["'none'"]
     }
@@ -49,7 +49,7 @@ app.use(helmet({
 
 const allowedOrigins = process.env.CLIENT_URL
   ? process.env.CLIENT_URL.split(',').map(o => o.trim())
-  : ["http://localhost:5173", "http://localhost:4173", "http://127.0.0.1:5173"];
+  : ["http://localhost:5173", "http://localhost:4173", "http://127.0.0.1:5173", "https://bite-wise-ten.vercel.app"];
 
 app.use(cors({
   origin: allowedOrigins,
