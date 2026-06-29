@@ -51,7 +51,9 @@ export const approveDieteticien = async (req, res) => {
     });
 
     securityLogger.adminAction(req.user._id.toString(), 'APPROVE_DIETETICIEN', id, pending.email);
-    await sendApprovalEmail(pending.email, pending.fullName);
+    sendApprovalEmail(pending.email, pending.fullName).catch(err =>
+      console.error("Background approval email failed:", err)
+    );
 
     await PendingDieteticien.findByIdAndDelete(id);
 
@@ -79,7 +81,9 @@ export const rejectDieteticien = async (req, res) => {
       try { await imagekit.deleteFile(pending.diplomaFileId); } catch (_) {}
     }
 
-    await sendRejectionEmail(pending.email, pending.fullName);
+    sendRejectionEmail(pending.email, pending.fullName).catch(err =>
+      console.error("Background rejection email failed:", err)
+    );
 
     await PendingDieteticien.findByIdAndDelete(id);
 
