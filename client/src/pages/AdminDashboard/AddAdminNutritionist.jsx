@@ -2,11 +2,13 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { createStaffUser } from "../../api/userApi";
 import { useSafeTimeout } from "../../hooks/useSafeTimeout";
+import { useTranslation } from "react-i18next";
 import "./AddAdminNutritionist.css";
 
 const AddUser = () => {
   const { setTimeoutSafe } = useSafeTimeout();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [notification, setNotification] = useState(null);
   const [formData, setFormData] = useState({
@@ -30,12 +32,12 @@ const AddUser = () => {
 
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.fullName.trim()) newErrors.fullName = "Full name is required";
-    if (!formData.email.trim()) newErrors.email = "Email is required";
-    else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = "Please enter a valid email";
-    if (!formData.password) newErrors.password = "Password is required";
-    else if (formData.password.length < 8) newErrors.password = "Password must be at least 8 characters";
-    if (formData.password !== formData.confirmPassword) newErrors.confirmPassword = "Passwords do not match";
+    if (!formData.fullName.trim()) newErrors.fullName = t("admin.fullNameRequired");
+    if (!formData.email.trim()) newErrors.email = t("admin.emailRequired");
+    else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = t("admin.validEmail");
+    if (!formData.password) newErrors.password = t("admin.passwordRequired");
+    else if (formData.password.length < 8) newErrors.password = t("admin.passwordMinLength");
+    if (formData.password !== formData.confirmPassword) newErrors.confirmPassword = t("admin.passwordsDoNotMatch");
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -53,7 +55,7 @@ const AddUser = () => {
         role: "admin",
       });
 
-      showNotification("Admin account created successfully!", "success");
+      showNotification(t("admin.adminCreatedSuccess"), "success");
 
       setFormData({
         fullName: "",
@@ -67,7 +69,7 @@ const AddUser = () => {
       }, 1500);
 
     } catch (error) {
-      const errorMessage = error.response?.data?.message || "Failed to create user account";
+      const errorMessage = error.response?.data?.message || t("admin.createUserFailed");
       showNotification(errorMessage, "error");
     } finally {
       setLoading(false);
@@ -109,10 +111,10 @@ const AddUser = () => {
               <path d="M2 17L12 22L22 17" />
               <path d="M2 12L12 17L22 12" />
             </svg>
-            <span>Admin Management</span>
+            <span>{t("admin.adminManagement")}</span>
           </div>
-          <h1>Create Admin Account</h1>
-          <p>Add a new administrator to manage your platform</p>
+          <h1>{t("admin.createAdminAccount")}</h1>
+          <p>{t("admin.addAdminDescription")}</p>
         </div>
 
         <div className="create-user-card">
@@ -126,7 +128,7 @@ const AddUser = () => {
                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                     <circle cx="12" cy="7" r="4" />
                   </svg>
-                  Full Name
+                  {t("admin.fullName")}
                 </label>
                 <input
                   id="fullName"
@@ -134,7 +136,7 @@ const AddUser = () => {
                   name="fullName"
                   value={formData.fullName}
                   onChange={handleChange}
-                  placeholder="e.g. Sarah Johnson"
+                  placeholder={t("admin.fullNamePlaceholder")}
                   className={errors.fullName ? "error" : ""}
                 />
                 {errors.fullName && <span className="field-error">{errors.fullName}</span>}
@@ -146,7 +148,7 @@ const AddUser = () => {
                     <rect x="2" y="4" width="20" height="16" rx="2" />
                     <path d="M22 4L12 13L2 4" />
                   </svg>
-                  Email Address
+                  {t("admin.emailAddress")}
                 </label>
                 <input
                   id="email"
@@ -154,7 +156,7 @@ const AddUser = () => {
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  placeholder="sarah@example.com"
+                  placeholder={t("admin.emailPlaceholder")}
                   className={errors.email ? "error" : ""}
                 />
                 {errors.email && <span className="field-error">{errors.email}</span>}
@@ -167,7 +169,7 @@ const AddUser = () => {
                       <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
                       <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                     </svg>
-                    Password
+                    {t("admin.password")}
                   </label>
                   <input
                     id="password"
@@ -175,7 +177,7 @@ const AddUser = () => {
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
-                    placeholder="Create a secure password"
+                    placeholder={t("admin.passwordPlaceholder")}
                     className={errors.password ? "error" : ""}
                   />
                   {errors.password && <span className="field-error">{errors.password}</span>}
@@ -186,7 +188,7 @@ const AddUser = () => {
                       <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
                       <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                     </svg>
-                    Confirm Password
+                    {t("admin.confirmPassword")}
                   </label>
                   <input
                     id="confirmPassword"
@@ -194,7 +196,7 @@ const AddUser = () => {
                     name="confirmPassword"
                     value={formData.confirmPassword}
                     onChange={handleChange}
-                    placeholder="Confirm your password"
+                    placeholder={t("admin.confirmPasswordPlaceholder")}
                     className={errors.confirmPassword ? "error" : ""}
                   />
                   {errors.confirmPassword && <span className="field-error">{errors.confirmPassword}</span>}
@@ -209,24 +211,24 @@ const AddUser = () => {
                   <path d="M2 17L12 22L22 17" />
                   <path d="M2 12L12 17L22 12" />
                 </svg>
-                <span>This account will have full administrator access</span>
+                <span>{t("admin.adminAccessInfo")}</span>
               </div>
               <div className="form-actions">
                 <button type="button" className="btn-cancel" onClick={() => navigate("/admin/all-users")}>
-                  Cancel
+                  {t("common.cancel")}
                 </button>
                 <button type="submit" className="btn-submit" disabled={loading}>
                   {loading ? (
                     <>
                       <div className="spinner"></div>
-                      Creating...
+                      {t("admin.creating")}
                     </>
                   ) : (
                     <>
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <path d="M20 6L9 17L4 12" />
                       </svg>
-                      Create Admin
+                      {t("admin.createAdmin")}
                     </>
                   )}
                 </button>

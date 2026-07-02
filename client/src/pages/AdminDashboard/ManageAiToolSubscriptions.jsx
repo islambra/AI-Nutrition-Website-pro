@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Zap,
@@ -18,6 +19,7 @@ import {
 import "./ManageCourseSubscriptions.css";
 
 const ManageAiToolSubscriptions = () => {
+  const { t } = useTranslation();
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -99,7 +101,7 @@ const ManageAiToolSubscriptions = () => {
         >
           <Zap size={48} />
         </motion.div>
-        <p>Loading pending AI tool subscriptions...</p>
+        <p>{t('admin.loadingPendingAiSubscriptions')}</p>
       </div>
     );
   }
@@ -123,7 +125,7 @@ const ManageAiToolSubscriptions = () => {
               onClick={(e) => e.stopPropagation()}
             >
               <button className="mcs-image-close" onClick={() => setPreviewImage(null)}>×</button>
-              <img src={previewImage} alt="Payment proof" className="mcs-proof-image" />
+              <img src={previewImage} alt={t('admin.paymentProof')} className="mcs-proof-image" />
             </motion.div>
           </motion.div>
         )}
@@ -146,20 +148,20 @@ const ManageAiToolSubscriptions = () => {
               <div className={`mcs-modal-icon ${modalType}`}>
                 {modalType === "approve" ? <CheckCircle size={28} /> : <XCircle size={28} />}
               </div>
-              <h3>{modalType === "approve" ? "Approve AI Tool Subscription" : "Reject AI Tool Subscription"}</h3>
+              <h3>{modalType === "approve" ? t('admin.approveAiToolSubscription') : t('admin.rejectAiToolSubscription')}</h3>
               <p>
                 {modalType === "approve"
-                  ? `Grant 1-year access to ${selectedPayment.user?.fullName || "this user"} for ${selectedPayment.amount?.toLocaleString()} DZD?`
-                  : `Reject the payment of ${selectedPayment.amount?.toLocaleString()} DZD from ${selectedPayment.user?.fullName || "this user"}?`}
+                  ? t('admin.grantAiAccessConfirm', { name: selectedPayment.user?.fullName || t('admin.thisUser'), amount: selectedPayment.amount?.toLocaleString() })
+                  : t('admin.rejectAiPaymentConfirm', { name: selectedPayment.user?.fullName || t('admin.thisUser'), amount: selectedPayment.amount?.toLocaleString() })}
               </p>
               <p className="mcs-modal-note">
                 {modalType === "approve"
-                  ? "The user will be able to access the AI Food Scanner immediately."
-                  : "The user will be notified that their payment was rejected."}
+                  ? t('admin.approveAiSubscriptionNote')
+                  : t('admin.rejectAiSubscriptionNote')}
               </p>
               <div className="mcs-modal-actions">
                 <button className="mcs-btn mcs-btn--ghost" onClick={() => setModalOpen(false)}>
-                  Cancel
+                  {t('common.cancel')}
                 </button>
                 <button
                   className={`mcs-btn mcs-btn--${modalType}`}
@@ -167,10 +169,10 @@ const ManageAiToolSubscriptions = () => {
                   disabled={processing === selectedPayment._id}
                 >
                   {processing === selectedPayment._id
-                    ? "Processing..."
+                    ? t('admin.processing')
                     : modalType === "approve"
-                    ? "Yes, Approve"
-                    : "Yes, Reject"}
+                    ? t('admin.yesApprove')
+                    : t('admin.yesReject')}
                 </button>
               </div>
             </motion.div>
@@ -180,8 +182,8 @@ const ManageAiToolSubscriptions = () => {
 
       <div className="mcs-header">
         <div>
-          <h1>AI Tool Subscriptions</h1>
-          <p className="mcs-subtitle">Manage pending AI Food Scanner subscription payments</p>
+          <h1>{t('admin.aiToolSubscriptions')}</h1>
+          <p className="mcs-subtitle">{t('admin.manageAiSubscriptions')}</p>
         </div>
       </div>
 
@@ -192,7 +194,7 @@ const ManageAiToolSubscriptions = () => {
           </div>
           <div className="mcs-stat-info">
             <h3>{totalPending}</h3>
-            <p>Pending</p>
+            <p>{t('common.pending')}</p>
           </div>
         </div>
         <div className="mcs-stat-card">
@@ -201,7 +203,7 @@ const ManageAiToolSubscriptions = () => {
           </div>
           <div className="mcs-stat-info">
             <h3>{totalAmount.toLocaleString()} DZD</h3>
-            <p>Total Amount</p>
+            <p>{t('admin.totalAmount')}</p>
           </div>
         </div>
         <div className="mcs-stat-card">
@@ -210,7 +212,7 @@ const ManageAiToolSubscriptions = () => {
           </div>
           <div className="mcs-stat-info">
             <h3>{payments.length}</h3>
-            <p>Users</p>
+            <p>{t('admin.users')}</p>
           </div>
         </div>
       </div>
@@ -220,7 +222,7 @@ const ManageAiToolSubscriptions = () => {
           <Search size={15} />
           <input
             type="text"
-            placeholder="Search by name or email..."
+            placeholder={t('admin.searchByNameOrEmail')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -232,11 +234,11 @@ const ManageAiToolSubscriptions = () => {
           <div className="mcs-empty-icon">
             {searchQuery ? <Search size={40} /> : <CheckCircle size={48} />}
           </div>
-          <h3>{searchQuery ? "No results found" : "No pending subscriptions"}</h3>
+          <h3>{searchQuery ? t('common.noResults') : t('admin.noPendingSubscriptions')}</h3>
           <p>
             {searchQuery
-              ? "Try a different name or email"
-              : "All AI tool subscription payments have been processed"}
+              ? t('admin.tryDifferentNameOrEmail')
+              : t('admin.allAiSubscriptionsProcessed')}
           </p>
         </div>
       ) : (
@@ -255,7 +257,7 @@ const ManageAiToolSubscriptions = () => {
                       )}
                     </div>
                     <div className="mcs-user-info">
-                      <span className="mcs-user-name">{payment.user?.fullName || "Unknown"}</span>
+                      <span className="mcs-user-name">{payment.user?.fullName || t('common.unknown')}</span>
                       <span className="mcs-user-email">{payment.user?.email || "—"}</span>
                     </div>
                   </div>
@@ -273,10 +275,10 @@ const ManageAiToolSubscriptions = () => {
                         className="mcs-proof-btn"
                         onClick={() => setPreviewImage(payment.proofImage)}
                       >
-                        <Eye size={14} /> Proof
+                        <Eye size={14} /> {t('admin.proof')}
                       </button>
                     ) : (
-                      <span className="mcs-no-proof">No proof</span>
+                      <span className="mcs-no-proof">{t('admin.noProof')}</span>
                     )}
                     <button
                       className="mcs-action-btn approve"
@@ -284,7 +286,7 @@ const ManageAiToolSubscriptions = () => {
                       disabled={processing === payment._id}
                     >
                       <CheckCircle size={15} />
-                      Approve
+                      {t('admin.approve')}
                     </button>
                     <button
                       className="mcs-action-btn reject"
@@ -292,7 +294,7 @@ const ManageAiToolSubscriptions = () => {
                       disabled={processing === payment._id}
                     >
                       <XCircle size={15} />
-                      Reject
+                      {t('admin.reject')}
                     </button>
                   </div>
                 </div>

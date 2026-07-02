@@ -4,9 +4,11 @@ import { useNavigate } from "react-router-dom";
 import { getAllUsers, deleteUser } from "../../api/userApi";
 import { AlertTriangle, X } from "lucide-react";
 import { useSafeTimeout } from "../../hooks/useSafeTimeout";
+import { useTranslation } from 'react-i18next';
 import "./AllUsers.css";
 
 const AllUsers = () => {
+  const { t } = useTranslation();
   const { setTimeoutSafe } = useSafeTimeout();
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
@@ -38,7 +40,7 @@ const AllUsers = () => {
       setFilteredUsers(response.data);
     } catch (error) {
       console.error("Error fetching users:", error);
-      showNotification("Failed to load users", "error");
+      showNotification(t('admin.failedToLoadUsers'), "error");
     } finally {
       setLoading(false);
     }
@@ -66,11 +68,11 @@ const AllUsers = () => {
   const handleDeleteUser = async (userId) => {
     try {
       await deleteUser(userId);
-      showNotification("User deleted successfully", "success");
+      showNotification(t('admin.userDeletedSuccess'), "success");
       fetchUsers();
       setDeleteConfirm(null);
     } catch (error) {
-      showNotification(error.response?.data?.message || "Failed to delete user", "error");
+      showNotification(error.response?.data?.message || t('admin.failedToDeleteUser'), "error");
     }
   };
 
@@ -104,14 +106,14 @@ const AllUsers = () => {
     if (user.fullName && user.fullName.trim()) {
       return user.fullName;
     }
-    return user.email ? user.email.split('@')[0] : "Unknown User";
+    return user.email ? user.email.split('@')[0] : t('admin.unknownUser');
   };
 
   const roleDisplayMap = {
-    admin: "Administrator",
-    dieteticien: "Dieteticien",
-    client: "Client",
-    student: "Student",
+    admin: t('admin.administrator'),
+    dieteticien: t('admin.dieteticien'),
+    client: t('admin.client'),
+    student: t('admin.student'),
   };
 
   const getRoleIcon = (role) => {
@@ -277,14 +279,14 @@ const AllUsers = () => {
               <div className="modal-icon">
                 <AlertTriangle size={28} />
               </div>
-              <h3>Delete User</h3>
-              <p>Are you sure you want to delete <strong>{deleteConfirm.fullName}</strong>? This action cannot be undone.</p>
+              <h3>{t('admin.deleteUser')}</h3>
+              <p>{t('admin.deleteConfirmMessage', { name: deleteConfirm.fullName })}</p>
               <div className="modal-actions">
                 <button onClick={() => setDeleteConfirm(null)} className="modal-btn-cancel">
-                  Cancel
+                  {t('common.cancel')}
                 </button>
                 <button onClick={() => handleDeleteUser(deleteConfirm.id)} className="modal-btn-delete">
-                  Yes, Delete
+                  {t('admin.confirmDelete')}
                 </button>
               </div>
             </motion.div>
@@ -300,17 +302,17 @@ const AllUsers = () => {
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
               <circle cx="12" cy="7" r="4" />
             </svg>
-            <span>User Management</span>
+            <span>{t('admin.userManagement')}</span>
           </div>
-          <h1>Manage Users</h1>
-          <p>View and manage all administrators, dieteticiens, clients, and students</p>
+          <h1>{t('admin.manageUsers')}</h1>
+          <p>{t('admin.manageUsersDescription')}</p>
         </div>
         <button onClick={() => navigate("/admin/add-admin-nutritionist")} className="add-user-btn">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
             <path d="M12 5V19" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
             <path d="M5 12H19" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
           </svg>
-          Add New User
+          {t('admin.addNewUser')}
         </button>
       </div>
 
@@ -322,7 +324,7 @@ const AllUsers = () => {
           </div>
           <div className="stat-info">
             <h3>{stats.admins}</h3>
-            <p>Administrators</p>
+            <p>{t('admin.administrators')}</p>
           </div>
         </div>
         <div className="stat-card">
@@ -331,7 +333,7 @@ const AllUsers = () => {
           </div>
           <div className="stat-info">
             <h3>{stats.dieteticiens}</h3>
-            <p>Dieteticiens</p>
+            <p>{t('admin.dieteticiens')}</p>
           </div>
         </div>
         <div className="stat-card">
@@ -340,7 +342,7 @@ const AllUsers = () => {
           </div>
           <div className="stat-info">
             <h3>{stats.clients}</h3>
-            <p>Clients</p>
+            <p>{t('admin.clients')}</p>
           </div>
         </div>
         <div className="stat-card">
@@ -349,7 +351,7 @@ const AllUsers = () => {
           </div>
           <div className="stat-info">
             <h3>{stats.students}</h3>
-            <p>Students</p>
+            <p>{t('admin.students')}</p>
           </div>
         </div>
         <div className="stat-card">
@@ -358,7 +360,7 @@ const AllUsers = () => {
           </div>
           <div className="stat-info">
             <h3>{stats.total}</h3>
-            <p>Total Users</p>
+            <p>{t('admin.totalUsers')}</p>
           </div>
         </div>
       </div>
@@ -372,7 +374,7 @@ const AllUsers = () => {
           </svg>
           <input
             type="text"
-            placeholder="Search by name or email..."
+            placeholder={t('admin.searchByNameOrEmail')}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -383,45 +385,45 @@ const AllUsers = () => {
             className={`filter-btn ${selectedRole === "all" ? "active" : ""}`}
             onClick={() => setSelectedRole("all")}
           >
-            All Users
+            {t('common.all')}
           </button>
           <button
             className={`filter-btn ${selectedRole === "admin" ? "active" : ""}`}
             onClick={() => setSelectedRole("admin")}
           >
-            Administrators
+            {t('admin.administrators')}
           </button>
           <button
             className={`filter-btn ${selectedRole === "dieteticien" ? "active" : ""}`}
             onClick={() => setSelectedRole("dieteticien")}
           >
-            Dieteticiens
+            {t('admin.dieteticiens')}
           </button>
           <button
             className={`filter-btn ${selectedRole === "client" ? "active" : ""}`}
             onClick={() => setSelectedRole("client")}
           >
-            Clients
+            {t('admin.clients')}
           </button>
           <button
             className={`filter-btn ${selectedRole === "student" ? "active" : ""}`}
             onClick={() => setSelectedRole("student")}
           >
-            Students
+            {t('admin.students')}
           </button>
         </div>
       </div>
 
       {/* Users Count */}
       <div className="users-count">
-        <span>{filteredUsers.length} user{filteredUsers.length !== 1 ? "s" : ""} found</span>
+        <span>{t('admin.usersFound', { count: filteredUsers.length })}</span>
       </div>
 
       {/* Users List */}
       {loading ? (
         <div className="loading-state">
           <div className="spinner"></div>
-          <p>Loading users...</p>
+          <p>{t('admin.loadingUsers')}</p>
         </div>
       ) : filteredUsers.length === 0 ? (
         <div className="empty-state">
@@ -429,8 +431,8 @@ const AllUsers = () => {
             <circle cx="12" cy="8" r="4" stroke="currentColor" strokeWidth="2"/>
             <path d="M5 20V19C5 15.7 7.7 13 11 13H13C16.3 13 19 15.7 19 19V20" stroke="currentColor" strokeWidth="2"/>
           </svg>
-          <h3>No users found</h3>
-          <p>Try adjusting your search or filters</p>
+          <h3>{t('admin.noUsersFound')}</h3>
+          <p>{t('admin.adjustSearchOrFilters')}</p>
         </div>
       ) : (
         <div className="users-grid">
@@ -467,7 +469,7 @@ const AllUsers = () => {
                 
                 <div className="user-card-body">
                   <h3>{getDisplayName(user)}</h3>
-                  <p className="user-email">{user.email || "No email provided"}</p>
+                  <p className="user-email">{user.email || t('admin.noEmailProvided')}</p>
                   <div className={`role-badge ${getRoleBadgeClass(getUserRole(user))}`}>
                     {getRoleIcon(getUserRole(user))}
                     <span>{roleDisplayMap[getUserRole(user)] || getUserRole(user)}</span>
@@ -482,7 +484,7 @@ const AllUsers = () => {
                 
                 <div className="user-card-footer">
                   <span className="user-date">
-                    Joined {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "Recently"}
+                    {t('admin.joined')} {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : t('admin.recently')}
                   </span>
                 </div>
               </div>

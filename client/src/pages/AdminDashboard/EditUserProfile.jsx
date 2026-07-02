@@ -3,9 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { updateUser } from "../../api/userApi";
 import { useAuth } from "../../context/AuthContext";
 import { useSafeTimeout } from "../../hooks/useSafeTimeout";
+import { useTranslation } from 'react-i18next';
 import "./EditUserProfile.css";
 
 const EditUserProfile = () => {
+  const { t } = useTranslation();
   const { setTimeoutSafe } = useSafeTimeout();
   const navigate = useNavigate();
   const { user, updateUser: updateAuthUser } = useAuth();
@@ -49,7 +51,7 @@ const EditUserProfile = () => {
       setUserRole(user.role || "");
       loadUserData(user);
     } else {
-      showNotification("Please login to access this page", "error");
+      showNotification(t('admin.pleaseLoginToAccess'), "error");
       navigate("/login");
     }
   }, [user]);
@@ -98,12 +100,12 @@ const EditUserProfile = () => {
     if (file) {
       const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
       if (!allowedTypes.includes(file.type)) {
-        showNotification("Only image files are allowed (JPEG, PNG, GIF, WEBP)", "error");
+        showNotification(t('admin.onlyImageFilesAllowed'), "error");
         return;
       }
       
       if (file.size > 5 * 1024 * 1024) {
-        showNotification("File size must be less than 5MB", "error");
+        showNotification(t('admin.fileSizeLimit'), "error");
         return;
       }
       
@@ -121,21 +123,21 @@ const EditUserProfile = () => {
     const newErrors = {};
     
     if (!formData.fullName.trim()) {
-      newErrors.fullName = "Full name is required";
+      newErrors.fullName = t('admin.fullNameRequired');
     }
     
     if (!formData.email.trim()) {
-      newErrors.email = "Email is required";
+      newErrors.email = t('admin.emailRequired');
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = "Please enter a valid email";
+      newErrors.email = t('admin.validEmailRequired');
     }
     
     if (formData.password) {
       if (formData.password.length < 8) {
-        newErrors.password = "Password must be at least 8 characters";
+        newErrors.password = t('admin.passwordMinLength');
       }
       if (formData.password !== formData.confirmPassword) {
-        newErrors.confirmPassword = "Passwords do not match";
+        newErrors.confirmPassword = t('admin.passwordsDoNotMatch');
       }
     }
     
@@ -161,7 +163,7 @@ const EditUserProfile = () => {
     try {
       const storedUser = localStorage.getItem("user");
       if (!storedUser) {
-        showNotification("User data not found", "error");
+        showNotification(t('admin.userDataNotFound'), "error");
         navigate("/login");
         return;
       }
@@ -225,11 +227,11 @@ const EditUserProfile = () => {
       }));
       
       scrollToTop();
-      showNotification("Profile updated successfully!", "success");
+      showNotification(t('admin.profileUpdatedSuccess'), "success");
       
     } catch (error) {
       console.error("Update error:", error);
-      showNotification(error.response?.data?.message || "Failed to update profile", "error");
+      showNotification(error.response?.data?.message || t('admin.failedToUpdateProfile'), "error");
     } finally {
       setLoading(false);
     }
@@ -247,9 +249,9 @@ const EditUserProfile = () => {
 
   const getRoleDisplay = () => {
     const roleMap = {
-      'Admin': 'Administrator',
-      'Nutritionist': 'Nutritionist',
-      'Client': 'Client'
+      'Admin': t('admin.administrator'),
+      'Nutritionist': t('admin.nutritionist'),
+      'Client': t('admin.client')
     };
     return roleMap[userRole] || userRole;
   };
@@ -288,13 +290,13 @@ const EditUserProfile = () => {
             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
             <circle cx="12" cy="7" r="4" />
           </svg>
-          <span>Profile Settings</span>
+          <span>{t('admin.profileSettings')}</span>
         </div>
-        <h1>Edit Profile</h1>
-        <p>Update your personal information and profile picture</p>
+        <h1>{t('admin.editProfile')}</h1>
+        <p>{t('admin.editProfileDescription')}</p>
         {userRole && (
           <div className="staff-badge">
-            <span>{getRoleDisplay()} Account</span>
+            <span>{t('admin.roleAccount', { role: getRoleDisplay() })}</span>
           </div>
         )}
       </div>
@@ -306,7 +308,7 @@ const EditUserProfile = () => {
             <div className="photo-upload">
               <div className="current-photo">
                 {photoPreview ? (
-                  <img src={photoPreview} alt="Profile" />
+                  <img src={photoPreview} alt={t('admin.profilePhoto')} />
                 ) : (
                   <div className="photo-placeholder">
                     <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
@@ -320,7 +322,7 @@ const EditUserProfile = () => {
                     <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z" />
                     <circle cx="12" cy="13" r="4" />
                   </svg>
-                  <span>Change</span>
+                  <span>{t('admin.change')}</span>
                 </label>
                 <input
                   type="file"
@@ -331,13 +333,13 @@ const EditUserProfile = () => {
                 />
               </div>
               <div className="photo-info">
-                <h4>Profile Picture</h4>
-                <p>JPG, GIF or PNG. Max size 5MB.</p>
+                <h4>{t('admin.profilePicture')}</h4>
+                <p>{t('admin.profilePictureHint')}</p>
                 {currentPhoto && !formData.photo && (
-                  <span className="current-badge">Current photo active</span>
+                  <span className="current-badge">{t('admin.currentPhotoActive')}</span>
                 )}
                 {formData.photo && (
-                  <span className="new-badge">New photo selected</span>
+                  <span className="new-badge">{t('admin.newPhotoSelected')}</span>
                 )}
               </div>
             </div>
@@ -353,20 +355,20 @@ const EditUserProfile = () => {
                 </svg>
               </div>
               <div className="section-title">
-                <h3>Personal Information</h3>
-                <p>Update your basic personal details</p>
+                <h3>{t('admin.personalInformation')}</h3>
+                <p>{t('admin.personalInformationDescription')}</p>
               </div>
             </div>
             
             <div className="form-group">
-              <label>Full Name</label>
+              <label>{t('admin.fullName')}</label>
               <div className="input-wrapper">
                 <input
                   type="text"
                   name="fullName"
                   value={formData.fullName}
                   onChange={handleChange}
-                  placeholder="Enter your full name"
+                  placeholder={t('admin.enterFullName')}
                   className={errors.fullName ? "error" : ""}
                 />
                 {formData.fullName !== originalData.fullName && (
@@ -382,14 +384,14 @@ const EditUserProfile = () => {
             </div>
 
             <div className="form-group">
-              <label>Email Address</label>
+              <label>{t('admin.emailAddress')}</label>
               <div className="input-wrapper">
                 <input
                   type="email"
                   name="email"
                   value={formData.email}
                   onChange={handleChange}
-                  placeholder="Enter your email"
+                  placeholder={t('admin.enterEmail')}
                   className={errors.email ? "error" : ""}
                 />
                 {formData.email !== originalData.email && (
@@ -415,21 +417,21 @@ const EditUserProfile = () => {
                 </svg>
               </div>
               <div className="section-title">
-                <h3>Security</h3>
-                <p>Change your password to keep your account secure</p>
+                <h3>{t('admin.security')}</h3>
+                <p>{t('admin.securityDescription')}</p>
               </div>
             </div>
             
             <div className="password-grid">
               <div className="form-group">
-                <label>New Password</label>
+                <label>{t('admin.newPassword')}</label>
                 <div className="input-wrapper">
                   <input
                     type="password"
                     name="password"
                     value={formData.password}
                     onChange={handleChange}
-                    placeholder="Enter new password (min. 8 characters)"
+                    placeholder={t('admin.newPasswordPlaceholder')}
                     className={errors.password ? "error" : ""}
                   />
                 </div>
@@ -437,14 +439,14 @@ const EditUserProfile = () => {
               </div>
 
               <div className="form-group">
-                <label>Confirm Password</label>
+                <label>{t('admin.confirmPassword')}</label>
                 <div className="input-wrapper">
                   <input
                     type="password"
                     name="confirmPassword"
                     value={formData.confirmPassword}
                     onChange={handleChange}
-                    placeholder="Confirm new password"
+                    placeholder={t('admin.confirmPasswordPlaceholder')}
                     className={errors.confirmPassword ? "error" : ""}
                   />
                 </div>
@@ -464,21 +466,21 @@ const EditUserProfile = () => {
                   </svg>
                 </div>
                 <div className="section-title">
-                  <h3>Payment Information</h3>
-                  <p>Manage your CCP and BaridiMob account details for receiving payments</p>
+                  <h3>{t('admin.paymentInformation')}</h3>
+                  <p>{t('admin.paymentInformationDescription')}</p>
                 </div>
               </div>
 
               <div className="password-grid">
                 <div className="form-group">
-                  <label>CCP Number</label>
+                  <label>{t('admin.ccpNumber')}</label>
                   <div className="input-wrapper">
                     <input
                       type="text"
                       name="ccpNumber"
                       value={formData.ccpNumber}
                       onChange={handleChange}
-                      placeholder="e.g. 12345678"
+                      placeholder={t('admin.ccpNumberPlaceholder')}
                     />
                     {formData.ccpNumber !== originalData.ccpNumber && (
                       <div className="input-status changed">
@@ -492,14 +494,14 @@ const EditUserProfile = () => {
                 </div>
 
                 <div className="form-group">
-                  <label>CCP Key (2 Digits)</label>
+                  <label>{t('admin.ccpKey')}</label>
                   <div className="input-wrapper">
                     <input
                       type="text"
                       name="ccpKey"
                       value={formData.ccpKey}
                       onChange={handleChange}
-                      placeholder="12"
+                      placeholder={t('admin.ccpKeyPlaceholder')}
                       maxLength={2}
                     />
                     {formData.ccpKey !== originalData.ccpKey && (
@@ -515,14 +517,14 @@ const EditUserProfile = () => {
               </div>
 
               <div className="form-group">
-                <label>BaridiMob Number</label>
+                <label>{t('admin.baridiMobNumber')}</label>
                 <div className="input-wrapper">
                   <input
                     type="number"
                     name="baridiMob"
                     value={formData.baridiMob}
                     onChange={handleChange}
-                    placeholder="e.g. 12345678901234567890"
+                    placeholder={t('admin.baridiMobPlaceholder')}
                   />
                   {formData.baridiMob !== originalData.baridiMob && (
                     <div className="input-status changed">
@@ -543,7 +545,7 @@ const EditUserProfile = () => {
               {loading ? (
                 <>
                   <div className="spinner-small"></div>
-                  Saving...
+                  {t('admin.saving')}
                 </>
               ) : (
                 <>
@@ -551,14 +553,14 @@ const EditUserProfile = () => {
                     <path d="M20 14.66V20a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h5.34" />
                     <polygon points="18 2 22 6 12 16 8 16 8 12 18 2" />
                   </svg>
-                  Save Changes
+                  {t('common.save')}
                 </>
               )}
             </button>
             {hasChanges() && (
               <div className="unsaved-badge">
                 <div className="unsaved-dot"></div>
-                You have unsaved changes
+                {t('admin.unsavedChanges')}
               </div>
             )}
           </div>

@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { getPendingDieteticiens, approveDieteticien, rejectDieteticien } from '../../api/userApi';
 import { Check, X, Eye, Loader, Clock, Shield, Mail, User, Stethoscope, GraduationCap, FileText } from 'lucide-react';
 import { useSafeTimeout } from '../../hooks/useSafeTimeout';
+import { useTranslation } from 'react-i18next';
 import './ManageDieteticiens.css';
 
 const ManageDieteticiens = () => {
   const { setTimeoutSafe } = useSafeTimeout();
+  const { t } = useTranslation();
   const [pendingList, setPendingList] = useState([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(null);
@@ -23,7 +25,7 @@ const ManageDieteticiens = () => {
       const data = await getPendingDieteticiens();
       if (data.success) setPendingList(data.data);
     } catch (err) {
-      showNotification('Failed to load requests', 'error');
+      showNotification(t('admin.loadRequestsFailed'), 'error');
     } finally {
       setLoading(false);
     }
@@ -43,7 +45,7 @@ const ManageDieteticiens = () => {
         showNotification(data.message, 'error');
       }
     } catch (err) {
-      showNotification('Failed to approve', 'error');
+      showNotification(t('admin.approveFailed'), 'error');
     } finally {
       setActionLoading(null);
     }
@@ -61,7 +63,7 @@ const ManageDieteticiens = () => {
         showNotification(data.message, 'error');
       }
     } catch (err) {
-      showNotification('Failed to reject', 'error');
+      showNotification(t('admin.rejectFailed'), 'error');
     } finally {
       setActionLoading(null);
     }
@@ -73,7 +75,7 @@ const ManageDieteticiens = () => {
   if (loading) return (
     <div className="manage-diet-loading">
       <div className="loading-spinner-ring"><Loader size={32} /></div>
-      <p>Loading requests...</p>
+      <p>{t('admin.loadingRequests')}</p>
     </div>
   );
 
@@ -89,13 +91,13 @@ const ManageDieteticiens = () => {
 
       <div className="manage-diet-header">
         <div className="header-left">
-          <h1>Dieteticien Requests</h1>
-          <p>Review and manage dieteticien registration requests</p>
+          <h1>{t('admin.dieteticienRequests')}</h1>
+          <p>{t('admin.dieteticienRequestsDescription')}</p>
         </div>
         <div className="header-stats">
           <div className="stat-badge">
             <span className="stat-number">{pendingList.length}</span>
-            <span className="stat-label">Pending</span>
+            <span className="stat-label">{t('common.pending')}</span>
           </div>
         </div>
       </div>
@@ -105,8 +107,8 @@ const ManageDieteticiens = () => {
           <div className="empty-icon-wrapper">
             <Shield size={48} />
           </div>
-          <h3>All Clear</h3>
-          <p>All dieteticien registration requests have been processed.</p>
+          <h3>{t('admin.allClear')}</h3>
+          <p>{t('admin.allClearDescription')}</p>
         </div>
       ) : (
         <>
@@ -125,7 +127,7 @@ const ManageDieteticiens = () => {
                     </div>
                   </div>
                   <div className="card-status">
-                    <span className="status-dot"></span> Pending
+                    <span className="status-dot"></span> {t('common.pending')}
                   </div>
                 </div>
                 <div className="card-body">
@@ -137,9 +139,9 @@ const ManageDieteticiens = () => {
                   {item.diplomaUrl && (
                     <div className="card-diploma">
                       <FileText size={14} />
-                      <span>Diploma uploaded</span>
+                      <span>{t('admin.diplomaUploaded')}</span>
                       <button className="view-diploma-btn" onClick={() => setPreviewImg(item.diplomaUrl)}>
-                        <Eye size={14} /> View
+                        <Eye size={14} /> {t('admin.view')}
                       </button>
                     </div>
                   )}
@@ -151,7 +153,7 @@ const ManageDieteticiens = () => {
                     disabled={actionLoading === item._id}
                   >
                     <Check size={16} />
-                    Approve
+                    {t('admin.approve')}
                   </button>
                   <button
                     className="action-btn reject"
@@ -159,7 +161,7 @@ const ManageDieteticiens = () => {
                     disabled={actionLoading === item._id}
                   >
                     <X size={16} />
-                    Reject
+                    {t('admin.reject')}
                   </button>
                 </div>
               </div>
@@ -174,8 +176,8 @@ const ManageDieteticiens = () => {
             <div className={`confirm-icon ${confirmAction.type}`}>
               {confirmAction.type === 'approve' ? <Check size={32} /> : <X size={32} />}
             </div>
-            <h3>{confirmAction.type === 'approve' ? 'Approve Request' : 'Reject Request'}</h3>
-            <p>Are you sure you want to {confirmAction.type} this dieteticien request?</p>
+            <h3>{confirmAction.type === 'approve' ? t('admin.approveRequest') : t('admin.rejectRequest')}</h3>
+            <p>{t('admin.confirmActionMessage', { action: confirmAction.type })}</p>
             <div className="confirm-actions">
               <button
                 className={`action-btn ${confirmAction.type}`}
@@ -183,13 +185,13 @@ const ManageDieteticiens = () => {
                 disabled={actionLoading === confirmAction.id}
               >
                 {confirmAction.type === 'approve' ? <Check size={16} /> : <X size={16} />}
-                {confirmAction.type === 'approve' ? 'Approve' : 'Reject'}
+                {confirmAction.type === 'approve' ? t('admin.approve') : t('admin.reject')}
               </button>
               <button
                 className="action-btn cancel-btn"
                 onClick={() => setConfirmAction(null)}
               >
-                Cancel
+                {t('common.cancel')}
               </button>
             </div>
           </div>
@@ -200,7 +202,7 @@ const ManageDieteticiens = () => {
         <div className="manage-diet-modal" onClick={() => setPreviewImg(null)}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
             <button className="modal-close" onClick={() => setPreviewImg(null)}>&times;</button>
-            <img src={previewImg} alt="Diploma full" className="modal-image" />
+            <img src={previewImg} alt={t('admin.diplomaFull')} className="modal-image" />
           </div>
         </div>
       )}

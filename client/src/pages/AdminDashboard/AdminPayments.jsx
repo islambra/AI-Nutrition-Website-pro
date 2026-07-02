@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getAllPaymentsAdmin, deletePaymentAdmin } from '../../api/paymentApi';
 import {
@@ -48,6 +49,7 @@ const PAYMENT_METHOD_LABELS = {
 };
 
 const AdminPayments = () => {
+  const { t } = useTranslation();
   const { setTimeoutSafe } = useSafeTimeout();
   const [payments, setPayments] = useState([]);
   const [filteredPayments, setFilteredPayments] = useState([]);
@@ -79,7 +81,7 @@ const AdminPayments = () => {
       const res = await getAllPaymentsAdmin();
       setPayments(res.data);
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to load payments');
+      setError(err.response?.data?.message || t('admin.failedToLoadPayments'));
     } finally {
       setLoading(false);
     }
@@ -130,9 +132,9 @@ const AdminPayments = () => {
       await deletePaymentAdmin(selectedPaymentId);
       setPayments(prev => prev.filter(p => p._id !== selectedPaymentId));
       setModalOpen(false);
-      showToast(`Payment of ${selectedPaymentAmount?.toLocaleString()} DZD deleted successfully`, 'success');
+      showToast(t('admin.paymentDeletedSuccess', { amount: selectedPaymentAmount?.toLocaleString() }), 'success');
     } catch (err) {
-      showToast(err.response?.data?.message || 'Delete failed', 'error');
+      showToast(err.response?.data?.message || t('admin.deleteFailed'), 'error');
     } finally {
       setDeletingId(null);
       setSelectedPaymentId(null);
@@ -166,37 +168,37 @@ const AdminPayments = () => {
 
   const statCards = [
     {
-      label: 'Total Revenue',
+      label: t('admin.totalRevenue'),
       value: `${totalRevenue.toLocaleString()} DZD`,
       icon: DollarSign,
       cssClass: 'total-stat',
     },
     {
-      label: 'Plan Sales',
+      label: t('admin.planSales'),
       value: `${planCount} · ${planRevenue.toLocaleString()} DZD`,
       icon: Package,
       cssClass: 'plan-stat',
     },
     {
-      label: 'Formation Sales',
+      label: t('admin.formationSales'),
       value: `${formationCount} · ${formationRevenue.toLocaleString()} DZD`,
       icon: GraduationCap,
       cssClass: 'formation-stat',
     },
     {
-      label: 'AI Tracker Sales',
+      label: t('admin.aiTrackerSales'),
       value: `${aiCount} · ${aiRevenue.toLocaleString()} DZD`,
       icon: CreditCard,
       cssClass: 'ai-stat',
     },
     {
-      label: 'Course Subscriptions',
+      label: t('admin.courseSubscriptions'),
       value: `${courseSubCount} · ${courseSubRevenue.toLocaleString()} DZD`,
       icon: BookOpen,
       cssClass: 'course-stat',
     },
     {
-      label: 'Total Transactions',
+      label: t('admin.totalTransactions'),
       value: filteredPayments.length,
       icon: ArrowUpRight,
       cssClass: 'transactions-stat',
@@ -212,16 +214,16 @@ const AdminPayments = () => {
       >
         <DollarSign size={48} />
       </motion.div>
-      <p>Loading payment data...</p>
+      <p>{t('admin.loadingPaymentData')}</p>
     </div>
   );
 
   if (error) return (
     <div className="ap-error">
       <XCircle size={48} />
-      <h3>Unable to load payments</h3>
+      <h3>{t('admin.unableToLoadPayments')}</h3>
       <p>{error}</p>
-      <button onClick={fetchPayments} className="ap-retry-btn">Retry</button>
+      <button onClick={fetchPayments} className="ap-retry-btn">{t('common.tryAgain')}</button>
     </div>
   );
 
@@ -260,13 +262,13 @@ const AdminPayments = () => {
               <div className="ap-modal-icon">
                 <AlertTriangle size={28} />
               </div>
-              <h3>Delete Payment</h3>
-              <p>Are you sure you want to delete this payment of <strong>{selectedPaymentAmount?.toLocaleString()} DZD</strong>?</p>
-              <p className="ap-modal-warning">This action cannot be undone. The user's access will be removed.</p>
+              <h3>{t('admin.deletePayment')}</h3>
+              <p>{t('admin.deletePaymentConfirm', { amount: selectedPaymentAmount?.toLocaleString() })}</p>
+              <p className="ap-modal-warning">{t('admin.deletePaymentWarning')}</p>
               <div className="ap-modal-actions">
-                <button className="ap-btn ap-btn--ghost" onClick={() => setModalOpen(false)}>Cancel</button>
+                <button className="ap-btn ap-btn--ghost" onClick={() => setModalOpen(false)}>{t('common.cancel')}</button>
                 <button className="ap-btn ap-btn--danger" onClick={confirmDelete} disabled={deletingId === selectedPaymentId}>
-                  {deletingId === selectedPaymentId ? 'Deleting...' : 'Yes, Delete'}
+                  {deletingId === selectedPaymentId ? t('admin.deleting') : t('admin.yesDelete')}
                 </button>
               </div>
             </motion.div>
@@ -276,15 +278,15 @@ const AdminPayments = () => {
 
       <div className="ap-header">
         <div>
-          <h1>Payment Management</h1>
-          <p className="ap-subtitle">Monitor and manage all financial transactions</p>
+          <h1>{t('admin.paymentManagement')}</h1>
+          <p className="ap-subtitle">{t('admin.monitorTransactions')}</p>
         </div>
         <button
           className={`ap-filter-btn ${showFilters ? 'active' : ''}`}
           onClick={() => setShowFilters(!showFilters)}
         >
           <Filter size={15} />
-          {showFilters ? 'Hide Filters' : 'Filters'}
+          {showFilters ? t('admin.hideFilters') : t('admin.filters')}
           <ChevronDown size={12} className={`ap-chevron ${showFilters ? 'open' : ''}`} />
         </button>
       </div>
@@ -313,37 +315,37 @@ const AdminPayments = () => {
           >
             <div className="ap-filters-inner">
               <div className="ap-filter-group">
-                <label>Type</label>
+                <label>{t('admin.type')}</label>
                 <select value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)}>
-                  <option value="all">All Types</option>
-                  <option value="Plan">Plan</option>
-                  <option value="Formation">Formation</option>
-                  <option value="AI Tracker">AI Tracker</option>
-                  <option value="Course Subscription">Course Subscription</option>
+                  <option value="all">{t('admin.allTypes')}</option>
+                  <option value="Plan">{t('admin.planType')}</option>
+                  <option value="Formation">{t('admin.formationType')}</option>
+                  <option value="AI Tracker">{t('admin.aiTrackerType')}</option>
+                  <option value="Course Subscription">{t('admin.courseSubType')}</option>
                 </select>
               </div>
               <div className="ap-filter-group">
-                <label>Search</label>
+                <label>{t('common.search')}</label>
                 <div className="ap-search-wrap">
                   <Search size={15} />
                   <input
                     type="text"
-                    placeholder="Name or email..."
+                    placeholder={t('admin.searchByNameOrEmail')}
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                   />
                 </div>
               </div>
               <div className="ap-filter-group">
-                <label>From</label>
+                <label>{t('admin.fromDate')}</label>
                 <input type="date" value={startDate} onChange={(e) => setStartDate(e.target.value)} />
               </div>
               <div className="ap-filter-group">
-                <label>To</label>
+                <label>{t('admin.toDate')}</label>
                 <input type="date" value={endDate} onChange={(e) => setEndDate(e.target.value)} />
               </div>
               <button className="ap-btn ap-btn--clear" onClick={clearFilters}>
-                <X size={13} /> Clear
+                <X size={13} /> {t('admin.clear')}
               </button>
             </div>
           </motion.div>
@@ -351,11 +353,11 @@ const AdminPayments = () => {
       </AnimatePresence>
 
       <div className="ap-results">
-        <span>{filteredPayments.length} transaction{filteredPayments.length !== 1 ? 's' : ''}</span>
+        <span>{t('admin.transactionsCount', { count: filteredPayments.length })}</span>
         {filteredPayments.length > 0 && (
           <span className="ap-results-revenue">
             <ArrowUpRight size={14} />
-            {totalRevenue.toLocaleString()} DZD total
+            {t('admin.totalRevenueAmount', { amount: totalRevenue.toLocaleString() })}
           </span>
         )}
       </div>
@@ -369,8 +371,8 @@ const AdminPayments = () => {
           <div className="ap-empty-icon">
             <Search size={40} />
           </div>
-          <h3>No payments found</h3>
-          <p>Try adjusting your filters or search query</p>
+          <h3>{t('admin.noPaymentsFound')}</h3>
+          <p>{t('admin.adjustFilters')}</p>
         </motion.div>
       ) : (
         <div className="ap-list">
@@ -384,7 +386,7 @@ const AdminPayments = () => {
                   className="ap-delete-btn"
                   onClick={() => openDeleteModal(p._id, p.amount)}
                   disabled={deletingId === p._id}
-                  title="Delete payment"
+                  title={t('admin.deletePayment')}
                 >
                   {deletingId === p._id ? (
                     <span className="ap-spinner-sm" />
@@ -406,7 +408,7 @@ const AdminPayments = () => {
                       )}
                     </div>
                     <div className="ap-user-info">
-                      <span className="ap-user-name">{p.user?.fullName || 'Unknown User'}</span>
+                      <span className="ap-user-name">{p.user?.fullName || t('admin.unknownUser')}</span>
                       <span className="ap-user-email">{p.user?.email || '—'}</span>
                     </div>
                   </div>

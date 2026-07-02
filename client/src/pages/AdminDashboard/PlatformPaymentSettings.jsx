@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 import { getPlatformPaymentSettings, updatePlatformPaymentSettings } from "../../api/paymentApi";
 import { useSafeTimeout } from "../../hooks/useSafeTimeout";
+import { useTranslation } from "react-i18next";
 import "./PlatformPaymentSettings.css";
 
 const PlatformPaymentSettings = () => {
   const { setTimeoutSafe } = useSafeTimeout();
+  const { t } = useTranslation();
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
   const [notification, setNotification] = useState(null);
@@ -31,7 +33,7 @@ const PlatformPaymentSettings = () => {
           });
         }
       } catch (err) {
-        showNotification(err.response?.data?.message || "Failed to load payment settings", "error");
+        showNotification(err.response?.data?.message || t("admin.loadPaymentSettingsFailed"), "error");
       } finally {
         setFetching(false);
       }
@@ -54,7 +56,7 @@ const PlatformPaymentSettings = () => {
         baridiMob: formData.baridiMob.trim() || null,
       });
       if (res.success) {
-        showNotification("Payment settings updated successfully!", "success");
+        showNotification(t("admin.paymentSettingsUpdated"), "success");
         setFormData({
           ccpNumber: res.data.ccpNumber || "",
           ccpKey: res.data.ccpKey || "",
@@ -62,7 +64,7 @@ const PlatformPaymentSettings = () => {
         });
       }
     } catch (err) {
-      showNotification(err.response?.data?.message || "Failed to update payment settings", "error");
+      showNotification(err.response?.data?.message || t("admin.updatePaymentSettingsFailed"), "error");
     } finally {
       setLoading(false);
     }
@@ -73,7 +75,7 @@ const PlatformPaymentSettings = () => {
       <div className="create-user-page">
         <div className="loading-spinner-container">
           <div className="spinner-lg"></div>
-          <p>Loading payment settings...</p>
+          <p>{t("admin.loadingPaymentSettings")}</p>
         </div>
       </div>
     );
@@ -114,10 +116,10 @@ const PlatformPaymentSettings = () => {
               <path d="M12 2v20" />
               <path d="M2 12h20" />
             </svg>
-            <span>Platform Payments</span>
+            <span>{t("admin.platformPayments")}</span>
           </div>
-          <h1>Payment Settings</h1>
-          <p>Manage the CCP and BaridiMob payment info displayed during course and AI tool checkout</p>
+          <h1>{t("admin.paymentSettings")}</h1>
+          <p>{t("admin.paymentSettingsDescription")}</p>
         </div>
 
         <div className="create-user-card">
@@ -131,7 +133,7 @@ const PlatformPaymentSettings = () => {
                     <rect x="2" y="4" width="20" height="16" rx="2" />
                     <path d="M22 4L12 13L2 4" />
                   </svg>
-                  CCP Number
+                  {t("admin.ccpNumber")}
                 </label>
                 <input
                   id="ccpNumber"
@@ -139,7 +141,7 @@ const PlatformPaymentSettings = () => {
                   name="ccpNumber"
                   value={formData.ccpNumber}
                   onChange={handleChange}
-                  placeholder="e.g. 123456789"
+                  placeholder={t("admin.ccpNumberPlaceholder")}
                 />
               </div>
 
@@ -149,7 +151,7 @@ const PlatformPaymentSettings = () => {
                     <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
                     <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                   </svg>
-                  CCP Key
+                  {t("admin.ccpKey")}
                 </label>
                 <input
                   id="ccpKey"
@@ -157,7 +159,7 @@ const PlatformPaymentSettings = () => {
                   name="ccpKey"
                   value={formData.ccpKey}
                   onChange={handleChange}
-                  placeholder="e.g. 12"
+                  placeholder={t("admin.ccpKeyPlaceholder")}
                 />
               </div>
 
@@ -172,7 +174,7 @@ const PlatformPaymentSettings = () => {
                     <path d="M12 8.5v-1" />
                     <path d="M16 8.5v-1" />
                   </svg>
-                  BaridiMob Number
+                  {t("admin.baridiMobNumber")}
                 </label>
                 <input
                   id="baridiMob"
@@ -180,7 +182,7 @@ const PlatformPaymentSettings = () => {
                   name="baridiMob"
                   value={formData.baridiMob}
                   onChange={handleChange}
-                  placeholder="e.g. 0123456789"
+                  placeholder={t("admin.baridiMobPlaceholder")}
                 />
               </div>
             </div>
@@ -192,21 +194,21 @@ const PlatformPaymentSettings = () => {
                   <line x1="12" y1="16" x2="12" y2="12" />
                   <line x1="12" y1="8" x2="12.01" y2="8" />
                 </svg>
-                <span>These details are shown to users when they subscribe to courses or the AI tool</span>
+                <span>{t("admin.paymentInfoDescription")}</span>
               </div>
               <div className="form-actions">
                 <button type="submit" className="btn-submit" disabled={loading}>
                   {loading ? (
                     <>
                       <div className="spinner"></div>
-                      Saving...
+                      {t("admin.saving")}
                     </>
                   ) : (
                     <>
                       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                         <path d="M20 6L9 17L4 12" />
                       </svg>
-                      Save Changes
+                      {t("common.save")}
                     </>
                   )}
                 </button>

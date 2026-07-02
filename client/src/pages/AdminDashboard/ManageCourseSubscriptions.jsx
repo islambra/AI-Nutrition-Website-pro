@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from "framer-motion";
 import {
   BookOpen,
@@ -20,6 +21,7 @@ import {
 import "./ManageCourseSubscriptions.css";
 
 const ManageCourseSubscriptions = () => {
+  const { t } = useTranslation();
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -102,7 +104,7 @@ const ManageCourseSubscriptions = () => {
         >
           <BookOpen size={48} />
         </motion.div>
-        <p>Loading pending subscriptions...</p>
+        <p>{t('admin.loadingPendingSubscriptions')}</p>
       </div>
     );
   }
@@ -126,7 +128,7 @@ const ManageCourseSubscriptions = () => {
               onClick={(e) => e.stopPropagation()}
             >
               <button className="mcs-image-close" onClick={() => setPreviewImage(null)}>×</button>
-              <img src={previewImage} alt="Payment proof" className="mcs-proof-image" />
+              <img src={previewImage} alt={t('admin.paymentProof')} className="mcs-proof-image" />
             </motion.div>
           </motion.div>
         )}
@@ -149,20 +151,20 @@ const ManageCourseSubscriptions = () => {
               <div className={`mcs-modal-icon ${modalType}`}>
                 {modalType === "approve" ? <CheckCircle size={28} /> : <XCircle size={28} />}
               </div>
-              <h3>{modalType === "approve" ? "Approve Subscription" : "Reject Subscription"}</h3>
+              <h3>{modalType === "approve" ? t('admin.approveSubscription') : t('admin.rejectSubscription')}</h3>
               <p>
                 {modalType === "approve"
-                  ? `Grant 1-year access to ${selectedPayment.user?.fullName || "this student"} for ${selectedPayment.amount?.toLocaleString()} DZD?`
-                  : `Reject the payment of ${selectedPayment.amount?.toLocaleString()} DZD from ${selectedPayment.user?.fullName || "this student"}?`}
+                  ? t('admin.grantAccessConfirm', { name: selectedPayment.user?.fullName || t('admin.thisStudent'), amount: selectedPayment.amount?.toLocaleString() })
+                  : t('admin.rejectPaymentConfirm', { name: selectedPayment.user?.fullName || t('admin.thisStudent'), amount: selectedPayment.amount?.toLocaleString() })}
               </p>
               <p className="mcs-modal-note">
                 {modalType === "approve"
-                  ? "The student will be able to access all courses immediately."
-                  : "The student will be notified that their payment was rejected."}
+                  ? t('admin.approveSubscriptionNote')
+                  : t('admin.rejectSubscriptionNote')}
               </p>
               <div className="mcs-modal-actions">
                 <button className="mcs-btn mcs-btn--ghost" onClick={() => setModalOpen(false)}>
-                  Cancel
+                  {t('common.cancel')}
                 </button>
                 <button
                   className={`mcs-btn mcs-btn--${modalType}`}
@@ -170,10 +172,10 @@ const ManageCourseSubscriptions = () => {
                   disabled={processing === selectedPayment._id}
                 >
                   {processing === selectedPayment._id
-                    ? "Processing..."
+                    ? t('admin.processing')
                     : modalType === "approve"
-                    ? "Yes, Approve"
-                    : "Yes, Reject"}
+                    ? t('admin.yesApprove')
+                    : t('admin.yesReject')}
                 </button>
               </div>
             </motion.div>
@@ -183,8 +185,8 @@ const ManageCourseSubscriptions = () => {
 
       <div className="mcs-header">
         <div>
-          <h1>Course Subscriptions</h1>
-          <p className="mcs-subtitle">Manage pending course subscription payments</p>
+          <h1>{t('admin.courseSubscriptions')}</h1>
+          <p className="mcs-subtitle">{t('admin.manageCourseSubscriptions')}</p>
         </div>
       </div>
 
@@ -195,7 +197,7 @@ const ManageCourseSubscriptions = () => {
           </div>
           <div className="mcs-stat-info">
             <h3>{totalPending}</h3>
-            <p>Pending</p>
+            <p>{t('common.pending')}</p>
           </div>
         </div>
         <div className="mcs-stat-card">
@@ -204,7 +206,7 @@ const ManageCourseSubscriptions = () => {
           </div>
           <div className="mcs-stat-info">
             <h3>{totalAmount.toLocaleString()} DZD</h3>
-            <p>Total Amount</p>
+            <p>{t('admin.totalAmount')}</p>
           </div>
         </div>
         <div className="mcs-stat-card">
@@ -213,7 +215,7 @@ const ManageCourseSubscriptions = () => {
           </div>
           <div className="mcs-stat-info">
             <h3>{payments.length}</h3>
-            <p>Students</p>
+            <p>{t('admin.students')}</p>
           </div>
         </div>
       </div>
@@ -223,7 +225,7 @@ const ManageCourseSubscriptions = () => {
           <Search size={15} />
           <input
             type="text"
-            placeholder="Search by name or email..."
+            placeholder={t('admin.searchByNameOrEmail')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -235,11 +237,11 @@ const ManageCourseSubscriptions = () => {
           <div className="mcs-empty-icon">
             {searchQuery ? <Search size={40} /> : <CheckCircle size={48} />}
           </div>
-          <h3>{searchQuery ? "No results found" : "No pending subscriptions"}</h3>
+          <h3>{searchQuery ? t('common.noResults') : t('admin.noPendingSubscriptions')}</h3>
           <p>
             {searchQuery
-              ? "Try a different name or email"
-              : "All course subscription payments have been processed"}
+              ? t('admin.tryDifferentNameOrEmail')
+              : t('admin.allSubscriptionsProcessed')}
           </p>
         </div>
       ) : (
@@ -258,7 +260,7 @@ const ManageCourseSubscriptions = () => {
                       )}
                     </div>
                     <div className="mcs-user-info">
-                      <span className="mcs-user-name">{payment.user?.fullName || "Unknown"}</span>
+                      <span className="mcs-user-name">{payment.user?.fullName || t('common.unknown')}</span>
                       <span className="mcs-user-email">{payment.user?.email || "—"}</span>
                     </div>
                   </div>
@@ -276,10 +278,10 @@ const ManageCourseSubscriptions = () => {
                         className="mcs-proof-btn"
                         onClick={() => setPreviewImage(payment.proofImage)}
                       >
-                        <Eye size={14} /> Proof
+                        <Eye size={14} /> {t('admin.proof')}
                       </button>
                     ) : (
-                      <span className="mcs-no-proof">No proof</span>
+                      <span className="mcs-no-proof">{t('admin.noProof')}</span>
                     )}
                     <button
                       className="mcs-action-btn approve"
@@ -287,7 +289,7 @@ const ManageCourseSubscriptions = () => {
                       disabled={processing === payment._id}
                     >
                       <CheckCircle size={15} />
-                      Approve
+                      {t('admin.approve')}
                     </button>
                     <button
                       className="mcs-action-btn reject"
@@ -295,7 +297,7 @@ const ManageCourseSubscriptions = () => {
                       disabled={processing === payment._id}
                     >
                       <XCircle size={15} />
-                      Reject
+                      {t('admin.reject')}
                     </button>
                   </div>
                 </div>
