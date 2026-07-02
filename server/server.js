@@ -115,6 +115,10 @@ app.get("/", (req, res) => {
   res.json({ message: "BiteWise Nutrition API", version: "1.0.0" });
 });
 
+app.get("/api/health", (req, res) => {
+  res.status(200).json({ success: true, message: "BiteWise API is running", timestamp: new Date().toISOString() });
+});
+
 app.use((req, res) => {
   res.status(404).json({ success: false, message: 'Route not found' });
 });
