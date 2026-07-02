@@ -44,21 +44,6 @@ import { useState, useEffect, useRef, useMemo } from 'react';
 import toast from 'react-hot-toast';
 import { isStudent, isClient } from '../api/userApi';
 
-// --- VITALITY MARQUEE ---
-const ServicesMarquee = () => (
-  <div className="ServicesPage-Marquee">
-    <motion.div
-      animate={{ x: [0, -1000] }}
-      transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-      className="ServicesPage-Marquee-Content"
-    >
-      {[...Array(10)].map((_, i) => (
-        <span key={i}>{t('services.marquee')}</span>
-      ))}
-    </motion.div>
-  </div>
-);
-
 function ServicesPage() {
   const { t } = useTranslation();
   const { user, isAuthenticated } = useAuth();
@@ -73,6 +58,20 @@ function ServicesPage() {
   const [formations, setFormations] = useState([]);
   const [formationsLoading, setFormationsLoading] = useState(true);
   const [selectedFormation, setSelectedFormation] = useState(null);
+
+  const ServicesMarquee = () => (
+    <div className="ServicesPage-Marquee">
+      <motion.div
+        animate={{ x: [0, -1000] }}
+        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+        className="ServicesPage-Marquee-Content"
+      >
+        {[...Array(10)].map((_, i) => (
+          <span key={i}>{t('services.marquee')}</span>
+        ))}
+      </motion.div>
+    </div>
+  );
 
   useEffect(() => {
     if (selectedFormation) {

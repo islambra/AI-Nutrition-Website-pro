@@ -53,12 +53,12 @@ const PurchaseRequests = ({ defaultType = 'all' }) => {
   };
 
   const handleDelete = async (id, name) => {
-    toast((t) => (
+    toast((toastObj) => (
       <div className="pr-toast">
         <p>{t('purchaseRequests.deleteConfirm')} <strong>{name}</strong>?</p>
         <div className="pr-toast-actions">
-          <button onClick={() => { toast.dismiss(t.id); confirmDelete(id); }} className="pr-toast-confirm">{t('common.delete')}</button>
-          <button onClick={() => toast.dismiss(t.id)} className="pr-toast-cancel">{t('common.cancel')}</button>
+          <button onClick={() => { toast.dismiss(toastObj.id); confirmDelete(id); }} className="pr-toast-confirm">{t('common.delete')}</button>
+          <button onClick={() => toast.dismiss(toastObj.id)} className="pr-toast-cancel">{t('common.cancel')}</button>
         </div>
       </div>
     ), { duration: 5000, position: 'top-center' });
