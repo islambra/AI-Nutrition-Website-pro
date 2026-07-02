@@ -732,7 +732,7 @@
         }
       },
       "createBlog": {
-        "title": "Créer un nouveau blog",
+        "heading": "Créer un nouveau blog",
         "hero": "Partagez votre histoire",
         "subtitle": "Partagez vos connaissances, recettes ou histoires avec la communauté",
         "recipe": "Recette — Partagez vos créations culinaires",
@@ -955,7 +955,13 @@
     "typing": "tape...",
     "send": "Envoyer",
     "close": "Fermer",
-    "unknown": "Inconnu"
+    "unknown": "Inconnu",
+    "title": "Messages",
+    "subtitle": "Connectez-vous avec votre communauté",
+    "startConversation": "Commencez une conversation en cliquant sur le profil d'un diététicien",
+    "plan": "Plan",
+    "formation": "Formation",
+    "deleteConfirm": "Êtes-vous sûr de vouloir supprimer cette conversation ? Cette action est irréversible."
   },
   "foodScanner": {
     "dropZone": "Déposez votre image ici ou cliquez pour parcourir",

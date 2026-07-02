@@ -251,7 +251,7 @@ const CreateBlog = () => {
           <Icons.Sparkles />
           <span>{t('dashboard.dieteticien.createBlog.hero')}</span>
         </div>
-        <h1 className="blog-hero-title">{t('dashboard.dieteticien.createBlog.title')}</h1>
+        <h1 className="blog-hero-title">{t('dashboard.dieteticien.createBlog.heading')}</h1>
         <p className="blog-hero-subtitle">{t('dashboard.dieteticien.createBlog.subtitle')}</p>
       </div>
       
