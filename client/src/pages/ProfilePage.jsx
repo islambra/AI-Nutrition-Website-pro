@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   User, Mail, Shield, Edit3, Camera, Save, X,
@@ -259,13 +259,13 @@ function ProfilePage() {
   };
 
   const getStatusText = () => {
-    if (isMetricsLoading) return 'CALCULATING';
+    if (isMetricsLoading) return t('profile.calculating');
     switch(clientProfile.bmiCategory) {
-      case 'Normal': return 'OPTIMAL';
-      case 'Overweight': return 'ELEVATED';
-      case 'Underweight': return 'LOW';
-      case 'Obesity': return 'HIGH';
-      default: return 'PENDING';
+      case 'Normal': return t('profile.optimal');
+      case 'Overweight': return t('profile.elevated');
+      case 'Underweight': return t('profile.low');
+      case 'Obesity': return t('profile.high');
+      default: return t('profile.pending');
     }
   };
 
@@ -305,7 +305,7 @@ function ProfilePage() {
           <header className="VXPR-Header">
             <ScrollReveal delay={0.1}>
               <h1 className="VXPR-Title">
-                MY <span className="VXPR-Highlight">PROFILE</span>
+                <Trans i18nKey="profile.myProfile" components={{1: <span className="VXPR-Highlight" />}} />
               </h1>
             </ScrollReveal>
           </header>
@@ -342,7 +342,7 @@ function ProfilePage() {
                   </button>
                 </div>
                 
-                <h2 className="VXPR-UserName">{user?.fullName || 'User'}</h2>
+                <h2 className="VXPR-UserName">{user?.fullName || t('common.unknown')}</h2>
                 
                 <div className="VXPR-RoleBadge">
                   <span className="VXPR-RoleLabel">{user?.role?.toUpperCase()}</span>
@@ -352,7 +352,7 @@ function ProfilePage() {
                   <div className="VXPR-QuickStatItem">
                     <UserCheck size={16} />
                     <div className="VXPR-QuickStatInfo">
-                      <span className="VXPR-QuickStatLabel">STATUS</span>
+                      <span className="VXPR-QuickStatLabel">{t('profile.status')}</span>
                       <span className="VXPR-QuickStatValue">
                         {isMetricsLoading ? (
                           <Loader2 size={12} className="VXPR-Spin" />
@@ -365,7 +365,7 @@ function ProfilePage() {
                   <div className="VXPR-QuickStatItem">
                     <Clock size={16} />
                     <div className="VXPR-QuickStatInfo">
-                      <span className="VXPR-QuickStatLabel">MEMBER SINCE</span>
+                      <span className="VXPR-QuickStatLabel">{t('profile.memberSince')}</span>
                       <span className="VXPR-QuickStatValue">
                         {user?.createdAt ? new Date(user.createdAt).getFullYear() : new Date().getFullYear()}
                       </span>
@@ -379,7 +379,7 @@ function ProfilePage() {
                 <ScrollReveal direction="left" delay={0.2} className="VXPR-MetricsPanel">
                   <h3 className="VXPR-PanelHeading">
                     <Activity size={18} />
-                    HEALTH METRICS
+                    {t('profile.healthMetrics')}
                   </h3>
                   <div className="VXPR-MetricsList">
                     <div className="VXPR-MetricRow">
@@ -388,14 +388,14 @@ function ProfilePage() {
                       </div>
                       <div className="VXPR-MetricRowInfo">
                         <div className="VXPR-MetricRowHeader">
-                          <span className="VXPR-MetricRowLabel">BMI</span>
+                          <span className="VXPR-MetricRowLabel">{t('profile.bmi')}</span>
                           <span className={`VXPR-MetricRowBadge ${getStatusColor()}`}>
-                            {clientProfile.bmiCategory || 'Pending'}
+                            {clientProfile.bmiCategory || t('profile.pending')}
                           </span>
                         </div>
                         <div className="VXPR-MetricRowValueRow">
                           <span className="VXPR-MetricRowValue">{formatMetric(clientProfile.bmi)}</span>
-                          <span className="VXPR-MetricRowSubtext">kg/m²</span>
+                          <span className="VXPR-MetricRowSubtext">{t('profile.kgM2')}</span>
                         </div>
                       </div>
                     </div>
@@ -405,10 +405,10 @@ function ProfilePage() {
                         <Flame size={18} />
                       </div>
                       <div className="VXPR-MetricRowInfo">
-                        <span className="VXPR-MetricRowLabel">BMR</span>
+                        <span className="VXPR-MetricRowLabel">{t('profile.bmr')}</span>
                         <div className="VXPR-MetricRowValueRow">
                           <span className="VXPR-MetricRowValue">{formatMetric(clientProfile.bmr)}</span>
-                          <span className="VXPR-MetricRowSubtext">kcal/day</span>
+                          <span className="VXPR-MetricRowSubtext">{t('profile.kcalDay')}</span>
                         </div>
                       </div>
                     </div>
@@ -418,10 +418,10 @@ function ProfilePage() {
                         <Zap size={18} />
                       </div>
                       <div className="VXPR-MetricRowInfo">
-                        <span className="VXPR-MetricRowLabel">TDEE</span>
+                        <span className="VXPR-MetricRowLabel">{t('profile.tdee')}</span>
                         <div className="VXPR-MetricRowValueRow">
                           <span className="VXPR-MetricRowValue">{formatMetric(clientProfile.tdee)}</span>
-                          <span className="VXPR-MetricRowSubtext">Active Burn</span>
+                          <span className="VXPR-MetricRowSubtext">{t('profile.activeBurn')}</span>
                         </div>
                       </div>
                     </div>
@@ -431,10 +431,10 @@ function ProfilePage() {
                         <Target size={18} />
                       </div>
                       <div className="VXPR-MetricRowInfo">
-                        <span className="VXPR-MetricRowLabel">IDEAL WT</span>
+                        <span className="VXPR-MetricRowLabel">{t('profile.idealWeight')}</span>
                         <div className="VXPR-MetricRowValueRow">
                           <span className="VXPR-MetricRowValue">{formatMetric(clientProfile.idealWeightKg)}</span>
-                          <span className="VXPR-MetricRowSubtext">kg Optimal</span>
+                          <span className="VXPR-MetricRowSubtext">{t('profile.kgOptimal')}</span>
                         </div>
                       </div>
                     </div>
@@ -444,10 +444,10 @@ function ProfilePage() {
                         <Thermometer size={18} />
                       </div>
                       <div className="VXPR-MetricRowInfo">
-                        <span className="VXPR-MetricRowLabel">FAT %</span>
+                        <span className="VXPR-MetricRowLabel">{t('profile.bodyFat')}</span>
                         <div className="VXPR-MetricRowValueRow">
                           <span className="VXPR-MetricRowValue">{formatMetric(clientProfile.bodyFatPercentage)}</span>
-                          <span className="VXPR-MetricRowSubtext">Estimated</span>
+                          <span className="VXPR-MetricRowSubtext">{t('profile.estimated')}</span>
                         </div>
                       </div>
                     </div>
@@ -457,10 +457,10 @@ function ProfilePage() {
                         <TrendingUp size={18} />
                       </div>
                       <div className="VXPR-MetricRowInfo">
-                        <span className="VXPR-MetricRowLabel">STATUS</span>
+                        <span className="VXPR-MetricRowLabel">{t('profile.statusMetric')}</span>
                         <div className="VXPR-MetricRowValueRow">
                           <span className="VXPR-MetricRowValue VXPR-StatusText">{getStatusText()}</span>
-                          <span className="VXPR-MetricRowSubtext">Current Assessment</span>
+                          <span className="VXPR-MetricRowSubtext">{t('profile.currentAssessment')}</span>
                         </div>
                       </div>
                     </div>
@@ -473,20 +473,20 @@ function ProfilePage() {
                 <ScrollReveal direction="left" delay={0.2} className="VXPR-MetricsPanel">
                   <h3 className="VXPR-PanelHeading">
                     <Shield size={18} />
-                    ACCESS LEVEL
+                    {t('profile.accessLevel')}
                   </h3>
                   <div className="VXPR-MetricsGrid">
                     <div className="VXPR-MetricBox">
                       <Shield size={20} />
-                      <span className="VXPR-MetricLabel">ROLE</span>
+                      <span className="VXPR-MetricLabel">{t('profile.accessRole')}</span>
                       <span className="VXPR-MetricValue VXPR-TextLarge">{user?.role?.toUpperCase()}</span>
-                      <span className="VXPR-MetricSubtext">Authorization</span>
+                      <span className="VXPR-MetricSubtext">{t('profile.authorization')}</span>
                     </div>
                     <div className="VXPR-MetricBox">
                       <Mail size={20} />
-                      <span className="VXPR-MetricLabel">EMAIL</span>
+                      <span className="VXPR-MetricLabel">{t('profile.emailLabel')}</span>
                       <span className="VXPR-MetricValue VXPR-TextSmall">{user?.email || 'N/A'}</span>
-                      <span className="VXPR-MetricSubtext">Verified</span>
+                      <span className="VXPR-MetricSubtext">{t('profile.verified')}</span>
                     </div>
                   </div>
                 </ScrollReveal>
@@ -504,7 +504,7 @@ function ProfilePage() {
                     type="button"
                   >
                     <FileText size={18} />
-                    BIOGRAPHIC RECORDS
+                    {t('profile.biographicRecords')}
                   </button>
                   {user?.role === "client" && (
                     <button 
@@ -513,7 +513,7 @@ function ProfilePage() {
                       type="button"
                     >
                       <AlertTriangle size={18} />
-                      RISK SENSITIVITIES
+                      {t('profile.riskSensitivities')}
                     </button>
                   )}
 
@@ -524,7 +524,7 @@ function ProfilePage() {
                     <div className="VXPR-FormTitle">
                       <Info size={22} />
                       <h3>
-                        {activeTab === 'biographic' ? 'PERSONAL INFORMATION' : 'HEALTH RISK FACTORS'}
+                        {activeTab === 'biographic' ? t('profile.personalInformation') : t('profile.healthRiskFactors')}
                       </h3>
                     </div>
                     <button 
@@ -534,9 +534,9 @@ function ProfilePage() {
                       type="button"
                     >
                       {isEditing ? (
-                        <><X size={16} /> CANCEL</>
+                        <><X size={16} /> {t('profile.cancel')}</>
                       ) : (
-                        <><Edit3 size={16} /> EDIT {activeTab === 'biographic' ? 'RECORDS' : 'RISKS'}</>
+                        <><Edit3 size={16} /> {activeTab === 'biographic' ? t('profile.editRecords') : t('profile.editRisks')}</>
                       )}
                     </button>
                   </div>
@@ -546,7 +546,7 @@ function ProfilePage() {
                   {activeTab === 'biographic' && (
                     <div className="VXPR-FormGrid">
                       <div className="VXPR-FormGroup">
-                        <label htmlFor="fullName">FULL NAME</label>
+                        <label htmlFor="fullName">{t('profile.fullName')}</label>
                         <div className="VXPR-InputWrapper">
                           <User className="VXPR-InputIcon" size={18} />
                           <input 
@@ -555,14 +555,14 @@ function ProfilePage() {
                             value={formData.fullName} 
                             onChange={handleChange} 
                             disabled={!isEditing || isSaving} 
-                            placeholder="John Doe" 
+                            placeholder={t('profile.fullNamePlaceholder')} 
                             className="VXPR-FormInput"
                           />
                         </div>
                       </div>
 
                       <div className="VXPR-FormGroup">
-                        <label htmlFor="email">EMAIL ADDRESS</label>
+                        <label htmlFor="email">{t('profile.emailAddress')}</label>
                         <div className="VXPR-InputWrapper">
                           <Mail className="VXPR-InputIcon" size={18} />
                           <input 
@@ -571,7 +571,7 @@ function ProfilePage() {
                             value={formData.email} 
                             onChange={handleChange} 
                             disabled={!isEditing || isSaving} 
-                            placeholder="john@example.com" 
+                            placeholder={t('profile.emailPlaceholder')} 
                             className="VXPR-FormInput"
                           />
                         </div>
@@ -579,7 +579,7 @@ function ProfilePage() {
 
                       {user?.role === "student" && (
                         <div className="VXPR-FormGroup">
-                          <label htmlFor="studentCardNumber">STUDENT CARD NUMBER</label>
+                          <label htmlFor="studentCardNumber">{t('profile.studentCardNumber')}</label>
                           <div className="VXPR-InputWrapper">
                             <Fingerprint className="VXPR-InputIcon" size={18} />
                             <input 
@@ -588,7 +588,7 @@ function ProfilePage() {
                               value={formData.studentCardNumber} 
                               onChange={handleChange} 
                               disabled={!isEditing || isSaving} 
-                              placeholder="e.g. STU2024001" 
+                              placeholder={t('profile.studentCardPlaceholder')} 
                               className="VXPR-FormInput"
                             />
                           </div>
@@ -598,7 +598,7 @@ function ProfilePage() {
                       {(user?.role === "client" || user?.role === "student") && (
                         <>
                           <div className="VXPR-FormGroup">
-                            <label htmlFor="age">AGE</label>
+                            <label htmlFor="age">{t('profile.age')}</label>
                             <div className="VXPR-InputWrapper">
                               <Calendar className="VXPR-InputIcon" size={18} />
                               <input 
@@ -607,7 +607,7 @@ function ProfilePage() {
                                 value={formData.age} 
                                 onChange={handleChange} 
                                 disabled={!isEditing || isSaving} 
-                                placeholder="25" 
+                                placeholder={t('profile.agePlaceholder')} 
                                 min="1"
                                 max="150"
                                 className="VXPR-FormInput"
@@ -616,7 +616,7 @@ function ProfilePage() {
                           </div>
 
                           <div className="VXPR-FormGroup">
-                            <label htmlFor="gender">GENDER</label>
+                            <label htmlFor="gender">{t('profile.gender')}</label>
                             <div className="VXPR-InputWrapper">
                               <UserCheck className="VXPR-InputIcon" size={18} />
                               <select 
@@ -626,8 +626,8 @@ function ProfilePage() {
                                 disabled={!isEditing || isSaving}
                                 className="VXPR-FormSelect"
                               >
-                                <option value="Male">Male</option>
-                                <option value="Female">Female</option>
+                                <option value="Male">{t('signup.male')}</option>
+                                <option value="Female">{t('signup.female')}</option>
                               </select>
                             </div>
                           </div>
@@ -637,7 +637,7 @@ function ProfilePage() {
                       {user?.role === "client" && (
                         <>
                           <div className="VXPR-FormGroup">
-                            <label htmlFor="heightCm">HEIGHT (CM)</label>
+                            <label htmlFor="heightCm">{t('profile.heightCm')}</label>
                             <div className="VXPR-InputWrapper">
                               <Ruler className="VXPR-InputIcon" size={18} />
                               <input 
@@ -646,7 +646,7 @@ function ProfilePage() {
                                 value={formData.heightCm} 
                                 onChange={handleChange} 
                                 disabled={!isEditing || isSaving} 
-                                placeholder="180" 
+                                placeholder={t('profile.heightPlaceholder')} 
                                 min="50"
                                 max="300"
                                 className="VXPR-FormInput"
@@ -655,7 +655,7 @@ function ProfilePage() {
                           </div>
 
                           <div className="VXPR-FormGroup">
-                            <label htmlFor="weightKg">WEIGHT (KG)</label>
+                            <label htmlFor="weightKg">{t('profile.weightKg')}</label>
                             <div className="VXPR-InputWrapper">
                               <Scale className="VXPR-InputIcon" size={18} />
                               <input 
@@ -664,7 +664,7 @@ function ProfilePage() {
                                 value={formData.weightKg} 
                                 onChange={handleChange} 
                                 disabled={!isEditing || isSaving} 
-                                placeholder="75" 
+                                placeholder={t('profile.weightPlaceholder')} 
                                 min="10"
                                 max="500"
                                 step="0.1"
@@ -674,7 +674,7 @@ function ProfilePage() {
                           </div>
 
                           <div className="VXPR-FormGroup">
-                            <label htmlFor="activityLevel">ACTIVITY LEVEL</label>
+                            <label htmlFor="activityLevel">{t('profile.activityLevel')}</label>
                             <div className="VXPR-InputWrapper">
                               <Activity className="VXPR-InputIcon" size={18} />
                               <select 
@@ -684,17 +684,17 @@ function ProfilePage() {
                                 disabled={!isEditing || isSaving}
                                 className="VXPR-FormSelect"
                               >
-                                <option value="Sedentary">Sedentary</option>
-                                <option value="Lightly Active">Lightly Active</option>
-                                <option value="Moderate">Moderate</option>
-                                <option value="Active">Active</option>
-                                <option value="Very Active">Very Active</option>
+                                <option value="Sedentary">{t('signup.sedentary')}</option>
+                                <option value="Lightly Active">{t('signup.lightlyActive')}</option>
+                                <option value="Moderate">{t('signup.moderate')}</option>
+                                <option value="Active">{t('signup.active')}</option>
+                                <option value="Very Active">{t('signup.veryActive')}</option>
                               </select>
                             </div>
                           </div>
 
                           <div className="VXPR-FormGroup">
-                            <label htmlFor="goals">FITNESS GOAL</label>
+                            <label htmlFor="goals">{t('profile.fitnessGoal')}</label>
                             <div className="VXPR-InputWrapper">
                               <Target className="VXPR-InputIcon" size={18} />
                               <input 
@@ -703,7 +703,7 @@ function ProfilePage() {
                                 value={formData.goals} 
                                 onChange={handleChange} 
                                 disabled={!isEditing || isSaving} 
-                                placeholder="Improve body composition" 
+                                placeholder={t('profile.goalsPlaceholder')} 
                                 className="VXPR-FormInput"
                               />
                             </div>
@@ -713,7 +713,7 @@ function ProfilePage() {
 
                       {isEditing && (
                         <div className="VXPR-FormGroup VXPR-FullWidth">
-                          <label htmlFor="password">NEW PASSWORD (OPTIONAL)</label>
+                          <label htmlFor="password">{t('profile.newPassword')}</label>
                           <div className="VXPR-InputWrapper">
                             <Shield className="VXPR-InputIcon" size={18} />
                             <input 
@@ -721,7 +721,7 @@ function ProfilePage() {
                               id="password" 
                               onChange={handleChange} 
                               disabled={isSaving} 
-                              placeholder="Leave blank to keep current password" 
+                              placeholder={t('profile.passwordPlaceholder')} 
                               className="VXPR-FormInput"
                             />
                           </div>
@@ -732,11 +732,11 @@ function ProfilePage() {
                         <div className="VXPR-FullWidth" style={{ marginTop: '24px' }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
                             <CreditCard size={18} />
-                            <h3 style={{ margin: 0, fontSize: '14px', letterSpacing: '0.5px' }}>PAYMENT INFORMATION</h3>
+                            <h3 style={{ margin: 0, fontSize: '14px', letterSpacing: '0.5px' }}>{t('profile.paymentInformation')}</h3>
                           </div>
                           <div className="VXPR-FormGrid">
                             <div className="VXPR-FormGroup">
-                              <label htmlFor="ccpNumber">CCP NUMBER</label>
+                              <label htmlFor="ccpNumber">{t('profile.ccpNumber')}</label>
                               <div className="VXPR-InputWrapper">
                                 <input 
                                   type="text" 
@@ -744,13 +744,13 @@ function ProfilePage() {
                                   value={formData.ccpNumber} 
                                   onChange={handleChange} 
                                   disabled={!isEditing || isSaving} 
-                                  placeholder="e.g. 12345678" 
+                                  placeholder={t('profile.ccpNumberPlaceholder')} 
                                   className="VXPR-FormInput"
                                 />
                               </div>
                             </div>
                             <div className="VXPR-FormGroup">
-                              <label htmlFor="ccpKey">CCP KEY (2 DIGITS)</label>
+                              <label htmlFor="ccpKey">{t('profile.ccpKey')}</label>
                               <div className="VXPR-InputWrapper">
                                 <input 
                                   type="text" 
@@ -758,7 +758,7 @@ function ProfilePage() {
                                   value={formData.ccpKey} 
                                   onChange={handleChange} 
                                   disabled={!isEditing || isSaving} 
-                                  placeholder="12" 
+                                  placeholder={t('profile.ccpKeyPlaceholder')} 
                                   maxLength={2}
                                   className="VXPR-FormInput"
                                 />
@@ -766,7 +766,7 @@ function ProfilePage() {
                             </div>
                           </div>
                           <div className="VXPR-FormGroup VXPR-FullWidth">
-                            <label htmlFor="baridiMob">BARIDIMOB NUMBER</label>
+                            <label htmlFor="baridiMob">{t('profile.baridiMob')}</label>
                             <div className="VXPR-InputWrapper">
                               <input 
                                 type="number" 
@@ -774,7 +774,7 @@ function ProfilePage() {
                                 value={formData.baridiMob} 
                                 onChange={handleChange} 
                                 disabled={!isEditing || isSaving} 
-                                placeholder="e.g. 12345678901234567890" 
+                                placeholder={t('profile.baridiMobPlaceholder')} 
                                 className="VXPR-FormInput"
                               />
                             </div>
@@ -788,8 +788,8 @@ function ProfilePage() {
                   {activeTab === 'risk' && user?.role === "client" && (
                     <div className="VXPR-FormGrid">
                       <div className="VXPR-FormGroup VXPR-FullWidth">
-                        <label htmlFor="medicalConditions">MEDICAL CONDITIONS</label>
-                        <p className="VXPR-FieldHint">Enter comma-separated list of medical conditions</p>
+                        <label htmlFor="medicalConditions">{t('profile.medicalConditions')}</label>
+                        <p className="VXPR-FieldHint">{t('profile.medicalConditionsHint')}</p>
                         <div className="VXPR-InputWrapper">
                           <Thermometer className="VXPR-InputIcon" size={18} />
                           <input 
@@ -798,7 +798,7 @@ function ProfilePage() {
                             value={formData.medicalConditions} 
                             onChange={handleChange} 
                             disabled={!isEditing || isSaving} 
-                            placeholder="Asthma, Diabetes, Hypertension" 
+                            placeholder={t('profile.medicalPlaceholder')} 
                             className="VXPR-FormInput"
                           />
                         </div>
@@ -809,15 +809,15 @@ function ProfilePage() {
                                 <span key={idx} className="VXPR-Tag VXPR-TagDanger">{condition.trim()}</span>
                               ))
                             ) : (
-                              <span className="VXPR-EmptyState">No medical conditions recorded</span>
+                              <span className="VXPR-EmptyState">{t('profile.noMedicalConditions')}</span>
                             )}
                           </div>
                         )}
                       </div>
 
                       <div className="VXPR-FormGroup VXPR-FullWidth">
-                        <label htmlFor="allergies">ALLERGIES</label>
-                        <p className="VXPR-FieldHint">Enter comma-separated list of allergies</p>
+                        <label htmlFor="allergies">{t('profile.allergies')}</label>
+                        <p className="VXPR-FieldHint">{t('profile.allergiesHint')}</p>
                         <div className="VXPR-InputWrapper">
                           <AlertTriangle className="VXPR-InputIcon" size={18} />
                           <input 
@@ -826,7 +826,7 @@ function ProfilePage() {
                             value={formData.allergies} 
                             onChange={handleChange} 
                             disabled={!isEditing || isSaving} 
-                            placeholder="Peanuts, Shellfish, Gluten" 
+                            placeholder={t('profile.allergiesPlaceholder')} 
                             className="VXPR-FormInput"
                           />
                         </div>
@@ -837,15 +837,15 @@ function ProfilePage() {
                                 <span key={idx} className="VXPR-Tag VXPR-TagWarning">{allergy.trim()}</span>
                               ))
                             ) : (
-                              <span className="VXPR-EmptyState">No allergies recorded</span>
+                              <span className="VXPR-EmptyState">{t('profile.noAllergies')}</span>
                             )}
                           </div>
                         )}
                       </div>
 
                       <div className="VXPR-FormGroup VXPR-FullWidth">
-                        <label htmlFor="goals">FITNESS GOAL</label>
-                        <p className="VXPR-FieldHint">Your primary fitness or health goal</p>
+                        <label htmlFor="goals">{t('profile.fitnessGoal')}</label>
+                        <p className="VXPR-FieldHint">{t('profile.goalHint')}</p>
                         <div className="VXPR-InputWrapper">
                           <Target className="VXPR-InputIcon" size={18} />
                           <input 
@@ -854,7 +854,7 @@ function ProfilePage() {
                             value={formData.goals} 
                             onChange={handleChange} 
                             disabled={!isEditing || isSaving} 
-                            placeholder="Improve body composition" 
+                            placeholder={t('profile.goalsPlaceholderRisk')} 
                             className="VXPR-FormInput"
                           />
                         </div>
@@ -869,8 +869,8 @@ function ProfilePage() {
                                 <AlertTriangle size={20} />
                               </div>
                               <div className="VXPR-RiskSummaryContent">
-                                <h4>Medical Conditions</h4>
-                                <p>{formData.medicalConditions.split(',').filter(s => s.trim()).length || 0} conditions recorded</p>
+                                <h4>{t('profile.conditionsHeading')}</h4>
+                                <p>{t('profile.riskSummaryDesc', {count: formData.medicalConditions.split(',').filter(s => s.trim()).length || 0})}</p>
                               </div>
                             </div>
                             <div className="VXPR-RiskSummaryItem">
@@ -878,8 +878,8 @@ function ProfilePage() {
                                 <AlertTriangle size={20} />
                               </div>
                               <div className="VXPR-RiskSummaryContent">
-                                <h4>Allergies</h4>
-                                <p>{formData.allergies.split(',').filter(s => s.trim()).length || 0} allergies recorded</p>
+                                <h4>{t('profile.allergiesHeading')}</h4>
+                                <p>{t('profile.allergySummaryDesc', {count: formData.allergies.split(',').filter(s => s.trim()).length || 0})}</p>
                               </div>
                             </div>
                             <div className="VXPR-RiskSummaryItem">
@@ -887,8 +887,8 @@ function ProfilePage() {
                                 <Target size={20} />
                               </div>
                               <div className="VXPR-RiskSummaryContent">
-                                <h4>Goal</h4>
-                                <p>{formData.goals || 'No goal set'}</p>
+                                <h4>{t('profile.goalHeading')}</h4>
+                                <p>{formData.goals || t('profile.noGoal')}</p>
                               </div>
                             </div>
                           </div>
@@ -914,11 +914,11 @@ function ProfilePage() {
                         >
                           {isSaving ? (
                             <>
-                              <Loader2 size={18} className="VXPR-Spin" /> SAVING
+                              <Loader2 size={18} className="VXPR-Spin" /> {t('profile.saving')}
                             </>
                           ) : (
                             <>
-                              <Save size={18} /> SAVE ALL CHANGES
+                              <Save size={18} /> {t('profile.saveAllChanges')}
                             </>
                           )}
                         </button>

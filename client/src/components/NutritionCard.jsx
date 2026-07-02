@@ -1,12 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { Flame, Droplets, Beef, Wheat, Sparkles, Hash } from 'lucide-react';
 
 const METRICS = [
-  { key: 'calories', label: 'Calories', unit: 'kcal', icon: Flame, color: '#f59e0b', bg: '#fffbeb' },
-  { key: 'protein_g', label: 'Protein', unit: 'g', icon: Beef, color: '#22C55E', bg: '#f0fdf4' },
-  { key: 'fat_g', label: 'Fat', unit: 'g', icon: Droplets, color: '#ef4444', bg: '#fef2f2' },
-  { key: 'carbohydrates_g', label: 'Carbs', unit: 'g', icon: Wheat, color: '#6366f1', bg: '#eef2ff' },
+  { key: 'calories', unit: 'kcal', icon: Flame, color: '#f59e0b', bg: '#fffbeb' },
+  { key: 'protein_g', unit: 'g', icon: Beef, color: '#22C55E', bg: '#f0fdf4' },
+  { key: 'fat_g', unit: 'g', icon: Droplets, color: '#ef4444', bg: '#fef2f2' },
+  { key: 'carbohydrates_g', unit: 'g', icon: Wheat, color: '#6366f1', bg: '#eef2ff' },
 ];
 
 const AnimatedNumber = ({ value, suffix = '' }) => {
@@ -35,6 +36,7 @@ const AnimatedNumber = ({ value, suffix = '' }) => {
 };
 
 const NutritionCard = ({ dishName, nutrition }) => {
+  const { t } = useTranslation();
   const vals = nutrition || {};
   const cals = Number(vals.calories) || 0;
 
@@ -64,7 +66,7 @@ const NutritionCard = ({ dishName, nutrition }) => {
           <h3 style={{ fontSize: 18, fontWeight: 700, color: '#111827', margin: 0, lineHeight: 1.2 }}>
             {dishName}
           </h3>
-          <span style={{ fontSize: 11, color: '#9ca3af', fontWeight: 500 }}>Nutrition per 100g</span>
+          <span style={{ fontSize: 11, color: '#9ca3af', fontWeight: 500 }}>{t('nutritionCard.nutritionPer100g')}</span>
         </div>
       </div>
 
@@ -81,13 +83,14 @@ const NutritionCard = ({ dishName, nutrition }) => {
           <AnimatedNumber value={cals} />
         </span>
         <div style={{ fontSize: 12, color: '#b45309', fontWeight: 600, marginTop: 2 }}>
-          kcal per 100g
+          {t('nutritionCard.kcalPer100g')}
         </div>
       </div>
 
       {/* Metrics Grid */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 10 }}>
-        {METRICS.map(({ key, label, unit, icon: Icon, color, bg }, idx) => {
+        {METRICS.map(({ key, unit, icon: Icon, color, bg }, idx) => {
+          const label = t('nutritionCard.' + key);
           const val = Number(vals[key]) || 0;
           return (
             <motion.div

@@ -16,11 +16,11 @@ import {
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import ScrollReveal from "../../components/ScrollReveal";
-import { useTranslation } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 import "./ClientPlans.css";
 
 function ClientPlans() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState("plans");
 
@@ -65,7 +65,7 @@ function ClientPlans() {
       const res = await getUserConsultations();
       if (res.success) setAllConsultations(res.data || []);
     } catch (err) {
-      toast.error("Failed to load bookings");
+      toast.error(t('clientPlans.failedLoadBookings'));
     } finally {
       setBookingsLoading(false);
     }
@@ -78,7 +78,7 @@ function ClientPlans() {
   };
 
   const handleBookNow = async () => {
-    if (!bookingDateTime) return toast.error("Please select date and time");
+    if (!bookingDateTime) return toast.error(t('clientPlans.selectDateTime'));
     setBookingLoading(true);
     try {
       await bookConsultation(
@@ -86,12 +86,12 @@ function ClientPlans() {
         new Date(bookingDateTime).toISOString(),
         bookingNote
       );
-      toast.success("Consultation booked!");
+      toast.success(t('clientPlans.bookedSuccess'));
       setBookingModal({ open: false, userPlanId: null });
       fetchUserPlans();
       fetchAllConsultationsForUser();
     } catch (err) {
-      toast.error(err.response?.data?.message || "Booking failed");
+      toast.error(err.response?.data?.message || t('clientPlans.bookingFailed'));
     } finally {
       setBookingLoading(false);
     }
@@ -100,15 +100,15 @@ function ClientPlans() {
   const handleCancelBooking = async (consultationId) => {
     setConfirmDialog({
       open: true,
-      message: "Cancel this booking? A session will be refunded.",
+      message: t('clientPlans.cancelConfirm'),
       onConfirm: async () => {
         try {
           await cancelConsultation(consultationId);
-          toast.success("Booking cancelled – session restored");
+          toast.success(t('clientPlans.cancelSuccess'));
           fetchUserPlans();
           fetchAllConsultationsForUser();
         } catch (err) {
-          toast.error(err.response?.data?.message || "Error cancelling");
+          toast.error(err.response?.data?.message || t('clientPlans.cancelError'));
         }
       }
     });
@@ -117,14 +117,14 @@ function ClientPlans() {
   const handleDeleteConsultation = async (consultationId) => {
     setConfirmDialog({
       open: true,
-      message: "Permanently delete this consultation record?",
+      message: t('clientPlans.deleteConfirm'),
       onConfirm: async () => {
         try {
           await deleteConsultation(consultationId);
-          toast.success("Consultation deleted");
+          toast.success(t('clientPlans.deleteSuccess'));
           fetchAllConsultationsForUser();
         } catch (err) {
-          toast.error(err.response?.data?.message || "Error deleting");
+          toast.error(err.response?.data?.message || t('clientPlans.deleteError'));
         }
       }
     });
@@ -138,7 +138,7 @@ function ClientPlans() {
 
   const CountdownTimer = ({ targetDate }) => {
     const diff = new Date(targetDate).getTime() - now;
-    if (diff <= 0) return <span className="aff-countdown-live">Live now</span>;
+    if (diff <= 0) return <span className="aff-countdown-live">{t('clientPlans.liveNow')}</span>;
     const d = Math.floor(diff / 86400000);
     const h = Math.floor((diff % 86400000) / 3600000);
     const m = Math.floor((diff % 3600000) / 60000);
@@ -183,7 +183,7 @@ function ClientPlans() {
           onClick={() => setActiveSection("bookings")}
         >
           <Eye size={18} />
-          My Bookings
+          {t('clientPlans.myBookings')}
           {allConsultations.length > 0 && (
             <span className="aff-tab-count">{allConsultations.length}</span>
           )}
@@ -234,7 +234,7 @@ function ClientPlans() {
                           </div>
                           <div className="aff-sessions-badge">
                             <MessageCircle size={14} />
-                            <span>{userPlan.sessionsRemaining} left</span>
+                            <Trans i18nKey="clientPlans.sessionRemaining" values={{count: userPlan.sessionsRemaining}} />
                           </div>
                         </div>
                         <p className="aff-plan-desc">
@@ -242,12 +242,12 @@ function ClientPlans() {
                           {plan.description?.length > 120 ? "..." : ""}
                         </p>
                         <div className="aff-plan-meta">
-                          <span><Clock size={14} /> {plan.duration || "—"} weeks</span>
+                          <span><Clock size={14} /> {plan.duration || "—"} {t('services.weeks')}</span>
                           <span><Activity size={14} /> {plan.mealsPerDay || "—"} meals/day</span>
                         </div>
                         <div className="aff-plan-footer">
                           <span className="aff-plan-date">
-                            Purchased {new Date(userPlan.purchasedAt).toLocaleDateString()}
+                            <Trans i18nKey="clientPlans.purchased" values={{date: new Date(userPlan.purchasedAt).toLocaleDateString()}} />
                           </span>
                           {userPlan.sessionsRemaining > 0 && (
                             <button
@@ -257,7 +257,7 @@ function ClientPlans() {
                                 openBookingModal(userPlan._id);
                               }}
                             >
-                              <Video size={14} /> Book Session
+                              <Video size={14} /> {t('clientPlans.bookSession')}
                             </button>
                           )}
                         </div>
@@ -296,7 +296,7 @@ function ClientPlans() {
                 >
                   <div className="aff-booking-header">
                     <div>
-                      <h4>{booking.plan?.planName || "Consultation"}</h4>
+                      <h4>{booking.plan?.planName || t('clientPlans.myBookings')}</h4>
                       <span className="aff-booking-category">
                         {booking.plan?.planCategory || "N/A"}
                       </span>
@@ -329,7 +329,7 @@ function ClientPlans() {
                       <div className="aff-booking-detail">
                         <MessageCircle size={14} />
                         <span>
-                          Sessions left: <strong>{booking.userPlan.sessionsRemaining}</strong>
+                          <Trans i18nKey="clientPlans.sessionRemaining" values={{count: booking.userPlan.sessionsRemaining}} />
                         </span>
                       </div>
                     )}
@@ -355,7 +355,7 @@ function ClientPlans() {
                       rel="noreferrer"
                       className="aff-zoom-link"
                     >
-                      <Video size={14} /> Join Zoom Meeting
+                      <Video size={14} /> {t('clientPlans.joinZoom')}
                     </a>
                   )}
 
@@ -365,7 +365,7 @@ function ClientPlans() {
                         className="aff-cancel-btn"
                         onClick={() => handleCancelBooking(booking._id)}
                       >
-                        <Trash2 size={14} /> Cancel Booking
+                        <Trash2 size={14} /> {t('clientPlans.cancelBooking')}
                       </button>
                     )}
                     {booking.status !== "pending" && (
@@ -373,7 +373,7 @@ function ClientPlans() {
                         className="aff-delete-btn"
                         onClick={() => handleDeleteConsultation(booking._id)}
                       >
-                        <Trash2 size={14} /> Delete Record
+                        <Trash2 size={14} /> {t('clientPlans.deleteRecord')}
                       </button>
                     )}
                   </div>
@@ -432,9 +432,9 @@ function ClientPlans() {
                       {/* Session Banner */}
                       <div className="aff-modal-session-banner">
                         <MessageCircle size={16} />
-                        <span><strong>{userPlan.sessionsRemaining}</strong> sessions remaining</span>
+                        <Trans i18nKey="clientPlans.sessionRemaining" values={{count: userPlan.sessionsRemaining}} />
                         <span className="aff-modal-sep">|</span>
-                        <span>Purchased {new Date(userPlan.purchasedAt).toLocaleDateString()}</span>
+                        <Trans i18nKey="clientPlans.purchased" values={{date: new Date(userPlan.purchasedAt).toLocaleDateString()}} />
                       </div>
 
                       <h2 className="aff-modal-title">{plan.planName}</h2>
@@ -459,11 +459,11 @@ function ClientPlans() {
                       <div className="aff-modal-stats">
                         <div className="aff-modal-stat">
                           <Clock size={18} />
-                          <span>{plan.duration || "—"} weeks</span>
+                          <span>{plan.duration || "—"} {t('services.weeks')}</span>
                         </div>
                         <div className="aff-modal-stat">
                           <AlertCircle size={18} />
-                          <span>{plan.consultationIncluded || "—"} consultations</span>
+                          <Trans i18nKey="clientPlans.consultationsIncluded" values={{count: plan.consultationIncluded || 0}} />
                         </div>
                         <div className="aff-modal-stat">
                           <Activity size={18} />
@@ -615,7 +615,7 @@ function ClientPlans() {
                             openBookingModal(userPlan._id);
                           }}
                         >
-                          <Video size={18} /> Book a Consultation Session
+                          <Video size={18} /> {t('clientPlans.bookConsultationTitle')}
                         </button>
                       )}
                     </div>
@@ -650,12 +650,12 @@ function ClientPlans() {
               >
                 <X size={20} />
               </button>
-              <h3>Book a Consultation Session</h3>
+              <h3>{t('clientPlans.bookConsultationTitle')}</h3>
               <p className="aff-booking-subtext">
-                Choose a date and time for your session. The nutritionist will review your request.
+                {t('clientPlans.bookConsultationDesc')}
               </p>
               <div className="aff-form-group">
-                <label>Date & Time *</label>
+                <label>{t('clientPlans.dateTimeLabel')}</label>
                 <input
                   type="datetime-local"
                   value={bookingDateTime}
@@ -664,11 +664,11 @@ function ClientPlans() {
                 />
               </div>
               <div className="aff-form-group">
-                <label>Note (optional)</label>
+                <label>{t('clientPlans.noteOptional')}</label>
                 <textarea
                   value={bookingNote}
                   onChange={(e) => setBookingNote(e.target.value)}
-                  placeholder="Any specific topics or questions..."
+                  placeholder={t('clientPlans.notePlaceholder')}
                   rows={3}
                 />
               </div>
@@ -687,7 +687,7 @@ function ClientPlans() {
                   {bookingLoading ? (
                     <Loader2 size={18} className="aff-spin" />
                   ) : (
-                    "Confirm Booking"
+                    t('clientPlans.confirmBooking')
                   )}
                 </button>
               </div>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 import './ServicesPage.css';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -53,7 +53,7 @@ const ServicesMarquee = () => (
       className="ServicesPage-Marquee-Content"
     >
       {[...Array(10)].map((_, i) => (
-        <span key={i}>✦ Biological Excellence ✦ Neural Precision ✦ Vitality Optimized ✦</span>
+        <span key={i}>{t('services.marquee')}</span>
       ))}
     </motion.div>
   </div>
@@ -147,12 +147,12 @@ function ServicesPage() {
             displayPrice: `${plan.price.toLocaleString()} DZD`,
             displayDescription: plan.description.substring(0, 120) + "...",
             features: [
-              `${plan.duration} Weeks Program`,
-              `${plan.consultationIncluded} Consultations`,
-              plan.followUpFrequency + " Follow-ups"
+              t('services.weeksProgram', {weeks: plan.duration}),
+              t('services.consultationsCount', {count: plan.consultationIncluded}),
+              t('services.followUps', {frequency: plan.followUpFrequency})
             ],
             featured: i === 1,
-            badge: i === 1 ? "MOST POPULAR" : null
+            badge: i === 1 ? t('services.mostPopular') : null
           };
         });
         setDynamicPlans(plans);
@@ -237,13 +237,13 @@ function ServicesPage() {
         <ScrollReveal direction="down" className="ServicesPage-Hero-Inner">
           {userIsStudent ? (
             <>
-              <h1 className="ServicesPage-Hero-Title">NUTRITION <br /> <span className="ServicesPage-Accent-Text">EDUCATION</span></h1>
-              <p className="ServicesPage-Hero-Subtitle">Access your course materials, track your progress, and advance your nutrition knowledge.</p>
+              <h1 className="ServicesPage-Hero-Title"><Trans i18nKey="services.studentHeroTitle" components={{1: <span className="ServicesPage-Accent-Text" />}} /></h1>
+              <p className="ServicesPage-Hero-Subtitle">{t('services.studentHeroSubtitle')}</p>
             </>
           ) : (
             <>
-              <h1 className="ServicesPage-Hero-Title">SYSTEM <br /> <span className="ServicesPage-Accent-Text">OPTIMIZATION</span></h1>
-              <p className="ServicesPage-Hero-Subtitle">High-precision nutritional architecture designed to sync with your biological signature.</p>
+              <h1 className="ServicesPage-Hero-Title"><Trans i18nKey="services.heroTitle" components={{1: <span className="ServicesPage-Accent-Text" />}} /></h1>
+              <p className="ServicesPage-Hero-Subtitle">{t('services.heroSubtitle')}</p>
             </>
           )}
         </ScrollReveal>
@@ -258,12 +258,12 @@ function ServicesPage() {
             <div className="sp-section-header">
               <ScrollReveal>
                 <div className="sp-badge">
-                  <GraduationCap size={13} /> COURSE ACCESS
+                  <GraduationCap size={13} /> {t('services.courseBadge')}
                 </div>
                 <h2 className="sp-title">
-                  Course <span className="sp-title-highlight">Subscription</span>
+                  <Trans i18nKey="services.courseTitle" components={{1: <span className="sp-title-highlight" />}} />
                 </h2>
-                <p className="sp-subtitle">Get yearly access to all nutrition course materials.</p>
+                <p className="sp-subtitle">{t('services.courseSubtitle')}</p>
               </ScrollReveal>
             </div>
 
@@ -290,20 +290,23 @@ function ServicesPage() {
                       <div className="sub-card-icon">
                         <CheckCircle size={22} />
                       </div>
-                      <span className="sub-badge sub-badge-green">Active</span>
+                      <span className="sub-badge sub-badge-green">{t('services.subActive')}</span>
                     </div>
-                    <h3 className="sub-title">Access Granted</h3>
-                    <p className="sub-desc">You have full access to all course materials across every level and semester.</p>
+                    <h3 className="sub-title">{t('services.subAccessGranted')}</h3>
+                    <p className="sub-desc">{t('services.subAccessDesc')}</p>
                     <div className="sub-meta">
                       <span className="sub-meta-item">
-                        <Clock size={13} /> Expires {new Date(subscription.endDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}
+                        <Clock size={13} /> <Trans i18nKey="services.subExpires" values={{date: new Date(subscription.endDate).toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' })}} />
                       </span>
                       <span className="sub-meta-item">
-                        <CheckCircle size={13} /> {subscription.daysRemaining >= 365 ? `${Math.floor(subscription.daysRemaining / 365)} year${Math.floor(subscription.daysRemaining / 365) > 1 ? 's' : ''} remaining` : `${subscription.daysRemaining} days remaining`}
+                        {subscription.daysRemaining >= 365 
+                          ? <Trans i18nKey="services.subYearsRemaining" values={{years: Math.floor(subscription.daysRemaining / 365)}} />
+                          : <Trans i18nKey="services.subDaysRemaining" values={{days: subscription.daysRemaining}} />
+                        }
                       </span>
                     </div>
                     <NavLink to="/student/my-courses" className="sub-btn">
-                      Browse Courses <ArrowRight size={17} />
+                      {t('services.browseCourses')} <ArrowRight size={17} />
                     </NavLink>
                   </motion.div>
                 ) : (
@@ -317,40 +320,40 @@ function ServicesPage() {
                       <div className="sub-card-icon">
                         <GraduationCap size={22} />
                       </div>
-                      <span className="sub-badge">Yearly Plan</span>
+                      <span className="sub-badge">{t('services.yearlyPlan')}</span>
                     </div>
                     <div className="sub-price">
                       <span className="sub-currency">DZD</span>
                       <span className="sub-amount">2,499<small>.99</small></span>
-                      <span className="sub-period">/year</span>
+                      <span className="sub-period">{t('services.perYear')}</span>
                     </div>
-                    <p className="sub-desc">Unlock every course across all levels and semesters.</p>
+                    <p className="sub-desc">{t('services.subDesc')}</p>
                     <div className="sub-benefits">
                       <div className="sub-benefit">
                         <CheckCircle size={14} />
-                        <span>All levels (1, 2 &amp; 3)</span>
+                        <span>{t('services.benefitAllLevels')}</span>
                       </div>
                       <div className="sub-benefit">
                         <CheckCircle size={14} />
-                        <span>Both semesters</span>
+                        <span>{t('services.benefitSemesters')}</span>
                       </div>
                       <div className="sub-benefit">
                         <CheckCircle size={14} />
-                        <span>PDF materials &amp; Drive links</span>
+                        <span>{t('services.benefitMaterials')}</span>
                       </div>
                       <div className="sub-benefit">
                         <CheckCircle size={14} />
-                        <span>Full year of access</span>
+                        <span>{t('services.benefitFullYear')}</span>
                       </div>
                     </div>
                     {subscription && !subscription.isActive && (
                       <div className="sub-expired">
                         <Clock size={15} />
-                        <span>Your previous subscription has expired. Renew to regain access.</span>
+                        <span>{t('services.subExpiredMsg')}</span>
                       </div>
                     )}
                     <NavLink to="/checkout/course-subscription" className="sub-btn">
-                      Subscribe Now <ArrowRight size={17} />
+                      {t('services.subscribeNow')} <ArrowRight size={17} />
                     </NavLink>
                   </motion.div>
                 )}
@@ -364,26 +367,26 @@ function ServicesPage() {
           <section className="ServicesPage-AI-Showcase">
             <div className="ServicesPage-AI-Grid">
               <ScrollReveal direction="left" className="ServicesPage-AI-Content">
-                <h2>SNAP SYNC <br /> <span className="ServicesPage-Accent-Text">THRIVE</span></h2>      
-                <p className="ServicesPage-AI-Description">Our neural networks eliminate the friction of data entry. Transform any meal into a high-fidelity metabolic readout instantly.</p>
+                <h2><Trans i18nKey="services.aiTitle" components={{1: <span className="ServicesPage-Accent-Text" />}} /></h2>      
+                <p className="ServicesPage-AI-Description">{t('services.aiDesc')}</p>
 
                 <NavLink to="/ai-tool" className="ServicesPage-AI-Btn">
-                  ACCESS AI ENGINE <Zap size={20} />
+                  {t('services.aiButton')} <Zap size={20} />
                 </NavLink>
 
                 <div className="ServicesPage-AI-Feature-List">
                   <div className="ServicesPage-AI-Feature-Item">
                     <div className="ServicesPage-AI-Feature-Icon"><Scan size={24} /></div>
                     <div>
-                      <h4>NEURAL RECOGNITION</h4>
-                      <p>98.4% Accuracy in complex ingredient analysis.</p>       
+                      <h4>{t('services.neuralRecognition')}</h4>
+                      <p>{t('services.neuralRecognitionDesc')}</p>       
                     </div>
                   </div>
                   <div className="ServicesPage-AI-Feature-Item">
                     <div className="ServicesPage-AI-Feature-Icon"><PieChart size={24} /></div>
                     <div>
-                      <h4>MACRO DYNAMICS</h4>
-                      <p>Real-time protein, fat, and nutrient breakdown.</p>      
+                      <h4>{t('services.macroDynamics')}</h4>
+                      <p>{t('services.macroDynamicsDesc')}</p>      
                     </div>
                   </div>
                 </div>
@@ -395,13 +398,13 @@ function ServicesPage() {
                     <div className="ServicesPage-Screen-Content">
                       <div className="ServicesPage-Scan-Animation" />
                       <div className="ServicesPage-Food-Overlay">
-                        <span className="ServicesPage-Overlay-Label">VITAL BOWL</span>
-                        <span className="ServicesPage-Overlay-Calories">~420 KCAL</span>
+                        <span className="ServicesPage-Overlay-Label">{t('services.mockupLabel')}</span>
+                        <span className="ServicesPage-Overlay-Calories">{t('services.mockupCalories')}</span>
                       </div>
                       <div className="ServicesPage-Macros-Preview">
-                        <div className="ServicesPage-Macro-Pill"><span>P:</span> 24g</div>
-                        <div className="ServicesPage-Macro-Pill"><span>C:</span> 32g</div>
-                        <div className="ServicesPage-Macro-Pill"><span>F:</span> 18g</div>
+                        <div className="ServicesPage-Macro-Pill"><span>{t('services.mockupP')}</span> 24g</div>
+                        <div className="ServicesPage-Macro-Pill"><span>{t('services.mockupC')}</span> 32g</div>
+                        <div className="ServicesPage-Macro-Pill"><span>{t('services.mockupF')}</span> 18g</div>
                       </div>
                     </div>
                   </div>
@@ -414,9 +417,9 @@ function ServicesPage() {
           <section className="ServicesPage-Plans-Section">
             <div className="ServicesPage-Section-Header">
               <ScrollReveal>
-                <div className="ServicesPage-Badge">PLANS</div>
-                <h2 className="ServicesPage-Section-Title">VITALITY <span className="ServicesPage-Accent-Text">PLANS</span></h2>
-                <p className="ServicesPage-Section-Subtitle">Select the tier that aligns with your objectives.</p>
+                <div className="ServicesPage-Badge">{t('services.badgePlans')}</div>
+                <h2 className="ServicesPage-Section-Title"><Trans i18nKey="services.plansTitle" components={{1: <span className="ServicesPage-Accent-Text" />}} /></h2>
+                <p className="ServicesPage-Section-Subtitle">{t('services.plansSubtitle')}</p>
               </ScrollReveal>
             </div>
 
@@ -520,26 +523,26 @@ function ServicesPage() {
           <section className="ServicesPage-AI-Showcase">
             <div className="ServicesPage-AI-Grid">
               <ScrollReveal direction="left" className="ServicesPage-AI-Content">
-                <h2>SNAP SYNC <br /> <span className="ServicesPage-Accent-Text">THRIVE</span></h2>      
-                <p className="ServicesPage-AI-Description">Our neural networks eliminate the friction of data entry. Transform any meal into a high-fidelity metabolic readout instantly.</p>
+                <h2><Trans i18nKey="services.aiTitle" components={{1: <span className="ServicesPage-Accent-Text" />}} /></h2>      
+                <p className="ServicesPage-AI-Description">{t('services.aiDesc')}</p>
 
                 <NavLink to="/ai-tool" className="ServicesPage-AI-Btn">
-                  ACCESS AI ENGINE <Zap size={20} />
+                  {t('services.aiButton')} <Zap size={20} />
                 </NavLink>
 
                 <div className="ServicesPage-AI-Feature-List">
                   <div className="ServicesPage-AI-Feature-Item">
                     <div className="ServicesPage-AI-Feature-Icon"><Scan size={24} /></div>
                     <div>
-                      <h4>NEURAL RECOGNITION</h4>
-                      <p>98.4% Accuracy in complex ingredient analysis.</p>       
+                      <h4>{t('services.neuralRecognition')}</h4>
+                      <p>{t('services.neuralRecognitionDesc')}</p>       
                     </div>
                   </div>
                   <div className="ServicesPage-AI-Feature-Item">
                     <div className="ServicesPage-AI-Feature-Icon"><PieChart size={24} /></div>
                     <div>
-                      <h4>MACRO DYNAMICS</h4>
-                      <p>Real-time protein, fat, and nutrient breakdown.</p>      
+                      <h4>{t('services.macroDynamics')}</h4>
+                      <p>{t('services.macroDynamicsDesc')}</p>      
                     </div>
                   </div>
                 </div>
@@ -551,13 +554,13 @@ function ServicesPage() {
                     <div className="ServicesPage-Screen-Content">
                       <div className="ServicesPage-Scan-Animation" />
                       <div className="ServicesPage-Food-Overlay">
-                        <span className="ServicesPage-Overlay-Label">VITAL BOWL</span>
-                        <span className="ServicesPage-Overlay-Calories">~420 KCAL</span>
+                        <span className="ServicesPage-Overlay-Label">{t('services.mockupLabel')}</span>
+                        <span className="ServicesPage-Overlay-Calories">{t('services.mockupCalories')}</span>
                       </div>
                       <div className="ServicesPage-Macros-Preview">
-                        <div className="ServicesPage-Macro-Pill"><span>P:</span> 24g</div>
-                        <div className="ServicesPage-Macro-Pill"><span>C:</span> 32g</div>
-                        <div className="ServicesPage-Macro-Pill"><span>F:</span> 18g</div>
+                        <div className="ServicesPage-Macro-Pill"><span>{t('services.mockupP')}</span> 24g</div>
+                        <div className="ServicesPage-Macro-Pill"><span>{t('services.mockupC')}</span> 32g</div>
+                        <div className="ServicesPage-Macro-Pill"><span>{t('services.mockupF')}</span> 18g</div>
                       </div>
                     </div>
                   </div>
@@ -569,9 +572,9 @@ function ServicesPage() {
           <section className="ServicesPage-Plans-Section">
             <div className="ServicesPage-Section-Header">
               <ScrollReveal>
-                <div className="ServicesPage-Badge">PLANS</div>
-                <h2 className="ServicesPage-Section-Title">VITALITY <span className="ServicesPage-Accent-Text">PLANS</span></h2>
-                <p className="ServicesPage-Section-Subtitle">Select the tier that aligns with your objectives.</p>
+                <div className="ServicesPage-Badge">{t('services.badgePlans')}</div>
+                <h2 className="ServicesPage-Section-Title"><Trans i18nKey="services.plansTitle" components={{1: <span className="ServicesPage-Accent-Text" />}} /></h2>
+                <p className="ServicesPage-Section-Subtitle">{t('services.plansSubtitle')}</p>
               </ScrollReveal>
             </div>
 
@@ -579,7 +582,7 @@ function ServicesPage() {
               {loading ? (
                 <div className="ServicesPage-Loading-State">
                   <Activity className="AP-Spin" size={48} />
-                  <p>Calibrating Systems...</p>
+                  <p>{t('services.calibrating')}</p>
                 </div>
               ) : dynamicPlans.length > 0 ? (
                 <>
@@ -626,7 +629,7 @@ function ServicesPage() {
                               style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', font: 'inherit' }}
                             >  
                               <ShoppingCart size={18} style={{ marginRight: '8px' }} />
-                              SELECT PLAN
+                              {t('services.selectPlan')}
                               <ChevronRight size={18} style={{ marginLeft: '8px' }} />
                             </button>
                           </div>
@@ -655,7 +658,7 @@ function ServicesPage() {
                 </>
               ) : (
                 <div className="ServicesPage-Empty-Plans">
-                  <p>No plans available at the moment. Explore our other services.</p>
+                  <p>{t('services.noPlansAvailable')}</p>
                 </div>
               )}
             </div>
@@ -663,7 +666,7 @@ function ServicesPage() {
             <div className="ServicesPage-AllPlans-Container">
               <ScrollReveal delay={0.4}>
                 <NavLink to="/allPlans" className="ServicesPage-AllPlans-Btn">
-                  EXPLORE ALL DYNAMIC SYSTEMS <ArrowRight size={20} />
+                  {t('services.exploreAll')} <ArrowRight size={20} />
                 </NavLink>
               </ScrollReveal>
             </div>
@@ -677,10 +680,10 @@ function ServicesPage() {
         <div className="ServicesPage-Section-Header">
           <ScrollReveal>
             <div className="ServicesPage-Badge">
-              <GraduationCap size={14} style={{ marginRight: 6 }} /> FORMATIONS
+              <GraduationCap size={14} style={{ marginRight: 6 }} /> {t('services.formationBadge')}
             </div>
-            <h2 className="ServicesPage-Section-Title">ONLINE <span className="ServicesPage-Accent-Text">FORMATIONS</span></h2>
-            <p className="ServicesPage-Section-Subtitle">Enroll in guided training programs with live sessions and resources.</p>
+            <h2 className="ServicesPage-Section-Title"><Trans i18nKey="services.formationTitle" components={{1: <span className="ServicesPage-Accent-Text" />}} /></h2>
+            <p className="ServicesPage-Section-Subtitle">{t('services.formationSubtitle')}</p>
           </ScrollReveal>
         </div>
 
@@ -716,8 +719,8 @@ function ServicesPage() {
 
                 <div className="sp-formation-body">
                   <div className="sp-formation-meta">
-                    <span><Calendar size={12} /> {f.sessionsCount} sessions</span>
-                    <span><Clock size={12} /> {f.durationWeeks} weeks</span>
+                    <span><Calendar size={12} /> {f.sessionsCount} {t('services.sessions')}</span>
+                    <span><Clock size={12} /> {f.durationWeeks} {t('services.weeks')}</span>
                   </div>
 
                   <h3 className="sp-formation-title">{f.title}</h3>
@@ -785,7 +788,7 @@ function ServicesPage() {
                   )}
                   <div style={{ flex: 1, padding: 32, display: "flex", flexDirection: "column" }}>
                     <div className="fc-badge-row">
-                      <span className="fc-badge"><Clock size={12} /> {selectedFormation.durationWeeks} weeks</span>
+                      <span className="fc-badge"><Clock size={12} /> {selectedFormation.durationWeeks} {t('services.weeks')}</span>
                       <span className="fc-price-badge" style={{ fontSize: 16 }}>{selectedFormation.price.toLocaleString()} DZD</span>
                     </div>
 
@@ -810,7 +813,7 @@ function ServicesPage() {
                           </div>
                         )}
                         <div className="fc-creator-info">
-                          <span className="fc-creator-label">Created by</span>
+                          <span className="fc-creator-label">{t('services.createdBy')}</span>
                           <span className="fc-creator-name">{selectedFormation.creatorInfo.fullName}</span>
                         </div>
                       </div>
@@ -849,9 +852,9 @@ function ServicesPage() {
       {/* FINAL CTA */}
       <section className="ServicesPage-CTA-Section">
         <ScrollReveal>
-          <h2 className="ServicesPage-Section-Title">READY TO <br /> <span className="ServicesPage-Accent-Text">OPTIMIZE?</span></h2>
+          <h2 className="ServicesPage-Section-Title"><Trans i18nKey="services.ctaTitle" components={{1: <span className="ServicesPage-Accent-Text" />}} /></h2>
           <NavLink to="/signup" className="ServicesPage-Join-Btn">
-            JOIN THE NETWORK
+            {t('services.ctaButton')}
           </NavLink>
         </ScrollReveal>
       </section>

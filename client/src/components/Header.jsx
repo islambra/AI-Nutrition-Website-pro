@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { useTranslation } from "react-i18next";
+import { useTranslation, Trans } from "react-i18next";
 import { UserCircle, Menu, LogOut, Apple, LayoutDashboard, User, Zap, X, Globe } from "lucide-react";
 import "./Header.css";
 
@@ -75,7 +75,7 @@ function Header() {
       <div className="header-container">
         <NavLink to="/" className="logo-btn">
           <Apple className="nutrition-logo-icon" size={28} />
-          <span className="logo-text">Bite<span className="logo-text-accent">Wise</span></span>
+          <span className="logo-text"><Trans i18nKey="nav.brandNameHtml" components={{1: <span className="logo-text-accent" />}} /></span>
         </NavLink>
 
         <nav className="desktop-nav-links">

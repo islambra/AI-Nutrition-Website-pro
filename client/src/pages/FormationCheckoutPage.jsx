@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import {
@@ -172,27 +172,27 @@ function FormationCheckoutPage() {
                 <div className="summary-item">
                   <Clock size={18} />
                   <div>
-                    <span className="label">Duration</span>
-                    <span className="value">{formation.durationWeeks} Weeks</span>
+                    <span className="label">{t('checkout.duration')}</span>
+                    <span className="value"><Trans i18nKey="checkout.durationWeeks" values={{weeks: formation.durationWeeks}} /></span>
                   </div>
                 </div>
                 <div className="summary-item">
                   <Calendar size={18} />
                   <div>
-                    <span className="label">Sessions</span>
-                    <span className="value">{formation.sessionsCount} Sessions</span>
+                    <span className="label">{t('checkout.labelConsultations')}</span>
+                    <span className="value"><Trans i18nKey="checkout.sessionsCount" values={{count: formation.sessionsCount}} /></span>
                   </div>
                 </div>
                 <div className="summary-item">
                   <DollarSign size={18} />
                   <div>
-                    <span className="label">Price</span>
-                    <span className="value price">{formation.price.toLocaleString()} DZD</span>
+                    <span className="label">{t('checkout.price')}</span>
+                    <span className="value price"><Trans i18nKey="checkout.priceValue" values={{price: formation.price.toLocaleString()}} /></span>
                   </div>
                 </div>
               </div>
               <button className="summary-nav-link" onClick={() => navigate(`/services`)}>
-                <ExternalLink size={14} /> View Formation Details
+                <ExternalLink size={14} /> {t('checkout.viewFormationDetails')}
               </button>
             </div>
           </motion.div>
@@ -211,8 +211,8 @@ function FormationCheckoutPage() {
 
             <form onSubmit={handleSubmit}>
               <div className="form-section-payment">
-                <h4>{t('checkout.submitPayment')}</h4>
-                {loadingInfo ? (
+                  <h4>{t('checkout.paymentInfo')}</h4>
+                  {loadingInfo ? (
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#6B7280' }}>
                     <Loader2 size={16} className="AP-Spin" /> {t('common.loading')}
                   </div>
@@ -221,29 +221,29 @@ function FormationCheckoutPage() {
                     {paymentMethod === 'ccp' ? (
                       <>
                         <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid #DCFCE7' }}>
-                          <span style={{ color: '#374151' }}>CCP Number</span>
+                          <span style={{ color: '#374151' }}>{t('checkout.ccpNumber')}</span>
                           <span style={{ fontWeight: 700, color: '#166534' }}>{dietPaymentInfo.ccpNumber || '—'}</span>
                         </div>
                         <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
-                          <span style={{ color: '#374151' }}>CCP Key</span>
+                          <span style={{ color: '#374151' }}>{t('checkout.ccpKey')}</span>
                           <span style={{ fontWeight: 700, color: '#166534' }}>{dietPaymentInfo.ccpKey || '—'}</span>
                         </div>
                       </>
                     ) : (
                       <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
-                        <span style={{ color: '#374151' }}>BaridiMob Number</span>
+                        <span style={{ color: '#374151' }}>{t('checkout.baridiMobNumber')}</span>
                         <span style={{ fontWeight: 700, color: '#166534' }}>{dietPaymentInfo.baridiMob || '—'}</span>
                       </div>
                     )}
                   </div>
                 ) : (
-                  <div style={{ color: '#EF4444', fontSize: 14 }}>{t('checkout.uploadProof')}</div>
+                  <div style={{ color: '#EF4444', fontSize: 14 }}>{t('checkout.paymentInfoUnavailable')}</div>
                 )}
               </div>
 
               <div className="form-section-payment">
-                <h4>{t('checkout.uploadProof')}</h4>
-                <p>{t('checkout.uploadProof')}</p>
+                <h4>{t('checkout.proofUpload')}</h4>
+                <p>{t('checkout.uploadReceipt')}</p>
                 <div
                   className="upload-zone"
                   onClick={() => document.getElementById('proof-input')?.click()}
@@ -255,7 +255,7 @@ function FormationCheckoutPage() {
                         <img src={proofPreview} alt="Proof preview" />
                         <div className="upload-preview-overlay">
                           <Upload size={28} />
-                          <span>Change file</span>
+                          <span>{t('checkout.changeFile')}</span>
                         </div>
                       </div>
                       <div className="upload-file-name">
@@ -267,8 +267,8 @@ function FormationCheckoutPage() {
                       <div className="upload-zone-icon-wrapper">
                         <Upload size={24} />
                       </div>
-                      <p>{t('checkout.uploadProof')}</p>
-                      <p>{t('checkout.uploadProof')}</p>
+                      <p>{t('checkout.uploadReceipt')}</p>
+                      <p>{t('checkout.uploadReceipt')}</p>
                     </div>
                   )}
                 </div>

@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 import { NavLink } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Target, Heart, Sparkles, Brain, Apple, ArrowUpRight, Leaf, ShieldCheck, Users, Camera, TrendingUp, MessageCircle, Calendar, Activity, Zap } from 'lucide-react';
@@ -34,33 +34,33 @@ function AboutUsPage() {
   const features = [
     {
       icon: <Camera className="AboutUsPage-Icon" size={32} />,
-      title: "AI Meal Recognition",
-      description: "Snap a photo and our AI instantly identifies ingredients, portions, and nutritional breakdown with high precision."
+      title: t('about.features.0.title'),
+      description: t('about.features.0.desc')
     },
     {
       icon: <Apple className="AboutUsPage-Icon" size={32} />,
-      title: "Personalized Diet Plans",
-      description: "Tailored nutrition strategies built around your health profile, dietary preferences, and fitness goals."
+      title: t('about.features.1.title'),
+      description: t('about.features.1.desc')
     },
     {
       icon: <Activity className="AboutUsPage-Icon" size={32} />,
-      title: "Macro & Micro Tracking",
-      description: "Real-time dashboards tracking calories, macros, vitamins, and minerals to keep you on target."
+      title: t('about.features.2.title'),
+      description: t('about.features.2.desc')
     },
     {
       icon: <MessageCircle className="AboutUsPage-Icon" size={32} />,
-      title: "Expert Chat Support",
-      description: "Direct messaging with certified nutritionists for real-time advice, meal adjustments, and accountability."
+      title: t('about.features.3.title'),
+      description: t('about.features.3.desc')
     },
     {
       icon: <Calendar className="AboutUsPage-Icon" size={32} />,
-      title: "Smart Meal Planning",
-      description: "AI-generated weekly meal preps that adapt to your schedule, budget, and nutritional requirements."
+      title: t('about.features.4.title'),
+      description: t('about.features.4.desc')
     },
     {
       icon: <Users className="AboutUsPage-Icon" size={32} />,
-      title: "Community Challenges",
-      description: "Join group challenges, share progress, and stay motivated with a like-minded wellness community."
+      title: t('about.features.5.title'),
+      description: t('about.features.5.desc')
     }
   ];
 
@@ -74,15 +74,13 @@ function AboutUsPage() {
         <section className="AboutUsPage-Hero">
           <div className="AboutUsPage-Hero-Inner">
             <ScrollReveal direction="down">
-              <div className="AboutUsPage-Badge">SYSTEM INTEL</div>
+              <div className="AboutUsPage-Badge">{t('about.badge')}</div>
             </ScrollReveal>
             <ScrollReveal delay={0.2}>
-              <h1 className="AboutUsPage-Title">REVOLUTIONIZING NUTRITION WITH <span className="AboutUsPage-Highlight">AI PRECISION</span></h1>
+              <h1 className="AboutUsPage-Title"><Trans i18nKey="about.heroTitle" components={{1: <span className="AboutUsPage-Highlight" />}} /></h1>
             </ScrollReveal>
             <ScrollReveal delay={0.4}>
-              <p className="AboutUsPage-Subtitle">
-                High-fidelity biological mapping and AI-assisted calorie tracking for the next generation of human performance.
-              </p>
+              <p className="AboutUsPage-Subtitle">{t('about.heroSubtitle')}</p>
             </ScrollReveal>
           </div>
         </section>
@@ -92,18 +90,18 @@ function AboutUsPage() {
           <section className="AboutUsPage-Section">
             <div className="AboutUsPage-Grid">
               <ScrollReveal direction="left" className="AboutUsPage-Text-Block">
-                <h2 className="AboutUsPage-Heading">OUR MISSION</h2>
+                <h2 className="AboutUsPage-Heading">{t('about.missionTitle')}</h2>
                 <p className="AboutUsPage-Description">
-                  To empower individuals to achieve their health and wellness goals by providing accessible, personalized nutrition solutions. We believe in a holistic approach that combines the precision of artificial intelligence with the empathy and expertise of professional nutritionists.
+                  {t('about.missionText')}
                 </p>
                 <div className="AboutUsPage-Stats">
                   <div className="AboutUsPage-Stat">
-                    <span className="AboutUsPage-Stat-Num">NEURAL</span>
-                    <span className="AboutUsPage-Stat-Label">Processing</span>
+                    <span className="AboutUsPage-Stat-Num">{t('about.statNeural')}</span>
+                    <span className="AboutUsPage-Stat-Label">{t('about.statProcessing')}</span>
                   </div>
                   <div className="AboutUsPage-Stat">
-                    <span className="AboutUsPage-Stat-Num">100%</span>
-                    <span className="AboutUsPage-Stat-Label">Personalized</span>
+                    <span className="AboutUsPage-Stat-Num">{t('about.statPersonalized')}</span>
+                    <span className="AboutUsPage-Stat-Label">{t('about.statPersonalizedLabel')}</span>
                   </div>
                 </div>
               </ScrollReveal>
@@ -111,8 +109,8 @@ function AboutUsPage() {
                 <TiltCard className="AboutUsPage-Tilt">
                   <div className="AboutUsPage-Glass-Card">
                     <Heart className="AboutUsPage-Heart" size={48} />
-                    <h3>COMPASSIONATE AI</h3>
-                    <p>We combine deep technology with human intuition to ensure optimal health outcomes.</p>
+                    <h3>{t('about.compassionateTitle')}</h3>
+                    <p>{t('about.compassionateDesc')}</p>
                   </div>
                 </TiltCard>
               </ScrollReveal>
@@ -122,8 +120,8 @@ function AboutUsPage() {
           {/* Features Grid */}
           <section className="AboutUsPage-Section">
             <ScrollReveal>
-              <h2 className="AboutUsPage-Heading center">SYSTEM OFFERINGS</h2>
-              <p className="AboutUsPage-Features-Subtitle">Next-generation tools engineered to transform how you interact with nutrition and wellness.</p>
+              <h2 className="AboutUsPage-Heading center">{t('about.featuresTitle')}</h2>
+              <p className="AboutUsPage-Features-Subtitle">{t('about.featuresSubtitle')}</p>
               <div className="AboutUsPage-Heading-Accent" />
             </ScrollReveal>
             <div className="AboutUsPage-Features-Grid">
@@ -147,12 +145,12 @@ function AboutUsPage() {
           <section className="AboutUsPage-Section AboutUsPage-Approach">
             <ScrollReveal>
               <div className="AboutUsPage-Dark-Card">
-                <h2 className="AboutUsPage-Heading white">THE APPROACH</h2>
+                <h2 className="AboutUsPage-Heading white">{t('about.approachTitle')}</h2>
                 <p className="AboutUsPage-Description white opacity">
-                  Leveraging advanced computer vision and deep learning to provide accurate calorie estimations, while emphasizing that technology complements expert human guidance. Our platform is designed to support individuals managing complex biological states.
+                  {t('about.approachDesc')}
                 </p>
                 <NavLink to="/signup" className="AboutUsPage-CTA-Btn">
-                  JOIN NETWORK <ArrowUpRight size={18} style={{ marginLeft: '8px' }} />
+                  {t('about.cta')} <ArrowUpRight size={18} style={{ marginLeft: '8px' }} />
                 </NavLink>
               </div>
             </ScrollReveal>

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, memo } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -167,7 +167,7 @@ function BlogsPage() {
         >
           <Leaf size={60} color="#2D5A27" />
         </motion.div>
-        <p>CALIBRATING_KNOWLEDGE_BASE...</p>
+        <p>{t('blogs.loading')}</p>
       </div>
     );
   }
@@ -186,7 +186,7 @@ function BlogsPage() {
             className="BlogsPage-Notification"
           >
             <Share2 size={16} />
-            <span>KNOWLEDGE_LINK_COPIED</span>
+            <span>{t('blogs.linkCopied')}</span>
           </motion.div>
         )}
       </AnimatePresence>
@@ -194,18 +194,18 @@ function BlogsPage() {
       <header className="BlogsPage-Hero">
         <div className="BlogsPage-Hero-Content">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="BlogsPage-Badge">
-            VITAL_INTELLIGENCE
+            {t('blogs.vitalIntelligence')}
           </motion.div>
           <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="BlogsPage-Title">
-            THE VITALITY <br /> <span className="BlogsPage-Gradient-Text">KNOWLEDGE HUB.</span>
+            <Trans i18nKey="blogs.heroTitle" components={{1: <span className="BlogsPage-Gradient-Text" />}} />
           </motion.h1>
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="BlogsPage-Controls">
             <div className="BlogsPage-Search-Box">
               <Search size={20} className="BlogsPage-Search-Icon" />
-              <input type="text" placeholder="SEARCH_BIOLOGICAL_RESOURCES..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
+              <input type="text" placeholder={t('blogs.searchBiological')} value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
             </div>
             <div className="BlogsPage-Filters">
-              {['All Posts', 'Recipe', 'Article', 'Community'].map((filter) => (
+              {[t('blogs.filterAll'), t('blogs.filterRecipe'), t('blogs.filterArticle'), t('blogs.filterCommunity')].map((filter) => (
                 <button key={filter} onClick={() => setActiveFilter(filter)} className={`BlogsPage-Filter-Btn ${activeFilter === filter ? 'active' : ''}`}>
                   {filter.toUpperCase()}
                 </button>
@@ -219,14 +219,14 @@ function BlogsPage() {
         {error ? (
           <div className="BlogsPage-Error">
             <Zap size={40} />
-            <h3>SYSTEM_ERROR</h3>
+            <h3>{t('blogs.systemError')}</h3>
             <p>{error}</p>
-            <button onClick={fetchBlogs}>REBOOT_CONNECTION</button>
+            <button onClick={fetchBlogs}>{t('blogs.rebootConnection')}</button>
           </div>
         ) : filteredPosts.length === 0 ? (
           <div className="BlogsPage-Empty">
             <Sparkles size={60} opacity={0.3} />
-            <h3>ZERO_MATCHES_FOUND</h3>
+            <h3>{t('blogs.zeroMatches')}</h3>
             <p>{t('blogs.noPosts')}</p>
           </div>
         ) : (

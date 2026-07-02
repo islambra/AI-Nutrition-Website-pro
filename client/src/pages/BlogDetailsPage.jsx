@@ -271,7 +271,7 @@ function BlogDetailsPage() {
 
               {blog.tags && blog.tags.length > 0 && (
                 <div className="blog-tags-section">
-                  <h4>Tags</h4>
+                  <h4>{t('blogs.tags')}</h4>
                   <div className="blog-tags-list">
                     {blog.tags.map((tag, idx) => (
                       <span key={idx} className="tag">#{tag}</span>
@@ -295,7 +295,7 @@ function BlogDetailsPage() {
                     <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
                     <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
                   </svg>
-                  <span>{t('common.edit')}</span>
+                  <span>{t('common.share')}</span>
                 </button>
               </div>
             </article>

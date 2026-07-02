@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
@@ -128,31 +128,31 @@ function CourseSubscriptionCheckout() {
               <div style={{ height: '150px', background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '12px', marginBottom: '15px' }}>
                 <BookOpen size={48} color="#fff" />
               </div>
-              <h3>Course Subscription</h3>
-              <span className="category" style={{ background: '#EDE9FE', color: '#6D28D9' }}>Yearly Access</span>
+              <h3>{t('checkout.labelCourseAccess')}</h3>
+              <span className="category" style={{ background: '#EDE9FE', color: '#6D28D9' }}>{t('checkout.labelYearlyAccess')}</span>
               <p style={{ color: '#6B7280', fontSize: '14px', marginTop: '8px' }}>
-                Get full access to all nutrition course materials across all levels and semesters.
+                {t('checkout.courseDesc')}
               </p>
               <div className="summary-details">
                 <div className="summary-item">
                   <BookOpen size={18} />
                   <div>
-                    <span className="label">Access</span>
-                    <span className="value">All levels & semesters</span>
+                    <span className="label">{t('checkout.labelAccess')}</span>
+                    <span className="value">{t('checkout.allLevels')}</span>
                   </div>
                 </div>
                 <div className="summary-item">
                   <Clock size={18} />
                   <div>
-                    <span className="label">Duration</span>
-                    <span className="value">1 Year</span>
+                    <span className="label">{t('checkout.duration')}</span>
+                    <span className="value">{t('checkout.oneYear')}</span>
                   </div>
                 </div>
                 <div className="summary-item">
                   <Info size={18} />
                   <div>
-                    <span className="label">Price</span>
-                    <span className="value price">{PRICE.toLocaleString()} DZD</span>
+                    <span className="label">{t('checkout.price')}</span>
+                    <span className="value price"><Trans i18nKey="checkout.priceValue" values={{price: PRICE.toLocaleString()}} /></span>
                   </div>
                 </div>
               </div>
@@ -174,7 +174,7 @@ function CourseSubscriptionCheckout() {
             <form onSubmit={handleSubmit}>
               {/* Platform Payment Info */}
               <div className="form-section-payment">
-                <h4>{t('checkout.submitPayment')}</h4>
+                <h4>{t('checkout.paymentInfo')}</h4>
                 {loadingInfo ? (
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#6B7280' }}>
                     <Loader2 size={16} className="AP-Spin" /> {t('common.loading')}
@@ -184,31 +184,31 @@ function CourseSubscriptionCheckout() {
                     {paymentMethod === 'ccp' ? (
                       <>
                         <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid #DCFCE7' }}>
-                          <span style={{ color: '#374151' }}>CCP Number</span>
+                          <span style={{ color: '#374151' }}>{t('checkout.ccpNumber')}</span>
                           <span style={{ fontWeight: 700, color: '#166534' }}>{platformInfo.ccpNumber || '—'}</span>
                         </div>
                         <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
-                          <span style={{ color: '#374151' }}>CCP Key</span>
+                          <span style={{ color: '#374151' }}>{t('checkout.ccpKey')}</span>
                           <span style={{ fontWeight: 700, color: '#166534' }}>{platformInfo.ccpKey || '—'}</span>
                         </div>
                       </>
                     ) : (
                       <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
-                        <span style={{ color: '#374151' }}>BaridiMob Number</span>
+                        <span style={{ color: '#374151' }}>{t('checkout.baridiMobNumber')}</span>
                         <span style={{ fontWeight: 700, color: '#166534' }}>{platformInfo.baridiMob || '—'}</span>
                       </div>
                     )}
                   </div>
                 ) : (
-                  <div style={{ color: '#EF4444', fontSize: 14 }}>{t('checkout.uploadProof')}</div>
+                  <div style={{ color: '#EF4444', fontSize: 14 }}>{t('checkout.paymentInfoUnavailable')}</div>
                 )}
               </div>
 
               {/* Proof Upload */}
               <div className="form-section-payment" style={{ marginTop: '24px' }}>
-                <h4>{t('checkout.uploadProof')}</h4>
+                <h4>{t('checkout.proofUpload')}</h4>
                 <p style={{ fontSize: '13px', color: '#6B7280', marginBottom: '12px' }}>
-                  {t('checkout.uploadProof')}
+                  {t('checkout.uploadReceipt')}
                 </p>
                 <div
                   className="upload-zone"
@@ -228,7 +228,7 @@ function CourseSubscriptionCheckout() {
                         onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(0,0,0,0.3)'}
                       >
                         <Upload size={28} />
-                        <span style={{ fontSize: '12px', fontWeight: 600 }}>Change file</span>
+                        <span style={{ fontSize: '12px', fontWeight: 600 }}>{t('checkout.changeFile')}</span>
                       </div>
                     </div>
                   ) : (
@@ -236,8 +236,8 @@ function CourseSubscriptionCheckout() {
                       <div style={{ width: 56, height: 56, borderRadius: '50%', background: '#E8F5E9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <Upload size={24} style={{ color: '#059669' }} />
                       </div>
-                      <p style={{ fontWeight: 600, color: '#374151', margin: 0 }}>{t('checkout.uploadProof')}</p>
-                      <p style={{ fontSize: '12px', color: '#9CA3AF', margin: 0 }}>{t('checkout.uploadProof')}</p>
+                      <p style={{ fontWeight: 600, color: '#374151', margin: 0 }}>{t('checkout.uploadReceipt')}</p>
+                      <p style={{ fontSize: '12px', color: '#9CA3AF', margin: 0 }}>{t('checkout.uploadReceipt')}</p>
                     </div>
                   )}
                 </div>

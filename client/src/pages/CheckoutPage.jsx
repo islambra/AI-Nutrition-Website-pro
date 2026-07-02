@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { 
@@ -147,23 +147,23 @@ function CheckoutPage() {
                 <div className="summary-item">
                   <Calendar size={18} />
                   <div>
-                    <span className="label">Duration</span>
-                    <span className="value">{plan.duration} Weeks</span>
+                    <span className="label">{t('checkout.duration')}</span>
+                    <span className="value"><Trans i18nKey="checkout.durationWeeks" values={{weeks: plan.duration}} /></span>
                   </div>
                 </div>
                 <div className="summary-item">
                   <MessageCircle size={18} />
                   <div>
-                    <span className="label">Consultations</span>
-                    <span className="value">{plan.consultationIncluded} Sessions</span>
+                    <span className="label">{t('checkout.labelConsultations')}</span>
+                    <span className="value"><Trans i18nKey="checkout.sessionsCount" values={{count: plan.consultationIncluded}} /></span>
                   </div>
                 </div>
                 <div className="summary-item">
                   <DollarSign size={18} />
                   <div>
-                    <span className="label">Price</span>
+                    <span className="label">{t('checkout.price')}</span>
                     {/* ✅ Fixed: removed * 140 */}
-                    <span className="value price">{plan.price.toLocaleString()} DZD</span>
+                    <span className="value price"><Trans i18nKey="checkout.priceValue" values={{price: plan.price.toLocaleString()}} /></span>
                   </div>
                 </div>
               </div>
@@ -197,10 +197,10 @@ function CheckoutPage() {
             {paymentMethod === 'credit_card' && (
               <form onSubmit={handleSubmit} className="card-form">
                 <div className="form-group">
-                  <label>{t('checkout.completePurchase')}</label>
+                  <label>{t('checkout.cardHolderName')}</label>
                   <input
                     type="text"
-                    placeholder="John Doe"
+                    placeholder={t('checkout.cardHolderPlaceholder')}
                     value={cardInfo.name}
                     onChange={(e) => setCardInfo({...cardInfo, name: e.target.value})}
                     required
@@ -208,10 +208,10 @@ function CheckoutPage() {
                 </div>
 
                 <div className="form-group">
-                  <label>{t('checkout.creditCard')}</label>
+                  <label>{t('checkout.cardNumber')}</label>
                   <input
                     type="text"
-                    placeholder="1234 5678 9012 3456"
+                    placeholder={t('checkout.cardNumberPlaceholder')}
                     value={cardInfo.cardNumber}
                     onChange={(e) => setCardInfo({...cardInfo, cardNumber: e.target.value})}
                     maxLength="19"
@@ -221,10 +221,10 @@ function CheckoutPage() {
 
                 <div className="form-row">
                   <div className="form-group">
-                    <label>{t('checkout.completePurchase')}</label>
+                    <label>{t('checkout.expiryDate')}</label>
                     <input
                       type="text"
-                      placeholder="MM/YY"
+                      placeholder={t('checkout.expiryPlaceholder')}
                       value={cardInfo.expiry}
                       onChange={(e) => setCardInfo({...cardInfo, expiry: e.target.value})}
                       maxLength="5"
@@ -232,10 +232,10 @@ function CheckoutPage() {
                     />
                   </div>
                   <div className="form-group">
-                    <label>{t('checkout.completePurchase')}</label>
+                    <label>{t('checkout.cvv')}</label>
                     <input
                       type="text"
-                      placeholder="123"
+                      placeholder={t('checkout.cvvPlaceholder')}
                       value={cardInfo.cvv}
                       onChange={(e) => setCardInfo({...cardInfo, cvv: e.target.value})}
                       maxLength="3"
@@ -246,7 +246,7 @@ function CheckoutPage() {
 
                 <div className="secure-badge">
                   <Shield size={16} />
-                  <span>{t('checkout.uploadProof')}</span>
+                  <span>{t('checkout.securePayment')}</span>
                 </div>
 
                 <button type="submit" className="pay-btn" disabled={loading}>
@@ -255,7 +255,7 @@ function CheckoutPage() {
                   ) : (
                     <>
                       <Check size={20} />
-                      {t('checkout.payNow')} {plan.price.toLocaleString()} DZD
+                      <Trans i18nKey="checkout.payNowAmount" values={{amount: plan.price.toLocaleString()}} />
                     </>
                   )}
                 </button>
