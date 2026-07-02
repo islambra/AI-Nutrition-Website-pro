@@ -22,7 +22,7 @@
     "invalidCredentials": "Invalid email or password. Please try again.",
     "backToHome": "Back to Home",
     "aiNutritionPro": "AI Nutrition Pro",
-    "welcomeBackTitle": "Welcome Back to <1>Your Health Journey</1>",
+    "welcomeBackTitle": "<1>Your Health Journey</1>",
     "welcomeDesc": "Experience the future of personalized nutrition with our AI-powered tracking and expert guidance.",
     "welcomeBackHeading": "Welcome Back",
     "signInDetails": "Please enter your details to sign in.",
@@ -158,8 +158,8 @@
   },
   "home": {
     "preloader": "CALIBRATING VITALITY",
-    "heroTitle": "FUEL YOUR <1>VITALITY</1>",
-    "heroSubtitle": "Precision nutrition tailored to your biology,<1>Unlock peak health through science & tracking.</1>",
+    "heroTitle": "FUEL YOUR <br/>VITALITY",
+    "heroSubtitle": "Precision nutrition tailored to your biology,<br/>Unlock peak health through science & tracking.",
     "startAssessment": "Start Assessment",
     "ourScience": "Our Science",
     "marquee": "✦ EXPERT GUIDANCE ✦ BIOLOGICAL PRECISION ✦ CLINICAL TRACKING ✦ PEAK VITALITY ✦ ORGANIC GROWTH ✦",
@@ -175,13 +175,13 @@
     "featureConsultationsDesc": "Connect with certified dietitians for one-on-one guidance and follow-up support.",
     "reviewsTitle": "BIOLOGICAL <1>REPORTS</1>",
     "reviewsSubtitle": "Real-world results from our global community of health optimizers.",
-    "ctaTitle": "RECLAIM YOUR <1>VITALITY</1>",
+    "ctaTitle": "RECLAIM YOUR <br/>VITALITY",
     "ctaButton": "Join the Movement"
   },
   "contact": {
     "brandName": "BiteWise",
     "tag": "Get in touch",
-    "title": "Let's start a<br /><1>conversation</1>",
+    "title": "<1>conversation</1>",
     "desc": "Whether you have a question about our nutrition plans, want to collaborate, or just want to say hello — we'd love to hear from you.",
     "featureReply": "We reply within 24 hours",
     "featureInquiries": "All inquiries welcome",
@@ -269,7 +269,8 @@
     "fat": "Fat",
     "carbohydrates": "Carbohydrates",
     "retake": "Retake",
-    "scanAnother": "Scan Another"
+    "scanAnother": "Scan Another",
+    "subscriptionDesc": "Subscribe for just <1>499.99 DZD/year</1> and unlock instant nutritional analysis powered by advanced AI."
   },
   "common": {
     "loading": "Loading...",

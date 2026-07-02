@@ -22,7 +22,7 @@
     "invalidCredentials": "Email ou mot de passe invalide. Veuillez réessayer.",
     "backToHome": "Retour à l'accueil",
     "aiNutritionPro": "IA Nutrition Pro",
-    "welcomeBackTitle": "Bon retour sur <1>Votre Parcours Santé</1>",
+    "welcomeBackTitle": "<1>Votre Parcours Santé</1>",
     "welcomeDesc": "Découvrez l'avenir de la nutrition personnalisée grâce à notre suivi IA et nos conseils d'experts.",
     "welcomeBackHeading": "Bon retour",
     "signInDetails": "Veuillez entrer vos identifiants pour vous connecter.",
@@ -158,8 +158,8 @@
   },
   "home": {
     "preloader": "CALIBRAGE DE LA VITALITÉ",
-    "heroTitle": "ALIMENTEZ VOTRE <1>VITALITÉ</1>",
-    "heroSubtitle": "Nutrition de précision adaptée à votre biologie,<1>Atteignez une santé optimale grâce à la science.</1>",
+    "heroTitle": "ALIMENTEZ VOTRE <br/>VITALITÉ",
+    "heroSubtitle": "Nutrition de précision adaptée à votre biologie,<br/>Atteignez une santé optimale grâce à la science.",
     "startAssessment": "Commencer l'évaluation",
     "ourScience": "Notre science",
     "marquee": "✦ GUIDANCE EXPERTE ✦ PRÉCISION BIOLOGIQUE ✦ SUIVI CLINIQUE ✦ VITALITÉ MAXIMALE ✦ CROISSANCE ORGANIQUE ✦",
@@ -175,13 +175,13 @@
     "featureConsultationsDesc": "Connectez-vous avec des diététiciens certifiés pour un accompagnement personnalisé et un suivi régulier.",
     "reviewsTitle": "RAPPORTS <1>BIOLOGIQUES</1>",
     "reviewsSubtitle": "Résultats concrets de notre communauté mondiale d'optimisateurs de santé.",
-    "ctaTitle": "RECOUVREZ VOTRE <1>VITALITÉ</1>",
+    "ctaTitle": "RECOUVREZ VOTRE <br/>VITALITÉ",
     "ctaButton": "Rejoindre le mouvement"
   },
   "contact": {
     "brandName": "BiteWise",
     "tag": "Prenez contact",
-    "title": "Commençons une<br /><1>conversation</1>",
+    "title": "<1>conversation</1>",
     "desc": "Que vous ayez une question sur nos plans nutritionnels, que vous souhaitiez collaborer, ou simplement dire bonjour — nous serions ravis de vous entendre.",
     "featureReply": "Nous répondons sous 24h",
     "featureInquiries": "Toutes les demandes sont les bienvenues",
@@ -269,7 +269,8 @@
     "fat": "Lipides",
     "carbohydrates": "Glucides",
     "retake": "Reprendre",
-    "scanAnother": "Scanner un autre"
+    "scanAnother": "Scanner un autre",
+    "subscriptionDesc": "Abonnez-vous pour seulement <1>499.99 DZD/an</1> et débloquez une analyse nutritionnelle instantanée propulsée par une IA avancée."
   },
   "common": {
     "loading": "Chargement...",

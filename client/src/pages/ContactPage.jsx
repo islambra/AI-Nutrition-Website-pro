@@ -82,8 +82,9 @@ function ContactPage() {
               >
                 <span className="ContactPage-Tag">{t('contact.tag')}</span>
                 <h1 className="ContactPage-Title">
+                  Let's start a<br />
                   <Trans i18nKey="contact.title">
-                    Let's start a<br /><span>conversation</span>
+                    <span>conversation</span>
                   </Trans>
                   <Sparkles size={28} className="ContactPage-Sparkle" strokeWidth={1.5} />
                 </h1>

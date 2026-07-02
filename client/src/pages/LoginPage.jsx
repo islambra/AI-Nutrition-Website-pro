@@ -95,8 +95,9 @@ function LoginPage() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3, duration: 0.5 }}
           >
+            Welcome Back to<br />
             <Trans i18nKey="auth.welcomeBackTitle">
-              Welcome Back to <br /><span>Your Health Journey</span>
+              <span>Your Health Journey</span>
             </Trans>
           </motion.h1>
           <motion.p
