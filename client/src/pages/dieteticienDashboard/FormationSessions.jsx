@@ -5,11 +5,13 @@ import { ArrowLeft, Plus, Trash2, Video, Clock, Monitor, Loader2, AlertCircle } 
 import { getFormationById, getSessions, createSession, deleteSession } from "../../api/formationApi";
 import CountdownTimer from "../../components/CountdownTimer";
 import toast from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 import "./FormationSessions.css";
 
 const FormationSessions = () => {
   const { formationId } = useParams();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [formation, setFormation] = useState(null);
   const [sessions, setSessions] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -47,7 +49,7 @@ const FormationSessions = () => {
         if (fRes.success) setFormation(fRes.data);
         if (sRes.success) setSessions(sRes.data);
       } catch {
-        toast.error("Failed to load");
+        toast.error(t("dashboard.dieteticien.formationSessions.loadFailed"));
       } finally {
         setLoading(false);
       }
@@ -57,7 +59,7 @@ const FormationSessions = () => {
   const handleCreateSession = async (e) => {
     e.preventDefault();
     if (!sessionForm.title || !sessionForm.startTime || !sessionForm.endTime) {
-      toast.error("Please fill in all fields");
+      toast.error(t("dashboard.dieteticien.formationSessions.fillFields"));
       return;
     }
     setSubmitting(true);
@@ -74,7 +76,7 @@ const FormationSessions = () => {
         setSessionForm({ title: "", description: "", startTime: "", endTime: "" });
       }
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to create session");
+      toast.error(error.response?.data?.message || t("dashboard.dieteticien.formationSessions.loadFailed"));
     } finally {
       setSubmitting(false);
     }
@@ -197,7 +199,7 @@ const FormationSessions = () => {
                       {" — "}
                       {new Date(session.endTime).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                     </span>
-                    {isPast && <span className="fs-status-badge ended">Ended</span>}
+                    {isPast && <span className="fs-status-badge ended">{t("dashboard.dieteticien.formationSessions.ended")}</span>}
                     {isLive && <span className="fs-status-badge live">Live Now</span>}
                     {isNext && !isPast && !isLive && <span className="fs-status-badge upcoming">Upcoming</span>}
                   </div>
@@ -205,7 +207,7 @@ const FormationSessions = () => {
                 <div className="fs-session-actions">
                   {isLive ? (
                     <a href={session.zoomLink} target="_blank" rel="noopener noreferrer" className="fs-join-btn">
-                      <Video size={14} /> Join Now
+                      <Video size={14} /> {t("dashboard.dieteticien.formationSessions.joinNow")}
                     </a>
                   ) : !isPast && session.zoomLink ? (
                     <div className="fs-countdown">
@@ -248,13 +250,13 @@ const FormationSessions = () => {
                   className="pa-confirm-cancel"
                   onClick={() => setDeleteConfirm(null)}
                 >
-                  Cancel
+                  {t("common.cancel")}
                 </button>
                 <button
                   className="pa-confirm-reject"
                   onClick={() => handleDeleteSession(deleteConfirm)}
                 >
-                  Delete
+                  {t("common.delete")}
                 </button>
               </div>
             </motion.div>

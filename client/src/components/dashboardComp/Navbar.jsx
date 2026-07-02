@@ -1,15 +1,16 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
 import { Apple } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import "./Navbar.css";
 
 const Navbar = () => {
-  // Get current time for dynamic greeting
+  const { t } = useTranslation();
   const getGreeting = () => {
     const hour = new Date().getHours();
-    if (hour < 12) return "Good morning";
-    if (hour < 18) return "Good afternoon";
-    return "Good evening";
+    if (hour < 12) return t('dashboard.navbar.goodMorning');
+    if (hour < 18) return t('dashboard.navbar.goodAfternoon');
+    return t('dashboard.navbar.goodEvening');
   };
 
   return (
@@ -20,7 +21,7 @@ const Navbar = () => {
 
       <div className="navbar-greeting">
         <span className="greeting-text">{getGreeting()}</span>
-        <span className="welcome-text">Welcome back</span>
+        <span className="welcome-text">{t('dashboard.navbar.welcomeBack')}</span>
       </div>
 
       <div className="navbar-spacer"></div>

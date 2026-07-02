@@ -21,10 +21,12 @@ import {
   MessageCircle
 } from "lucide-react";
 import toast from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 import { getAllContacts, deleteContact } from "../../api/contactApi";
 import "./ContactMessages.css";
 
 const ContactMessages = () => {
+  const { t } = useTranslation();
   const [contacts, setContacts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -75,13 +77,13 @@ const ContactMessages = () => {
             }}
             className="toast-confirm"
           >
-            Delete
+            {t("common.delete")}
           </button>
           <button 
             onClick={() => toast.dismiss(t.id)}
             className="toast-cancel"
           >
-            Cancel
+            {t("common.cancel")}
           </button>
         </div>
       </div>
@@ -182,7 +184,7 @@ const ContactMessages = () => {
           <div className="spinner-ring"></div>
           <Sparkles className="spinner-icon" size={32} />
         </div>
-        <p>Loading messages...</p>
+        <p>{t("common.loading")}</p>
       </div>
     );
   }
@@ -204,7 +206,7 @@ const ContactMessages = () => {
           >
             <div className="page-badge">
               <Mail size={14} />
-              <span>Inbox Management</span>
+                <span>{t("dashboard.dieteticien.contactMessages")}</span>
             </div>
             <h1 className="page-title">Contact Messages</h1>
             <p className="page-description">View and manage all customer inquiries and messages</p>
@@ -334,7 +336,7 @@ const ContactMessages = () => {
           <div className="empty-icon">
             <Inbox size={48} />
           </div>
-          <h3>No messages found</h3>
+            <h3>{t("chat.noMessages")}</h3>
           <p>
             {searchTerm
               ? `No results found for "${searchTerm}"` 
@@ -381,7 +383,7 @@ const ContactMessages = () => {
                     <Eye size={14} /> View Details
                   </button>
                   <button onClick={() => handleDelete(contact._id, contact.name)} className="card-delete-btn">
-                    <Trash2 size={14} /> Delete
+                    <Trash2 size={14} /> {t("common.delete")}
                   </button>
                 </div>
               </motion.div>
@@ -521,13 +523,13 @@ const ContactMessages = () => {
                   className="modal-delete-btn"
                 >
                   <Trash2 size={16} />
-                  Delete Message
+                  {t("common.delete")} Message
                 </button>
                 <button
                   onClick={() => setShowModal(false)}
                   className="modal-close-btn"
                 >
-                  Close
+                  {t("chat.close")}
                 </button>
               </div>
             </motion.div>

@@ -1,4 +1,5 @@
 import { useState, useRef, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Upload, Camera, Image, Zap, RefreshCw, AlertCircle, FileImage } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -69,6 +70,7 @@ const resizeImage = (file) =>
   });
 
 const FoodScanner = () => {
+  const { t } = useTranslation();
   const [state, setState] = useState('idle');
   const [imageFile, setImageFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
@@ -89,7 +91,7 @@ const FoodScanner = () => {
   const handleFile = useCallback((file) => {
     if (!file) return;
     if (!file.type.startsWith('image/')) {
-      toast.error('Please select a valid image file');
+      toast.error(t('common.error'));
       return;
     }
     if (previewUrl) URL.revokeObjectURL(previewUrl);
@@ -112,13 +114,13 @@ const FoodScanner = () => {
   const startScan = async () => {
     if (!imageFile) return;
     if (typeof puter === 'undefined') {
-      toast.error('AI engine not loaded. Please refresh the page.');
+      toast.error(t('common.error'));
       return;
     }
 
     setState('scanning');
     setError('');
-    const loadingToast = toast.loading('Analyzing your food...');
+    const loadingToast = toast.loading(t('foodScanner.analyze'));
 
     try {
       const imageDataUri = await resizeImage(imageFile);
@@ -144,7 +146,7 @@ const FoodScanner = () => {
       }
 
       if (!response) {
-        throw new Error('All AI models failed. Please try again later.');
+        throw new Error(t('common.error'));
       }
 
       let text = '';
@@ -170,7 +172,7 @@ const FoodScanner = () => {
         if (jsonMatch) {
           parsed = JSON.parse(jsonMatch[0]);
         } else {
-          throw new Error('Could not parse nutrition data from AI response.');
+          throw new Error(t('common.error'));
         }
       }
 
@@ -187,7 +189,7 @@ const FoodScanner = () => {
 
       setState('done');
       toast.dismiss(loadingToast);
-      toast.success('Analysis complete!');
+      toast.success(t('common.success'));
     } catch (err) {
       toast.dismiss(loadingToast);
       const msg = err.message || 'Analysis failed';
@@ -224,12 +226,12 @@ const FoodScanner = () => {
               <Upload size={32} />
               <Camera size={14} />
             </div>
-            <h3>Upload a food photo</h3>
-            <p className="fs-sub">Click to browse or drag & drop your meal image</p>
+            <h3>{t('foodScanner.uploadPhoto')}</h3>
+            <p className="fs-sub">{t('foodScanner.dropZone')}</p>
             <div className="fs-hint-row">
               <span className="fs-hint"><FileImage size={12} /> JPG, PNG, WEBP</span>
               <span className="fs-hint-dot" />
-              <span className="fs-hint fs-hint-green">Up to 4 MB</span>
+              <span className="fs-hint fs-hint-green">{t('foodScanner.upTo4MB')}</span>
             </div>
             {dragOver && (
               <motion.div
@@ -237,7 +239,7 @@ const FoodScanner = () => {
                 animate={{ opacity: 1 }}
                 className="fs-drag-overlay"
               >
-                <Upload size={20} /> Drop your image here
+                <Upload size={20} /> {t('foodScanner.dropZone')}
               </motion.div>
             )}
           </motion.div>
@@ -258,7 +260,7 @@ const FoodScanner = () => {
                 <div className="fs-scan-overlay">
                   <LoadingSpinner size={32} text="" />
                   <div className="fs-scan-text">
-                    Analyzing
+                    {t('foodScanner.analyze')}
                     <span>.</span><span>.</span><span>.</span>
                   </div>
                 </div>
@@ -286,10 +288,10 @@ const FoodScanner = () => {
               {state === 'preview' && (
                 <>
                   <button className="fs-btn fs-btn-primary" onClick={startScan}>
-                    <Zap size={16} /> Analyze
+                    <Zap size={16} /> {t('foodScanner.analyze')}
                   </button>
                   <button className="fs-btn fs-btn-ghost" onClick={() => fileInputRef.current?.click()}>
-                    <Image size={16} /> Change
+                    <Image size={16} /> {t('foodScanner.retake')}
                   </button>
                 </>
               )}
@@ -308,7 +310,7 @@ const FoodScanner = () => {
           >
             <NutritionCard dishName={results.dishName} nutrition={results.nutrition} />
             <button className="fs-btn fs-btn-primary fs-reset-btn" onClick={reset}>
-              <RefreshCw size={16} /> Scan Another
+              <RefreshCw size={16} /> {t('foodScanner.scanAnother')}
             </button>
           </motion.div>
         )}

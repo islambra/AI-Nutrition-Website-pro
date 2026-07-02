@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
 import { useSocket } from '../../context/SocketContext';
 import { useChat } from '../../context/ChatContext';
@@ -9,6 +10,7 @@ import MessageList from './MessageList';
 import UserProfileCard from './UserProfileCard';
 
 export default function ChatWindow() {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const { closeChat } = useChat();
   const {
@@ -163,8 +165,8 @@ export default function ChatWindow() {
                   </svg>
                 </div>
                 <div>
-                  <h2 className="text-gray-900 font-semibold text-sm">Messages</h2>
-                  <p className="text-gray-400 text-[11px]">Your conversations</p>
+                  <h2 className="text-gray-900 font-semibold text-sm">{t('chat.title')}</h2>
+                  <p className="text-gray-400 text-[11px]">{t('chat.subtitle')}</p>
                 </div>
               </motion.div>
             )}
@@ -197,7 +199,7 @@ export default function ChatWindow() {
                 <div className="flex items-center justify-center h-full">
                   <div className="flex flex-col items-center gap-3">
                     <div className="w-8 h-8 border-2 border-emerald-200 border-t-emerald-500 rounded-full animate-spin" />
-                    <p className="text-gray-400 text-xs">Loading messages...</p>
+                    <p className="text-gray-400 text-xs">{t('chat.loadingMessages')}</p>
                   </div>
                 </div>
               ) : (

@@ -3,9 +3,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, Plus, Trash2, Loader2, Upload, X, FileText, Info, Calendar, Image, Paperclip } from "lucide-react";
 import { createFormation, updateFormation, getFormationById } from "../../api/formationApi";
 import toast from "react-hot-toast";
+import { useTranslation } from 'react-i18next';
 import "./CreateFormation.css";
 
 const CreateFormation = () => {
+  const { t } = useTranslation();
   const { id } = useParams();
   const isEdit = !!id;
   const navigate = useNavigate();
@@ -47,13 +49,13 @@ const CreateFormation = () => {
             if (f.image) setImagePreview(f.image);
           }
         } catch {
-          toast.error("Failed to load formation");
+          toast.error(t('dashboard.dieteticien.formationSessions.loadFailed'));
         } finally {
           setFetching(false);
         }
       })();
     }
-  }, [id, isEdit]);
+  }, [id, isEdit, t]);
 
   const handleImageClick = () => {
     fileInputRef.current?.click();
@@ -137,7 +139,7 @@ const CreateFormation = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.title || !form.description || !form.price || !form.durationWeeks || !form.startDate) {
-      toast.error("Please fill in all required fields");
+      toast.error(t('dashboard.dieteticien.formationSessions.fillFields'));
       return;
     }
     setLoading(true);
@@ -160,7 +162,7 @@ const CreateFormation = () => {
         navigate("/dieteticien/formations");
       }
     } catch (error) {
-      toast.error(error.response?.data?.message || "Failed to save formation");
+      toast.error(error.response?.data?.message || t('dashboard.dieteticien.formationSessions.loadFailed'));
     } finally {
       setLoading(false);
     }
@@ -177,14 +179,14 @@ const CreateFormation = () => {
   return (
     <div className="mc-container cf-container">
       <button onClick={() => navigate("/dieteticien/formations")} className="cf-back">
-        <ArrowLeft size={16} /> Back to Formations
+        <ArrowLeft size={16} /> {t('dashboard.dieteticien.createFormation.back')}
       </button>
 
       <h2 className="cf-title">
-        {isEdit ? "Edit Formation" : "New Formation"}
+        {isEdit ? t('dashboard.dieteticien.createFormation.editFormation') : t('dashboard.dieteticien.createFormation.newFormation')}
       </h2>
       <p className="cf-subtitle">
-        {isEdit ? "Update the details of your formation" : "Fill in the details to create a new formation"}
+        {isEdit ? t('dashboard.dieteticien.createFormation.editSubtitle') : t('dashboard.dieteticien.createFormation.newSubtitle')}
       </p>
 
       <form onSubmit={handleSubmit} className="cf-form">
@@ -193,29 +195,29 @@ const CreateFormation = () => {
             <span className="cf-section-icon" style={{ background: "#f0fdf4", color: "#16a34a" }}>
               <Info size={15} />
             </span>
-            Basic Information
+            {t('dashboard.dieteticien.createFormation.basicInfo')}
           </div>
           <div className="cf-grid">
             <div className="cf-field">
-              <label className="cf-label cf-label-required">Title</label>
-              <input className="cf-input" placeholder="e.g. Nutrition & Dietetics Masterclass" value={form.title} onChange={(e) => setForm((p) => ({ ...p, title: e.target.value }))} />
+              <label className="cf-label cf-label-required">{t('dashboard.dieteticien.createFormation.title')}</label>
+              <input className="cf-input" placeholder={t('dashboard.dieteticien.createFormation.titlePlaceholder')} value={form.title} onChange={(e) => setForm((p) => ({ ...p, title: e.target.value }))} />
             </div>
             <div className="cf-field">
-              <label className="cf-label cf-label-required">Price (DZD)</label>
-              <input className="cf-input" type="number" placeholder="e.g. 15000" value={form.price} onChange={(e) => setForm((p) => ({ ...p, price: e.target.value }))} />
+              <label className="cf-label cf-label-required">{t('dashboard.dieteticien.createFormation.priceDzd')}</label>
+              <input className="cf-input" type="number" placeholder={t('dashboard.dieteticien.createFormation.pricePlaceholder')} value={form.price} onChange={(e) => setForm((p) => ({ ...p, price: e.target.value }))} />
             </div>
             <div className="cf-field">
-              <label className="cf-label cf-label-required">Duration (weeks)</label>
-              <input className="cf-input" type="number" placeholder="e.g. 8" value={form.durationWeeks} onChange={(e) => setForm((p) => ({ ...p, durationWeeks: e.target.value }))} />
+              <label className="cf-label cf-label-required">{t('dashboard.dieteticien.createFormation.durationWeeks')}</label>
+              <input className="cf-input" type="number" placeholder={t('dashboard.dieteticien.createFormation.durationPlaceholder')} value={form.durationWeeks} onChange={(e) => setForm((p) => ({ ...p, durationWeeks: e.target.value }))} />
             </div>
             <div className="cf-field">
-              <label className="cf-label">Number of Sessions</label>
-              <input className="cf-input" type="number" placeholder="e.g. 16" value={form.sessionsCount} onChange={(e) => setForm((p) => ({ ...p, sessionsCount: e.target.value }))} />
+              <label className="cf-label">{t('dashboard.dieteticien.createFormation.numSessions')}</label>
+              <input className="cf-input" type="number" placeholder={t('dashboard.dieteticien.createFormation.sessionsPlaceholder')} value={form.sessionsCount} onChange={(e) => setForm((p) => ({ ...p, sessionsCount: e.target.value }))} />
             </div>
           </div>
           <div className="cf-field" style={{ marginTop: 4 }}>
-            <label className="cf-label cf-label-required">Description</label>
-            <textarea className="cf-textarea" rows={4} placeholder="Describe what students will learn, prerequisites, and what makes this formation unique..." value={form.description} onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))} />
+            <label className="cf-label cf-label-required">{t('dashboard.dieteticien.createFormation.description')}</label>
+            <textarea className="cf-textarea" rows={4} placeholder={t('dashboard.dieteticien.createFormation.descPlaceholder')} value={form.description} onChange={(e) => setForm((p) => ({ ...p, description: e.target.value }))} />
           </div>
         </div>
 
@@ -224,15 +226,15 @@ const CreateFormation = () => {
             <span className="cf-section-icon" style={{ background: "#fef3c7", color: "#d97706" }}>
               <Calendar size={15} />
             </span>
-            Schedule
+            {t('dashboard.dieteticien.createFormation.schedule')}
           </div>
           <div className="cf-grid">
             <div className="cf-field">
-              <label className="cf-label cf-label-required">Start Date</label>
+              <label className="cf-label cf-label-required">{t('dashboard.dieteticien.createFormation.startDate')}</label>
               <input className="cf-input" type="datetime-local" value={form.startDate} onChange={(e) => setForm((p) => ({ ...p, startDate: e.target.value }))} />
             </div>
             <div className="cf-field">
-              <label className="cf-label">End Date</label>
+              <label className="cf-label">{t('dashboard.dieteticien.createFormation.endDate')}</label>
               <input className="cf-input" type="datetime-local" value={form.endDate} onChange={(e) => setForm((p) => ({ ...p, endDate: e.target.value }))} />
             </div>
           </div>
@@ -243,7 +245,7 @@ const CreateFormation = () => {
             <span className="cf-section-icon" style={{ background: "#dbeafe", color: "#2563eb" }}>
               <Image size={15} />
             </span>
-            Cover Image
+            {t('dashboard.dieteticien.createFormation.coverImage')}
           </div>
           <div className="cf-field">
             <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageChange} style={{ display: "none" }} />
@@ -257,8 +259,8 @@ const CreateFormation = () => {
             ) : (
               <button type="button" onClick={handleImageClick} className="cf-image-upload-btn">
                 <Upload size={28} />
-                <span>Click to upload image</span>
-                <span className="cf-image-upload-hint">PNG, JPG, WebP — up to 10MB</span>
+                <span>{t('dashboard.dieteticien.createFormation.imageUpload')}</span>
+                <span className="cf-image-upload-hint">{t('dashboard.dieteticien.createFormation.imageHint')}</span>
               </button>
             )}
           </div>
@@ -269,13 +271,13 @@ const CreateFormation = () => {
             <span className="cf-section-icon" style={{ background: "#f3e8ff", color: "#9333ea" }}>
               <Paperclip size={15} />
             </span>
-            Files & Resources
+            {t('dashboard.dieteticien.createFormation.filesResources')}
           </div>
           <div className="cf-field">
           <div className="cf-file-header">
             <label className="cf-label">Add PDFs, Drive links, or external resources</label>
             <button type="button" onClick={addFile} className="cf-file-add-btn">
-              <Plus size={14} /> Add File
+              <Plus size={14} /> {t('dashboard.dieteticien.createFormation.addFile')}
             </button>
           </div>
           {form.files.map((file, i) => (
@@ -314,7 +316,7 @@ const CreateFormation = () => {
                     </a>
                   ) : (
                     <button type="button" onClick={() => handlePdfPick(i)} className="cf-file-pdf-choose">
-                      <Upload size={14} /> Choose PDF
+                      <Upload size={14} /> {t('dashboard.dieteticien.createFormation.choosePdf')}
                     </button>
                   )}
                 </>
@@ -327,9 +329,9 @@ const CreateFormation = () => {
                 />
               )}
               <select className="cf-file-type" value={file.type} onChange={(e) => handleTypeChange(i, e.target.value)}>
-                <option value="pdf">PDF</option>
-                <option value="drive">Drive</option>
-                <option value="link">Link</option>
+                <option value="pdf">{t('dashboard.dieteticien.createFormation.pdf')}</option>
+                <option value="drive">{t('dashboard.dieteticien.createFormation.drive')}</option>
+                <option value="link">{t('dashboard.dieteticien.createFormation.link')}</option>
               </select>
               <button type="button" onClick={() => removeFileEntry(i)} className="cf-file-delete">
                 <Trash2 size={14} />
@@ -341,7 +343,7 @@ const CreateFormation = () => {
 
         <button type="submit" disabled={loading} className="cf-submit">
           {loading ? <Loader2 className="AP-Spin" size={18} /> : null}
-          {isEdit ? "Update Formation" : "Create Formation"}
+          {isEdit ? t('dashboard.dieteticien.createFormation.updateFormation') : t('dashboard.dieteticien.createFormation.createFormation')}
         </button>
       </form>
     </div>

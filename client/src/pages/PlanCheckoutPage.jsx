@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import {
@@ -14,6 +15,7 @@ import { useSafeTimeout } from '../hooks/useSafeTimeout';
 import './CheckoutPage.css';
 
 function PlanCheckoutPage() {
+  const { t } = useTranslation();
   const { setTimeoutSafe } = useSafeTimeout();
   const { planId } = useParams();
   const location = useLocation();
@@ -33,7 +35,7 @@ function PlanCheckoutPage() {
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
-      toast.error('Please login to continue');
+      toast.error(t('checkout.pleaseLogin'));
       navigate('/login', { state: { from: location.pathname } });
     }
   }, [isAuthenticated, authLoading, navigate, location.pathname]);
@@ -45,9 +47,9 @@ function PlanCheckoutPage() {
         setLoadingPlan(true);
         const response = await getPlanById(planId);
         if (response.success) setPlan(response.data);
-        else setPlanError('Plan not found');
+        else setPlanError(t('plans.noPlans'));
       } catch {
-        setPlanError('Error loading plan details');
+        setPlanError(t('common.error'));
       } finally {
         setLoadingPlan(false);
       }
@@ -83,7 +85,7 @@ function PlanCheckoutPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!proofFile) {
-      toast.error('Please upload your payment proof image');
+      toast.error(t('checkout.uploadProof'));
       return;
     }
     setSubmitting(true);
@@ -95,11 +97,11 @@ function PlanCheckoutPage() {
       const res = await initiatePayment(formData);
       if (res.success) {
         setSubmitted(true);
-        toast.success('Payment proof submitted! Waiting for confirmation.');
+        toast.success(t('checkout.submitPayment'));
         setTimeoutSafe(() => navigate('/client/my-requests'), 3000);
       }
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Submission failed');
+      toast.error(err.response?.data?.message || t('common.error'));
     } finally {
       setSubmitting(false);
     }
@@ -109,7 +111,7 @@ function PlanCheckoutPage() {
     return (
       <div className="AP-LoadingContainer">
         <Loader2 size={48} className="AP-Spin" />
-        <p>Loading checkout details...</p>
+        <p>{t('common.loading')}</p>
       </div>
     );
   }
@@ -118,10 +120,10 @@ function PlanCheckoutPage() {
     return (
       <div className="AP-ErrorContainer" style={{ textAlign: 'center', padding: '100px 20px' }}>
         <Info size={48} style={{ color: '#EF4444', marginBottom: '20px' }} />
-        <h2>Oops! Plan Not Found</h2>
-        <p>{planError || "The plan you're looking for doesn't exist or has been removed."}</p>
+        <h2>{t('plans.noPlans')}</h2>
+        <p>{planError || t('plans.noPlans')}</p>
         <button onClick={() => navigate('/allPlans')} className="AP-ClearFiltersBtn" style={{ marginTop: '20px' }}>
-          Back to Plans
+          {t('common.back')}
         </button>
       </div>
     );
@@ -135,12 +137,11 @@ function PlanCheckoutPage() {
             <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} style={{ width: 80, height: 80, borderRadius: '50%', background: '#E8F5E9', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
               <Check size={40} style={{ color: '#2E7D32' }} />
             </motion.div>
-            <h2>Payment Proof Submitted!</h2>
+            <h2>{t('checkout.submitPayment')}</h2>
             <p style={{ color: '#6B7280', marginTop: 12, lineHeight: 1.6 }}>
-              Your payment proof has been sent to the dieteticien for verification.<br />
-              You will get access to the plan once they confirm your payment.
+              {t('checkout.uploadProof')}
             </p>
-            <div style={{ marginTop: 24, color: '#9CA3AF', fontSize: 14 }}>Redirecting to My Plans...</div>
+            <div style={{ marginTop: 24, color: '#9CA3AF', fontSize: 14 }}>{t('common.loading')}</div>
           </div>
         </div>
       </PageTransition>
@@ -151,12 +152,12 @@ function PlanCheckoutPage() {
     <PageTransition>
       <div className="checkout-page">
         <button className="back-btn" onClick={() => navigate(-1)}>
-          <ArrowLeft size={20} /> Back
+          <ArrowLeft size={20} /> {t('common.back')}
         </button>
 
         <div className="checkout-container">
           <motion.div className="order-summary" initial={{ x: -20, opacity: 0 }} animate={{ x: 0, opacity: 1 }}>
-            <h2>Order Summary</h2>
+            <h2>{t('checkout.completePurchase')}</h2>
             <div className="plan-summary-card">
               {plan.planImage ? (
                 <img src={plan.planImage} alt={plan.planName} />
@@ -198,24 +199,24 @@ function PlanCheckoutPage() {
           </motion.div>
 
           <motion.div className="payment-form-container" initial={{ x: 20, opacity: 0 }} animate={{ x: 0, opacity: 1 }}>
-            <h2>Payment Details</h2>
+            <h2>{t('checkout.submitPayment')}</h2>
 
             <div className="payment-methods">
               <button className={`method-btn ${paymentMethod === 'ccp' ? 'active' : ''}`} onClick={() => setPaymentMethod('ccp')}>
-                <CreditCard size={20} /> CCP
+                <CreditCard size={20} /> {t('checkout.ccp')}
               </button>
               <button className={`method-btn ${paymentMethod === 'baridimob' ? 'active' : ''}`} onClick={() => setPaymentMethod('baridimob')}>
-                <Smartphone size={20} /> BaridiMob
+                <Smartphone size={20} /> {t('checkout.baridiMob')}
               </button>
             </div>
 
             <form onSubmit={handleSubmit}>
               {/* Dieteticien Payment Info */}
               <div className="form-section-payment">
-                <h4>Transfer to this account</h4>
+                <h4>{t('checkout.submitPayment')}</h4>
                 {loadingInfo ? (
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#6B7280' }}>
-                    <Loader2 size={16} className="AP-Spin" /> Loading payment info...
+                    <Loader2 size={16} className="AP-Spin" /> {t('common.loading')}
                   </div>
                 ) : dietPaymentInfo ? (
                   <div className="payment-info-card" style={{ background: '#F0FDF4', borderRadius: '12px', padding: '16px', border: '1px solid #BBF7D0' }}>
@@ -238,14 +239,14 @@ function PlanCheckoutPage() {
                     )}
                   </div>
                 ) : (
-                  <div style={{ color: '#EF4444', fontSize: 14 }}>This dieteticien hasn't set up payment info yet.</div>
+                  <div style={{ color: '#EF4444', fontSize: 14 }}>{t('checkout.uploadProof')}</div>
                 )}
               </div>
 
               {/* Proof Upload */}
               <div className="form-section-payment">
-                <h4>Upload Payment Proof</h4>
-                <p>After making the transfer, upload a screenshot or receipt as proof.</p>
+                <h4>{t('checkout.uploadProof')}</h4>
+                <p>{t('checkout.uploadProof')}</p>
                 <div
                   className="upload-zone"
                   onClick={() => document.getElementById('proof-input')?.click()}
@@ -257,7 +258,7 @@ function PlanCheckoutPage() {
                         <img src={proofPreview} alt="Proof preview" />
                         <div className="upload-preview-overlay">
                           <Upload size={28} />
-                          <span>Change file</span>
+                          <span>{t('checkout.uploadProof')}</span>
                         </div>
                       </div>
                       <div className="upload-file-name">
@@ -269,8 +270,8 @@ function PlanCheckoutPage() {
                       <div className="upload-zone-icon-wrapper">
                         <Upload size={24} />
                       </div>
-                      <p>Click to upload proof</p>
-                      <p>Screenshot or receipt image</p>
+                      <p>{t('checkout.uploadProof')}</p>
+                      <p>{t('checkout.uploadProof')}</p>
                     </div>
                   )}
                 </div>
@@ -278,9 +279,9 @@ function PlanCheckoutPage() {
 
               <button type="submit" className="pay-btn" disabled={submitting || !proofFile || !dietPaymentInfo} style={{ marginTop: '24px' }}>
                 {submitting ? (
-                  <><Loader2 size={18} className="AP-Spin" /> Submitting...</>
+                  <><Loader2 size={18} className="AP-Spin" /> {t('common.loading')}</>
                 ) : (
-                  <><Upload size={18} /> Submit Payment Proof - {plan.price.toLocaleString()} DZD</>
+                  <><Upload size={18} /> {t('checkout.submitPayment')} - {plan.price.toLocaleString()} DZD</>
                 )}
               </button>
             </form>

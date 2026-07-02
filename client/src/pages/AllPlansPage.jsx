@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
@@ -19,6 +20,7 @@ import PurchaseModal from './PurchaseModal';
 import './AllPlansPage.css';
 
 function AllPlansPage() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { user, isAuthenticated, loading: authLoading } = useAuth();
   const [plans, setPlans] = useState([]);
@@ -42,7 +44,7 @@ function AllPlansPage() {
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
-      toast.error('Please login to view plans');
+      toast.error(t('checkout.pleaseLogin'));
       navigate('/login');
       return;
     }
@@ -60,11 +62,11 @@ function AllPlansPage() {
         setPlans(response.data || []);
         setFilteredPlans(response.data || []);
       } else {
-        setError('Failed to load plans');
+        setError(t('plans.noPlans'));
       }
     } catch (err) {
       console.error('Error fetching plans:', err);
-      setError('Error loading plans. Please try again later.');
+      setError(t('common.error'));
     } finally {
       setLoading(false);
     }
@@ -143,13 +145,13 @@ function AllPlansPage() {
     e.stopPropagation();
     
     if (!isAuthenticated) {
-      toast.error('Please login to continue');
+      toast.error(t('checkout.pleaseLogin'));
       navigate('/login');
       return;
     }
 
     if (!isClient(user)) {
-      toast.error('Only clients can purchase plans');
+      toast.error(t('plans.noPlans'));
       return;
     }
 
@@ -157,7 +159,7 @@ function AllPlansPage() {
     try {
       const response = await checkPlanOwnership(plan._id);
       if (response.success && response.ownsPlan) {
-        toast.error('You already own this plan. View it in "My Plans".', {
+        toast.error(t('plans.owned'), {
           duration: 4000,
           icon: ' '
         });
@@ -167,7 +169,7 @@ function AllPlansPage() {
       navigate(`/checkout/plan/${plan._id}`, { state: { plan } });
     } catch (err) {
       console.error('Error checking plan ownership:', err);
-      toast.error('Unable to verify plan status. Please try again.');
+      toast.error(t('common.error'));
     } finally {
       setCheckingPlanId(null);
     }
@@ -213,7 +215,7 @@ function AllPlansPage() {
     return (
       <div className="AP-LoadingContainer">
         <Loader2 size={48} className="AP-Spin" />
-        <p>Loading plans...</p>
+        <p>{t('common.loading')}</p>
       </div>
     );
   }
@@ -230,10 +232,10 @@ function AllPlansPage() {
           <div className="AP-Header">
             <ScrollReveal>
               <h1 className="AP-Title">
-                Nutrition <span className="AP-Highlight">Plans</span>
+                {t('plans.title')}
               </h1>
               <p className="AP-Subtitle">
-                Discover personalized nutrition plans created by our expert nutritionists
+                {t('services.noPlans')}
               </p>
             </ScrollReveal>
 
@@ -243,7 +245,7 @@ function AllPlansPage() {
                 <Search size={20} className="AP-SearchIcon" />
                 <input
                   type="text"
-                  placeholder="Search plans, categories, or creators..."
+                  placeholder={t('plans.searchPlaceholder')}
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="AP-SearchInput"
@@ -260,7 +262,7 @@ function AllPlansPage() {
                   onClick={() => setShowFilters(!showFilters)}
                 >
                   <SlidersHorizontal size={18} />
-                  Filters
+                  {t('common.search')}
                   {(selectedCategory || priceRange.min || priceRange.max || durationRange.min || durationRange.max) && (
                     <span className="AP-FilterBadge">!</span>
                   )}
@@ -293,16 +295,16 @@ function AllPlansPage() {
                 >
                   <div className="AP-FiltersGrid">
                     <div className="AP-FilterGroup">
-                      <label>Category</label>
-                      <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
-                        <option value="">All Categories</option>
+                        <label>{t('common.all')}</label>
+                        <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
+                          <option value="">{t('common.all')}</option>
                         {categories.map(cat => (
                           <option key={cat} value={cat}>{cat}</option>
                         ))}
                       </select>
                     </div>
                     <div className="AP-FilterGroup">
-                      <label>Price Range (DZD)</label>
+                        <label>{t('services.currency')}</label>
                       <div className="AP-RangeInputs">
                         <input type="number" placeholder="Min" value={priceRange.min} onChange={(e) => setPriceRange(prev => ({ ...prev, min: e.target.value }))} />
                         <span>-</span>
@@ -310,7 +312,7 @@ function AllPlansPage() {
                       </div>
                     </div>
                     <div className="AP-FilterGroup">
-                      <label>Duration (weeks)</label>
+                        <label>{t('signup.durationWeeks')}</label>
                       <div className="AP-RangeInputs">
                         <input type="number" placeholder="Min" value={durationRange.min} onChange={(e) => setDurationRange(prev => ({ ...prev, min: e.target.value }))} />
                         <span>-</span>
@@ -318,23 +320,23 @@ function AllPlansPage() {
                       </div>
                     </div>
                     <div className="AP-FilterGroup">
-                      <label>Sort By</label>
-                      <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
-                        <option value="newest">Newest First</option>
-                        <option value="oldest">Oldest First</option>
-                        <option value="price-low">Price: Low to High</option>
-                        <option value="price-high">Price: High to Low</option>
-                        <option value="duration">Duration</option>
-                        <option value="name">Name</option>
+                        <label>{t('common.search')}</label>
+                        <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+                          <option value="newest">{t('common.pending')}</option>
+                          <option value="oldest">{t('common.approved')}</option>
+                          <option value="price-low">{t('profile.healthMetrics')}</option>
+                          <option value="price-high">{t('profile.healthMetrics')}</option>
+                          <option value="duration">{t('signup.durationWeeks')}</option>
+                          <option value="name">{t('common.search')}</option>
                       </select>
                     </div>
                   </div>
                   <div className="AP-FilterActions">
                     <button onClick={clearFilters} className="AP-ClearFiltersBtn">
-                      <X size={16} /> Clear All Filters
+                      <X size={16} /> {t('common.noResults')}
                     </button>
                     <span className="AP-ResultsCount">
-                      {filteredPlans.length} plan{filteredPlans.length !== 1 ? 's' : ''} found
+                      {t('common.noResults')}
                     </span>
                   </div>
                 </motion.div>
@@ -347,7 +349,7 @@ function AllPlansPage() {
             <div className="AP-Error">
               <Info size={20} />
               <span>{error}</span>
-              <button onClick={fetchPlans}>Retry</button>
+              <button onClick={fetchPlans}>{t('common.tryAgain')}</button>
             </div>
           )}
 
@@ -355,9 +357,9 @@ function AllPlansPage() {
           {filteredPlans.length === 0 ? (
             <div className="AP-EmptyState">
               <Search size={64} />
-              <h2>No Plans Found</h2>
-              <p>Try adjusting your search or filters to find what you're looking for.</p>
-              <button onClick={clearFilters} className="AP-ClearFiltersBtn">Clear All Filters</button>
+              <h2>{t('plans.noPlans')}</h2>
+              <p>{t('common.noResults')}</p>
+              <button onClick={clearFilters} className="AP-ClearFiltersBtn">{t('common.cancel')}</button>
             </div>
           ) : viewMode === 'grid' ? (
             <div className="AP-Grid">
@@ -410,7 +412,7 @@ function AllPlansPage() {
                             <Loader2 size={16} className="AP-Spin" />
                           ) : (
                             <>
-                              <ShoppingCart size={16} /> Select Plan <ChevronRight size={16} />
+                              <ShoppingCart size={16} /> {t('plans.buyNow')} <ChevronRight size={16} />
                             </>
                           )}
                         </button>
@@ -469,7 +471,7 @@ function AllPlansPage() {
                           <Loader2 size={16} className="AP-Spin" />
                         ) : (
                           <>
-                            <ShoppingCart size={16} /> Select Plan
+                            <ShoppingCart size={16} /> {t('plans.buyNow')}
                           </>
                         )}
                       </button>

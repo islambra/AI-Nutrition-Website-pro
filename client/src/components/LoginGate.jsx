@@ -1,9 +1,11 @@
+import { useTranslation } from 'react-i18next';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Sparkles, ArrowRight, Shield } from 'lucide-react';
 import './LoginGate.css';
 
 const LoginGate = ({ children }) => {
+  const { t } = useTranslation();
   const { user, loading } = useAuth();
 
   if (loading) {
@@ -29,24 +31,24 @@ const LoginGate = ({ children }) => {
           </div>
 
           <h2 className="logingate-title">
-            <span className="logingate-title-accent">Authentication</span> Required
+            {t('common.authRequired')}
           </h2>
           <p className="logingate-subtitle">
-            Sign in to access this section. New here? Creating an account takes just a moment.
+            {t('common.authRequiredDesc')}
           </p>
 
           <div className="logingate-buttons">
             <NavLink to="/login" className="logingate-btn-primary">
-              Sign In <ArrowRight size={16} />
+              {t('common.signIn')} <ArrowRight size={16} />
             </NavLink>
             <NavLink to="/signup" className="logingate-btn-secondary">
-              <Sparkles size={14} /> Create Account
+              <Sparkles size={14} /> {t('common.createAccount')}
             </NavLink>
           </div>
 
           <div className="logingate-divider">
             <span className="logingate-divider-line" />
-            <span>Why login?</span>
+            <span>{t('common.whyLogin')}</span>
             <span className="logingate-divider-line" />
           </div>
 

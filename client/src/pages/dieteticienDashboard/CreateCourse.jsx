@@ -18,6 +18,7 @@ import {
   ArrowLeft,
   AlertTriangle,
 } from "lucide-react";
+import { useTranslation } from 'react-i18next';
 import "./CreateCourse.css";
 
 const LEVELS = [
@@ -32,6 +33,7 @@ const SEMESTERS = [
 ];
 
 const CreateCourse = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { user } = useAuth();
   const dashboardPrefix = user?.role === "admin" ? "/admin" : "/dieteticien";
@@ -148,9 +150,9 @@ const CreateCourse = () => {
   const renderStepIndicator = () => (
     <div className="cc-steps">
       {[
-        { num: 1, label: "Info", icon: BookOpen },
-        { num: 2, label: "Material", icon: FileText },
-        { num: 3, label: "Review", icon: CheckCircle },
+        { num: 1, label: t('dashboard.dieteticien.createCourse.step1'), icon: BookOpen },
+        { num: 2, label: t('dashboard.dieteticien.createCourse.step2'), icon: FileText },
+        { num: 3, label: t('dashboard.dieteticien.createCourse.step3'), icon: CheckCircle },
       ].map((s, i) => (
         <div
           key={s.num}
@@ -172,14 +174,14 @@ const CreateCourse = () => {
       <div className="cc-section-header">
         <BookOpen size={20} />
         <div>
-          <h2>Course Information</h2>
-          <p>Tell us about the course you want to create</p>
+          <h2>{t('dashboard.dieteticien.createCourse.step1Title')}</h2>
+          <p>{t('dashboard.dieteticien.createCourse.step1Desc')}</p>
         </div>
       </div>
       <div className="cc-grid">
         <div className="cc-form-group full-width">
           <label>
-            Course Title <span className="cc-required">*</span>
+            {t('dashboard.dieteticien.createCourse.courseTitle')} <span className="cc-required">*</span>
           </label>
           <div className="cc-input-wrap">
             <input
@@ -187,7 +189,7 @@ const CreateCourse = () => {
               name="title"
               value={formData.title}
               onChange={handleChange}
-              placeholder="e.g., Introduction to Nutrition Science"
+              placeholder={t('dashboard.dieteticien.createCourse.courseTitlePlaceholder')}
               maxLength={120}
             />
             <span className="cc-char-count">{formData.title.length}/120</span>
@@ -195,15 +197,15 @@ const CreateCourse = () => {
         </div>
         <div className="cc-form-group">
           <label>
-            Level <span className="cc-required">*</span>
+            {t('dashboard.dieteticien.createCourse.level')} <span className="cc-required">*</span>
           </label>
           <div className="cc-select-wrap">
             <Layers size={16} className="cc-field-icon" />
             <select name="level" value={formData.level} onChange={handleChange}>
-              <option value="">Select Level</option>
+              <option value="">{t('dashboard.dieteticien.createCourse.selectLevel')}</option>
               {LEVELS.map((l) => (
                 <option key={l.value} value={l.value}>
-                  {l.label} — {l.sub}
+                  {t('dashboard.dieteticien.createCourse.level' + l.value)}
                 </option>
               ))}
             </select>
@@ -211,15 +213,15 @@ const CreateCourse = () => {
         </div>
         <div className="cc-form-group">
           <label>
-            Semester <span className="cc-required">*</span>
+            {t('dashboard.dieteticien.createCourse.semester')} <span className="cc-required">*</span>
           </label>
           <div className="cc-select-wrap">
             <Calendar size={16} className="cc-field-icon" />
             <select name="semester" value={formData.semester} onChange={handleChange}>
-              <option value="">Select Semester</option>
+              <option value="">{t('dashboard.dieteticien.createCourse.selectSemester')}</option>
               {SEMESTERS.map((s) => (
                 <option key={s.value} value={s.value}>
-                  {s.label}
+                  {t('dashboard.dieteticien.createCourse.semester' + s.value)}
                 </option>
               ))}
             </select>
@@ -234,8 +236,8 @@ const CreateCourse = () => {
       <div className="cc-section-header">
         <FileText size={20} />
         <div>
-          <h2>Course Material</h2>
-          <p>Upload a PDF or provide a Drive link</p>
+          <h2>{t('dashboard.dieteticien.createCourse.step2Title')}</h2>
+          <p>{t('dashboard.dieteticien.createCourse.step2Desc')}</p>
         </div>
       </div>
 
@@ -247,8 +249,7 @@ const CreateCourse = () => {
         >
           <Upload size={18} />
           <div>
-            <strong>Upload PDF</strong>
-            <small>File up to 10MB</small>
+            <strong>{t('dashboard.dieteticien.createCourse.uploadPdf')}</strong>
           </div>
         </button>
         <button
@@ -258,8 +259,7 @@ const CreateCourse = () => {
         >
           <Link size={18} />
           <div>
-            <strong>Drive Link</strong>
-            <small>Google Drive URL</small>
+            <strong>{t('dashboard.dieteticien.createCourse.driveLink')}</strong>
           </div>
         </button>
       </div>
@@ -292,8 +292,8 @@ const CreateCourse = () => {
             >
               <div className="cc-drop-content">
                 <Upload size={36} />
-                <span className="cc-drop-title">Drop PDF here or click to browse</span>
-                <span className="cc-drop-hint">PDF only — Max 10MB</span>
+                <span className="cc-drop-title">{t('dashboard.dieteticien.createCourse.dropPdf')}</span>
+                <span className="cc-drop-hint">{t('dashboard.dieteticien.createCourse.pdfOnly')}</span>
               </div>
               <input
                 type="file"
@@ -316,11 +316,11 @@ const CreateCourse = () => {
                 name="url"
                 value={formData.url}
                 onChange={handleChange}
-                placeholder="Paste your Google Drive link here..."
+                placeholder={t('dashboard.dieteticien.createCourse.drivePlaceholder')}
               />
             </div>
             <p className="cc-url-hint">
-              <ExternalLink size={12} /> Make sure the link is publicly accessible
+              <ExternalLink size={12} /> {t('dashboard.dieteticien.createCourse.driveHint')}
             </p>
           </div>
         )}
@@ -333,35 +333,35 @@ const CreateCourse = () => {
       <div className="cc-section-header">
         <Sparkles size={20} />
         <div>
-          <h2>Review & Create</h2>
-          <p>Confirm everything looks correct</p>
+          <h2>{t('dashboard.dieteticien.createCourse.step3Title')}</h2>
+          <p>{t('dashboard.dieteticien.createCourse.step3Desc')}</p>
         </div>
       </div>
 
       <div className="cc-review">
         <div className="cc-review-row">
-          <span className="cc-review-label">Title</span>
+          <span className="cc-review-label">{t('dashboard.dieteticien.createCourse.reviewTitle')}</span>
           <span className="cc-review-value">{formData.title}</span>
         </div>
         <div className="cc-review-row">
-          <span className="cc-review-label">Level</span>
+          <span className="cc-review-label">{t('dashboard.dieteticien.createCourse.reviewLevel')}</span>
           <span className="cc-review-value">
             {LEVELS.find((l) => l.value === formData.level)?.label} —{" "}
             {LEVELS.find((l) => l.value === formData.level)?.sub}
           </span>
         </div>
         <div className="cc-review-row">
-          <span className="cc-review-label">Semester</span>
+          <span className="cc-review-label">{t('dashboard.dieteticien.createCourse.reviewSemester')}</span>
           <span className="cc-review-value">
             {SEMESTERS.find((s) => s.value === formData.semester)?.label}
           </span>
         </div>
         <div className="cc-review-row">
-          <span className="cc-review-label">Material</span>
+          <span className="cc-review-label">{t('dashboard.dieteticien.createCourse.reviewMaterial')}</span>
           <span className="cc-review-value">
             {materialType === "pdf"
-              ? formData.pdfFile?.name || "No file selected"
-              : formData.url || "No link provided"}
+              ? formData.pdfFile?.name || t('dashboard.dieteticien.createCourse.noFile')
+              : formData.url || t('dashboard.dieteticien.createCourse.noLink')}
           </span>
         </div>
       </div>
@@ -371,19 +371,19 @@ const CreateCourse = () => {
   return (
     <div className="create-course-container">
       <button className="cc-back-link" onClick={() => navigate(`${dashboardPrefix}/all-courses`)}>
-        <ArrowLeft size={18} /> Back to Courses
+        <ArrowLeft size={18} /> {t('dashboard.dieteticien.createCourse.back')}
       </button>
 
       <div className="create-course-header">
         <h1>
-          <BookOpen size={26} /> Create New Course
+          <BookOpen size={26} /> {t('dashboard.dieteticien.createCourse.title')}
         </h1>
-        <p>Add course materials organized by level and semester</p>
+        <p>{t('dashboard.dieteticien.createCourse.subtitle')}</p>
         {user && (
           <div className="cc-creator-badge">
             <span className="cc-creator-avatar">{user.fullName?.charAt(0)}</span>
             <span>
-              Creating as <strong>{user.fullName}</strong> · {user.role}
+              {t('dashboard.dieteticien.createCourse.creatingAs', { name: user.fullName, role: user.role })}
             </span>
           </div>
         )}
@@ -403,7 +403,7 @@ const CreateCourse = () => {
             <>
               {step > 1 && (
                 <button type="button" className="cc-ghost-btn" onClick={handleBack}>
-                  Back
+                  {t('common.back')}
                 </button>
               )}
               <button
@@ -412,13 +412,13 @@ const CreateCourse = () => {
                 onClick={handleNext}
                 disabled={!canGoNext()}
               >
-                Next Step <ChevronRight size={18} />
+                {t('dashboard.dieteticien.createCourse.nextStep')} <ChevronRight size={18} />
               </button>
             </>
           ) : (
             <>
               <button type="button" className="cc-ghost-btn" onClick={handleBack}>
-                Back
+                {t('common.back')}
               </button>
               <button
                 type="button"
@@ -428,11 +428,11 @@ const CreateCourse = () => {
               >
                 {loading ? (
                   <>
-                    <Loader2 size={18} className="cc-spin" /> Creating...
+                    <Loader2 size={18} className="cc-spin" /> {t('dashboard.dieteticien.createCourse.creating')}
                   </>
                 ) : (
                   <>
-                    <Sparkles size={18} /> Create Course
+                    <Sparkles size={18} /> {t('dashboard.dieteticien.createCourse.createCourse')}
                   </>
                 )}
               </button>
@@ -447,21 +447,21 @@ const CreateCourse = () => {
             <div className="cc-modal-icon">
               <AlertTriangle size={28} />
             </div>
-            <h3>Create this course?</h3>
-            <p>This will publish the course immediately. You cannot undo this action.</p>
+            <h3>{t('dashboard.dieteticien.createCourse.confirmTitle')}</h3>
+            <p>{t('dashboard.dieteticien.createCourse.confirmDesc')}</p>
             <div className="cc-review cc-modal-review">
               <div className="cc-review-row">
-                <span className="cc-review-label">Title</span>
+                <span className="cc-review-label">{t('dashboard.dieteticien.createCourse.reviewTitle')}</span>
                 <span className="cc-review-value">{formData.title}</span>
               </div>
               <div className="cc-review-row">
-                <span className="cc-review-label">Level</span>
+                <span className="cc-review-label">{t('dashboard.dieteticien.createCourse.reviewLevel')}</span>
                 <span className="cc-review-value">
                   {LEVELS.find((l) => l.value === formData.level)?.label}
                 </span>
               </div>
               <div className="cc-review-row">
-                <span className="cc-review-label">Semester</span>
+                <span className="cc-review-label">{t('dashboard.dieteticien.createCourse.reviewSemester')}</span>
                 <span className="cc-review-value">
                   {SEMESTERS.find((s) => s.value === formData.semester)?.label}
                 </span>
@@ -473,14 +473,14 @@ const CreateCourse = () => {
                 className="cc-ghost-btn"
                 onClick={() => setShowConfirm(false)}
               >
-                Cancel
+                {t('dashboard.dieteticien.createCourse.confirmCancel')}
               </button>
               <button
                 type="submit"
                 className="cc-submit-btn"
                 onClick={handleSubmit}
               >
-                <Sparkles size={18} /> Yes, Create Course
+                <Sparkles size={18} /> {t('dashboard.dieteticien.createCourse.confirmYes')}
               </button>
             </div>
           </div>

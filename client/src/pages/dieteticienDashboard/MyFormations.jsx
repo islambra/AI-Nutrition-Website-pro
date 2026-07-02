@@ -4,10 +4,12 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { Plus, Edit, Trash2, Calendar, Users, Video, Loader2, Eye, Clock, User, Search, AlertTriangle, X } from "lucide-react";
 import { getMyFormations, deleteFormation } from "../../api/formationApi";
 import toast from "react-hot-toast";
+import { useTranslation } from 'react-i18next';
 import "./MyFormations.css";
 import "../../components/FormationCard.css";
 
 const MyFormations = () => {
+  const { t } = useTranslation();
   const [formations, setFormations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -57,11 +59,11 @@ const MyFormations = () => {
     <div className="mf-container">
       <div className="mf-header">
         <div className="mf-header-left">
-          <h2 className="mf-header-title">My Formations</h2>
-          <p className="mf-header-sub">Manage your online training programs</p>
+          <h2 className="mf-header-title">{t('dashboard.sidebar.myFormations')}</h2>
+          <p className="mf-header-sub">{t('common.loading')}</p>
         </div>
         <NavLink to="/dieteticien/formations/create" className="mf-create-btn">
-          <Plus size={18} /> New Formation
+          <Plus size={18} /> {t('dashboard.dieteticien.createFormation.newFormation')}
         </NavLink>
       </div>
 
@@ -70,7 +72,7 @@ const MyFormations = () => {
           <Search size={18} />
           <input
             type="text"
-            placeholder="Search by formation name..."
+            placeholder={t('dashboard.student.searchFormations')}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
@@ -80,8 +82,8 @@ const MyFormations = () => {
       {formations.length === 0 ? (
         <div className="mf-empty">
           <Video size={56} className="mf-empty-icon" />
-          <p className="mf-empty-title">No formations yet</p>
-          <p className="mf-empty-sub">Create your first formation to get started.</p>
+          <p className="mf-empty-title">{t('common.noResults')}</p>
+          <p className="mf-empty-sub">{t('common.noResults')}</p>
         </div>
       ) : (
         <div className="mf-list">
@@ -107,7 +109,7 @@ const MyFormations = () => {
 
               <div className="fc-body">
                 <div className="fc-badge-row">
-                  <span className="fc-badge"><Clock size={12} /> {f.durationWeeks} weeks</span>
+                  <span className="fc-badge"><Clock size={12} /> {f.durationWeeks} {t('dashboard.student.weeks')}</span>
                   <span className="fc-price-badge">{f.price.toLocaleString()} DZD</span>
                 </div>
 
@@ -115,8 +117,8 @@ const MyFormations = () => {
                 <p className="fc-desc">{f.description}</p>
 
                 <div className="fc-meta-row">
-                  <span className="fc-meta-item"><Calendar size={14} /> {f.sessionsCount} sessions</span>
-                  <span className="fc-meta-item"><Users size={14} /> {f.durationWeeks} weeks</span>
+                  <span className="fc-meta-item"><Calendar size={14} /> {f.sessionsCount} {t('dashboard.student.sessions')}</span>
+                  <span className="fc-meta-item"><Users size={14} /> {f.durationWeeks} {t('dashboard.student.weeks')}</span>
                 </div>
 
                 {f.creatorInfo && (
@@ -129,7 +131,7 @@ const MyFormations = () => {
                       </div>
                     )}
                     <div className="fc-creator-info">
-                      <span className="fc-creator-label">Created by</span>
+                      <span className="fc-creator-label">{t('dashboard.student.createdBy', { name: '' })}</span>
                       <span className="fc-creator-name">{f.creatorInfo.fullName}</span>
                     </div>
                   </div>
@@ -137,10 +139,10 @@ const MyFormations = () => {
 
                 <div className="fc-actions">
                   <button onClick={() => navigate(`/dieteticien/formations/${f._id}/sessions`)} className="fc-btn fc-btn-outline">
-                    <Video size={14} /> Sessions
+                    <Video size={14} /> {t('dashboard.student.sessions')}
                   </button>
                   <button onClick={() => navigate(`/dieteticien/formations/edit/${f._id}`)} className="fc-btn fc-btn-outline">
-                    <Edit size={14} /> Edit
+                    <Edit size={14} /> {t('common.edit')}
                   </button>
                   <button onClick={() => setDeleteTarget(f._id)} className="fc-btn fc-btn-danger">
                     <Trash2 size={14} />
@@ -184,9 +186,9 @@ const MyFormations = () => {
                 </div>
               </div>
 
-              <h3 className="mf-modal-title">Delete Formation</h3>
+              <h3 className="mf-modal-title">{t('common.delete')}</h3>
               <p className="mf-modal-message">
-                Are you sure you want to delete this formation? All sessions and associated data will be permanently removed. This action cannot be undone.
+                {t('common.confirm')}
               </p>
 
               <div className="mf-modal-actions">
@@ -197,7 +199,7 @@ const MyFormations = () => {
                   onClick={() => setDeleteTarget(null)}
                   disabled={deleting}
                 >
-                  Cancel
+                  {t('common.cancel')}
                 </motion.button>
                 <motion.button
                   whileHover={{ scale: 1.02 }}
@@ -207,7 +209,7 @@ const MyFormations = () => {
                   disabled={deleting}
                 >
                   {deleting ? <Loader2 className="AP-Spin" size={16} /> : <Trash2 size={16} />}
-                  {deleting ? "Deleting..." : "Delete Formation"}
+                  {deleting ? t('common.loading') : t('common.delete')}
                 </motion.button>
               </div>
             </motion.div>

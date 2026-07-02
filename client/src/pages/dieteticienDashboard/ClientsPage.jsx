@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { getAllClients } from '../../api/userApi';
 import './ClientsPage.css';
 
@@ -34,6 +35,7 @@ const Icons = {
 };
 
 const ClientsPage = () => {
+  const { t } = useTranslation();
   const [patients, setPatients] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -154,7 +156,7 @@ const ClientsPage = () => {
     return (
       <div className="loading-container">
         <div className="loading-spinner"></div>
-        <p>Loading patient data...</p>
+        <p>{t("common.loading")}</p>
       </div>
     );
   }
@@ -165,7 +167,7 @@ const ClientsPage = () => {
         <div className="error-icon"><Icons.AlertCircle /></div>
         <h3>Error Loading Patients</h3>
         <p>{error}</p>
-        <button onClick={fetchPatients} className="retry-btn">Try Again</button>
+        <button onClick={fetchPatients} className="retry-btn">{t("common.tryAgain")}</button>
       </div>
     );
   }
@@ -197,7 +199,7 @@ const ClientsPage = () => {
           className={`role-tab ${roleFilter === 'all' ? 'active' : ''}`}
           onClick={() => setRoleFilter('all')}
         >
-          All <span className="role-tab-count">{patients.length}</span>
+          {t("common.all")} <span className="role-tab-count">{patients.length}</span>
         </button>
         <button
           className={`role-tab ${roleFilter === 'client' ? 'active' : ''}`}
@@ -218,7 +220,7 @@ const ClientsPage = () => {
           <span className="search-icon"><Icons.Search /></span>
           <input
             type="text"
-            placeholder="Search by name or email..."
+            placeholder={t("dashboard.dieteticien.clients.searchPlaceholder")}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="search-input"
@@ -242,7 +244,7 @@ const ClientsPage = () => {
                 <div className="filter-item">
                   <label>BMI Category</label>
                   <select value={filters.bmiCategory} onChange={(e) => setFilters({...filters, bmiCategory: e.target.value})}>
-                    <option value="">All</option>
+                    <option value="">{t("common.all")}</option>
                     <option value="underweight">Underweight</option>
                     <option value="normal">Normal</option>
                     <option value="overweight">Overweight</option>
@@ -252,16 +254,16 @@ const ClientsPage = () => {
                 <div className="filter-item">
                   <label>Gender</label>
                   <select value={filters.gender} onChange={(e) => setFilters({...filters, gender: e.target.value})}>
-                    <option value="">All</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
+                    <option value="">{t("common.all")}</option>
+                    <option value="male">{t("dashboard.dieteticien.clients.male")}</option>
+                    <option value="female">{t("dashboard.dieteticien.clients.female")}</option>
                     <option value="other">Other</option>
                   </select>
                 </div>
                 <div className="filter-item">
                   <label>Activity Level</label>
                   <select value={filters.activityLevel} onChange={(e) => setFilters({...filters, activityLevel: e.target.value})}>
-                    <option value="">All</option>
+                    <option value="">{t("common.all")}</option>
                     <option value="sedentary">Sedentary</option>
                     <option value="lightly active">Lightly Active</option>
                     <option value="moderate">Moderate</option>

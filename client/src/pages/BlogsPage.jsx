@@ -1,4 +1,5 @@
 import React, { useState, useEffect, memo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -9,10 +10,10 @@ import { useSafeTimeout } from '../hooks/useSafeTimeout';
 import './BlogsPage.css';
 
 // Helper functions for author data
-const getAuthorName = (author) => {
-  if (!author) return 'VITAL_EXPERT';
+const getAuthorName = (author, t) => {
+  if (!author) return t ? t('blogs.authorFallback') : 'VITAL_EXPERT';
   if (typeof author === 'object' && author.fullName) return author.fullName;
-  return 'VITAL_EXPERT';
+  return t ? t('blogs.authorFallback') : 'VITAL_EXPERT';
 };
 
 const getAuthorPhoto = (author) => {
@@ -42,6 +43,7 @@ const BlogsOrganicFloaters = memo(() => (
 ));
 
 function BlogsPage() {
+  const { t } = useTranslation();
   const { setTimeoutSafe } = useSafeTimeout();
   const navigate = useNavigate();
   const [posts, setPosts] = useState([]);
@@ -67,7 +69,7 @@ function BlogsPage() {
       await fetchAllLikesStatus(blogsArray);
     } catch (err) {
       console.error('Error fetching blogs:', err);
-      setError('Failed to load the knowledge base. Connection interrupted.');
+      setError(t('blogs.failedToLoad'));
     } finally {
       setLoading(false);
     }
@@ -225,13 +227,13 @@ function BlogsPage() {
           <div className="BlogsPage-Empty">
             <Sparkles size={60} opacity={0.3} />
             <h3>ZERO_MATCHES_FOUND</h3>
-            <p>Your search query did not sync with any current biological records.</p>
+            <p>{t('blogs.noPosts')}</p>
           </div>
         ) : (
           <div className="BlogsPage-Grid">
             {filteredPosts.map((post, index) => {
               const likeState = likesStates[post._id] || { liked: false, likesCount: post.likesCount || 0 };
-              const authorName = getAuthorName(post.author);
+              const authorName = getAuthorName(post.author, t);
               const authorPhoto = getAuthorPhoto(post.author);
               
               return (

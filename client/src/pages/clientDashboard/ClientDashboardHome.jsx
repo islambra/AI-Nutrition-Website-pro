@@ -2,9 +2,11 @@ import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { ShoppingBag, ClipboardList, ArrowRight, Activity, Sparkles } from "lucide-react";
 import ScrollReveal from "../../components/ScrollReveal";
+import { useTranslation } from 'react-i18next';
 import "./ClientPlans.css";
 
 const ClientDashboardHome = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   return (
@@ -17,13 +19,13 @@ const ClientDashboardHome = () => {
         <div className="aff-hero">
           <div className="aff-hero-badge">
             <Sparkles size={16} />
-            <span>CLIENT DASHBOARD</span>
+            <span>{t('dashboard.client.badge')}</span>
           </div>
           <h1 className="aff-hero-title">
-            Your <span className="aff-accent">Nutrition Hub</span>
+            {t('dashboard.client.title')}
           </h1>
           <p className="aff-hero-sub">
-            Manage your plans, book consultations, and track your progress.
+            {t('dashboard.client.subtitle')}
           </p>
         </div>
       </ScrollReveal>
@@ -38,10 +40,10 @@ const ClientDashboardHome = () => {
             <div className="aff-card-icon">
               <ShoppingBag size={32} />
             </div>
-            <h3>My Plans</h3>
-            <p>View purchased nutrition plans and book consultation sessions.</p>
+            <h3>{t('dashboard.client.myPlans')}</h3>
+            <p>{t('dashboard.client.myPlansDesc')}</p>
             <span className="aff-card-link">
-              Go to Plans <ArrowRight size={16} />
+              {t('dashboard.client.goToPlans')}
             </span>
           </motion.div>
         </ScrollReveal>
@@ -55,10 +57,10 @@ const ClientDashboardHome = () => {
             <div className="aff-card-icon">
               <ClipboardList size={32} />
             </div>
-            <h3>Browse Plans</h3>
-            <p>Explore all available nutrition plans from our experts.</p>
+            <h3>{t('dashboard.client.browsePlans')}</h3>
+            <p>{t('dashboard.client.browsePlansDesc')}</p>
             <span className="aff-card-link">
-              Browse All <ArrowRight size={16} />
+              {t('dashboard.client.browseAll')}
             </span>
           </motion.div>
         </ScrollReveal>
@@ -68,7 +70,7 @@ const ClientDashboardHome = () => {
       <ScrollReveal>
         <div className="aff-insight">
           <Activity size={20} />
-          <p>You can manage all your nutrition plans and consultation bookings from the <strong>My Plans</strong> section.</p>
+          <p>{t('dashboard.client.insight')}</p>
         </div>
       </ScrollReveal>
     </motion.div>

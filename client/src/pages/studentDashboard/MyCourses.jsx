@@ -15,6 +15,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { getAllCourses, checkCourseAccess } from "../../api/courseApi";
+import { useTranslation } from 'react-i18next';
 import "./MyCourses.css";
 
 const LEVEL_NAMES = {
@@ -30,6 +31,7 @@ const LEVEL_ICONS = {
 };
 
 const MyCourses = () => {
+  const { t } = useTranslation();
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [hasAccess, setHasAccess] = useState(false);
@@ -149,22 +151,21 @@ const MyCourses = () => {
             <div className="mc-blocked-icon">
               <GraduationCap size={44} />
             </div>
-            <h2>Subscription Required</h2>
+            <h2>{t('dashboard.student.subscriptionRequired')}</h2>
             <p className="mc-blocked-desc">
-              You need an active yearly subscription to access all course materials.
+              {t('dashboard.student.subscriptionDesc')}
             </p>
             <div className="mc-blocked-price">
-              <span className="mc-price-amount">2,499.99 DZD</span>
-              <span className="mc-price-label">/year</span>
+              <span className="mc-price-amount">{t('dashboard.student.price')}</span>
             </div>
             <p className="mc-blocked-features">
-              Unlock all courses across every level and semester.
+              {t('dashboard.student.unlockCourses')}
             </p>
             <button
               className="mc-subscribe-btn"
               onClick={() => navigate("/checkout/course-subscription")}
             >
-              Subscribe Now
+              {t('dashboard.student.subscribeNow')}
             </button>
           </div>
       </div>
@@ -179,8 +180,8 @@ const MyCourses = () => {
             <BookOpen size={22} />
           </div>
           <div>
-            <h1>My Courses</h1>
-            <p>Browse your course materials by level and semester</p>
+            <h1>{t('dashboard.student.myCourses')}</h1>
+            <p>{t('dashboard.student.myCoursesDesc')}</p>
           </div>
         </div>
       </div>
@@ -194,7 +195,7 @@ const MyCourses = () => {
               </div>
               <div>
                 <span className="mc-stat-value">{totalCourses}</span>
-                <span className="mc-stat-label">Total Courses</span>
+                <span className="mc-stat-label">{t('dashboard.student.totalCourses')}</span>
               </div>
             </div>
           </div>
@@ -204,7 +205,7 @@ const MyCourses = () => {
               <Search size={16} className="mc-search-icon" />
               <input
                 type="text"
-                placeholder="Search by title or instructor..."
+                placeholder={t('dashboard.student.searchPlaceholder')}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="mc-search-input"
@@ -218,7 +219,7 @@ const MyCourses = () => {
                   className={`mc-filter-chip ${semesterFilter === opt.value ? "active" : ""}`}
                   onClick={() => setSemesterFilter(opt.value)}
                 >
-                  {opt.label}
+                  {opt.value === "all" ? t('dashboard.student.allSemesters') : t('dashboard.student.semester' + opt.value)}
                 </button>
               ))}
             </div>
@@ -235,8 +236,8 @@ const MyCourses = () => {
           <div className="mc-empty-icon">
             <BookOpen size={48} />
           </div>
-          <h3>No courses available</h3>
-          <p>Courses will appear here once they are added</p>
+          <h3>{t('dashboard.student.noCourses')}</h3>
+          <p>{t('common.noResults')}</p>
         </motion.div>
       ) : filteredCourses.length === 0 ? (
         <motion.div
@@ -247,8 +248,8 @@ const MyCourses = () => {
           <div className="mc-empty-icon">
             <Search size={48} />
           </div>
-          <h3>No matches found</h3>
-          <p>Try adjusting your search or filter</p>
+          <h3>{t('dashboard.student.noMatches')}</h3>
+          <p>{t('common.noResults')}</p>
         </motion.div>
       ) : (
         <motion.div
@@ -275,7 +276,7 @@ const MyCourses = () => {
                     </div>
                     <div>
                       <h2 className="mc-level-name">
-                        Level {level} &mdash; {LEVEL_NAMES[level]}
+                        {t('dashboard.dieteticien.allCourses.foundation')} {level} &mdash; {LEVEL_NAMES[level]}
                       </h2>
                       <span className="mc-level-subtitle">
                         {LEVEL_ICONS[level]} &middot; {levelCourses.length} course
@@ -314,7 +315,7 @@ const MyCourses = () => {
                     <span
                       className={`mc-semester-badge semester-${course.semester}`}
                     >
-                      Sem {course.semester}
+                      {t('common.all')} {course.semester}
                     </span>
                     <div className="mc-card-type-icon">
                       {course.pdfUrl ? (
@@ -354,7 +355,7 @@ const MyCourses = () => {
                         title="Open Drive link"
                       >
                         <ExternalLink size={15} />
-                        <span>Drive</span>
+                        <span>{t('dashboard.student.drive')}</span>
                       </a>
                     )}
                     {course.pdfUrl && (
@@ -366,7 +367,7 @@ const MyCourses = () => {
                         title="View PDF"
                       >
                         <FileText size={15} />
-                        <span>PDF</span>
+                        <span>{t('dashboard.student.pdf')}</span>
                       </a>
                     )}
                   </div>

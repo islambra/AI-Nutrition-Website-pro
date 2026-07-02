@@ -12,10 +12,12 @@ import {
   completeConsultation,   // optional – mark as done
 } from '../../api/consultationApi';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 import PageTransition from '../../components/PageTransition';
 import './ConsultationRequests.css';
 
 function ConsultationRequests() {
+  const { t } = useTranslation();
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState({});
@@ -30,7 +32,7 @@ function ConsultationRequests() {
       const res = await getDieteticienRequests();
       if (res.success) setRequests(res.data);
     } catch (err) {
-      toast.error('Failed to load consultation requests');
+      toast.error(t("dashboard.dieteticien.consultationRequests.loadFailed"));
     } finally {
       setLoading(false);
     }
@@ -40,10 +42,10 @@ function ConsultationRequests() {
     setProcessing((prev) => ({ ...prev, [id]: true }));
     try {
       await acceptConsultation(id);   // no arguments needed – Zoom created automatically
-      toast.success('Consultation accepted – Zoom meeting created!');
+      toast.success(t("dashboard.dieteticien.consultationRequests.accepted"));
       fetchRequests();
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Error accepting');
+      toast.error(err.response?.data?.message || t("dashboard.dieteticien.consultationRequests.acceptError"));
     } finally {
       setProcessing((prev) => ({ ...prev, [id]: false }));
     }
@@ -53,10 +55,10 @@ function ConsultationRequests() {
     setProcessing((prev) => ({ ...prev, [id]: true }));
     try {
       await rejectConsultation(id);
-      toast.success('Consultation rejected');
+      toast.success(t("dashboard.dieteticien.consultationRequests.rejected"));
       fetchRequests();
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Error rejecting');
+      toast.error(err.response?.data?.message || t("dashboard.dieteticien.consultationRequests.rejectError"));
     } finally {
       setProcessing((prev) => ({ ...prev, [id]: false }));
     }
@@ -66,10 +68,10 @@ function ConsultationRequests() {
     setProcessing((prev) => ({ ...prev, [id]: true }));
     try {
       await completeConsultation(id);
-      toast.success('Consultation marked as completed');
+      toast.success(t("dashboard.dieteticien.consultationRequests.markedCompleted"));
       fetchRequests();
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Error completing');
+      toast.error(err.response?.data?.message || t("dashboard.dieteticien.consultationRequests.completeError"));
     } finally {
       setProcessing((prev) => ({ ...prev, [id]: false }));
     }
@@ -80,7 +82,7 @@ function ConsultationRequests() {
       <PageTransition>
         <div className="CR-Loading">
           <Loader2 className="CR-Spin" size={48} />
-          <p>Loading requests...</p>
+          <p>{t("dashboard.dieteticien.consultationRequests.loading")}</p>
         </div>
       </PageTransition>
     );
@@ -92,10 +94,10 @@ function ConsultationRequests() {
         <div className="CR-Container">
           <header className="CR-Header">
             <h1 className="CR-Title">
-              Consultation <span className="CR-Highlight">Requests</span>
+              {t("dashboard.dieteticien.consultationRequests.title")}
             </h1>
             <p className="CR-Subtitle">
-              Manage client sessions – accept to auto‑create a Zoom meeting
+              {t("dashboard.dieteticien.consultationRequests.subtitle")}
             </p>
           </header>
 
@@ -106,8 +108,8 @@ function ConsultationRequests() {
               className="CR-EmptyState"
             >
               <Inbox size={64} className="CR-EmptyIcon" />
-              <h3>No Pending Requests</h3>
-              <p>All consultation requests have been processed.</p>
+              <h3>{t("dashboard.dieteticien.consultationRequests.noPending")}</h3>
+              <p>{t("dashboard.dieteticien.consultationRequests.allProcessed")}</p>
             </motion.div>
           ) : (
             <div className="CR-Grid">
@@ -127,10 +129,10 @@ function ConsultationRequests() {
                       </div>
                       <div>
                         <h4 className="CR-ClientName">
-                          {req.user?.fullName || 'Unknown Client'}
+                          {req.user?.fullName || t("dashboard.dieteticien.consultationRequests.unknownClient")}
                         </h4>
                         <p className="CR-ClientEmail">
-                          {req.user?.email || 'No email'}
+                          {req.user?.email || t("dashboard.dieteticien.consultationRequests.noEmail")}
                         </p>
                       </div>
                     </div>
@@ -142,7 +144,7 @@ function ConsultationRequests() {
                         <div>
                           <span className="CR-DetailLabel">Plan</span>
                           <span className="CR-DetailValue">
-                            {req.plan?.planName || 'N/A'}
+                            {req.plan?.planName || t("dashboard.dieteticien.consultationRequests.na")}
                           </span>
                         </div>
                       </div>
@@ -203,7 +205,7 @@ function ConsultationRequests() {
                           ) : (
                             <Check size={16} />
                           )}
-                          Accept & Create Zoom
+                          {t("dashboard.dieteticien.consultationRequests.acceptZoom")}
                         </button>
                         <button
                           className="CR-RejectBtn"
@@ -215,7 +217,7 @@ function ConsultationRequests() {
                           ) : (
                             <X size={16} />
                           )}
-                          Reject
+                          {t("dashboard.dieteticien.consultationRequests.reject")}
                         </button>
                       </div>
                     )}
@@ -224,27 +226,27 @@ function ConsultationRequests() {
                     {req.status === 'accepted' && (
                       <div className="CR-ZoomDetails">
                         <h4 className="CR-ZoomDetailsTitle">
-                          <Video size={18} /> Zoom Meeting Created
+                          <Video size={18} /> {t("dashboard.dieteticien.consultationRequests.zoomCreated")}
                         </h4>
                         <div className="CR-ZoomLinkRow">
                           <LinkIcon size={16} />
-                          <span>Client Link:</span>
+                          <span>{t("dashboard.dieteticien.consultationRequests.clientLink")}</span>
                           <a href={req.zoomLink} target="_blank" rel="noreferrer">
-                            Open in Zoom <ExternalLink size={14} />
+                            {t("dashboard.dieteticien.consultationRequests.openZoom")} <ExternalLink size={14} />
                           </a>
                         </div>
                         {req.zoomStartUrl && (
                           <div className="CR-ZoomLinkRow">
                             <LinkIcon size={16} />
-                            <span>Host Link (start meeting):</span>
+                            <span>{t("dashboard.dieteticien.consultationRequests.hostLink")}</span>
                             <a href={req.zoomStartUrl} target="_blank" rel="noreferrer">
-                              Start as Host <ExternalLink size={14} />
+                              {t("dashboard.dieteticien.consultationRequests.startHost")} <ExternalLink size={14} />
                             </a>
                           </div>
                         )}
                         {req.meetingPassword && (
                           <div className="CR-ZoomLinkRow">
-                            <span>Passcode: </span>
+                            <span>{t("dashboard.dieteticien.consultationRequests.passcode")} </span>
                             <strong>{req.meetingPassword}</strong>
                           </div>
                         )}
@@ -253,17 +255,17 @@ function ConsultationRequests() {
                           disabled={processing[req._id]}
                           onClick={() => handleComplete(req._id)}
                         >
-                          Mark as Completed
+                          {t("dashboard.dieteticien.consultationRequests.markCompleted")}
                         </button>
                       </div>
                     )}
 
                     {/* REJECTED or COMPLETED – simple message */}
                     {req.status === 'rejected' && (
-                      <p className="CR-RejectedMsg">This request was rejected.</p>
+                      <p className="CR-RejectedMsg">{t("dashboard.dieteticien.consultationRequests.wasRejected")}</p>
                     )}
                     {req.status === 'completed' && (
-                      <p className="CR-CompletedMsg">Consultation completed.</p>
+                      <p className="CR-CompletedMsg">{t("dashboard.dieteticien.consultationRequests.completed")}</p>
                     )}
                   </div>
                 </motion.div>

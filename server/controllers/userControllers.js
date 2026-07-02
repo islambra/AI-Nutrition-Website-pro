@@ -687,4 +687,24 @@ export const getDieteticienPaymentInfo = async (req, res) => {
   }
 };
 
+export const updateLanguage = async (req, res) => {
+  try {
+    const { language } = req.body;
+    if (!['en', 'fr'].includes(language)) {
+      return res.status(400).json({ success: false, message: "Invalid language. Must be 'en' or 'fr'." });
+    }
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      { preferredLanguage: language },
+      { new: true }
+    );
+    if (!user) {
+      return res.status(404).json({ success: false, message: "User not found" });
+    }
+    res.json({ success: true, message: "Language updated", preferredLanguage: user.preferredLanguage });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Error updating language preference" });
+  }
+};
+
 export const registerClient = registerUser;

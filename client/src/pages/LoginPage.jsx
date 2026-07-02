@@ -10,18 +10,20 @@ import { clsx } from 'clsx';
 import { Mail, Lock, ArrowRight, ChevronLeft } from 'lucide-react';
 import { useAuth } from "../context/AuthContext";
 import { useSafeTimeout } from "../hooks/useSafeTimeout";
+import { useTranslation, Trans } from "react-i18next";
 import "./LoginPage.css";
-
-const loginSchema = z.object({
-  email: z.string().email("Please enter a valid email address"),
-  password: z.string().min(1, "Password is required"),
-});
 
 function LoginPage() {
   const [loading, setLoading] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
   const { setTimeoutSafe } = useSafeTimeout();
+  const { t } = useTranslation();
+
+  const loginSchema = z.object({
+    email: z.string().email(t('validation.emailRequired')),
+    password: z.string().min(1, t('validation.passwordRequired')),
+  });
 
   const {
     register,
@@ -38,31 +40,28 @@ function LoginPage() {
       
       if (result.success) {
         const user = result.user;
-        // CHANGED: Role is now "Client" instead of "Patient"
         const userRole = user.role || "client";
         
-        // CHANGED: Get display role text
         const roleDisplay = {
-          'admin': 'Administrator',
-          'dieteticien': 'Dieteticien',
-          'client': 'Client',
-          'student': 'Student'
+          'admin': t('auth.roleAdmin'),
+          'dieteticien': t('auth.roleDieteticien'),
+          'client': t('auth.roleClient'),
+          'student': t('auth.roleStudent')
         }[userRole] || userRole;
         
-        toast.success(`Welcome back, ${user.fullName || 'User'}!`, {
-          description: `Logged in as ${roleDisplay}`,
+        toast.success(t('auth.welcomeBack', { name: user.fullName || 'User' }), {
+          description: t('auth.loggedInAs', { role: roleDisplay }),
           duration: 3000,
         });
         
-        // Navigate to home page only
         setTimeoutSafe(() => navigate("/"), 1500);
       } else {
-        throw new Error(result.error || "Login failed");
+        throw new Error(result.error || t('auth.loginFailed'));
       }
     } catch (err) {
       console.error("Login error:", err);
-      toast.error("Login failed", {
-        description: err.message || "Invalid email or password. Please try again.",
+      toast.error(t('auth.loginFailed'), {
+        description: err.message || t('auth.invalidCredentials'),
         duration: 4000,
       });
     } finally {
@@ -72,17 +71,15 @@ function LoginPage() {
 
   return (
     <div className="stripe-split-container">
-      {/* Back Button */}
       <button 
         className="back-btn-stripe" 
         onClick={() => navigate('/')}
         aria-label="Go Back"
       >
         <ChevronLeft size={20} />
-        <span>Back to Home</span>
+        <span>{t('auth.backToHome')}</span>
       </button>
 
-      {/* Left Side: Image */}
       <div className="split-image-side login-visual">
         <div className="overlay-content">
           <motion.div 
@@ -91,26 +88,27 @@ function LoginPage() {
             transition={{ duration: 0.5 }}
             className="brand-badge-login"
           >
-            AI Nutrition Pro
+            {t('auth.aiNutritionPro')}
           </motion.div>
           <motion.h1 
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3, duration: 0.5 }}
           >
-            Welcome Back to <br /><span>Your Health Journey</span>
+            <Trans i18nKey="auth.welcomeBackTitle">
+              Welcome Back to <br /><span>Your Health Journey</span>
+            </Trans>
           </motion.h1>
           <motion.p
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.5, duration: 0.5 }}
           >
-            Experience the future of personalized nutrition with our AI-powered tracking and expert guidance.
+            {t('auth.welcomeDesc')}
           </motion.p>
         </div>
       </div>
 
-      {/* Right Side: Form */}
       <div className="split-form-side scrollable-form">
         <motion.div 
           initial={{ opacity: 0, scale: 0.95 }}
@@ -119,19 +117,19 @@ function LoginPage() {
           className="form-wrapper-stripe"
         >
           <div className="header-stripe">
-            <h2>Welcome Back</h2>
-            <p>Please enter your details to sign in.</p>
+            <h2>{t('auth.welcomeBackHeading')}</h2>
+            <p>{t('auth.signInDetails')}</p>
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="form-stripe">
             <div className="input-group-stripe">
-              <label>Email Address</label>
+              <label>{t('auth.emailAddress')}</label>
               <div className={clsx("input-container-stripe", errors.email && "error")}>
                 <Mail className="input-icon-stripe" size={18} />
                 <input 
                   {...register("email")} 
                   type="email"
-                  placeholder="name@example.com"
+                  placeholder={t('auth.emailPlaceholder')}
                   disabled={loading}
                   autoComplete="email"
                 />
@@ -141,15 +139,15 @@ function LoginPage() {
 
             <div className="input-group-stripe">
               <div className="label-flex-stripe">
-                <label>Password</label>
-                <NavLink to="/forgot-password" className="forgot-link-stripe">Forgot Password?</NavLink>
+                <label>{t('auth.password')}</label>
+                <NavLink to="/forgot-password" className="forgot-link-stripe">{t('auth.forgotPassword')}</NavLink>
               </div>
               <div className={clsx("input-container-stripe", errors.password && "error")}>
                 <Lock className="input-icon-stripe" size={18} />
                 <input 
                   type="password" 
                   {...register("password")} 
-                  placeholder="••••••••"
+                  placeholder={t('auth.passwordPlaceholder')}
                   disabled={loading}
                   autoComplete="current-password"
                 />
@@ -161,18 +159,18 @@ function LoginPage() {
               {loading ? (
                 <>
                   <span className="spinner"></span>
-                  Authenticating...
+                  {t('auth.authenticating')}
                 </>
               ) : (
                 <>
-                  Sign In
+                  {t('auth.signIn')}
                   <ArrowRight size={18} />
                 </>
               )}
             </button>
 
             <div className="footer-stripe">
-              <p>Don't have an account? <NavLink to="/signup">Create one for free</NavLink></p>
+              <p>{t('auth.noAccount')} <NavLink to="/signup">{t('auth.createOne')}</NavLink></p>
             </div>
           </form>
         </motion.div>

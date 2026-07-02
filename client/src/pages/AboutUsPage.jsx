@@ -1,4 +1,5 @@
 import React, { memo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { NavLink } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Target, Heart, Sparkles, Brain, Apple, ArrowUpRight, Leaf, ShieldCheck, Users, Camera, TrendingUp, MessageCircle, Calendar, Activity, Zap } from 'lucide-react';
@@ -29,6 +30,7 @@ const AboutUsOrganicFloaters = memo(() => (
 ));
 
 function AboutUsPage() {
+  const { t } = useTranslation();
   const features = [
     {
       icon: <Camera className="AboutUsPage-Icon" size={32} />,

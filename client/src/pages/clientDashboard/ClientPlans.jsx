@@ -16,9 +16,11 @@ import {
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import ScrollReveal from "../../components/ScrollReveal";
+import { useTranslation } from 'react-i18next';
 import "./ClientPlans.css";
 
 function ClientPlans() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [activeSection, setActiveSection] = useState("plans");
 
@@ -51,7 +53,7 @@ function ClientPlans() {
       const res = await getUserPlans();
       if (res.success) setUserPlans(res.data || []);
     } catch (err) {
-      toast.error("Failed to load plans");
+      toast.error(t('dashboard.dieteticien.myPlans.loadFailed'));
     } finally {
       setPlansLoading(false);
     }
@@ -153,13 +155,13 @@ function ClientPlans() {
         <div className="aff-header">
           <div className="aff-header-badge">
             <Sparkles size={16} />
-            <span>CLIENT PORTAL</span>
+            <span>{t('dashboard.client.badge')}</span>
           </div>
           <h1 className="aff-title">
-            My <span className="aff-accent">Plans & Bookings</span>
+            {t('dashboard.client.myPlans')}
           </h1>
           <p className="aff-subtitle">
-            Manage your nutrition plans and consultation sessions.
+            {t('dashboard.client.myPlansDesc')}
           </p>
         </div>
       </ScrollReveal>
@@ -171,7 +173,7 @@ function ClientPlans() {
           onClick={() => setActiveSection("plans")}
         >
           <ShoppingBag size={18} />
-          My Plans
+          {t('dashboard.client.myPlans')}
           {userPlans.length > 0 && (
             <span className="aff-tab-count">{userPlans.length}</span>
           )}
@@ -194,15 +196,15 @@ function ClientPlans() {
           {plansLoading ? (
             <div className="aff-loading">
               <Loader2 className="aff-spin" size={40} />
-              <p>Loading your plans...</p>
+              <p>{t('common.loading')}</p>
             </div>
           ) : userPlans.length === 0 ? (
             <div className="aff-empty">
               <ShoppingBag size={60} opacity={0.3} />
-              <h3>No plans purchased yet</h3>
-              <p>Buy a nutrition plan to start booking consultations.</p>
+              <h3>{t('common.noResults')}</h3>
+              <p>{t('common.noResults')}</p>
               <button className="aff-browse-btn" onClick={() => navigate("/allPlans")}>
-                Browse Plans <ArrowRight size={18} />
+                {t('dashboard.client.goToPlans')}
               </button>
             </div>
           ) : (
@@ -275,13 +277,13 @@ function ClientPlans() {
           {bookingsLoading ? (
             <div className="aff-loading">
               <Loader2 className="aff-spin" size={40} />
-              <p>Loading your bookings...</p>
+              <p>{t('common.loading')}</p>
             </div>
           ) : allConsultations.length === 0 ? (
             <div className="aff-empty">
               <Eye size={60} opacity={0.3} />
-              <h3>No bookings yet</h3>
-              <p>Your consultation history will appear here.</p>
+              <h3>{t('common.noResults')}</h3>
+              <p>{t('common.noResults')}</p>
             </div>
           ) : (
             <div className="aff-bookings-list">
@@ -490,7 +492,7 @@ function ClientPlans() {
                       {/* Description */}
                       {plan.description && (
                         <div className="aff-modal-desc">
-                          <h4>Description</h4>
+                          <h4>{t('dashboard.dieteticien.createPlan.description')}</h4>
                           <p>{plan.description}</p>
                         </div>
                       )}
@@ -675,7 +677,7 @@ function ClientPlans() {
                   className="aff-booking-cancel"
                   onClick={() => setBookingModal({ open: false, userPlanId: null })}
                 >
-                  Cancel
+                  {t('common.cancel')}
                 </button>
                 <button
                   className="aff-booking-confirm"
@@ -714,14 +716,14 @@ function ClientPlans() {
               <div className="aff-confirm-icon">
                 <AlertCircle size={28} />
               </div>
-              <h3>Are you sure?</h3>
+              <h3>{t('common.confirm')}</h3>
               <p>{confirmDialog.message}</p>
               <div className="aff-confirm-actions">
                 <button
                   className="aff-confirm-cancel"
                   onClick={() => setConfirmDialog({ open: false, message: "", onConfirm: null })}
                 >
-                  No, keep it
+                  {t('common.cancel')}
                 </button>
                 <button
                   className="aff-confirm-confirm"
@@ -731,7 +733,7 @@ function ClientPlans() {
                     if (cb) cb();
                   }}
                 >
-                  Yes, proceed
+                  {t('common.confirm')}
                 </button>
               </div>
             </motion.div>

@@ -1,8 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useAuth } from '../../context/AuthContext';
 import { useSocket } from '../../context/SocketContext';
 
 export default function MessageList({ messages, room, onSendMessage, typingUser, otherParticipant, onShowProfile }) {
+  const { t } = useTranslation();
   const { user } = useAuth();
   const { emitTyping, emitStopTyping } = useSocket();
   const userId = user?._id;
@@ -54,8 +56,8 @@ export default function MessageList({ messages, room, onSendMessage, typingUser,
     const yesterday = new Date(today);
     yesterday.setDate(yesterday.getDate() - 1);
 
-    if (d.toDateString() === today.toDateString()) return 'Today';
-    if (d.toDateString() === yesterday.toDateString()) return 'Yesterday';
+    if (d.toDateString() === today.toDateString()) return t('chat.today');
+    if (d.toDateString() === yesterday.toDateString()) return t('chat.yesterday');
     return d.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric' });
   };
 
@@ -78,8 +80,8 @@ export default function MessageList({ messages, room, onSendMessage, typingUser,
               </svg>
             </div>
             <div className="text-center">
-              <p className="text-gray-600 text-sm font-medium">No messages yet</p>
-              <p className="text-gray-400 text-xs mt-1">Send a message to start the conversation!</p>
+              <p className="text-gray-600 text-sm font-medium">{t('chat.noMessages')}</p>
+              <p className="text-gray-400 text-xs mt-1">{t('chat.startConversation')}</p>
             </div>
           </div>
         )}
@@ -174,7 +176,7 @@ export default function MessageList({ messages, room, onSendMessage, typingUser,
               value={input}
               onChange={handleInputChange}
               onKeyDown={handleKeyDown}
-              placeholder="Type a message..."
+              placeholder={t('chat.typeMessage')}
               className="flex-1 bg-transparent text-gray-900 py-2.5 text-sm outline-none placeholder-gray-400"
             />
           </div>

@@ -1,5 +1,5 @@
-// pages/ProfilePage.jsx
 import React, { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   User, Mail, Shield, Edit3, Camera, Save, X,
@@ -18,6 +18,7 @@ import ScrollReveal from '../components/ScrollReveal';
 import './ProfilePage.css';
 
 function ProfilePage() {
+  const { t } = useTranslation();
   const { user, updateUser } = useAuth();
   const fileInputRef = useRef(null);
   const { setTimeoutSafe } = useSafeTimeout();
@@ -93,17 +94,17 @@ function ProfilePage() {
     if (!file) return;
 
     if (!file.type.startsWith('image/')) {
-      toast.error('Invalid file type. Please select an image.');
+      toast.error(t('common.error'));
       return;
     }
 
     if (file.size > 5 * 1024 * 1024) {
-      toast.error('File too large. Maximum 5MB allowed.');
+      toast.error(t('common.error'));
       return;
     }
 
     setIsUploading(true);
-    const loadingToast = toast.loading('Uploading profile picture...');
+    const loadingToast = toast.loading(t('common.loading'));
 
     try {
       const result = await updateUserService(user._id, {}, file);
@@ -111,11 +112,11 @@ function ProfilePage() {
         updateUser(result.user);
       }
       toast.dismiss(loadingToast);
-      toast.success('Profile picture updated successfully');
+      toast.success(t('common.success'));
     } catch (err) {
       console.error('Upload error:', err);
       toast.dismiss(loadingToast);
-      toast.error(err.response?.data?.message || 'Upload failed');
+      toast.error(err.response?.data?.message || t('common.error'));
     } finally {
       setIsUploading(false);
       if (fileInputRef.current) {
@@ -126,26 +127,26 @@ function ProfilePage() {
 
   const validateForm = () => {
     if (!formData.fullName?.trim()) {
-      toast.error('Full name is required');
+      toast.error(t('signup.errors.fullNameRequired'));
       return false;
     }
     if (!formData.email?.trim()) {
-      toast.error('Email is required');
+      toast.error(t('signup.errors.emailRequired'));
       return false;
     }
     if (user?.role === "client" || user?.role === "student") {
       if (!formData.age || formData.age < 1 || formData.age > 150) {
-        toast.error('Age must be between 1 and 150');
+        toast.error(t('signup.errors.ageRequired'));
         return false;
       }
     }
     if (user?.role === "client") {
       if (!formData.heightCm || formData.heightCm < 50 || formData.heightCm > 300) {
-        toast.error('Height must be between 50 and 300 cm');
+        toast.error(t('signup.errors.heightRequired'));
         return false;
       }
       if (!formData.weightKg || formData.weightKg < 10 || formData.weightKg > 500) {
-        toast.error('Weight must be between 10 and 500 kg');
+        toast.error(t('signup.errors.weightRequired'));
         return false;
       }
     }
@@ -160,7 +161,7 @@ function ProfilePage() {
     setIsSaving(true);
     setIsMetricsLoading(true);
     
-    const loadingToast = toast.loading('Saving your profile...');
+    const loadingToast = toast.loading(t('common.loading'));
 
     try {
       const submissionData = {
@@ -197,11 +198,11 @@ function ProfilePage() {
       }
       
       toast.dismiss(loadingToast);
-      toast.success('Profile updated successfully');
+      toast.success(t('profile.save'));
       
       if (result.healthMetrics) {
         setTimeoutSafe(() => {
-          toast.success('Health metrics recalculated', { duration: 3000 });
+          toast.success(t('profile.healthMetrics'), { duration: 3000 });
         }, 1000);
       }
       
@@ -210,7 +211,7 @@ function ProfilePage() {
     } catch (err) {
       console.error('Update error:', err);
       toast.dismiss(loadingToast);
-      toast.error(err.response?.data?.message || 'Update failed');
+      toast.error(err.response?.data?.message || t('common.error'));
       setIsMetricsLoading(false);
     } finally {
       setIsSaving(false);
@@ -334,7 +335,7 @@ function ProfilePage() {
                     className="VXPR-AvatarUploadBtn" 
                     onClick={handleImageClick} 
                     disabled={isUploading}
-                    title="Update profile picture"
+                    title={t('profile.edit')}
                     type="button"
                   >
                     {isUploading ? <Loader2 size={18} className="VXPR-Spin" /> : <Camera size={18} />}

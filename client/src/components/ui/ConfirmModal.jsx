@@ -1,6 +1,8 @@
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 export default function ConfirmModal({ isOpen, title, message, confirmLabel, cancelLabel, onConfirm, onCancel, variant = 'danger' }) {
+  const { t } = useTranslation();
   return (
     <AnimatePresence>
       {isOpen && (
@@ -35,15 +37,15 @@ export default function ConfirmModal({ isOpen, title, message, confirmLabel, can
                     </svg>
                   )}
                 </div>
-                <h3 className="text-gray-900 font-semibold text-base">{title || 'Are you sure?'}</h3>
-                <p className="text-gray-500 text-sm mt-1.5">{message || 'This action cannot be undone.'}</p>
+                <h3 className="text-gray-900 font-semibold text-base">{title || t('common.confirm')}</h3>
+                <p className="text-gray-500 text-sm mt-1.5">{message || t('common.confirm')}</p>
               </div>
               <div className="flex gap-2 px-6 pb-6 pt-4">
                 <button
                   onClick={onCancel}
                   className="flex-1 h-10 rounded-xl bg-gray-100 text-gray-600 text-sm font-medium hover:bg-gray-200 transition-colors"
                 >
-                  {cancelLabel || 'Cancel'}
+                  {cancelLabel || t('common.cancel')}
                 </button>
                 <button
                   onClick={onConfirm}
@@ -53,7 +55,7 @@ export default function ConfirmModal({ isOpen, title, message, confirmLabel, can
                       : 'bg-emerald-500 hover:bg-emerald-600'
                   }`}
                 >
-                  {confirmLabel || 'Delete'}
+                  {confirmLabel || t('common.delete')}
                 </button>
               </div>
             </motion.div>

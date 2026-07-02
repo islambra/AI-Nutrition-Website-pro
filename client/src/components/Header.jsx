@@ -2,14 +2,22 @@
 import { useState, useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { UserCircle, Menu, LogOut, Apple, LayoutDashboard, User, Zap, X } from "lucide-react";
+import { useTranslation } from "react-i18next";
+import { UserCircle, Menu, LogOut, Apple, LayoutDashboard, User, Zap, X, Globe } from "lucide-react";
 import "./Header.css";
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [showLogout, setShowLogout] = useState(false);
+  const [showLangMenu, setShowLangMenu] = useState(false);
   const location = useLocation();
   const { user, logout } = useAuth();
+  const { t, i18n } = useTranslation();
+
+  const changeLanguage = (lng) => {
+    i18n.changeLanguage(lng);
+    setShowLangMenu(false);
+  };
 
   const toggleMenu = () => {
     setIsMenuOpen(prev => !prev);
@@ -52,6 +60,7 @@ function Header() {
   useEffect(() => {
     setIsMenuOpen(false);
     setShowLogout(false);
+    setShowLangMenu(false);
   }, [location.pathname]);
 
   useEffect(() => {
@@ -70,19 +79,19 @@ function Header() {
         </NavLink>
 
         <nav className="desktop-nav-links">
-          <NavLink to="/" className="nav-item">Home</NavLink>
+          <NavLink to="/" className="nav-item">{t('nav.home')}</NavLink>
           {user?.role !== "admin" && user?.role !== "dieteticien" && (
-            <NavLink to="/services" className="nav-item">Services</NavLink>
+            <NavLink to="/services" className="nav-item">{t('nav.services')}</NavLink>
           )}
-          <NavLink to="/blogs" className="nav-item">Blogs</NavLink>
-          <NavLink to="/about" className="nav-item">About Us</NavLink>
-          <NavLink to="/contact" className="nav-item">Contact Us</NavLink>
+          <NavLink to="/blogs" className="nav-item">{t('nav.blogs')}</NavLink>
+          <NavLink to="/about" className="nav-item">{t('nav.about')}</NavLink>
+          <NavLink to="/contact" className="nav-item">{t('nav.contact')}</NavLink>
         </nav>
 
         <div className="management-box">
           {!user ? (
             <NavLink to="/login" className="sign-in-btn">
-              Sign in
+              {t('nav.signIn')}
             </NavLink>
           ) : (
             <div className="user-menu">
@@ -98,50 +107,69 @@ function Header() {
                 )}
               </button>
               <div className="dropdown">
-                {/* Dashboard link based on role */}
                 {(user?.role === "admin" || user?.role === "dieteticien") && (
                   <NavLink to={getDashboardPath()} className="dropdown-item">
                     <LayoutDashboard size={16} />
-                    Dashboard
+                    {t('nav.dashboard')}
                   </NavLink>
                 )}
-                {/* Profile & Plans links for Clients */}
                 {isClientRole() && (
                   <>
                     <NavLink to="/client/dashboard" className="dropdown-item">
                       <LayoutDashboard size={16} />
-                      Dashboard
+                      {t('nav.dashboard')}
                     </NavLink>
                     <NavLink to="/profile" className="dropdown-item">
                       <User size={16} />
-                      Profile
+                      {t('nav.profile')}
                     </NavLink>
                     <NavLink to="/ai-tool" className="dropdown-item">
                       <Zap size={16} />
-                      AI Scanner
+                      {t('nav.aiScanner')}
                     </NavLink>
                   </>
                 )}
-                {/* Student Dashboard links */}
                 {isStudent() && (
                   <>
                     <NavLink to="/student/my-courses" className="dropdown-item">
                       <LayoutDashboard size={16} />
-                      Dashboard
+                      {t('nav.dashboard')}
                     </NavLink>
                     <NavLink to="/profile" className="dropdown-item">
                       <User size={16} />
-                      Profile
+                      {t('nav.profile')}
                     </NavLink>
                   </>
                 )}
                 <button className="logout-btn" onClick={handleLogout}>
                   <LogOut size={16} />
-                  Logout
+                  {t('nav.logout')}
                 </button>
               </div>
             </div>
           )}
+
+          <div style={{ position: 'relative', display: 'inline-block' }}>
+            <button
+              className="lang-switcher-btn"
+              onClick={() => setShowLangMenu(!showLangMenu)}
+              aria-label="Switch language"
+              style={{ background: 'none', border: '1px solid #ddd', borderRadius: '8px', padding: '6px 10px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '13px' }}
+            >
+              <Globe size={16} />
+              {i18n.language === 'fr' ? 'FR' : 'EN'}
+            </button>
+            {showLangMenu && (
+              <div style={{ position: 'absolute', top: '100%', right: 0, marginTop: '4px', background: 'white', border: '1px solid #e0e0e0', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', zIndex: 1000, minWidth: '120px' }}>
+                <button onClick={() => changeLanguage('en')} style={{ display: 'block', width: '100%', padding: '10px 16px', border: 'none', background: i18n.language === 'en' ? '#E8F5E9' : 'transparent', cursor: 'pointer', textAlign: 'left', fontSize: '14px', borderRadius: '8px 8px 0 0' }}>
+                  🇬🇧 English
+                </button>
+                <button onClick={() => changeLanguage('fr')} style={{ display: 'block', width: '100%', padding: '10px 16px', border: 'none', background: i18n.language === 'fr' ? '#E8F5E9' : 'transparent', cursor: 'pointer', textAlign: 'left', fontSize: '14px', borderRadius: '0 0 8px 8px' }}>
+                  🇫🇷 Français
+                </button>
+              </div>
+            )}
+          </div>
 
           <button className="menu-icon-btn" onClick={toggleMenu} aria-label="Toggle navigation menu">
             <Menu size={28} />
@@ -153,16 +181,16 @@ function Header() {
         <button className="mobile-close-btn" onClick={toggleMenu} aria-label="Close menu">
           <X size={28} />
         </button>
-        <NavLink to="/" className="mobile-nav-item">Home</NavLink>
+        <NavLink to="/" className="mobile-nav-item">{t('nav.home')}</NavLink>
         {user?.role !== "admin" && user?.role !== "dieteticien" && (
-          <NavLink to="/services" className="mobile-nav-item">Services</NavLink>
+          <NavLink to="/services" className="mobile-nav-item">{t('nav.services')}</NavLink>
         )}
-        <NavLink to="/blogs" className="mobile-nav-item">Blogs</NavLink>
-        <NavLink to="/about" className="mobile-nav-item">About Us</NavLink>
-        <NavLink to="/contact" className="mobile-nav-item">Contact Us</NavLink>
+        <NavLink to="/blogs" className="mobile-nav-item">{t('nav.blogs')}</NavLink>
+        <NavLink to="/about" className="mobile-nav-item">{t('nav.about')}</NavLink>
+        <NavLink to="/contact" className="mobile-nav-item">{t('nav.contact')}</NavLink>
         
         {!user ? (
-          <NavLink to="/login" className="mobile-nav-item mobile-login-btn">Sign in</NavLink>
+          <NavLink to="/login" className="mobile-nav-item mobile-login-btn">{t('nav.signIn')}</NavLink>
         ) : (
           <div className="mobile-auth-section">
             <div className="mobile-user-info">
@@ -175,48 +203,45 @@ function Header() {
               ) : (
                 <UserCircle size={24} className="mobile-default-avatar" />
               )}
-              <span>{user?.fullName || user?.name || user?.email || "User"}</span>
+              <span>{user?.fullName || user?.name || user?.email || t('common.unknown')}</span>
             </div>
-            {/* Dashboard link based on role for mobile */}
             {(user?.role === "admin" || user?.role === "dieteticien") && (
               <NavLink to={getDashboardPath()} className="mobile-nav-item">
                 <LayoutDashboard size={16} />
-                Dashboard
+                {t('nav.dashboard')}
               </NavLink>
             )}
-            {/* Profile & Plans links for Clients on mobile */}
             {isClientRole() && (
               <>
                 <NavLink to="/client/dashboard" className="mobile-nav-item">
                   <LayoutDashboard size={16} />
-                  Dashboard
+                  {t('nav.dashboard')}
                 </NavLink>
                 <NavLink to="/profile" className="mobile-nav-item">
                   <User size={16} />
-                  Profile
+                  {t('nav.profile')}
                 </NavLink>
                 <NavLink to="/ai-tool" className="mobile-nav-item">
                   <Zap size={16} />
-                  AI Scanner
+                  {t('nav.aiScanner')}
                 </NavLink>
               </>
             )}
-            {/* Student Dashboard links on mobile */}
             {isStudent() && (
               <>
                 <NavLink to="/student/my-courses" className="mobile-nav-item">
                   <LayoutDashboard size={16} />
-                  Dashboard
+                  {t('nav.dashboard')}
                 </NavLink>
                 <NavLink to="/profile" className="mobile-nav-item">
                   <User size={16} />
-                  Profile
+                  {t('nav.profile')}
                 </NavLink>
               </>
             )}
             <button className="mobile-nav-item mobile-logout-btn" onClick={handleLogout}>
               <LogOut size={16} />
-              Logout
+              {t('nav.logout')}
             </button>
           </div>
         )}
@@ -228,17 +253,17 @@ function Header() {
             <div className="logout-modal-icon">
               <LogOut size={22} />
             </div>
-            <h3 className="logout-modal-title">Sign out</h3>
+            <h3 className="logout-modal-title">{t('nav.logoutTitle')}</h3>
             <p className="logout-modal-desc">
-              You&apos;ll need to sign back in to access your account.
+              {t('nav.logoutDesc')}
             </p>
             <div className="logout-modal-actions">
               <button className="logout-modal-secondary" onClick={closeLogout}>
-                Cancel
+                {t('nav.cancel')}
               </button>
               <button className="logout-modal-primary" onClick={confirmLogout}>
                 <LogOut size={16} />
-                Sign out
+                {t('nav.logoutTitle')}
               </button>
             </div>
           </div>

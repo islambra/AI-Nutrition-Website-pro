@@ -1,15 +1,18 @@
 import { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 import { Hexagon, Cpu, Lock, Zap, LogIn } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { checkAiToolAccess } from '../api/aiToolApi';
+import { Trans } from 'react-i18next';
 import FoodScanner from '../components/FoodScanner';
 import PageTransition from '../components/PageTransition';
 import BioTechBackground from '../components/BioTechBackground';
 import './AiToolPage.css';
 
 function AiToolPage() {
+  const { t } = useTranslation();
   const { isAuthenticated, authLoading } = useAuth();
   const navigate = useNavigate();
   const [accessLoading, setAccessLoading] = useState(true);
@@ -30,7 +33,7 @@ function AiToolPage() {
     return (
       <div className="AIT-LoadingScreen">
         <div className="AIT-LoadingSpinner" />
-        <p>Loading AI Scanner...</p>
+        <p>{t('aiTool.loading')}</p>
       </div>
     );
   }
@@ -50,10 +53,10 @@ function AiToolPage() {
                 <Hexagon size={80} strokeWidth={1.5} />
                 <Cpu size={40} className="AIT-LoginPromptCpu" />
               </div>
-              <h2>Authentication Required</h2>
-              <p>Sign in to access the AI Food Scanner and unlock nutritional insights.</p>
+              <h2>{t('common.authRequired')}</h2>
+              <p>{t('aiTool.signInPrompt')}</p>
               <button className="AIT-PaywallBtn" onClick={() => navigate('/login')}>
-                <LogIn size={20} /> Sign In
+                <LogIn size={20} /> {t('common.signIn')}
               </button>
             </motion.div>
           </div>
@@ -77,16 +80,18 @@ function AiToolPage() {
                 <Hexagon size={80} strokeWidth={1.5} />
                 <Lock size={40} className="AIT-LoginPromptCpu" />
               </div>
-              <h2>Subscription Required</h2>
+              <h2>{t('common.authRequired')}</h2>
               <p>
-                You need an active yearly subscription to access the AI Food Scanner.
+                {t('aiTool.signInPrompt')}
               </p>
               <p style={{ fontSize: '13px', color: '#9CA3AF', marginTop: '8px' }}>
-                Subscribe for just <strong>499.99 DZD/year</strong> and unlock instant
-                nutritional analysis powered by advanced AI.
+                <Trans i18nKey="aiTool.subscriptionDesc">
+                  Subscribe for just <strong>499.99 DZD/year</strong> and unlock instant
+                  nutritional analysis powered by advanced AI.
+                </Trans>
               </p>
               <button className="AIT-PaywallBtn" onClick={() => navigate('/checkout/ai-tool')}>
-                <Zap size={20} /> Subscribe Now — 499.99 DZD/year
+                <Zap size={20} /> {t('services.subscribe')} — 499.99 DZD/year
               </button>
             </motion.div>
           </div>
@@ -112,7 +117,7 @@ function AiToolPage() {
                 <span className="AIT-TitleGradient">Scanner</span>
               </h1>
               <p className="AIT-Subtitle">
-                Upload a photo of your meal and get instant nutritional analysis powered by advanced AI
+                {t('foodScanner.dropZone')}
               </p>
             </div>
             <FoodScanner />

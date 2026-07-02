@@ -7,9 +7,11 @@ import {
   FileText, Zap, Users, Sparkles, Clock, User 
 } from 'lucide-react';
 import { useSafeTimeout } from '../../hooks/useSafeTimeout';
+import { useTranslation } from 'react-i18next';
 import './DieteticienBlogs.css';
 
 const DieteticienBlogs = () => {
+  const { t } = useTranslation();
   const { setTimeoutSafe } = useSafeTimeout();
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -45,7 +47,7 @@ const DieteticienBlogs = () => {
       const res = await getMyBlogs();
       setBlogs(res.data || []);
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to load blogs');
+      setError(err.response?.data?.message || t('dashboard.dieteticien.blogs.loadFailed'));
     } finally {
       setLoading(false);
     }
@@ -164,16 +166,16 @@ const DieteticienBlogs = () => {
   if (loading) return (
     <div className="Dieteticien-blogs-loading">
       <div className="loading-spinner"></div>
-      <p>Loading your blogs...</p>
+      <p>{t('common.loading')}</p>
     </div>
   );
 
   if (error) return (
     <div className="Dieteticien-blogs-error">
       <div className="error-icon"><AlertTriangle size={24} /></div>
-      <h3>Unable to load blogs</h3>
+      <h3>{t('dashboard.dieteticien.blogs.loadFailed')}</h3>
       <p>{error}</p>
-      <button onClick={fetchBlogs} className="retry-btn">Retry</button>
+      <button onClick={fetchBlogs} className="retry-btn">{t('common.tryAgain')}</button>
     </div>
   );
 
@@ -189,16 +191,16 @@ const DieteticienBlogs = () => {
 
       {/* Header */}
       <div className="blogs-header">
-        <h1>My Blog Posts</h1>
-        <p className="subtitle">Manage your published articles and recipes</p>
+        <h1>{t('dashboard.sidebar.myBlogs')}</h1>
+        <p className="subtitle">{t('dashboard.dieteticien.blogs.loadFailed')}</p>
       </div>
 
       {/* Blog Grid */}
       {blogs.length === 0 ? (
         <div className="empty-state">
           <div className="empty-icon"><FileText size={48} /></div>
-          <h3>No blogs yet</h3>
-          <p>You haven't created any blog posts. Use the create button to start writing.</p>
+          <h3>{t('common.noResults')}</h3>
+          <p>{t('common.noResults')}</p>
         </div>
       ) : (
         <div className="blogs-grid">
@@ -229,10 +231,10 @@ const DieteticienBlogs = () => {
                 </div>
                 <div className="card-actions">
                   <button className="edit-btn" onClick={() => openEditModal(blog)}>
-                    <Edit size={16} /> Edit
+                    <Edit size={16} /> {t('common.edit')}
                   </button>
                   <button className="delete-btn" onClick={() => openDeleteModal(blog)}>
-                    <Trash2 size={16} /> Delete
+                    <Trash2 size={16} /> {t('common.delete')}
                   </button>
                 </div>
               </div>
@@ -246,14 +248,14 @@ const DieteticienBlogs = () => {
         <div className="modal-overlay" onClick={() => setEditModalOpen(false)}>
           <div className="modal-content large" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
-              <h3>Edit Blog Post</h3>
+              <h3>{t('common.edit')}</h3>
               <button className="close-btn" onClick={() => setEditModalOpen(false)}>
                 <X size={20} />
               </button>
             </div>
             <form onSubmit={handleEditSubmit}>
               <div className="form-group">
-                <label>Type</label>
+                <label>{t('dashboard.dieteticien.createBlog.title')}</label>
                 <select name="type" value={formData.type} onChange={handleChange} required>
                   <option value="Article">Article</option>
                   <option value="Recipe">Recipe</option>
@@ -261,19 +263,19 @@ const DieteticienBlogs = () => {
                 </select>
               </div>
               <div className="form-group">
-                <label>Title</label>
+                <label>{t('dashboard.dieteticien.createBlog.title')}</label>
                 <input type="text" name="title" value={formData.title} onChange={handleChange} required />
               </div>
               <div className="form-group">
-                <label>Content</label>
+                <label>{t('dashboard.dieteticien.createBlog.content')}</label>
                 <textarea name="content" rows="6" value={formData.content} onChange={handleChange} required />
               </div>
               <div className="form-group">
-                <label>Tags (comma separated)</label>
+                <label>{t('dashboard.dieteticien.createBlog.tags')} (comma separated)</label>
                 <input type="text" name="tags" value={formData.tags} onChange={handleChange} placeholder="e.g., health, nutrition, wellness" />
               </div>
               <div className="form-group">
-                <label>Featured Image</label>
+                <label>{t('dashboard.dieteticien.createBlog.uploadImage')}</label>
                 <div className="image-upload-area">
                   {imagePreview ? (
                     <div className="image-preview">
@@ -285,16 +287,16 @@ const DieteticienBlogs = () => {
                   ) : (
                     <label className="upload-label">
                       <Image size={24} />
-                      <span>Click to upload image</span>
+                      <span>{t('dashboard.dieteticien.createPlan.imageUpload')}</span>
                       <input type="file" accept="image/*" onChange={handleImageChange} style={{ display: 'none' }} />
                     </label>
                   )}
                 </div>
               </div>
               <div className="modal-actions">
-                <button type="button" className="btn-cancel" onClick={() => setEditModalOpen(false)}>Cancel</button>
+                <button type="button" className="btn-cancel" onClick={() => setEditModalOpen(false)}>{t('common.cancel')}</button>
                 <button type="submit" className="btn-submit" disabled={submitting}>
-                  {submitting ? 'Saving...' : 'Save Changes'}
+                  {submitting ? t('common.loading') : t('common.save')}
                 </button>
               </div>
             </form>
@@ -309,12 +311,12 @@ const DieteticienBlogs = () => {
             <div className="modal-icon warning">
               <AlertTriangle size={32} />
             </div>
-            <h3>Delete Blog Post</h3>
-            <p>Are you sure you want to delete "<strong>{blogToDelete?.title}</strong>"?</p>
-            <p className="modal-warning">This action cannot be undone.</p>
+            <h3>{t('common.delete')}</h3>
+            <p>{t('common.confirm')} <strong>{blogToDelete?.title}</strong>?</p>
+            <p className="modal-warning">{t('common.confirm')}</p>
             <div className="modal-actions">
-              <button className="btn-cancel" onClick={() => setDeleteModalOpen(false)}>Cancel</button>
-              <button className="btn-delete" onClick={confirmDelete}>Yes, Delete</button>
+              <button className="btn-cancel" onClick={() => setDeleteModalOpen(false)}>{t('common.cancel')}</button>
+              <button className="btn-delete" onClick={confirmDelete}>{t('common.delete')}</button>
             </div>
           </div>
         </div>

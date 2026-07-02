@@ -7,9 +7,11 @@ import {
 import { useNavigate } from "react-router-dom";
 import { getMyPurchasedFormations } from "../../api/formationApi";
 import CountdownTimer from "../../components/CountdownTimer";
+import { useTranslation } from 'react-i18next';
 import "./MyCourses.css";
 
 const MyFormationsPage = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [formations, setFormations] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -58,13 +60,13 @@ const MyFormationsPage = () => {
         <div className="mc-header">
           <div className="mc-badge">
             <Award size={20} />
-            <span>My Learning</span>
+            <span>{t('dashboard.student.myLearning')}</span>
           </div>
           <h1 className="mc-title">
-            My <span className="mc-gradient">Formations</span>
+            {t('dashboard.student.myFormationsTitle')}
           </h1>
           <p className="mc-subtitle">
-            Your purchased training programs with live sessions
+            {t('dashboard.student.myFormationsDesc')}
           </p>
         </div>
 
@@ -73,7 +75,7 @@ const MyFormationsPage = () => {
             <Search size={18} />
             <input
               type="text"
-              placeholder="Search by formation name..."
+              placeholder={t('dashboard.student.searchFormations')}
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -88,20 +90,20 @@ const MyFormationsPage = () => {
             >
               <Award size={60} color="#2D5A27" />
             </motion.div>
-            <p>Loading formations...</p>
+            <p>{t('dashboard.student.loadingFormations')}</p>
           </div>
         ) : formations.length === 0 ? (
           <div className="mc-empty">
             <Award size={48} />
-            <p>You haven't purchased any formations yet.</p>
+            <p>{t('dashboard.student.noFormations')}</p>
             <p style={{ fontSize: 13, opacity: 0.5, marginTop: 8 }}>
-              Browse available formations in the Services page.
+              {t('dashboard.student.browseFormations')}
             </p>
             <button
               onClick={() => navigate("/services")}
               className="mc-pdf-btn"
             >
-              Browse Formations
+              {t('dashboard.student.browseFormationsBtn')}
             </button>
           </div>
         ) : (
@@ -135,11 +137,11 @@ const MyFormationsPage = () => {
                           {(f.creatorInfo?.fullName || "U").charAt(0)}
                         </div>
                       )}
-                      {f.creatorInfo?.fullName || "Unknown"}
+                      {t('dashboard.student.createdBy', { name: f.creatorInfo?.fullName || t('common.unknown') })}
                     </div>
                     <div className="fc-card-meta">
-                      <span><Calendar size={13} /> {f.sessionsCount} sessions</span>
-                      <span><Users size={13} /> {f.durationWeeks} weeks</span>
+                      <span><Calendar size={13} /> {f.sessionsCount} {t('dashboard.student.sessions')}</span>
+                      <span><Users size={13} /> {f.durationWeeks} {t('dashboard.student.weeks')}</span>
                     </div>
                   </div>
                 </motion.div>
@@ -167,7 +169,7 @@ const MyFormationsPage = () => {
         >
           <button className="fc-back-btn" onClick={() => setSelectedFormation(null)}>
             <ArrowLeft size={18} />
-            Back to formations
+            {t('dashboard.student.backToFormations')}
           </button>
 
           <div className="fc-detail-hero">
@@ -182,7 +184,7 @@ const MyFormationsPage = () => {
                     {(f.creatorInfo?.fullName || "U").charAt(0)}
                   </div>
                 )}
-                Created by {f.creatorInfo?.fullName || "Unknown"}
+                {t('dashboard.student.createdBy', { name: f.creatorInfo?.fullName || t('common.unknown') })}
               </div>
             </div>
           </div>
@@ -192,14 +194,14 @@ const MyFormationsPage = () => {
               <div className="fc-stat-icon"><Calendar size={20} /></div>
               <div>
                 <span className="fc-stat-value">{f.sessionsCount}</span>
-                <span className="fc-stat-label">Sessions</span>
+                <span className="fc-stat-label">{t('dashboard.student.sessions')}</span>
               </div>
             </div>
             <div className="fc-stat">
               <div className="fc-stat-icon"><Users size={20} /></div>
               <div>
                 <span className="fc-stat-value">{f.durationWeeks}</span>
-                <span className="fc-stat-label">Weeks</span>
+                <span className="fc-stat-label">{t('dashboard.student.weeks')}</span>
               </div>
             </div>
             <div className="fc-stat">
@@ -208,19 +210,19 @@ const MyFormationsPage = () => {
                 <span className="fc-stat-value">
                   {new Date(f.startDate).toLocaleDateString()}
                 </span>
-                <span className="fc-stat-label">Start Date</span>
+                <span className="fc-stat-label">{t('dashboard.student.startDate')}</span>
               </div>
             </div>
           </div>
 
           <div className="fc-detail-section">
-            <h2>Description</h2>
+            <h2>{t('dashboard.student.description')}</h2>
             <p className="fc-description">{f.description}</p>
           </div>
 
           {f.files && f.files.length > 0 && (
             <div className="fc-detail-section">
-              <h2><FileText size={18} /> Formation Materials</h2>
+              <h2><FileText size={18} /> {t('dashboard.student.formationMaterials')}</h2>
               <div className="fc-files-grid">
                 {f.files.map((file, i) => {
                 const iconClass = file.type === "pdf"
@@ -253,10 +255,10 @@ const MyFormationsPage = () => {
           )}
 
           <div className="fc-detail-section">
-            <h2><Video size={18} /> Sessions</h2>
+            <h2><Video size={18} /> {t('dashboard.student.sessions')}</h2>
             {sessions.length === 0 ? (
               <div className="mc-empty" style={{ padding: 20 }}>
-                <p>No sessions scheduled yet.</p>
+                <p>{t('common.noResults')}</p>
               </div>
             ) : (
               <div className="mc-session-list">
@@ -274,7 +276,7 @@ const MyFormationsPage = () => {
                           {isPast ? <Monitor size={18} /> : isLive ? <Video size={18} /> : <Clock size={18} />}
                         </div>
                         <div className="mc-session-info">
-                          <strong>Session {session.order}: {session.title}</strong>
+                          <strong>{t('dashboard.student.sessionN', { number: session.order, title: session.title })}</strong>
                           <span className="mc-session-time">
                             {new Date(session.startTime).toLocaleDateString()}{" "}
                             {new Date(session.startTime).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
@@ -284,13 +286,13 @@ const MyFormationsPage = () => {
                           {session.description && (
                             <span className="mc-session-desc">{session.description}</span>
                           )}
-                          {isNext && <span className="fc-next-badge">Next Session</span>}
+                          {isNext && <span className="fc-next-badge">{t('dashboard.student.nextSession')}</span>}
                         </div>
                       </div>
                       <div className="mc-session-right">
                         {isLive ? (
                           <a href={session.zoomLink} target="_blank" rel="noopener noreferrer" className="mc-join-btn">
-                            <Video size={14} /> Join Now
+                            <Video size={14} /> {t('dashboard.student.joinNow')}
                           </a>
                         ) : !isPast && session.zoomLink ? (
                           <div className="mc-countdown-wrapper">
@@ -298,7 +300,7 @@ const MyFormationsPage = () => {
                             <CountdownTimer targetDate={session.startTime} />
                           </div>
                         ) : isPast ? (
-                          <span className="mc-session-past-badge">Ended</span>
+                          <span className="mc-session-past-badge">{t('dashboard.student.ended')}</span>
                         ) : null}
                       </div>
                     </div>

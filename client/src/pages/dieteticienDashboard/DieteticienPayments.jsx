@@ -6,9 +6,11 @@ import {
   ChevronDown, RefreshCw, Sparkles
 } from 'lucide-react';
 import { getDieteticienPlanPayments } from '../../api/paymentApi';
+import { useTranslation } from 'react-i18next';
 import './DieteticienPayments.css';
 
 const DieteticienPayments = () => {
+  const { t } = useTranslation();
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -90,7 +92,7 @@ const DieteticienPayments = () => {
         <div className="sp-spinner-ring"></div>
         <Sparkles className="sp-spinner-icon" size={28} />
       </div>
-      <p>Loading sales data...</p>
+          <p>{t("common.loading")}</p>
     </motion.div>
   );
 
@@ -99,7 +101,7 @@ const DieteticienPayments = () => {
       <div className="sp-error-icon">⚠️</div>
       <h3>Unable to load data</h3>
       <p>{error}</p>
-      <button onClick={fetchPayments} className="sp-retry-btn">Try Again</button>
+      <button onClick={fetchPayments} className="sp-retry-btn">{t("common.tryAgain")}</button>
     </div>
   );
 
@@ -120,7 +122,7 @@ const DieteticienPayments = () => {
           >
             <div className="sp-page-badge">
               <TrendingUp size={14} />
-              <span>Sales Overview</span>
+                <span>{t("dashboard.dieteticien.payments.serviceBreakdown")}</span>
             </div>
             <h1>Plan & Formation Sales</h1>
             <p className="sp-subtitle">Track all your nutrition plan and formation purchases</p>
@@ -159,7 +161,7 @@ const DieteticienPayments = () => {
           </div>
           <div className="sp-stat-info">
             <span className="sp-stat-value">{stats.total}</span>
-            <span className="sp-stat-label">Total Sales</span>
+            <span className="sp-stat-label">{t("dashboard.dieteticien.payments.totalSales")}</span>
           </div>
         </div>
         <div className="sp-stat-card">
@@ -186,7 +188,7 @@ const DieteticienPayments = () => {
           </div>
           <div className="sp-stat-info">
             <span className="sp-stat-value">{stats.revenue.toLocaleString()} DZD</span>
-            <span className="sp-stat-label">Total Revenue</span>
+            <span className="sp-stat-label">{t("dashboard.dieteticien.payments.revenue")}</span>
           </div>
         </div>
       </motion.div>
@@ -202,7 +204,7 @@ const DieteticienPayments = () => {
           <Search size={18} className="sp-search-icon" />
           <input
             type="text"
-            placeholder="Search by client name, email, or service..."
+            placeholder={t("dashboard.dieteticien.payments.searchPlaceholder")}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="sp-search-input"
@@ -239,7 +241,7 @@ const DieteticienPayments = () => {
                       className={`sp-chip ${typeFilter === type ? 'active' : ''}`}
                       onClick={() => setTypeFilter(type)}
                     >
-                      {type === 'all' ? 'All' : type.charAt(0).toUpperCase() + type.slice(1)}
+                      {type === 'all' ? t("common.all") : t("dashboard.dieteticien.payments." + type)}
                     </button>
                   ))}
                 </div>
@@ -248,7 +250,7 @@ const DieteticienPayments = () => {
                 <label>Payment Method</label>
                 <div className="sp-filter-chips">
                   {[
-                    { value: 'all', label: 'All' },
+                    { value: 'all', label: t("common.all") },
                     { value: 'ccp', label: 'CCP' },
                     { value: 'baridimob', label: 'BaridiMob' }
                   ].map(m => (
@@ -266,8 +268,8 @@ const DieteticienPayments = () => {
                 <label>Sort By</label>
                 <div className="sp-filter-chips">
                   {[
-                    { value: 'newest', label: 'Newest First' },
-                    { value: 'oldest', label: 'Oldest First' }
+                    { value: 'newest', label: t("dashboard.dieteticien.payments.newest") },
+                    { value: 'oldest', label: t("dashboard.dieteticien.payments.oldest") }
                   ].map(s => (
                     <button
                       key={s.value}
@@ -292,7 +294,7 @@ const DieteticienPayments = () => {
           animate={{ scale: 1, opacity: 1 }}
         >
           <div className="sp-empty-icon"><Layers size={48} /></div>
-          <h3>No sales found</h3>
+          <h3>{t("dashboard.dieteticien.payments.noPayments")}</h3>
           <p>
             {searchTerm || typeFilter !== 'all' || methodFilter !== 'all'
               ? 'Try adjusting your filters or search term'

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { 
@@ -13,6 +14,7 @@ import PageTransition from '../components/PageTransition';
 import './CheckoutPage.css';
 
 function CheckoutPage() {
+  const { t } = useTranslation();
   const { planId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
@@ -33,7 +35,7 @@ function CheckoutPage() {
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
-      toast.error('Please login to continue');
+      toast.error(t('checkout.pleaseLogin'));
       navigate('/login', { state: { from: location.pathname } });
     }
   }, [isAuthenticated, authLoading, navigate, location.pathname]);
@@ -48,11 +50,11 @@ function CheckoutPage() {
         if (response.success) {
           setPlan(response.data);
         } else {
-          setPlanError('Plan not found');
+          setPlanError(t('plans.noPlans'));
         }
       } catch (error) {
         console.error('Error fetching plan:', error);
-        setPlanError('Error loading plan details');
+        setPlanError(t('common.error'));
       } finally {
         setLoadingPlan(false);
       }
@@ -66,7 +68,7 @@ function CheckoutPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!isAuthenticated) {
-      toast.error('Please login to purchase');
+      toast.error(t('checkout.pleaseLogin'));
       return;
     }
 
@@ -76,11 +78,11 @@ function CheckoutPage() {
       const response = await buyPlan(planId, paymentMethod);
       
       if (response.success) {
-        toast.success('Plan purchased successfully!');
+        toast.success(t('common.success'));
         navigate('/my-plans');
       }
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Purchase failed');
+      toast.error(error.response?.data?.message || t('common.error'));
     } finally {
       setLoading(false);
     }
@@ -90,7 +92,7 @@ function CheckoutPage() {
     return (
       <div className="AP-LoadingContainer">
         <Loader2 size={48} className="AP-Spin" />
-        <p>Loading checkout details...</p>
+        <p>{t('common.loading')}</p>
       </div>
     );
   }
@@ -99,14 +101,14 @@ function CheckoutPage() {
     return (
       <div className="AP-ErrorContainer" style={{ textAlign: 'center', padding: '100px 20px' }}>
         <Info size={48} style={{ color: '#EF4444', marginBottom: '20px' }} />
-        <h2>Oops! Plan Not Found</h2>
-        <p>{planError || "The plan you're looking for doesn't exist or has been removed."}</p>
+        <h2>{t('plans.noPlans')}</h2>
+        <p>{planError || t('plans.noPlans')}</p>
         <button 
           onClick={() => navigate('/allPlans')}
           className="AP-ClearFiltersBtn"
           style={{ marginTop: '20px' }}
         >
-          Back to Plans
+          {t('common.back')}
         </button>
       </div>
     );
@@ -117,7 +119,7 @@ function CheckoutPage() {
       <div className="checkout-page">
         <button className="back-btn" onClick={() => navigate(-1)}>
           <ArrowLeft size={20} />
-          Back
+          {t('common.back')}
         </button>
 
         <div className="checkout-container">
@@ -127,7 +129,7 @@ function CheckoutPage() {
             initial={{ x: -20, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
           >
-            <h2>Order Summary</h2>
+            <h2>{t('checkout.completePurchase')}</h2>
             
             <div className="plan-summary-card">
               {plan.planImage ? (
@@ -174,7 +176,7 @@ function CheckoutPage() {
             initial={{ x: 20, opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
           >
-            <h2>Payment Details</h2>
+            <h2>{t('checkout.submitPayment')}</h2>
 
             <div className="payment-methods">
               <button
@@ -182,20 +184,20 @@ function CheckoutPage() {
                 onClick={() => setPaymentMethod('credit_card')}
               >
                 <CreditCard size={20} />
-                Credit Card
+                {t('checkout.creditCard')}
               </button>
               <button
                 className={`method-btn ${paymentMethod === 'paypal' ? 'active' : ''}`}
                 onClick={() => setPaymentMethod('paypal')}
               >
-                PayPal
+                {t('checkout.ccp')}
               </button>
             </div>
 
             {paymentMethod === 'credit_card' && (
               <form onSubmit={handleSubmit} className="card-form">
                 <div className="form-group">
-                  <label>Cardholder Name</label>
+                  <label>{t('checkout.completePurchase')}</label>
                   <input
                     type="text"
                     placeholder="John Doe"
@@ -206,7 +208,7 @@ function CheckoutPage() {
                 </div>
 
                 <div className="form-group">
-                  <label>Card Number</label>
+                  <label>{t('checkout.creditCard')}</label>
                   <input
                     type="text"
                     placeholder="1234 5678 9012 3456"
@@ -219,7 +221,7 @@ function CheckoutPage() {
 
                 <div className="form-row">
                   <div className="form-group">
-                    <label>Expiry Date</label>
+                    <label>{t('checkout.completePurchase')}</label>
                     <input
                       type="text"
                       placeholder="MM/YY"
@@ -230,7 +232,7 @@ function CheckoutPage() {
                     />
                   </div>
                   <div className="form-group">
-                    <label>CVV</label>
+                    <label>{t('checkout.completePurchase')}</label>
                     <input
                       type="text"
                       placeholder="123"
@@ -244,17 +246,16 @@ function CheckoutPage() {
 
                 <div className="secure-badge">
                   <Shield size={16} />
-                  <span>Your payment information is secure</span>
+                  <span>{t('checkout.uploadProof')}</span>
                 </div>
 
                 <button type="submit" className="pay-btn" disabled={loading}>
                   {loading ? (
-                    'Processing...'
+                    t('common.loading')
                   ) : (
                     <>
                       <Check size={20} />
-                      {/* ✅ Fixed: removed * 140 */}
-                      Pay {plan.price.toLocaleString()} DZD
+                      {t('checkout.payNow')} {plan.price.toLocaleString()} DZD
                     </>
                   )}
                 </button>
@@ -263,9 +264,9 @@ function CheckoutPage() {
 
             {paymentMethod === 'paypal' && (
               <div className="paypal-section">
-                <p>You will be redirected to PayPal to complete your payment.</p>
+                <p>{t('checkout.uploadProof')}</p>
                 <button onClick={handleSubmit} className="pay-btn paypal-btn" disabled={loading}>
-                  {loading ? 'Processing...' : 'Continue with PayPal'}
+                  {loading ? t('common.loading') : t('checkout.payNow')}
                 </button>
               </div>
             )}

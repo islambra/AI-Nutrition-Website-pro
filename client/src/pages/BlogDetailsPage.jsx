@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getBlogById, addComment, deleteComment, likeBlog, unlikeBlog } from '../api/blogApi';
 import { useAuth } from '../context/AuthContext';
@@ -7,6 +8,7 @@ import { useSafeTimeout } from '../hooks/useSafeTimeout';
 import './BlogDetailsPage.css';
 
 function BlogDetailsPage() {
+  const { t } = useTranslation();
   const { setTimeoutSafe } = useSafeTimeout();
   const { id } = useParams();
   const navigate = useNavigate();
@@ -36,7 +38,7 @@ function BlogDetailsPage() {
       setLikesCount(response.data.likesCount || 0);
       setError('');
     } catch (err) {
-      setError('Failed to load blog. Please try again later.');
+      setError(t('blogs.failedToLoadBlog'));
     } finally {
       setLoading(false);
     }
@@ -48,16 +50,16 @@ function BlogDetailsPage() {
         const response = await unlikeBlog(id);
         setLiked(false);
         setLikesCount(response.likesCount);
-        showTemporaryNotification('Removed like', 'success');
+        showTemporaryNotification(t('blogs.unlike'), 'success');
       } else {
         const response = await likeBlog(id);
         setLiked(true);
         setLikesCount(response.likesCount);
-        showTemporaryNotification('Added to your likes!', 'success');
+        showTemporaryNotification(t('blogs.like'), 'success');
       }
     } catch (err) {
       console.error('Error toggling like:', err);
-      showTemporaryNotification('Failed to update like', 'error');
+      showTemporaryNotification(t('common.error'), 'error');
     }
   };
 
@@ -73,10 +75,10 @@ function BlogDetailsPage() {
         comments: [response.data, ...(prev.comments || [])]
       }));
       setCommentText('');
-      showTemporaryNotification('Comment added successfully!', 'success');
+      showTemporaryNotification(t('common.success'), 'success');
     } catch (err) {
       console.error('Error adding comment:', err);
-      showTemporaryNotification('Failed to add comment', 'error');
+      showTemporaryNotification(t('common.error'), 'error');
     } finally {
       setSubmitting(false);
     }
@@ -96,11 +98,11 @@ function BlogDetailsPage() {
         ...prev,
         comments: prev.comments.filter(comment => comment._id !== deleteConfirmId)
       }));
-      showTemporaryNotification('Comment deleted successfully!', 'success');
+      showTemporaryNotification(t('common.success'), 'success');
       setDeleteConfirmId(null);
     } catch (err) {
       console.error('Error deleting comment:', err);
-      showTemporaryNotification('Failed to delete comment', 'error');
+      showTemporaryNotification(t('common.error'), 'error');
       setDeleteConfirmId(null);
     }
   };
@@ -121,10 +123,10 @@ function BlogDetailsPage() {
   const handleShare = async () => {
     try {
       await navigator.clipboard.writeText(window.location.href);
-      showTemporaryNotification('Link copied to clipboard!', 'success');
+      showTemporaryNotification(t('common.success'), 'success');
     } catch (err) {
       console.error('Error copying to clipboard:', err);
-      showTemporaryNotification('Failed to copy link', 'error');
+      showTemporaryNotification(t('common.error'), 'error');
     }
   };
 
@@ -156,7 +158,7 @@ function BlogDetailsPage() {
       <div className="blog-details-container">
         <div className="loading-container">
           <div className="spinner"></div>
-          <p>Loading amazing content...</p>
+          <p>{t('common.loading')}</p>
         </div>
       </div>
     );
@@ -167,10 +169,10 @@ function BlogDetailsPage() {
       <div className="blog-details-container">
         <div className="error-container">
           <div className="error-icon"><TriangleAlert size={40} /></div>
-          <h3>Something went wrong</h3>
-          <p>{error || 'Blog not found'}</p>
+          <h3>{t('common.somethingWrong')}</h3>
+          <p>{error || t('blogs.noPosts')}</p>
           <button className="btn bl-btn-primary" onClick={() => navigate('/blogs')}>
-            Back to Blogs
+            {t('common.back')}
           </button>
         </div>
       </div>
@@ -211,14 +213,14 @@ function BlogDetailsPage() {
                   <line x1="12" y1="16" x2="12.01" y2="16" />
                 </svg>
               </div>
-              <h3>Delete Comment?</h3>
-              <p>Are you sure you want to delete this comment? This action cannot be undone.</p>
+              <h3>{t('blogs.deleteConfirm')}</h3>
+              <p>{t('blogs.deleteConfirm')}</p>
               <div className="modal-actions">
                 <button className="modal-btn modal-btn-cancel" onClick={cancelDelete}>
-                  Cancel
+                  {t('common.cancel')}
                 </button>
                 <button className="modal-btn modal-btn-delete" onClick={handleDeleteComment}>
-                  Delete
+                  {t('common.delete')}
                 </button>
               </div>
             </div>
@@ -230,7 +232,7 @@ function BlogDetailsPage() {
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M19 12H5M12 19l-7-7 7-7" />
           </svg>
-          Back to Blogs
+          {t('common.back')}
         </button>
 
         <div className="blog-details-layout">
@@ -283,7 +285,7 @@ function BlogDetailsPage() {
                   <svg width="24" height="24" viewBox="0 0 24 24" fill={liked ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2">
                     <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
                   </svg>
-                  <span>{likesCount} Likes</span>
+                  <span>{likesCount} {t('blogs.like')}</span>
                 </button>
                 <button className="share-button" onClick={handleShare}>
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -293,7 +295,7 @@ function BlogDetailsPage() {
                     <line x1="8.59" y1="13.51" x2="15.42" y2="17.49" />
                     <line x1="15.41" y1="6.51" x2="8.59" y2="10.49" />
                   </svg>
-                  <span>Share</span>
+                  <span>{t('common.edit')}</span>
                 </button>
               </div>
             </article>
@@ -307,7 +309,7 @@ function BlogDetailsPage() {
                   <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                     <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z" />
                   </svg>
-                  Comments ({blog.comments?.length || 0})
+                  {t('blogs.title')} ({blog.comments?.length || 0})
                 </h3>
               </div>
 
@@ -318,18 +320,18 @@ function BlogDetailsPage() {
                     <textarea
                       value={commentText}
                       onChange={(e) => setCommentText(e.target.value)}
-                      placeholder="Share your thoughts..."
+                      placeholder={t('blogs.writeComment')}
                       rows="3"
                       disabled={submitting}
                     />
                     <button type="submit" disabled={submitting || !commentText.trim()}>
-                      {submitting ? 'Posting...' : 'Post Comment'}
+                      {submitting ? t('common.loading') : t('blogs.writeComment')}
                     </button>
                   </div>
                 </form>
               ) : (
                 <div className="login-to-comment">
-                  <p>Please <button onClick={() => navigate('/login')} className="login-link-btn">login</button> to leave a comment</p>
+                  <p>{t('common.authRequired')}</p>
                 </div>
               )}
 
@@ -363,7 +365,7 @@ function BlogDetailsPage() {
                               <line x1="10" y1="11" x2="10" y2="17" />
                               <line x1="14" y1="11" x2="14" y2="17" />
                             </svg>
-                            Delete
+                            {t('common.delete')}
                           </button>
                         )}
                       </div>
@@ -372,7 +374,7 @@ function BlogDetailsPage() {
                 ) : (
                   <div className="no-comments">
                     <div className="no-comments-icon"><MessageCircle size={40} /></div>
-                    <p>No comments yet. Be the first to share your thoughts!</p>
+                    <p>{t('blogs.noPosts')}</p>
                   </div>
                 )}
               </div>

@@ -6,9 +6,11 @@ import {
 } from 'lucide-react';
 import { getPendingPayments, approvePayment, rejectPayment } from '../../api/paymentApi';
 import toast from 'react-hot-toast';
+import { useTranslation } from 'react-i18next';
 import './PaymentApprovals.css';
 
 const PaymentApprovals = () => {
+  const { t } = useTranslation();
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -35,9 +37,9 @@ const PaymentApprovals = () => {
     try {
       await approvePayment(id);
       setPayments(prev => prev.filter(p => p._id !== id));
-      toast.success('Payment approved');
+      toast.success(t("dashboard.dieteticien.paymentApprovals.approved"));
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to approve');
+      toast.error(err.response?.data?.message || t("dashboard.dieteticien.paymentApprovals.approveFailed"));
     } finally {
       setActionLoading(null);
     }
@@ -49,9 +51,9 @@ const PaymentApprovals = () => {
       await rejectPayment(id);
       setPayments(prev => prev.filter(p => p._id !== id));
       setConfirmReject(null);
-      toast.success('Payment rejected');
+      toast.success(t("dashboard.dieteticien.paymentApprovals.rejected"));
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to reject');
+      toast.error(err.response?.data?.message || t("dashboard.dieteticien.paymentApprovals.rejectFailed"));
     } finally {
       setActionLoading(null);
     }
@@ -72,16 +74,16 @@ const PaymentApprovals = () => {
   if (loading) return (
     <div className="pa-loading">
       <div className="loading-spinner"></div>
-      <p>Loading payment approvals...</p>
+      <p>{t("dashboard.dieteticien.paymentApprovals.loading")}</p>
     </div>
   );
 
   if (error) return (
     <div className="pa-error">
       <div className="error-icon">⚠️</div>
-      <h3>Unable to load data</h3>
+      <h3>{t("dashboard.dieteticien.paymentApprovals.loadError")}</h3>
       <p>{error}</p>
-      <button onClick={fetchPending} className="pa-retry-btn">Try Again</button>
+      <button onClick={fetchPending} className="pa-retry-btn">{t("dashboard.dieteticien.paymentApprovals.tryAgain")}</button>
     </div>
   );
 
@@ -89,14 +91,14 @@ const PaymentApprovals = () => {
     <div className="pa-container">
       <div className="pa-header">
         <div className="pa-header-left">
-          <h1>Payment Approvals</h1>
-          <p className="pa-subtitle">Review and confirm client payment proofs</p>
+          <h1>{t("dashboard.dieteticien.paymentApprovals.title")}</h1>
+          <p className="pa-subtitle">{t("dashboard.dieteticien.paymentApprovals.subtitle")}</p>
         </div>
         <div className="pa-stats-card">
           <div className="pa-stat-item">
             <Clock size={20} />
             <div>
-              <span className="pa-stat-label">Pending</span>
+              <span className="pa-stat-label">{t("dashboard.dieteticien.paymentApprovals.pending")}</span>
               <span className="pa-stat-value">{payments.length}</span>
             </div>
           </div>
@@ -106,8 +108,8 @@ const PaymentApprovals = () => {
       {payments.length === 0 ? (
         <div className="pa-empty">
           <div className="pa-empty-icon"><Check size={48} /></div>
-          <h3>All caught up!</h3>
-          <p>No pending payment approvals.</p>
+          <h3>{t("dashboard.dieteticien.paymentApprovals.allCaughtUp")}</h3>
+          <p>{t("dashboard.dieteticien.paymentApprovals.noPending")}</p>
         </div>
       ) : (
         <div className="pa-grid">
@@ -160,15 +162,15 @@ const PaymentApprovals = () => {
                     <div className="pa-proof-left">
                       {payment.proofImage ? (
                         <button className="pa-proof-btn" onClick={() => setPreviewImage(payment.proofImage)}>
-                          <Eye size={18} /> View Proof
+                          <Eye size={18} /> {t("dashboard.dieteticien.paymentApprovals.viewProof")}
                         </button>
                       ) : (
-                        <span className="pa-no-proof">No proof</span>
+                        <span className="pa-no-proof">{t("dashboard.dieteticien.paymentApprovals.noProof")}</span>
                       )}
                     </div>
                     <div className="pa-proof-date">
                       <Calendar size={14} />
-                      <span>Submitted {formatDate(payment.createdAt)}</span>
+                      <span>{t("dashboard.dieteticien.paymentApprovals.submitted", { date: formatDate(payment.createdAt) })}</span>
                     </div>
                   </div>
 
@@ -181,7 +183,7 @@ const PaymentApprovals = () => {
                       {actionLoading === payment._id ? (
                         <Loader2 size={16} className="pa-spin" />
                       ) : <Check size={16} />}
-                      Approve
+                      {t("dashboard.dieteticien.paymentApprovals.approve")}
                     </button>
                     <button
                       className="pa-btn pa-btn-reject"
@@ -191,7 +193,7 @@ const PaymentApprovals = () => {
                       {actionLoading === payment._id ? (
                         <Loader2 size={16} className="pa-spin" />
                       ) : <X size={16} />}
-                      Reject
+                      {t("dashboard.dieteticien.paymentApprovals.reject")}
                     </button>
                   </div>
                 </div>
@@ -243,20 +245,20 @@ const PaymentApprovals = () => {
               <div className="pa-confirm-icon">
                 <AlertCircle size={28} />
               </div>
-              <h3>Reject payment?</h3>
-              <p>This will mark the payment proof as rejected. The client will be notified.</p>
+              <h3>{t("dashboard.dieteticien.paymentApprovals.rejectTitle")}</h3>
+              <p>{t("dashboard.dieteticien.paymentApprovals.rejectDesc")}</p>
               <div className="pa-confirm-actions">
                 <button
                   className="pa-confirm-cancel"
                   onClick={() => setConfirmReject(null)}
                 >
-                  Cancel
+                  {t("dashboard.dieteticien.paymentApprovals.cancel")}
                 </button>
                 <button
                   className="pa-confirm-reject"
                   onClick={() => handleReject(confirmReject)}
                 >
-                  Reject
+                  {t("dashboard.dieteticien.paymentApprovals.confirmReject")}
                 </button>
               </div>
             </motion.div>

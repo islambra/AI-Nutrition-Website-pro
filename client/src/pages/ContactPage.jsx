@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Send, User, Mail, MessageSquare, Leaf, Sparkles, ArrowRight } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useTranslation, Trans } from 'react-i18next';
 import PageTransition from '../components/PageTransition';
 import { submitContact } from '../api/contactApi';
 import './ContactPage.css';
 
 function ContactPage() {
+  const { t } = useTranslation();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -27,13 +29,13 @@ function ContactPage() {
     try {
       const response = await submitContact(formData);
       if (response.success) {
-        toast.success('Message sent successfully!');
+        toast.success(t('contact.sentSuccess'));
         setFormData({ name: '', email: '', subject: '', message: '' });
       } else {
-        toast.error(response.message || 'Failed to send message');
+        toast.error(response.message || t('contact.sendFailed'));
       }
     } catch (err) {
-      toast.error('Something went wrong. Please try again.');
+      toast.error(t('contact.somethingWrong'));
     } finally {
       setLoading(false);
     }
@@ -70,7 +72,7 @@ function ContactPage() {
                 <div className="ContactPage-Logo-Icon">
                   <Leaf size={24} strokeWidth={1.5} />
                 </div>
-                <span>BiteWise</span>
+                <span>{t('contact.brandName')}</span>
               </motion.div>
 
               <motion.div
@@ -78,18 +80,15 @@ function ContactPage() {
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.5, delay: 0.3 }}
               >
-                <span className="ContactPage-Tag">Get in touch</span>
+                <span className="ContactPage-Tag">{t('contact.tag')}</span>
                 <h1 className="ContactPage-Title">
-                  Let's start a
-                  <br />
-                  <span className="ContactPage-Title-Highlight">
-                    conversation
-                    <Sparkles size={28} className="ContactPage-Sparkle" strokeWidth={1.5} />
-                  </span>
+                  <Trans i18nKey="contact.title">
+                    Let's start a<br /><span>conversation</span>
+                  </Trans>
+                  <Sparkles size={28} className="ContactPage-Sparkle" strokeWidth={1.5} />
                 </h1>
                 <p className="ContactPage-Desc">
-                  Whether you have a question about our nutrition plans, 
-                  want to collaborate, or just want to say hello — we'd love to hear from you.
+                  {t('contact.desc')}
                 </p>
               </motion.div>
 
@@ -100,9 +99,9 @@ function ContactPage() {
                 transition={{ duration: 0.5, delay: 0.5 }}
               >
                 {[
-                  { icon: Mail, text: 'We reply within 24 hours' },
-                  { icon: MessageSquare, text: 'All inquiries welcome' },
-                  { icon: Sparkles, text: 'Expert nutrition advice' },
+                  { icon: Mail, text: t('contact.featureReply') },
+                  { icon: MessageSquare, text: t('contact.featureInquiries') },
+                  { icon: Sparkles, text: t('contact.featureAdvice') },
                 ].map((item, i) => (
                   <div key={i} className="ContactPage-Feature">
                     <div className="ContactPage-Feature-Icon">
@@ -123,13 +122,13 @@ function ContactPage() {
           >
             <div className="ContactPage-Card">
               <div className="ContactPage-Card-Header">
-                <h2>Send a message</h2>
-                <p>Fill in the form below and we'll get back to you.</p>
+                <h2>{t('contact.cardTitle')}</h2>
+                <p>{t('contact.cardDesc')}</p>
               </div>
 
               <form onSubmit={handleSubmit} className="ContactPage-Form">
                 <div className="ContactPage-Field">
-                  <label htmlFor="name">Your name</label>
+                  <label htmlFor="name">{t('contact.yourName')}</label>
                   <motion.div
                     className="ContactPage-Input"
                     variants={inputVariants}
@@ -143,7 +142,7 @@ function ContactPage() {
                       onChange={handleChange}
                       onFocus={() => setFocusedField('name')}
                       onBlur={() => setFocusedField(null)}
-                      placeholder="John Doe"
+                      placeholder={t('contact.namePlaceholder')}
                       required
                       disabled={loading}
                     />
@@ -151,7 +150,7 @@ function ContactPage() {
                 </div>
 
                 <div className="ContactPage-Field">
-                  <label htmlFor="email">Email address</label>
+                  <label htmlFor="email">{t('contact.emailAddress')}</label>
                   <motion.div
                     className="ContactPage-Input"
                     variants={inputVariants}
@@ -165,7 +164,7 @@ function ContactPage() {
                       onChange={handleChange}
                       onFocus={() => setFocusedField('email')}
                       onBlur={() => setFocusedField(null)}
-                      placeholder="john@example.com"
+                      placeholder={t('contact.emailPlaceholder')}
                       required
                       disabled={loading}
                     />
@@ -173,7 +172,7 @@ function ContactPage() {
                 </div>
 
                 <div className="ContactPage-Field">
-                  <label htmlFor="subject">Subject</label>
+                  <label htmlFor="subject">{t('contact.subject')}</label>
                   <motion.div
                     className="ContactPage-Input"
                     variants={inputVariants}
@@ -187,7 +186,7 @@ function ContactPage() {
                       onChange={handleChange}
                       onFocus={() => setFocusedField('subject')}
                       onBlur={() => setFocusedField(null)}
-                      placeholder="How can we help?"
+                      placeholder={t('contact.subjectPlaceholder')}
                       required
                       disabled={loading}
                     />
@@ -195,7 +194,7 @@ function ContactPage() {
                 </div>
 
                 <div className="ContactPage-Field">
-                  <label htmlFor="message">Message</label>
+                  <label htmlFor="message">{t('contact.message')}</label>
                   <motion.div
                     className="ContactPage-Input"
                     variants={inputVariants}
@@ -207,7 +206,7 @@ function ContactPage() {
                       onChange={handleChange}
                       onFocus={() => setFocusedField('message')}
                       onBlur={() => setFocusedField(null)}
-                      placeholder="Tell us about your inquiry..."
+                      placeholder={t('contact.messagePlaceholder')}
                       rows="4"
                       required
                       disabled={loading}
@@ -226,7 +225,7 @@ function ContactPage() {
                     <span className="ContactPage-Loader" />
                   ) : (
                     <>
-                      Send message
+                      {t('contact.sendMessage')}
                       <ArrowRight size={16} strokeWidth={2} />
                     </>
                   )}

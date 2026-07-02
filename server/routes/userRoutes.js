@@ -13,7 +13,8 @@ import {
   getAllClients,
   incrementConsultations,
   getUserPublicProfile,
-  getDieteticienPaymentInfo
+  getDieteticienPaymentInfo,
+  updateLanguage
 } from "../controllers/userControllers.js";
 import upload from "../middleware/multer.js";
 import { protect, authorize } from "../middleware/auth.js";
@@ -48,5 +49,8 @@ userRouter.get("/:id/payment-info", protect, authorize('admin', 'dieteticien', '
 
 // Consultation routes
 userRouter.patch("/client/:id/increment-consultations", protect, incrementConsultations);
+
+// Language preference
+userRouter.patch("/language", protect, updateLanguage);
 
 export default userRouter;

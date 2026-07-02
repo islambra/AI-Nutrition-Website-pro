@@ -41,6 +41,11 @@ const userSchema = new mongoose.Schema({
   passwordResetExpires: {
     type: Date,
     default: undefined
+  },
+  preferredLanguage: {
+    type: String,
+    enum: ['en', 'fr'],
+    default: 'en'
   }
 });
 

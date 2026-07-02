@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { createBlog } from "../../api/blogApi";
 import { useSafeTimeout } from "../../hooks/useSafeTimeout";
+import { useTranslation } from 'react-i18next';
 import "./CreateBlog.css";
 
 // SVG Icon Components - Modern Minimalist
@@ -24,6 +25,7 @@ const Icons = {
 };
 
 const CreateBlog = () => {
+  const { t } = useTranslation();
   const { setTimeoutSafe } = useSafeTimeout();
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
@@ -213,7 +215,7 @@ const CreateBlog = () => {
       };
       
       await createBlog(blogData);
-      setSuccess("Blog created successfully!");
+      setSuccess(t('dashboard.dieteticien.createBlog.success'));
       scrollToTop();
       setTimeoutSafe(() => {
         resetForm();
@@ -221,7 +223,7 @@ const CreateBlog = () => {
         navigate("/dieteticien/MyBlogs");
       }, 2000);
     } catch (err) {
-      setError(err.response?.data?.message || "Error creating blog. Please try again.");
+      setError(err.response?.data?.message || t('dashboard.dieteticien.createBlog.error'));
       scrollToTop();
     } finally {
       setLoading(false);
@@ -247,10 +249,10 @@ const CreateBlog = () => {
       <div className="blog-hero">
         <div className="blog-hero-badge">
           <Icons.Sparkles />
-          <span>Share Your Story</span>
+          <span>{t('dashboard.dieteticien.createBlog.hero')}</span>
         </div>
-        <h1 className="blog-hero-title">Create New Blog</h1>
-        <p className="blog-hero-subtitle">Share your knowledge, recipes, or stories with the community</p>
+        <h1 className="blog-hero-title">{t('dashboard.dieteticien.createBlog.title')}</h1>
+        <p className="blog-hero-subtitle">{t('dashboard.dieteticien.createBlog.subtitle')}</p>
       </div>
       
       {/* Alert Messages */}
@@ -258,7 +260,7 @@ const CreateBlog = () => {
         <div className="modern-alert modern-alert-error">
           <div className="alert-icon"><Icons.Alert /></div>
           <div className="alert-content">
-            <strong>Error</strong>
+            <strong>{t('common.error')}</strong>
             <p>{error}</p>
           </div>
           <button className="alert-close" onClick={() => setError("")}><Icons.X /></button>
@@ -269,7 +271,7 @@ const CreateBlog = () => {
         <div className="modern-alert modern-alert-success">
           <div className="alert-icon"><Icons.Check /></div>
           <div className="alert-content">
-            <strong>Success!</strong>
+            <strong>{t('common.success')}</strong>
             <p>{success}</p>
           </div>
           <button className="alert-close" onClick={() => setSuccess("")}><Icons.X /></button>
@@ -290,8 +292,7 @@ const CreateBlog = () => {
             >
               <div className="type-card-icon"><Icons.ChefHat /></div>
               <div className="type-card-content">
-                <span className="type-card-title">Recipe</span>
-                <span className="type-card-desc">Share your culinary creations</span>
+                <span className="type-card-title">{t('dashboard.dieteticien.createBlog.recipe')}</span>
               </div>
             </button>
             <button
@@ -301,8 +302,7 @@ const CreateBlog = () => {
             >
               <div className="type-card-icon"><Icons.Article /></div>
               <div className="type-card-content">
-                <span className="type-card-title">Article</span>
-                <span className="type-card-desc">Write informative content</span>
+                <span className="type-card-title">{t('dashboard.dieteticien.createBlog.article')}</span>
               </div>
             </button>
             <button
@@ -312,8 +312,7 @@ const CreateBlog = () => {
             >
               <div className="type-card-icon"><Icons.Community /></div>
               <div className="type-card-content">
-                <span className="type-card-title">Community</span>
-                <span className="type-card-desc">Engage with the community</span>
+                <span className="type-card-title">{t('dashboard.dieteticien.createBlog.community')}</span>
               </div>
             </button>
           </div>
@@ -331,8 +330,8 @@ const CreateBlog = () => {
             {loading && !imagePreview ? (
               <div className="upload-loading">
                 <div className="upload-spinner"></div>
-                <p>Optimizing image...</p>
-                <small>Making it perfect for your blog</small>
+                <p>{t('dashboard.dieteticien.createBlog.optimizing')}</p>
+                <small>{t('dashboard.dieteticien.createBlog.makingPerfect')}</small>
               </div>
             ) : imagePreview ? (
               <div className="upload-preview">
@@ -349,7 +348,7 @@ const CreateBlog = () => {
                 </button>
                 <div className="preview-overlay">
                   <Icons.Edit />
-                  <span>Click to change</span>
+                  <span>{t('dashboard.dieteticien.createBlog.changeImage')}</span>
                 </div>
               </div>
             ) : (
@@ -357,9 +356,9 @@ const CreateBlog = () => {
                 <div className="upload-icon-wrapper">
                   <Icons.Upload />
                 </div>
-                <h4>Upload a cover image</h4>
-                <p>Click or drag and drop</p>
-                <small>Recommended: 1200 x 800px • Max 10MB</small>
+                <h4>{t('dashboard.dieteticien.createBlog.uploadImage')}</h4>
+                <p>{t('dashboard.dieteticien.createBlog.clickOrDrag')}</p>
+                <small>{t('dashboard.dieteticien.createBlog.imageRecommendation')}</small>
               </div>
             )}
           </div>
@@ -375,7 +374,7 @@ const CreateBlog = () => {
         {/* Title */}
         <div className="form-group-modern">
           <label className="form-label-modern" htmlFor="title">
-            Title <span className="required-star">*</span>
+            {t('dashboard.dieteticien.createBlog.title')} <span className="required-star">*</span>
           </label>
           <input
             type="text"
@@ -383,19 +382,19 @@ const CreateBlog = () => {
             name="title"
             value={formData.title}
             onChange={handleInputChange}
-            placeholder="Enter a catchy title..."
+            placeholder={t('dashboard.dieteticien.createBlog.titlePlaceholder')}
             className="modern-input"
             maxLength="100"
           />
           <div className={`input-character-count ${charCount > 90 ? 'warning' : ''}`}>
-            {charCount}/100 characters
+            {t('dashboard.dieteticien.createBlog.charCount', { n: charCount })}
           </div>
         </div>
         
         {/* Tags */}
         <div className="form-group-modern">
           <label className="form-label-modern" htmlFor="tags">
-            <Icons.Tag /> Tags
+            <Icons.Tag /> {t('dashboard.dieteticien.createBlog.tags')}
           </label>
           <input
             type="text"
@@ -403,7 +402,7 @@ const CreateBlog = () => {
             name="tags"
             value={formData.tags}
             onChange={handleInputChange}
-            placeholder="e.g., Healthy, Quick, Vegan, Breakfast"
+            placeholder={t('dashboard.dieteticien.createBlog.tagsPlaceholder')}
             className="modern-input"
           />
           
@@ -428,7 +427,7 @@ const CreateBlog = () => {
           )}
           
           <div className="suggested-tags">
-            <span className="suggested-label">Suggested:</span>
+            <span className="suggested-label">{t('dashboard.dieteticien.createBlog.suggested')}</span>
             {suggestedTags.slice(0, 8).map((tag, idx) => (
               <button
                 key={idx}
@@ -441,14 +440,14 @@ const CreateBlog = () => {
             ))}
           </div>
           <small className="form-hint-modern">
-            Separate tags with commas for better discoverability
+            {t('dashboard.dieteticien.createBlog.tagsHint')}
           </small>
         </div>
         
         {/* Content */}
         <div className="form-group-modern">
           <label className="form-label-modern" htmlFor="content">
-            Content <span className="required-star">*</span>
+            {t('dashboard.dieteticien.createBlog.content')} <span className="required-star">*</span>
           </label>
           <textarea
             id="content"
@@ -456,12 +455,12 @@ const CreateBlog = () => {
             rows="12"
             value={formData.content}
             onChange={handleInputChange}
-            placeholder="Write your blog content here... Markdown supported"
+            placeholder={t('dashboard.dieteticien.createBlog.contentPlaceholder')}
             className="modern-textarea"
           />
           <div className="content-stats">
-            <span>{formData.content.split(/\s+/).filter(w => w.length > 0).length} words</span>
-            <span>{formData.content.length} characters</span>
+            <span>{t('dashboard.dieteticien.createBlog.wordCount', { n: formData.content.split(/\s+/).filter(w => w.length > 0).length })}</span>
+            <span>{t('dashboard.dieteticien.createBlog.charCountFull', { n: formData.content.length })}</span>
           </div>
         </div>
         
@@ -472,7 +471,7 @@ const CreateBlog = () => {
             onClick={handleCancel}
             className="modern-btn modern-btn-secondary"
           >
-            Cancel
+            {t('common.cancel')}
           </button>
           <button
             type="submit"
@@ -482,12 +481,12 @@ const CreateBlog = () => {
             {loading ? (
               <>
                 <div className="btn-spinner"></div>
-                Publishing...
+                {t('dashboard.dieteticien.createBlog.publishing')}
               </>
             ) : (
               <>
                 <Icons.Save />
-                Publish Blog
+                {t('dashboard.dieteticien.createBlog.publish')}
                 <Icons.ArrowRight />
               </>
             )}

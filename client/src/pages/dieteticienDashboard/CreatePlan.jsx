@@ -8,9 +8,11 @@ import {
   getFollowUpOptions,
 } from "../../api/planApi";
 import { useSafeTimeout } from "../../hooks/useSafeTimeout";
+import { useTranslation } from 'react-i18next';
 import "./CreatePlan.css";
 
 const CreatePlan = () => {
+  const { t } = useTranslation();
   const { setTimeoutSafe } = useSafeTimeout();
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -55,11 +57,11 @@ const CreatePlan = () => {
   
   // Meal structure state - with default meals
   const [mealSlots, setMealSlots] = useState([
-    { id: 1, name: "Breakfast", time: "08:00", foods: [] },
-    { id: 2, name: "Morning Snack", time: "10:30", foods: [] },
-    { id: 3, name: "Lunch", time: "13:00", foods: [] },
-    { id: 4, name: "Afternoon Snack", time: "16:00", foods: [] },
-    { id: 5, name: "Dinner", time: "19:00", foods: [] },
+    { id: 1, name: t('dashboard.dieteticien.createPlan.defaultMeals.breakfast'), time: "08:00", foods: [] },
+    { id: 2, name: t('dashboard.dieteticien.createPlan.defaultMeals.morningSnack'), time: "10:30", foods: [] },
+    { id: 3, name: t('dashboard.dieteticien.createPlan.defaultMeals.lunch'), time: "13:00", foods: [] },
+    { id: 4, name: t('dashboard.dieteticien.createPlan.defaultMeals.afternoonSnack'), time: "16:00", foods: [] },
+    { id: 5, name: t('dashboard.dieteticien.createPlan.defaultMeals.dinner'), time: "19:00", foods: [] },
   ]);
   const [currentMealFood, setCurrentMealFood] = useState({});
   const [nextMealId, setNextMealId] = useState(6);
@@ -130,7 +132,7 @@ const CreatePlan = () => {
     const newId = nextMealId;
     const newSlot = {
       id: newId,
-      name: `Meal ${mealSlots.length + 1}`,
+      name: t('dashboard.dieteticien.createPlan.defaultMeals.breakfast'),
       time: "12:00",
       foods: [],
     };
@@ -157,7 +159,7 @@ const CreatePlan = () => {
 
   const removeMealSlot = (index) => {
     if (mealSlots.length <= 1) {
-      setError("You need at least one meal");
+      setError(t('dashboard.dieteticien.createPlan.validation.needMeal'));
       return;
     }
     const updatedSlots = mealSlots.filter((_, i) => i !== index);
@@ -276,11 +278,11 @@ const CreatePlan = () => {
   // Validate before submit
   const validateForm = () => {
     if (!user) {
-      setError("You must be logged in to create a plan");
+      setError(t('dashboard.dieteticien.createPlan.validation.needLogin'));
       return false;
     }
     if (!formData.planName.trim()) {
-      setError("Plan name is required");
+      setError(t('dashboard.dieteticien.createPlan.validation.nameRequired'));
       return false;
     }
     if (!formData.planCategory) {
@@ -334,7 +336,7 @@ const CreatePlan = () => {
       const response = await createPlan(planData);
 
       
-      setSuccess("Plan created successfully! Redirecting...");
+      setSuccess(t('dashboard.dieteticien.createPlan.success'));
       setTimeoutSafe(() => {
         navigate("/dieteticien/MyPlans");
       }, 2000);
@@ -360,14 +362,14 @@ const CreatePlan = () => {
     <div className="create-plan-container">
       <div className="create-plan-header">
         <h1>
-          <i className="fas fa-plus-circle"></i> Create New Nutrition Plan
+          <i className="fas fa-plus-circle"></i> {t('dashboard.dieteticien.createPlan.title')}
         </h1>
         <p>
-          <i className="fas fa-heartbeat"></i> Design a personalized meal plan for your clients
+          <i className="fas fa-heartbeat"></i> {t('dashboard.dieteticien.createPlan.subtitle')}
         </p>
         {user && (
           <div className="creator-info-banner">
-            <span>Creating as: <strong>{user.fullName}</strong> ({user.role})</span>
+            <span>{t('dashboard.dieteticien.createPlan.creatingAs', { name: user.fullName, role: user.role })}</span>
           </div>
         )}
       </div>
@@ -377,21 +379,21 @@ const CreatePlan = () => {
         <div className="form-section">
           <div className="section-title">
             <i className="fas fa-info-circle section-icon"></i>
-            <h2>Basic Information</h2>
+            <h2>{t('dashboard.dieteticien.createPlan.basicInfo')}</h2>
           </div>
           <div className="form-grid">
             <div className="form-group">
-              <label><i className="fas fa-utensils"></i> Plan Name *</label>
+              <label><i className="fas fa-utensils"></i> {t('dashboard.dieteticien.createPlan.planName')} *</label>
               <input
                 type="text"
                 name="planName"
                 value={formData.planName}
                 onChange={handleChange}
-                placeholder="e.g., Diabetes Weight Loss"
+                placeholder={t('dashboard.dieteticien.createPlan.planNamePlaceholder')}
               />
             </div>
             <div className="form-group">
-              <label><i className="fas fa-tag"></i> Plan Category *</label>
+              <label><i className="fas fa-tag"></i> {t('dashboard.dieteticien.createPlan.planCategory')} *</label>
               <select
                 name="planCategory"
                 value={formData.planCategory}
@@ -404,22 +406,22 @@ const CreatePlan = () => {
               </select>
             </div>
             <div className="form-group full-width">
-              <label><i className="fas fa-users"></i> Target User Profile *</label>
+              <label><i className="fas fa-users"></i> {t('dashboard.dieteticien.createPlan.targetProfile')} *</label>
               <input
                 type="text"
                 name="targetUserProfile"
                 value={formData.targetUserProfile}
                 onChange={handleChange}
-                placeholder="e.g., Type 2 diabetes, prediabetes, insulin resistance"
+                placeholder={t('dashboard.dieteticien.createPlan.targetPlaceholder')}
               />
             </div>
             <div className="form-group full-width">
-              <label><i className="fas fa-align-left"></i> Description *</label>
+              <label><i className="fas fa-align-left"></i> {t('dashboard.dieteticien.createPlan.description')} *</label>
               <textarea
                 name="description"
                 value={formData.description}
                 onChange={handleChange}
-                placeholder="Describe the plan benefits and what users can expect..."
+                placeholder={t('dashboard.dieteticien.createPlan.descPlaceholder')}
                 rows="3"
               />
             </div>
@@ -430,7 +432,7 @@ const CreatePlan = () => {
         <div className="form-section">
           <div className="section-title">
             <i className="fas fa-image section-icon"></i>
-            <h2>Plan Image</h2>
+            <h2>{t('dashboard.dieteticien.createPlan.planImage')}</h2>
           </div>
           <div className="image-upload-area">
             {previewImage ? (
@@ -451,8 +453,8 @@ const CreatePlan = () => {
               <div className="upload-placeholder">
                 <label htmlFor="planImage" className="upload-label">
                   <i className="fas fa-cloud-upload-alt upload-icon"></i>
-                  <span>Click to upload plan image</span>
-                  <span className="upload-hint">PNG, JPG, WEBP (Max 5MB)</span>
+                  <span>{t('dashboard.dieteticien.createPlan.imageUpload')}</span>
+                  <span className="upload-hint">{t('dashboard.dieteticien.createPlan.imageHint')}</span>
                 </label>
                 <input
                   type="file"
@@ -470,11 +472,11 @@ const CreatePlan = () => {
         <div className="form-section">
           <div className="section-title">
             <i className="fas fa-clock section-icon"></i>
-            <h2>Duration & Pricing</h2>
+            <h2>{t('dashboard.dieteticien.createPlan.durationPricing')}</h2>
           </div>
           <div className="form-grid">
             <div className="form-group">
-              <label><i className="fas fa-calendar-week"></i> Duration (weeks) *</label>
+              <label><i className="fas fa-calendar-week"></i> {t('dashboard.dieteticien.createPlan.duration')} *</label>
               <input
                 type="number"
                 name="duration"
@@ -485,7 +487,7 @@ const CreatePlan = () => {
               />
             </div>
             <div className="form-group">
-              <label><i className="fas fa-dollar-sign"></i> Price (DZD) *</label>
+              <label><i className="fas fa-dollar-sign"></i> {t('dashboard.dieteticien.createPlan.price')} *</label>
               <input
                 type="number"
                 name="price"
@@ -496,7 +498,7 @@ const CreatePlan = () => {
               />
             </div>
             <div className="form-group">
-              <label><i className="fas fa-chalkboard-user"></i> Consultations Included</label>
+              <label><i className="fas fa-chalkboard-user"></i> {t('dashboard.dieteticien.createPlan.consultationsIncluded')}</label>
               <input
                 type="number"
                 name="consultationIncluded"
@@ -506,7 +508,7 @@ const CreatePlan = () => {
               />
             </div>
             <div className="form-group">
-              <label><i className="fas fa-sync-alt"></i> Follow-up Frequency *</label>
+              <label><i className="fas fa-sync-alt"></i> {t('dashboard.dieteticien.createPlan.followUpFreq')} *</label>
               <select
                 name="followUpFrequency"
                 value={formData.followUpFrequency}
@@ -524,11 +526,11 @@ const CreatePlan = () => {
         <div className="form-section">
           <div className="section-title">
             <i className="fas fa-apple-alt section-icon"></i>
-            <h2>Nutrition Parameters</h2>
+            <h2>{t('dashboard.dieteticien.createPlan.nutritionParams')}</h2>
           </div>
           <div className="form-grid">
             <div className="form-group">
-              <label><i className="fas fa-fire"></i> Daily Calories (min)</label>
+              <label><i className="fas fa-fire"></i> {t('dashboard.dieteticien.createPlan.caloriesMin')}</label>
               <input
                 type="number"
                 value={formData.dailyCalorieRange.min}
@@ -537,7 +539,7 @@ const CreatePlan = () => {
               />
             </div>
             <div className="form-group">
-              <label><i className="fas fa-fire"></i> Daily Calories (max)</label>
+              <label><i className="fas fa-fire"></i> {t('dashboard.dieteticien.createPlan.caloriesMax')}</label>
               <input
                 type="number"
                 value={formData.dailyCalorieRange.max}
@@ -546,7 +548,7 @@ const CreatePlan = () => {
               />
             </div>
             <div className="form-group">
-              <label><i className="fas fa-bread-slice"></i> Carbs (%)</label>
+              <label><i className="fas fa-bread-slice"></i> {t('dashboard.dieteticien.createPlan.carbsPercent')}</label>
               <input
                 type="number"
                 value={formData.macronutrientRatio.carbs}
@@ -556,7 +558,7 @@ const CreatePlan = () => {
               />
             </div>
             <div className="form-group">
-              <label><i className="fas fa-drumstick-bite"></i> Protein (%)</label>
+              <label><i className="fas fa-drumstick-bite"></i> {t('dashboard.dieteticien.createPlan.proteinPercent')}</label>
               <input
                 type="number"
                 value={formData.macronutrientRatio.protein}
@@ -566,7 +568,7 @@ const CreatePlan = () => {
               />
             </div>
             <div className="form-group">
-              <label><i className="fas fa-cheese"></i> Fat (%)</label>
+              <label><i className="fas fa-cheese"></i> {t('dashboard.dieteticien.createPlan.fatPercent')}</label>
               <input
                 type="number"
                 value={formData.macronutrientRatio.fat}
@@ -576,7 +578,7 @@ const CreatePlan = () => {
               />
             </div>
             <div className="form-group">
-              <label><i className="fas fa-utensil-spoon"></i> Meals Per Day</label>
+              <label><i className="fas fa-utensil-spoon"></i> {t('dashboard.dieteticien.createPlan.mealsPerDay')}</label>
               <input
                 type="number"
                 name="mealsPerDay"
@@ -589,12 +591,12 @@ const CreatePlan = () => {
           </div>
           <div className={`macro-info ${macroTotal !== 100 ? "macro-error" : "macro-success"}`}>
             <i className={macroTotal !== 100 ? "fas fa-exclamation-triangle" : "fas fa-check-circle"}></i>
-            <span>Total: {macroTotal}%</span>
+            <span>{t('dashboard.dieteticien.createPlan.totalPercent', { n: macroTotal })}</span>
             {macroTotal !== 100 && (
-              <span className="macro-warning"> Must be 100%</span>
+              <span className="macro-warning"> {t('dashboard.dieteticien.createPlan.mustBe100')}</span>
             )}
             {macroTotal === 100 && (
-              <span className="macro-check"> Perfect balance</span>
+              <span className="macro-check"> {t('dashboard.dieteticien.createPlan.perfectBalance')}</span>
             )}
           </div>
         </div>
@@ -603,7 +605,7 @@ const CreatePlan = () => {
         <div className="form-section">
           <div className="section-title">
             <i className="fas fa-check-circle section-icon"></i>
-            <h2>Recommended Foods</h2>
+            <h2>{t('dashboard.dieteticien.createPlan.recommendedFoods')}</h2>
           </div>
           <div className="array-input-group">
             <div className="array-input-row">
@@ -611,11 +613,11 @@ const CreatePlan = () => {
                 type="text"
                 value={recommendedFoodsInput}
                 onChange={(e) => setRecommendedFoodsInput(e.target.value)}
-                placeholder="e.g., Chicken breast, Salmon, Quinoa"
+                placeholder={t('dashboard.dieteticien.createPlan.foodPlaceholder')}
                 onKeyPress={(e) => e.key === "Enter" && addRecommendedFood()}
               />
               <button type="button" onClick={addRecommendedFood} className="add-btn">
-                <i className="fas fa-plus"></i> Add
+                <i className="fas fa-plus"></i> {t('dashboard.dieteticien.createPlan.add')}
               </button>
             </div>
             <div className="tags-container">
@@ -635,9 +637,9 @@ const CreatePlan = () => {
         <div className="form-section meal-structure-section">
           <div className="section-title">
             <i className="fas fa-utensils section-icon"></i>
-            <h2>Meal Structure (Daily Template)</h2>
+            <h2>{t('dashboard.dieteticien.createPlan.mealStructure')}</h2>
             <button type="button" className="add-meal-btn" onClick={addNewMealSlot}>
-              <i className="fas fa-plus"></i> Add Meal
+              <i className="fas fa-plus"></i> {t('dashboard.dieteticien.createPlan.add')}
             </button>
           </div>
 
@@ -718,7 +720,7 @@ const CreatePlan = () => {
                           onChange={(e) =>
                             setCurrentMealFood((prev) => ({ ...prev, [idx]: e.target.value }))
                           }
-                          placeholder={`Add food item for ${slot.name}...`}
+                          placeholder={t('dashboard.dieteticien.createPlan.addFood', { name: slot.name })}
                           className="add-food-input"
                           onKeyPress={(e) =>
                             e.key === "Enter" && addMealFood(idx, currentMealFood[idx] || "")
@@ -729,7 +731,7 @@ const CreatePlan = () => {
                           className="add-food-btn"
                           onClick={() => addMealFood(idx, currentMealFood[idx] || "")}
                         >
-                          <i className="fas fa-plus"></i> Add Food
+                          <i className="fas fa-plus"></i> {t('dashboard.dieteticien.createPlan.add')}
                         </button>
                       </div>
                     </div>
@@ -744,7 +746,7 @@ const CreatePlan = () => {
         <div className="form-section">
           <div className="section-title">
             <i className="fas fa-shopping-cart section-icon"></i>
-            <h2>Weekly Grocery List</h2>
+            <h2>{t('dashboard.dieteticien.createPlan.weeklyGrocery')}</h2>
           </div>
           <div className="grocery-grid">
             {["protein", "vegetables", "carbs", "fats", "fruits", "other"].map((category) => (
@@ -756,7 +758,7 @@ const CreatePlan = () => {
                                  category === "fats" ? "cheese" : 
                                  category === "fruits" ? "apple-alt" : "box"}`}>
                   </i>
-                  {category.charAt(0).toUpperCase() + category.slice(1)}
+                  {t('dashboard.dieteticien.createPlan.groceryCategories.' + category)}
                 </h3>
                 <div className="grocery-input">
                   <input
@@ -796,7 +798,7 @@ const CreatePlan = () => {
         <div className="form-section">
           <div className="section-title">
             <i className="fas fa-ban section-icon"></i>
-            <h2>Foods to Avoid</h2>
+            <h2>{t('dashboard.dieteticien.createPlan.foodsToAvoid')}</h2>
           </div>
           <div className="array-input-group">
             <div className="array-input-row">
@@ -808,7 +810,7 @@ const CreatePlan = () => {
                 onKeyPress={(e) => e.key === "Enter" && addFoodToAvoid()}
               />
               <button type="button" onClick={addFoodToAvoid} className="add-btn">
-                <i className="fas fa-plus"></i> Add
+                <i className="fas fa-plus"></i> {t('dashboard.dieteticien.createPlan.add')}
               </button>
             </div>
             <div className="tags-container">
@@ -828,7 +830,7 @@ const CreatePlan = () => {
         <div className="form-section">
           <div className="section-title">
             <i className="fas fa-pills section-icon"></i>
-            <h2>Supplements & Exercise</h2>
+            <h2>{t('dashboard.dieteticien.createPlan.supplements')}</h2>
           </div>
           <div className="form-grid">
             <div className="form-group full-width">
@@ -843,7 +845,7 @@ const CreatePlan = () => {
                     onKeyPress={(e) => e.key === "Enter" && addSupplement()}
                   />
                   <button type="button" onClick={addSupplement} className="add-btn">
-                    <i className="fas fa-plus"></i> Add
+                    <i className="fas fa-plus"></i> {t('dashboard.dieteticien.createPlan.add')}
                   </button>
                 </div>
                 <div className="tags-container">
@@ -886,11 +888,11 @@ const CreatePlan = () => {
         {/* Form Actions */}
         <div className="form-actions">
           <button type="button" className="cancel-btn" onClick={() => navigate("/dieteticien/MyPlans")}>
-            <i className="fas fa-times"></i> Cancel
+            <i className="fas fa-times"></i> {t('common.cancel')}
           </button>
           <button type="submit" className="submit-btn" disabled={loading}>
             {loading ? <i className="fas fa-spinner fa-spin"></i> : <i className="fas fa-check"></i>}
-            {loading ? " Creating" : " Create Plan"}
+            {loading ? " Creating" : ` ${t('dashboard.dieteticien.createPlan.createPlan')}`}
           </button>
         </div>
       </form>

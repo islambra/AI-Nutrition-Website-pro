@@ -21,6 +21,7 @@ import {
 import { useAuth } from "../../context/AuthContext";
 import { getAllCourses, deleteCourse } from "../../api/courseApi";
 import toast from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 import "./AllCourses.css";
 
 const LEVEL_NAMES = {
@@ -38,6 +39,7 @@ const LEVEL_ICONS = {
 const AllCourses = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { t } = useTranslation();
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [deleteTarget, setDeleteTarget] = useState(null);
@@ -138,9 +140,9 @@ const AllCourses = () => {
   };
 
   const semesterOptions = [
-    { value: "all", label: "All Semesters" },
-    { value: "1", label: "Semester 1" },
-    { value: "2", label: "Semester 2" },
+    { value: "all", label: t("dashboard.dieteticien.allCourses.allSemesters") },
+    { value: "1", label: t("dashboard.dieteticien.allCourses.semester1") },
+    { value: "2", label: t("dashboard.dieteticien.allCourses.semester2") },
   ];
 
   if (loading) {
@@ -257,8 +259,8 @@ const AllCourses = () => {
           <div className="ac-empty-icon">
             <Search size={48} />
           </div>
-          <h3>No matches found</h3>
-          <p>Try adjusting your search or filter</p>
+                          <h3>{t("common.noResults")}</h3>
+                          <p>Try adjusting your search or filter</p>
         </motion.div>
       ) : (
         <motion.div
@@ -343,7 +345,7 @@ const AllCourses = () => {
                     <div className="ac-card-meta">
                       <span className="ac-card-creator">
                         <Users size={12} />
-                        {course.creatorInfo?.fullName || "Unknown"}
+                        {course.creatorInfo?.fullName || t("common.unknown")}
                       </span>
                       {course.createdAt && (
                         <span className="ac-card-date">
@@ -388,7 +390,7 @@ const AllCourses = () => {
                           title="Delete course"
                         >
                           <Trash2 size={15} />
-                          <span>Delete</span>
+                          <span>{t("common.delete")}</span>
                         </button>
                       )}
                   </div>
@@ -433,9 +435,9 @@ const AllCourses = () => {
                 </div>
               </div>
 
-              <h3 className="ac-modal-title">Delete Course</h3>
-              <p className="ac-modal-message">
-                Are you sure you want to delete this course? This action cannot be undone.
+                  <h3 className="ac-modal-title">{t("common.delete")} Course</h3>
+                  <p className="ac-modal-message">
+                    Are you sure you want to delete this course? This action cannot be undone.
               </p>
 
               <div className="ac-modal-actions">
@@ -445,7 +447,7 @@ const AllCourses = () => {
                   className="ac-modal-btn cancel"
                   onClick={() => setDeleteTarget(null)}
                 >
-                  Cancel
+                  {t("common.cancel")}
                 </motion.button>
                 <motion.button
                   whileHover={{ scale: 1.02 }}
@@ -454,7 +456,7 @@ const AllCourses = () => {
                   onClick={confirmDelete}
                 >
                   <Trash2 size={16} />
-                  Delete Course
+                  {t("common.delete")} Course
                 </motion.button>
               </div>
             </motion.div>

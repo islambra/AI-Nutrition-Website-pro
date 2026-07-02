@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Trash2, X, AlertTriangle } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
@@ -8,6 +9,7 @@ import toast from 'react-hot-toast';
 import './RoomList.css';
 
 export default function RoomList({ rooms, onSelectRoom, typingUsers, onShowProfile }) {
+  const { t } = useTranslation();
   const { removeRoom } = useSocket();
   const [confirmDeleteId, setConfirmDeleteId] = useState(null);
   const [deletingId, setDeletingId] = useState(null);
@@ -38,9 +40,9 @@ export default function RoomList({ rooms, onSelectRoom, typingUsers, onShowProfi
             <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
           </svg>
         </div>
-        <p className="text-gray-600 font-medium text-sm">No conversations yet</p>
+        <p className="text-gray-600 font-medium text-sm">{t('chat.noConversations')}</p>
         <p className="text-gray-400 text-xs mt-2 max-w-[220px] leading-relaxed">
-          Purchase a plan or formation to start chatting with your dieteticien.
+          {t('chat.startConversation')}
         </p>
       </div>
     );
@@ -82,7 +84,7 @@ export default function RoomList({ rooms, onSelectRoom, typingUsers, onShowProfi
 
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between gap-2">
-                    <p className="text-gray-900 font-medium text-sm truncate">{other.fullName || 'Unknown'}</p>
+                    <p className="text-gray-900 font-medium text-sm truncate">{other.fullName || t('chat.unknown')}</p>
                     <span className="text-gray-300 text-[11px] shrink-0 font-mono">
                       {room.lastMessage?.timestamp ? formatTime(room.lastMessage.timestamp) : ''}
                     </span>
@@ -94,12 +96,12 @@ export default function RoomList({ rooms, onSelectRoom, typingUsers, onShowProfi
                         <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
                         <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
                         <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
-                        <span className="text-emerald-600 text-xs ml-1 italic">typing...</span>
+                        <span className="text-emerald-600 text-xs ml-1 italic">{t('chat.typing')}</span>
                       </div>
                     ) : (
                       <p className="text-gray-500 text-xs truncate leading-relaxed">
                         {room.lastMessage?.content || (
-                          <span className="italic text-gray-300">No messages yet</span>
+                          <span className="italic text-gray-300">{t('chat.noMessages')}</span>
                         )}
                       </p>
                     )}
@@ -108,7 +110,7 @@ export default function RoomList({ rooms, onSelectRoom, typingUsers, onShowProfi
                         ? 'bg-emerald-50 text-emerald-600'
                         : 'bg-violet-50 text-violet-600'
                     }`}>
-                      {room.type === 'plan' ? 'Plan' : 'Formation'}
+                      {room.type === 'plan' ? t('chat.plan') : t('chat.formation')}
                     </span>
                   </div>
                 </div>
@@ -122,7 +124,7 @@ export default function RoomList({ rooms, onSelectRoom, typingUsers, onShowProfi
                 }}
                 disabled={deletingId === room._id}
                 className="rl-delete-btn absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg bg-white/80 text-gray-400 hover:text-red-500 hover:bg-red-50 opacity-0 group-hover:opacity-100 transition-all duration-200 flex items-center justify-center shadow-sm border border-gray-200"
-                title="Delete conversation"
+                title={t('chat.deleteConversation')}
               >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -164,9 +166,9 @@ export default function RoomList({ rooms, onSelectRoom, typingUsers, onShowProfi
                 </div>
               </div>
 
-              <h3 className="rl-modal-title">Delete conversation</h3>
+              <h3 className="rl-modal-title">{t('chat.deleteConversation')}</h3>
               <p className="rl-modal-message">
-                All messages will be permanently deleted. This cannot be undone.
+                {t('chat.deleteConfirm')}
               </p>
 
               <div className="rl-modal-actions">
@@ -176,7 +178,7 @@ export default function RoomList({ rooms, onSelectRoom, typingUsers, onShowProfi
                   className="rl-modal-btn cancel"
                   onClick={() => setConfirmDeleteId(null)}
                 >
-                  Cancel
+                  {t('common.cancel')}
                 </motion.button>
                 <motion.button
                   whileHover={{ scale: 1.02 }}
@@ -188,12 +190,12 @@ export default function RoomList({ rooms, onSelectRoom, typingUsers, onShowProfi
                     setDeletingId(confirmDeleteId);
                     deleteRoomApi(confirmDeleteId)
                       .then(() => { removeRoom(confirmDeleteId); })
-                      .catch(() => { toast.error("Failed to delete conversation"); })
+                      .catch(() => { toast.error(t('common.error')); })
                       .finally(() => { setDeletingId(null); setConfirmDeleteId(null); });
                   }}
                 >
                   <Trash2 size={16} />
-                  {deletingId === confirmDeleteId ? "Deleting..." : "Delete"}
+                  {deletingId === confirmDeleteId ? t('common.loading') : t('common.delete')}
                 </motion.button>
               </div>
             </motion.div>

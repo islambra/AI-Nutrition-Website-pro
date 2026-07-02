@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLocation } from 'react-router-dom';
 import {
@@ -11,13 +12,14 @@ import { getMyRequests, deleteMyRequest } from '../api/paymentApi';
 import toast from 'react-hot-toast';
 import './PurchaseRequests.css';
 
-const STATUS_CONFIG = {
-  pending: { icon: Clock, label: 'Pending', className: 'status-pending' },
-  rejected: { icon: XCircle, label: 'Rejected', className: 'status-rejected' }
-};
-
 const PurchaseRequests = ({ defaultType = 'all' }) => {
+  const { t } = useTranslation();
   const locationState = useLocation().state;
+
+  const STATUS_CONFIG = {
+    pending: { icon: Clock, label: t('common.pending'), className: 'status-pending' },
+    rejected: { icon: XCircle, label: t('common.rejected'), className: 'status-rejected' }
+  };
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -38,7 +40,7 @@ const PurchaseRequests = ({ defaultType = 'all' }) => {
       const res = await getMyRequests();
       setRequests(res.data || []);
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to load requests');
+      setError(err.response?.data?.message || t('common.error'));
     } finally {
       setLoading(false);
     }
@@ -53,10 +55,10 @@ const PurchaseRequests = ({ defaultType = 'all' }) => {
   const handleDelete = async (id, name) => {
     toast((t) => (
       <div className="pr-toast">
-        <p>Delete request for <strong>{name}</strong>?</p>
+        <p>{t('purchaseRequests.deleteConfirm')} <strong>{name}</strong>?</p>
         <div className="pr-toast-actions">
-          <button onClick={() => { toast.dismiss(t.id); confirmDelete(id); }} className="pr-toast-confirm">Delete</button>
-          <button onClick={() => toast.dismiss(t.id)} className="pr-toast-cancel">Cancel</button>
+          <button onClick={() => { toast.dismiss(t.id); confirmDelete(id); }} className="pr-toast-confirm">{t('common.delete')}</button>
+          <button onClick={() => toast.dismiss(t.id)} className="pr-toast-cancel">{t('common.cancel')}</button>
         </div>
       </div>
     ), { duration: 5000, position: 'top-center' });
@@ -66,9 +68,9 @@ const PurchaseRequests = ({ defaultType = 'all' }) => {
     try {
       await deleteMyRequest(id);
       setRequests(prev => prev.filter(r => r._id !== id));
-      toast.success('Request deleted');
+      toast.success(t('common.success'));
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Failed to delete');
+      toast.error(err.response?.data?.message || t('common.error'));
     }
   };
 
@@ -113,11 +115,11 @@ const PurchaseRequests = ({ defaultType = 'all' }) => {
   });
 
   const typeOptions = [
-    { value: 'all', label: 'All', icon: Layers },
-    { value: 'plan', label: 'Plans', icon: Package },
-    { value: 'formation', label: 'Formations', icon: GraduationCap },
-    { value: 'course', label: 'Courses', icon: BookOpen },
-    { value: 'ai-tool', label: 'AI Scanner', icon: Sparkles }
+    { value: 'all', label: t('common.all'), icon: Layers },
+    { value: 'plan', label: t('purchaseRequests.plans'), icon: Package },
+    { value: 'formation', label: t('purchaseRequests.formations'), icon: GraduationCap },
+    { value: 'course', label: t('purchaseRequests.courses'), icon: BookOpen },
+    { value: 'ai-tool', label: t('purchaseRequests.aiScanner'), icon: Sparkles }
   ];
 
   if (loading) return (
@@ -126,16 +128,16 @@ const PurchaseRequests = ({ defaultType = 'all' }) => {
         <div className="pr-spinner-ring"></div>
         <Sparkles className="pr-spinner-icon" size={28} />
       </div>
-      <p>Loading your requests...</p>
+      <p>{t('common.loading')}</p>
     </motion.div>
   );
 
   if (error) return (
     <div className="pr-error">
       <div className="pr-error-icon"><AlertCircle size={48} /></div>
-      <h3>Unable to load data</h3>
+      <h3>{t('common.error')}</h3>
       <p>{error}</p>
-      <button onClick={fetchRequests} className="pr-retry-btn">Try Again</button>
+      <button onClick={fetchRequests} className="pr-retry-btn">{t('common.tryAgain')}</button>
     </div>
   );
 
@@ -156,10 +158,10 @@ const PurchaseRequests = ({ defaultType = 'all' }) => {
           >
             <div className="pr-page-badge">
               <Clock size={14} />
-              <span>My Requests</span>
+              <span>{t('purchaseRequests.myRequests')}</span>
             </div>
-            <h1>Purchase Requests</h1>
-            <p className="pr-subtitle">Track all your payment requests and their status</p>
+            <h1>{t('purchaseRequests.title')}</h1>
+            <p className="pr-subtitle">{t('purchaseRequests.subtitle')}</p>
           </motion.div>
         </div>
         <motion.div
@@ -173,11 +175,11 @@ const PurchaseRequests = ({ defaultType = 'all' }) => {
             className={`pr-filter-toggle ${showFilters ? 'active' : ''}`}
           >
             <Filter size={16} />
-            Filters
+            {t('purchaseRequests.filters')}
           </button>
           <button onClick={refresh} className="pr-refresh-btn" disabled={refreshing}>
             <RefreshCw size={16} className={refreshing ? 'pr-spin' : ''} />
-            Refresh
+            {t('common.refresh')}
           </button>
         </motion.div>
       </div>
@@ -193,21 +195,21 @@ const PurchaseRequests = ({ defaultType = 'all' }) => {
           <div className="pr-stat-icon pr-total-icon"><Layers size={20} /></div>
           <div className="pr-stat-info">
             <span className="pr-stat-value">{stats.total}</span>
-            <span className="pr-stat-label">Total Requests</span>
+            <span className="pr-stat-label">{t('purchaseRequests.totalRequests')}</span>
           </div>
         </div>
         <div className="pr-stat-card">
           <div className="pr-stat-icon pr-pending-icon"><Clock size={20} /></div>
           <div className="pr-stat-info">
             <span className="pr-stat-value">{stats.pending}</span>
-            <span className="pr-stat-label">Pending</span>
+            <span className="pr-stat-label">{t('common.pending')}</span>
           </div>
         </div>
         <div className="pr-stat-card">
           <div className="pr-stat-icon pr-rejected-icon"><XCircle size={20} /></div>
           <div className="pr-stat-info">
             <span className="pr-stat-value">{stats.rejected}</span>
-            <span className="pr-stat-label">Rejected</span>
+            <span className="pr-stat-label">{t('common.rejected')}</span>
           </div>
         </div>
       </motion.div>
@@ -223,7 +225,7 @@ const PurchaseRequests = ({ defaultType = 'all' }) => {
           <Search size={18} className="pr-search-icon" />
           <input
             type="text"
-            placeholder="Search by service name..."
+            placeholder={t('purchaseRequests.searchPlaceholder')}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="pr-search-input"
@@ -235,7 +237,7 @@ const PurchaseRequests = ({ defaultType = 'all' }) => {
           )}
         </div>
         <div className="pr-search-info">
-          <span>{filteredRequests.length} request{filteredRequests.length !== 1 ? 's' : ''} found</span>
+          <span>{t('purchaseRequests.count', { count: filteredRequests.length })}</span>
         </div>
       </motion.div>
 
@@ -251,7 +253,7 @@ const PurchaseRequests = ({ defaultType = 'all' }) => {
           >
             <div className="pr-filter-inner">
               <div className="pr-filter-group">
-                <label>Type</label>
+                <label>{t('purchaseRequests.type')}</label>
                 <div className="pr-filter-chips">
                   {typeOptions.map(t => (
                     <button
@@ -266,12 +268,12 @@ const PurchaseRequests = ({ defaultType = 'all' }) => {
                 </div>
               </div>
               <div className="pr-filter-group">
-                <label>Status</label>
+                <label>{t('purchaseRequests.status')}</label>
                 <div className="pr-filter-chips">
                   {[
-                    { value: 'pending-rejected', label: 'Pending & Rejected' },
-                    { value: 'pending', label: 'Pending' },
-                    { value: 'rejected', label: 'Rejected' }
+                    { value: 'pending-rejected', label: t('purchaseRequests.pendingRejected') },
+                    { value: 'pending', label: t('common.pending') },
+                    { value: 'rejected', label: t('common.rejected') }
                   ].map(s => (
                     <button
                       key={s.value}
@@ -284,11 +286,11 @@ const PurchaseRequests = ({ defaultType = 'all' }) => {
                 </div>
               </div>
               <div className="pr-filter-group">
-                <label>Sort By</label>
+                <label>{t('purchaseRequests.sortBy')}</label>
                 <div className="pr-filter-chips">
                   {[
-                    { value: 'newest', label: 'Newest First' },
-                    { value: 'oldest', label: 'Oldest First' }
+                    { value: 'newest', label: t('purchaseRequests.newest') },
+                    { value: 'oldest', label: t('purchaseRequests.oldest') }
                   ].map(s => (
                     <button
                       key={s.value}
@@ -314,18 +316,18 @@ const PurchaseRequests = ({ defaultType = 'all' }) => {
           animate={{ scale: 1, opacity: 1 }}
         >
           <div className="pr-empty-icon"><Layers size={48} /></div>
-          <h3>No requests found</h3>
+          <h3>{t('purchaseRequests.noRequests')}</h3>
           <p>
             {searchTerm || typeFilter !== defaultType || statusFilter !== 'pending-rejected'
-              ? 'Try adjusting your filters or search term'
-              : 'You have no pending or rejected requests.'}
+              ? t('purchaseRequests.adjustFilters')
+              : t('purchaseRequests.noPendingRejected')}
           </p>
           {(searchTerm || typeFilter !== defaultType || statusFilter !== 'pending-rejected') && (
             <button
               onClick={() => { setSearchTerm(''); setTypeFilter(locationState?.defaultType || defaultType); setStatusFilter('pending-rejected'); }}
               className="pr-clear-filters-btn"
             >
-              Clear all filters
+              {t('purchaseRequests.clearFilters')}
             </button>
           )}
         </motion.div>
@@ -357,7 +359,7 @@ const PurchaseRequests = ({ defaultType = 'all' }) => {
                       <div className="pr-service-info">
                         <h3>{req.serviceName}</h3>
                         <span className="pr-service-type">
-                          {req.serviceType === 'plan' ? 'Nutrition Plan' : req.serviceType === 'formation' ? 'Formation' : req.serviceType === 'course' ? 'Course Subscription' : 'AI Scanner'}
+                          {req.serviceType === 'plan' ? t('purchaseRequests.plan') : req.serviceType === 'formation' ? t('purchaseRequests.formation') : req.serviceType === 'course' ? t('purchaseRequests.courseSubscription') : t('purchaseRequests.aiScanner')}
                         </span>
                       </div>
                     </div>
@@ -389,7 +391,7 @@ const PurchaseRequests = ({ defaultType = 'all' }) => {
                           <button
                             className="pr-action-btn"
                             onClick={() => setPreviewImage(req.proofImage)}
-                            title="View proof"
+                            title={t('purchaseRequests.viewProof')}
                           >
                             <Eye size={14} />
                           </button>
@@ -398,7 +400,7 @@ const PurchaseRequests = ({ defaultType = 'all' }) => {
                           <button
                             className="pr-action-btn pr-delete-btn"
                             onClick={() => handleDelete(req._id, req.serviceName)}
-                            title="Delete request"
+                            title={t('common.delete')}
                           >
                             <Trash2 size={14} />
                           </button>
@@ -431,7 +433,7 @@ const PurchaseRequests = ({ defaultType = 'all' }) => {
               onClick={e => e.stopPropagation()}
             >
               <button className="pr-modal-close" onClick={() => setPreviewImage(null)}>×</button>
-              <img src={previewImage} alt="Payment proof" />
+              <img src={previewImage} alt={t('purchaseRequests.paymentProof')} />
             </motion.div>
           </motion.div>
         )}

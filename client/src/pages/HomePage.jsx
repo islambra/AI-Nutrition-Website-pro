@@ -2,6 +2,7 @@ import { useState, useEffect, useMemo, memo } from 'react';
 import { NavLink, useNavigate, Link } from 'react-router-dom';
 import { motion, useScroll, useTransform, useSpring, useVelocity, useAnimationFrame, AnimatePresence, useMotionValue } from 'framer-motion';
 import { Activity, Leaf, ChevronRight, ArrowUpRight, Quote, Users, Target, Dna, BookOpen } from 'lucide-react';
+import { useTranslation, Trans } from 'react-i18next';
 import './HomePage.css';
 import ScrollReveal from '../components/ScrollReveal.jsx';
 import { useAuth } from '../context/AuthContext';
@@ -9,6 +10,7 @@ import toast from 'react-hot-toast';
 
 // --- 1. REFRESH PRELOADER ---
 const HealthPreloader = memo(() => {
+  const { t } = useTranslation();
   return (
     <motion.div 
       exit={{ opacity: 0 }}
@@ -23,7 +25,7 @@ const HealthPreloader = memo(() => {
         <Leaf size={80} strokeWidth={1.5} />
       </motion.div>
       <div style={{ position: 'absolute', bottom: '10%', fontFamily: 'Outfit', fontSize: '14px', letterSpacing: '0.3em', color: '#2D5A27', fontWeight: 800 }}>
-        CALIBRATING VITALITY
+        {t('home.preloader')}
       </div>
     </motion.div>
   );
@@ -183,6 +185,7 @@ function HomePage() {
   const [isLoading, setIsLoading] = useState(true);
   const { isAuthenticated } = useAuth();
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -245,10 +248,10 @@ function HomePage() {
         >
           
           <h1 className="hero-giant-text-v2">
-            FUEL YOUR <br /> VITALITY
+            <Trans i18nKey="home.heroTitle">FUEL YOUR <br /> VITALITY</Trans>
           </h1>
           <p className="hero-subtitle-v2">
-            Precision nutrition tailored to your biology,<br />Unlock peak health through science & tracking.
+            <Trans i18nKey="home.heroSubtitle">Precision nutrition tailored to your biology,<br />Unlock peak health through science & tracking.</Trans>
           </p>
           
           <motion.div 
@@ -258,10 +261,10 @@ function HomePage() {
             transition={{ delay: 0.6, duration: 0.8 }}
           >
             <NavLink to="/signup" className="btn-y2k btn-y2k-primary">
-              Start Assessment <ArrowUpRight size={20} />
+              {t('home.startAssessment')} <ArrowUpRight size={20} />
             </NavLink>
             <NavLink to="/services" className="btn-y2k btn-y2k-glass">
-              Our Science <Dna size={20} />
+              {t('home.ourScience')} <Dna size={20} />
             </NavLink>
           </motion.div>
         </motion.div>
@@ -269,41 +272,41 @@ function HomePage() {
 
       {/* 2. VELOCITY MARQUEE */}
       <VelocityMarquee>
-        ✦ EXPERT GUIDANCE ✦ BIOLOGICAL PRECISION ✦ CLINICAL TRACKING ✦ PEAK VITALITY ✦ ORGANIC GROWTH ✦
+        {t('home.marquee')}
       </VelocityMarquee>
 
       {/* 3. FEATURES */}
       <section className="HP-Features-Section">
         <div className="HP-Section-Header">
           <ScrollReveal>
-            <h2 className="HP-Section-Title">EVERYTHING YOU <span className="HP-Accent-Text">NEED</span></h2>
-            <p className="HP-Section-Subtitle">A complete platform for nutrition education, meal planning, and health tracking.</p>
+            <h2 className="HP-Section-Title"><Trans i18nKey="home.featuresTitle">EVERYTHING YOU <span className="HP-Accent-Text">NEED</span></Trans></h2>
+            <p className="HP-Section-Subtitle">{t('home.featuresSubtitle')}</p>
           </ScrollReveal>
         </div>
 
         <div className="HP-Features-Grid">
           <ScrollReveal className="HP-Feature-Card">
             <div className="HP-Feature-Icon"><BookOpen size={28} /></div>
-            <h3>Course Library</h3>
-            <p>Access structured nutrition courses organized by level and semester. Learn at your own pace with downloadable materials.</p>
+            <h3>{t('home.featureCourses')}</h3>
+            <p>{t('home.featureCoursesDesc')}</p>
           </ScrollReveal>
 
           <ScrollReveal className="HP-Feature-Card">
             <div className="HP-Feature-Icon"><Target size={28} /></div>
-            <h3>Personalized Plans</h3>
-            <p>Get custom meal plans tailored to your goals — weight loss, muscle gain, diabetes management, and more.</p>
+            <h3>{t('home.featurePlans')}</h3>
+            <p>{t('home.featurePlansDesc')}</p>
           </ScrollReveal>
 
           <ScrollReveal className="HP-Feature-Card">
             <div className="HP-Feature-Icon"><Activity size={28} /></div>
-            <h3>AI Tracking</h3>
-            <p>Snap a photo of your meal and let our AI analyze macros, calories, and nutrients in real time.</p>
+            <h3>{t('home.featureAI')}</h3>
+            <p>{t('home.featureAIDesc')}</p>
           </ScrollReveal>
 
           <ScrollReveal className="HP-Feature-Card">
             <div className="HP-Feature-Icon"><Users size={28} /></div>
-            <h3>Expert Consultations</h3>
-            <p>Connect with certified dietitians for one-on-one guidance and follow-up support.</p>
+            <h3>{t('home.featureConsultations')}</h3>
+            <p>{t('home.featureConsultationsDesc')}</p>
           </ScrollReveal>
         </div>
       </section>
@@ -312,8 +315,8 @@ function HomePage() {
       <section className="HP-Reviews-Section">
         <div className="HP-Section-Header">
           <ScrollReveal>
-            <h2 className="HP-Section-Title">BIOLOGICAL <span className="HP-Accent-Text">REPORTS</span></h2>
-            <p className="HP-Section-Subtitle">Real-world results from our global community of health optimizers.</p>
+            <h2 className="HP-Section-Title"><Trans i18nKey="home.reviewsTitle">BIOLOGICAL <span className="HP-Accent-Text">REPORTS</span></Trans></h2>
+            <p className="HP-Section-Subtitle">{t('home.reviewsSubtitle')}</p>
           </ScrollReveal>
         </div>
 
@@ -365,10 +368,10 @@ function HomePage() {
         <ScrollReveal scale={0.95}>
           <div className="hyper-card" style={{ maxWidth: '1000px', margin: '0 auto', textAlign: 'center', padding: '120px 40px', borderRadius: '80px', background: '#fff' }}>
             <h2 style={{ fontFamily: 'Outfit', fontSize: 'clamp(40px, 8vw, 80px)', fontWeight: 900, marginBottom: '40px', color: '#1E3F1B', letterSpacing: '-0.04em' }}>
-              RECLAIM YOUR <br /> VITALITY
+              <Trans i18nKey="home.ctaTitle">RECLAIM YOUR <br /> VITALITY</Trans>
             </h2>
             <NavLink to="/signup" className="btn-y2k btn-y2k-primary" style={{ margin: '0 auto', padding: '24px 64px' }}>
-              Join the Movement
+              {t('home.ctaButton')}
             </NavLink>
           </div>
         </ScrollReveal>

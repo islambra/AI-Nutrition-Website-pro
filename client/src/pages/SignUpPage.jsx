@@ -12,10 +12,12 @@ import {
 import { clsx } from 'clsx';
 import { registerUser, registerDieteticien } from "../api/userApi";
 import { useSafeTimeout } from '../hooks/useSafeTimeout';
+import { useTranslation } from 'react-i18next';
 import './SignUpPage.css';
 
 function SignUpPage() {
   const { setTimeoutSafe } = useSafeTimeout();
+  const { t } = useTranslation();
   const [mode, setMode] = useState("client"); // "client" or "dieteticien"
   const [userType, setUserType] = useState("client"); // "client" or "student" (only in client mode)
   const [loading, setLoading] = useState(false);
@@ -112,35 +114,35 @@ function SignUpPage() {
   };
 
   const activityOptions = [
-    { value: "Sedentary", label: "Sedentary", multiplier: "1.2" },
-    { value: "Lightly Active", label: "Lightly Active", multiplier: "1.375" },
-    { value: "Moderate", label: "Moderate", multiplier: "1.55" },
-    { value: "Active", label: "Active", multiplier: "1.725" },
-    { value: "Very Active", label: "Very Active", multiplier: "1.9" }
+    { value: "Sedentary", label: t('signup.sedentary'), multiplier: "1.2" },
+    { value: "Lightly Active", label: t('signup.lightlyActive'), multiplier: "1.375" },
+    { value: "Moderate", label: t('signup.moderate'), multiplier: "1.55" },
+    { value: "Active", label: t('signup.active'), multiplier: "1.725" },
+    { value: "Very Active", label: t('signup.veryActive'), multiplier: "1.9" }
   ];
 
   const validateForm = (values) => {
     const errors = {};
-    if (!values.fullName?.trim()) errors.fullName = "Full name is required";
-    if (!values.email?.trim()) errors.email = "Email is required";
-    else if (!/\S+@\S+\.\S+/.test(values.email)) errors.email = "Invalid email";
-    if (!values.password) errors.password = "Password is required";
-    else if (values.password.length < 8) errors.password = "At least 8 characters";
-    if (values.password !== values.confirmPassword) errors.confirmPassword = "Passwords don't match";
-    if (!values.age) errors.age = "Age is required";
-    if (!values.gender) errors.gender = "Gender is required";
+    if (!values.fullName?.trim()) errors.fullName = t('signup.errors.fullNameRequired');
+    if (!values.email?.trim()) errors.email = t('signup.errors.emailRequired');
+    else if (!/\S+@\S+\.\S+/.test(values.email)) errors.email = t('signup.errors.invalidEmail');
+    if (!values.password) errors.password = t('signup.errors.passwordRequired');
+    else if (values.password.length < 8) errors.password = t('signup.errors.passwordMin');
+    if (values.password !== values.confirmPassword) errors.confirmPassword = t('signup.errors.passwordsDontMatch');
+    if (!values.age) errors.age = t('signup.errors.ageRequired');
+    if (!values.gender) errors.gender = t('signup.errors.genderRequired');
 
     if (mode === "client") {
       if (userType === "client") {
-        if (!values.heightCm) errors.heightCm = "Height is required";
-        if (!values.weightKg) errors.weightKg = "Weight is required";
-        if (!values.activityLevel) errors.activityLevel = "Activity level is required";
+        if (!values.heightCm) errors.heightCm = t('signup.errors.heightRequired');
+        if (!values.weightKg) errors.weightKg = t('signup.errors.weightRequired');
+        if (!values.activityLevel) errors.activityLevel = t('signup.errors.activityRequired');
       } else {
-        if (!values.studentCardNumber?.trim()) errors.studentCardNumber = "Student card number is required";
+        if (!values.studentCardNumber?.trim()) errors.studentCardNumber = t('signup.errors.studentCardRequired');
       }
     } else {
-      if (!values.specialty?.trim()) errors.specialty = "Specialty is required";
-      if (!diplomaFile) errors.diploma = "Diploma file is required";
+      if (!values.specialty?.trim()) errors.specialty = t('signup.errors.specialtyRequired');
+      if (!diplomaFile) errors.diploma = t('signup.errors.diplomaRequired');
     }
     return errors;
   };
@@ -177,8 +179,8 @@ function SignUpPage() {
 
         confetti({ particleCount: 200, spread: 100, origin: { y: 0.6 }, colors: ['#34C759', '#000000', '#5856D6'] });
         setTimeoutSafe(() => confetti({ particleCount: 100, spread: 70, origin: { y: 0.6, x: 0.3 }, colors: ['#34C759', '#FF9500'] }), 150);
-        toast.success('Account created successfully!', {
-          description: `Welcome ${response.user?.fullName || values.fullName}!`,
+        toast.success(t('signup.accountCreated'), {
+          description: t('signup.welcomeUser', { name: response.user?.fullName || values.fullName }),
           duration: 5000,
         });
         setTimeoutSafe(() => navigate('/login'), 2000);
@@ -197,15 +199,15 @@ function SignUpPage() {
 
         await registerDieteticien(formData);
 
-        toast.success('Request submitted!', {
-          description: 'You will receive an email once your account is approved.',
+        toast.success(t('signup.requestSubmitted'), {
+          description: t('signup.approvalEmail'),
           duration: 6000,
         });
         setTimeoutSafe(() => navigate('/login'), 3000);
       }
     } catch (err) {
-      toast.error('Registration failed', {
-        description: err.response?.data?.message || 'Please try again.',
+      toast.error(t('signup.registrationFailed'), {
+        description: err.response?.data?.message || t('signup.tryAgain'),
         duration: 5000,
       });
     } finally {
@@ -222,27 +224,19 @@ function SignUpPage() {
       <div className="split-image-side signup-visual">
         <div className="overlay-content">
           <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5 }} className="brand-badge">
-            <Heart size={16} style={{ display: 'inline', marginRight: '8px' }} /> AI Nutrition Pro
+            <Heart size={16} style={{ display: 'inline', marginRight: '8px' }} /> {t('signup.aiNutritionPro')}
           </motion.div>
           <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2, duration: 0.5 }}>
-            {mode === "client" ? "Start Your Transformation" : "Join as a Dieteticien"}
+            {mode === "client" ? t('signup.startTransformation') : t('signup.joinAsDieteticien')}
           </motion.h1>
           <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3, duration: 0.5 }} style={{ marginTop: '16px', fontSize: '16px', opacity: 0.9 }}>
-            {mode === "client" ? "Join thousands achieving their health goals" : "Share your expertise and grow your practice"}
+            {mode === "client" ? t('signup.joinThousands') : t('signup.shareExpertise')}
           </motion.p>
           <motion.ul initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.4, duration: 0.5 }} className="signup-benefits">
             {mode === "client" ? (
-              <>
-                <li>AI Calorie Estimation</li>
-                <li>Professional Consultations</li>
-                <li>Smart Meal Planning</li>
-              </>
+              t('signup.benefitsClient', { returnObjects: true }).map((item, i) => <li key={i}>{item}</li>)
             ) : (
-              <>
-                <li>Create Meal Plans</li>
-                <li>Manage Client Consultations</li>
-                <li>Write Nutrition Blogs</li>
-              </>
+              t('signup.benefitsDieteticien', { returnObjects: true }).map((item, i) => <li key={i}>{item}</li>)
             )}
           </motion.ul>
         </div>
@@ -251,11 +245,10 @@ function SignUpPage() {
       <div className="split-form-side scrollable-form">
         <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5 }} className="form-wrapper-stripe-wide">
           <div className="header-stripe">
-            <h2>{mode === "client" ? "Create Account" : "Dieteticien Registration"}</h2>
-            <p>{mode === "client" ? "Fill in your details to get started" : "Submit your information for review"}</p>
+            <h2>{mode === "client" ? t('signup.createAccount') : t('signup.dieteticienRegistration')}</h2>
+            <p>{mode === "client" ? t('signup.fillDetails') : t('signup.submitForReview')}</p>
           </div>
 
-          {/* Mode Toggle */}
           <div className="mode-toggle" style={{ display: 'flex', gap: '12px', marginBottom: '24px' }}>
             <button
               type="button"
@@ -268,7 +261,7 @@ function SignUpPage() {
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'
               }}
             >
-              <User size={18} /> Client / Student
+              <User size={18} /> {t('signup.clientStudent')}
             </button>
             <button
               type="button"
@@ -281,73 +274,70 @@ function SignUpPage() {
                 display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px'
               }}
             >
-              <Stethoscope size={18} /> Dieteticien
+              <Stethoscope size={18} /> {t('signup.dieteticien')}
             </button>
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="form-stripe">
-            {/* Basic Info - same for both modes */}
-            <div className="form-section-title required">Account Information *</div>
+            <div className="form-section-title required">{t('signup.accountInformation')} *</div>
 
             <div className="input-group-stripe">
-              <label>Full Name *</label>
+              <label>{t('signup.fullName')} *</label>
               <div className={clsx("input-container-stripe", errors.fullName && "error")}>
                 <User className="input-icon-stripe" size={18} />
-                <input {...register("fullName")} placeholder="John Doe" disabled={loading} autoComplete="name" />
+                <input {...register("fullName")} placeholder={t('signup.fullNamePlaceholder')} disabled={loading} autoComplete="name" />
               </div>
             </div>
 
             <div className="input-group-stripe">
-              <label>Email Address *</label>
+              <label>{t('signup.emailAddress')} *</label>
               <div className={clsx("input-container-stripe", errors.email && "error")}>
                 <Mail className="input-icon-stripe" size={18} />
-                <input {...register("email")} type="email" placeholder="you@example.com" disabled={loading} autoComplete="email" />
+                <input {...register("email")} type="email" placeholder={t('signup.emailPlaceholder')} disabled={loading} autoComplete="email" />
               </div>
             </div>
 
             <div className="form-row-stripe">
               <div className="input-group-stripe">
-                <label>Password *</label>
+                <label>{t('signup.password')} *</label>
                 <div className={clsx("input-container-stripe", errors.password && "error")}>
                   <Lock className="input-icon-stripe" size={18} />
-                  <input type="password" {...register("password")} placeholder="••••••••" disabled={loading} autoComplete="new-password" />
+                  <input type="password" {...register("password")} placeholder={t('signup.passwordPlaceholder') || '••••••••'} disabled={loading} autoComplete="new-password" />
                 </div>
               </div>
               <div className="input-group-stripe">
-                <label>Confirm Password *</label>
+                <label>{t('signup.confirmPassword')} *</label>
                 <div className={clsx("input-container-stripe", errors.confirmPassword && "error")}>
                   <Lock className="input-icon-stripe" size={18} />
-                  <input type="password" {...register("confirmPassword")} placeholder="••••••••" disabled={loading} autoComplete="new-password" />
+                  <input type="password" {...register("confirmPassword")} placeholder={t('signup.passwordPlaceholder') || '••••••••'} disabled={loading} autoComplete="new-password" />
                 </div>
               </div>
             </div>
 
-            <div className="form-section-title required">Personal Info *</div>
+            <div className="form-section-title required">{t('signup.personalInfo')} *</div>
 
             <div className="form-row-stripe">
               <div className="input-group-stripe">
-                <label>Age *</label>
+                <label>{t('signup.age')} *</label>
                 <div className={clsx("input-container-stripe", errors.age && "error")}>
-                  <input type="number" {...register("age")} placeholder="25" disabled={loading} />
+                  <input type="number" {...register("age")} placeholder={t('signup.agePlaceholder')} disabled={loading} />
                 </div>
               </div>
               <div className="input-group-stripe">
-                <label>Gender *</label>
+                <label>{t('signup.gender')} *</label>
                 <div className={clsx("input-container-stripe", errors.gender && "error")}>
                   <select {...register("gender")} disabled={loading}>
-                    <option value="">Select gender</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
+                    <option value="">{t('signup.selectGender')}</option>
+                    <option value="Male">{t('signup.male')}</option>
+                    <option value="Female">{t('signup.female')}</option>
                   </select>
                 </div>
               </div>
             </div>
 
-            {/* Client/Student Mode Fields */}
             {mode === "client" && (
               <>
-                {/* User Type Toggle */}
-                <div className="form-section-title">Account Type *</div>
+                <div className="form-section-title">{t('signup.accountType')} *</div>
                 <div style={{ display: 'flex', gap: '12px', marginBottom: '20px' }}>
                   <label
                     onClick={() => setUserType("client")}
@@ -359,8 +349,8 @@ function SignUpPage() {
                     }}
                   >
                     <input type="radio" name="userType" checked={userType === "client"} readOnly style={{ display: 'none' }} />
-                    <div style={{ fontWeight: 700, color: '#2D5A27' }}>Client</div>
-                    <div style={{ fontSize: '12px', color: '#6B7280', marginTop: '4px' }}>Full health tracking & meal plans</div>
+                    <div style={{ fontWeight: 700, color: '#2D5A27' }}>{t('signup.client')}</div>
+                    <div style={{ fontSize: '12px', color: '#6B7280', marginTop: '4px' }}>{t('signup.clientDesc')}</div>
                   </label>
                   <label
                     onClick={() => setUserType("student")}
@@ -372,34 +362,33 @@ function SignUpPage() {
                     }}
                   >
                     <input type="radio" name="userType" checked={userType === "student"} readOnly style={{ display: 'none' }} />
-                    <div style={{ fontWeight: 700, color: '#2D5A27' }}>Student</div>
-                    <div style={{ fontSize: '12px', color: '#6B7280', marginTop: '4px' }}>Student card required</div>
+                    <div style={{ fontWeight: 700, color: '#2D5A27' }}>{t('signup.student')}</div>
+                    <div style={{ fontSize: '12px', color: '#6B7280', marginTop: '4px' }}>{t('signup.studentDesc')}</div>
                   </label>
                 </div>
 
-                {/* Client Fields */}
                 {userType === "client" && (
                   <>
-                    <div className="form-section-title required">Physical Profile *</div>
+                    <div className="form-section-title required">{t('signup.physicalProfile')} *</div>
                     <div className="form-row-stripe">
                       <div className="input-group-stripe">
-                        <label>Height (cm) *</label>
+                        <label>{t('signup.heightCm')} *</label>
                         <div className={clsx("input-container-stripe", errors.heightCm && "error")}>
                           <Ruler className="input-icon-stripe" size={18} />
-                          <input type="number" {...register("heightCm")} placeholder="175" disabled={loading} />
+                          <input type="number" {...register("heightCm")} placeholder={t('signup.heightPlaceholder')} disabled={loading} />
                         </div>
                       </div>
                       <div className="input-group-stripe">
-                        <label>Weight (kg) *</label>
+                        <label>{t('signup.weightKg')} *</label>
                         <div className={clsx("input-container-stripe", errors.weightKg && "error")}>
                           <Scale className="input-icon-stripe" size={18} />
-                          <input type="number" {...register("weightKg")} placeholder="70" disabled={loading} step="0.1" />
+                          <input type="number" {...register("weightKg")} placeholder={t('signup.weightPlaceholder')} disabled={loading} step="0.1" />
                         </div>
                       </div>
                     </div>
 
                     <div className="input-group-stripe">
-                      <label>Activity Level *</label>
+                      <label>{t('signup.activityLevel')} *</label>
                       <div className={clsx("activity-selector-container", errors.activityLevel && "error")}>
                         <Activity className="input-icon-stripe" size={18} />
                         <select
@@ -408,7 +397,7 @@ function SignUpPage() {
                           onChange={(e) => { setValue("activityLevel", e.target.value); trigger("activityLevel"); }}
                           disabled={loading}
                         >
-                          <option value="">Select your activity level</option>
+                          <option value="">{t('signup.selectActivity')}</option>
                           {activityOptions.map(opt => (
                             <option key={opt.value} value={opt.value}>{opt.label} (x{opt.multiplier})</option>
                           ))}
@@ -420,77 +409,75 @@ function SignUpPage() {
                       <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }}
                         style={{ background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)', padding: '16px', borderRadius: '12px', margin: '16px 0', color: 'white' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
-                          <Brain size={20} /><strong>Your Health Metrics</strong>
+                          <Brain size={20} /><strong>{t('signup.yourHealthMetrics')}</strong>
                         </div>
                         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px', fontSize: '14px' }}>
-                          <div><div style={{ opacity: 0.8, fontSize: '12px' }}>BMR</div><div style={{ fontWeight: 'bold' }}>{previewMetrics.bmr} cal/day</div></div>
-                          <div><div style={{ opacity: 0.8, fontSize: '12px' }}>TDEE</div><div style={{ fontWeight: 'bold' }}>{previewMetrics.tdee} cal/day</div></div>
-                          <div><div style={{ opacity: 0.8, fontSize: '12px' }}>BMI</div><div style={{ fontWeight: 'bold' }}>{previewMetrics.bmi} ({previewMetrics.bmiCategory})</div></div>
-                          <div><div style={{ opacity: 0.8, fontSize: '12px' }}>Ideal Weight</div><div style={{ fontWeight: 'bold' }}>{previewMetrics.idealWeightKg} kg</div></div>
-                          <div><div style={{ opacity: 0.8, fontSize: '12px' }}>Body Fat</div><div style={{ fontWeight: 'bold' }}>{previewMetrics.bodyFatPercentage}%</div></div>
+                          <div><div style={{ opacity: 0.8, fontSize: '12px' }}>{t('signup.bmr')}</div><div style={{ fontWeight: 'bold' }}>{previewMetrics.bmr} {t('signup.calPerDay')}</div></div>
+                          <div><div style={{ opacity: 0.8, fontSize: '12px' }}>{t('signup.tdee')}</div><div style={{ fontWeight: 'bold' }}>{previewMetrics.tdee} {t('signup.calPerDay')}</div></div>
+                          <div><div style={{ opacity: 0.8, fontSize: '12px' }}>{t('signup.bmi')}</div><div style={{ fontWeight: 'bold' }}>{previewMetrics.bmi} ({t('signup.bmiCategories.' + previewMetrics.bmiCategory.toLowerCase())})</div></div>
+                          <div><div style={{ opacity: 0.8, fontSize: '12px' }}>{t('signup.idealWeight')}</div><div style={{ fontWeight: 'bold' }}>{previewMetrics.idealWeightKg} kg</div></div>
+                          <div><div style={{ opacity: 0.8, fontSize: '12px' }}>{t('signup.bodyFat')}</div><div style={{ fontWeight: 'bold' }}>{previewMetrics.bodyFatPercentage}%</div></div>
                         </div>
                       </motion.div>
                     )}
 
-                    <div className="form-section-title">Health Details (Optional)</div>
+                    <div className="form-section-title">{t('signup.healthDetails')}</div>
 
                     <div className="input-group-stripe">
-                      <label>Medical Conditions</label>
+                      <label>{t('signup.medicalConditions')}</label>
                       <div className={clsx("input-container-stripe", errors.medicalConditions && "error")}>
                         <AlertCircle className="input-icon-stripe" size={18} />
-                        <input {...register("medicalConditions")} placeholder="e.g., Diabetes, PCOS (comma separated)" disabled={loading} />
+                        <input {...register("medicalConditions")} placeholder={t('signup.medicalPlaceholder')} disabled={loading} />
                       </div>
-                      <small className="helper-text">Optional - Separate with commas</small>
+                      <small className="helper-text">{t('signup.commaSeparated')}</small>
                     </div>
 
                     <div className="input-group-stripe">
-                      <label>Allergies</label>
+                      <label>{t('signup.allergies')}</label>
                       <div className={clsx("input-container-stripe", errors.allergies && "error")}>
                         <AlertCircle className="input-icon-stripe" size={18} />
-                        <input {...register("allergies")} placeholder="e.g., Peanuts, Lactose (comma separated)" disabled={loading} />
+                        <input {...register("allergies")} placeholder={t('signup.allergiesPlaceholder')} disabled={loading} />
                       </div>
-                      <small className="helper-text">Optional - Separate with commas</small>
+                      <small className="helper-text">{t('signup.commaSeparated')}</small>
                     </div>
 
                     <div className="input-group-stripe">
-                      <label>Your Goals</label>
+                      <label>{t('signup.yourGoals')}</label>
                       <div className={clsx("input-container-stripe", errors.goals && "error")}>
                         <Target className="input-icon-stripe" size={18} />
-                        <textarea {...register("goals")} placeholder="e.g., Weight loss, muscle gain..." rows="3" disabled={loading} />
+                        <textarea {...register("goals")} placeholder={t('signup.goalsPlaceholder')} rows="3" disabled={loading} />
                       </div>
-                      <small className="helper-text">Optional</small>
+                      <small className="helper-text">{t('signup.optional')}</small>
                     </div>
                   </>
                 )}
 
-                {/* Student Fields */}
                 {userType === "student" && (
                   <div className="input-group-stripe">
-                    <label>Student Card Number *</label>
+                    <label>{t('signup.studentCardNumber')} *</label>
                     <div className={clsx("input-container-stripe", errors.studentCardNumber && "error")}>
                       <GraduationCap className="input-icon-stripe" size={18} />
-                      <input {...register("studentCardNumber")} placeholder="e.g., STU-2024-0001" disabled={loading} />
+                      <input {...register("studentCardNumber")} placeholder={t('signup.studentCardPlaceholder')} disabled={loading} />
                     </div>
                   </div>
                 )}
               </>
             )}
 
-            {/* Dieteticien Mode Fields */}
             {mode === "dieteticien" && (
               <>
-                <div className="form-section-title required">Professional Info *</div>
+                <div className="form-section-title required">{t('signup.professionalInfo')} *</div>
 
                 <div className="input-group-stripe">
-                  <label>Specialty *</label>
+                  <label>{t('signup.specialty')} *</label>
                   <div className={clsx("input-container-stripe", errors.specialty && "error")}>
                     <Stethoscope className="input-icon-stripe" size={18} />
-                    <input {...register("specialty")} placeholder="e.g., Sports Nutrition, Clinical Dietetics" disabled={loading} />
+                    <input {...register("specialty")} placeholder={t('signup.specialtyPlaceholder')} disabled={loading} />
                   </div>
                 </div>
 
                 <div className="input-group-stripe">
-                  <label>Upload Diploma *</label>
+                  <label>{t('signup.uploadDiploma')} *</label>
                   <div
                     className={clsx("diploma-upload-zone", errors.diploma && "error", diplomaFile && "has-file")}
                     onDragOver={(e) => { e.preventDefault(); e.currentTarget.classList.add('dragover'); }}
@@ -531,46 +518,45 @@ function SignUpPage() {
                         <div className="upload-icon-circle">
                           <Upload size={28} />
                         </div>
-                        <p className="upload-text"><strong>Click to upload</strong> or drag and drop</p>
-                        <p className="upload-hint">PDF or Image (max 10MB)</p>
+                        <p className="upload-text"><strong>{t('signup.clickToUpload')}</strong> {t('signup.dragAndDrop')}</p>
+                        <p className="upload-hint">{t('signup.pdfOrImage')}</p>
                       </div>
                     )}
                   </div>
-                  {errors.diploma && <span className="error-message-stripe">Diploma file is required</span>}
+                  {errors.diploma && <span className="error-message-stripe">{t('signup.diplomaRequired')}</span>}
                 </div>
 
-                <div className="form-section-title">Payment Information (Optional)</div>
+                <div className="form-section-title">{t('signup.paymentInfo')}</div>
                 <div style={{ fontSize: '13px', color: '#6B7280', marginBottom: '12px' }}>
-                  Add your payment details to receive payouts from clients. You can also add these later from your profile.
+                  {t('signup.paymentInfoDesc')}
                 </div>
 
                 <div className="form-row-stripe">
                   <div className="input-group-stripe">
-                    <label>CCP Number</label>
+                    <label>{t('signup.ccpNumber')}</label>
                     <div className={clsx("input-container-stripe")}>
-                      <input {...register("ccpNumber")} placeholder="e.g., 12345678" disabled={loading} />
+                      <input {...register("ccpNumber")} placeholder={t('signup.ccpNumberPlaceholder')} disabled={loading} />
                     </div>
                   </div>
                   <div className="input-group-stripe">
-                    <label>CCP Key (2 digits)</label>
+                    <label>{t('signup.ccpKey')}</label>
                     <div className={clsx("input-container-stripe")}>
-                      <input {...register("ccpKey")} placeholder="12" maxLength={2} disabled={loading} />
+                      <input {...register("ccpKey")} placeholder={t('signup.ccpKeyPlaceholder')} maxLength={2} disabled={loading} />
                     </div>
                   </div>
                 </div>
 
                 <div className="input-group-stripe">
-                  <label>BaridiMob Number</label>
+                  <label>{t('signup.baridiMob')}</label>
                   <div className={clsx("input-container-stripe")}>
-                    <input type="number" {...register("baridiMob")} placeholder="e.g., 12345678901234567890" disabled={loading} />
+                    <input type="number" {...register("baridiMob")} placeholder={t('signup.baridiMobPlaceholder')} disabled={loading} />
                   </div>
                 </div>
 
                 <div style={{ background: '#FFF3CD', border: '1px solid #FFEAA7', borderRadius: '12px', padding: '16px', margin: '16px 0', display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
                   <FileText size={20} style={{ color: '#856404', flexShrink: 0, marginTop: '2px' }} />
                   <div style={{ fontSize: '13px', color: '#856404' }}>
-                    <strong>Note:</strong> After submitting, your request will be reviewed by an administrator.
-                    You will receive an email notification once your account is approved.
+                    <strong>{t('signup.note')}:</strong> {t('signup.submissionNote')}
                   </div>
                 </div>
               </>
@@ -578,14 +564,14 @@ function SignUpPage() {
 
             <button type="submit" className="btn-stripe-primary" disabled={loading} style={{ marginTop: '16px' }}>
               {loading ? (
-                <><span className="spinner"></span>Processing...</>
+                <><span className="spinner"></span>{t('signup.processing')}</>
               ) : (
-                <>{mode === "client" ? "Create Account" : "Submit Request"} <ArrowRight size={18} /></>
+                <>{mode === "client" ? t('signup.createAccountBtn') : t('signup.submitRequest')} <ArrowRight size={18} /></>
               )}
             </button>
 
             <div className="footer-stripe">
-              <p>Already have an account? <NavLink to="/login">Sign In</NavLink></p>
+              <p>{t('signup.alreadyHaveAccount')} <NavLink to="/login">{t('signup.signIn')}</NavLink></p>
             </div>
           </form>
         </motion.div>

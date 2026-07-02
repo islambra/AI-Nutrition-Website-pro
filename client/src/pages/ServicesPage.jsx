@@ -1,4 +1,5 @@
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 import './ServicesPage.css';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -59,6 +60,7 @@ const ServicesMarquee = () => (
 );
 
 function ServicesPage() {
+  const { t } = useTranslation();
   const { user, isAuthenticated } = useAuth();
   const navigate = useNavigate();
   const userIsStudent = user && isStudent(user);
@@ -118,7 +120,7 @@ function ServicesPage() {
 
   const handlePurchaseFormation = (formation) => {
     if (!isAuthenticated) {
-      toast.error("Please login to purchase");
+      toast.error(t('checkout.pleaseLogin'));
       navigate('/login');
       return;
     }
@@ -167,7 +169,7 @@ function ServicesPage() {
 
   const handleSelectPlan = (plan) => {
     if (!isAuthenticated) {
-      toast.error("Please login to purchase a plan");
+      toast.error(t('checkout.pleaseLogin'));
       navigate('/login');
       return;
     }
@@ -218,9 +220,9 @@ function ServicesPage() {
         padding: '40px 20px',
         textAlign: 'center',
       }}>
-        <h2 style={{ fontSize: 24, marginBottom: 12 }}>Access Restricted</h2>
+        <h2 style={{ fontSize: 24, marginBottom: 12 }}>{t('common.authRequired')}</h2>
         <p style={{ opacity: 0.6, maxWidth: 400 }}>
-          This page is only available for students and clients.
+          {t('common.authRequiredDesc')}
         </p>
       </div>
     );
@@ -422,7 +424,7 @@ function ServicesPage() {
               {loading ? (
                 <div className="ServicesPage-Loading-State">
                   <Activity className="AP-Spin" size={48} />
-                  <p>Calibrating Systems...</p>
+                  <p>{t('common.loading')}</p>
                 </div>
               ) : dynamicPlans.length > 0 ? (
                 <>
@@ -469,7 +471,7 @@ function ServicesPage() {
                               style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', font: 'inherit' }}
                             >  
                               <ShoppingCart size={18} style={{ marginRight: '8px' }} />
-                              SELECT PLAN
+                              {t('plans.buyNow')}
                               <ChevronRight size={18} style={{ marginLeft: '8px' }} />
                             </button>
                           </div>
@@ -498,7 +500,7 @@ function ServicesPage() {
                 </>
               ) : (
                 <div className="ServicesPage-Empty-Plans">
-                  <p>No plans available at the moment. Explore our other services.</p>
+                  <p>{t('services.noPlans')}</p>
                 </div>
               )}
             </div>
@@ -506,7 +508,7 @@ function ServicesPage() {
             <div className="ServicesPage-AllPlans-Container">
               <ScrollReveal delay={0.4}>
                 <NavLink to="/allPlans" className="ServicesPage-AllPlans-Btn">
-                  EXPLORE ALL DYNAMIC SYSTEMS <ArrowRight size={20} />
+                  {t('plans.buyNow')} <ArrowRight size={20} />
                 </NavLink>
               </ScrollReveal>
             </div>
@@ -686,11 +688,11 @@ function ServicesPage() {
           {formationsLoading ? (
             <div className="ServicesPage-Loading-State">
               <Loader2 className="AP-Spin" size={48} />
-              <p>Loading formations...</p>
+              <p>{t('common.loading')}</p>
             </div>
           ) : formations.length === 0 ? (
             <div className="ServicesPage-Empty-Plans">
-              <p>No formations available yet.</p>
+              <p>{t('services.noPlans')}</p>
             </div>
           ) : (
             formations.map((f) => (
@@ -740,7 +742,7 @@ function ServicesPage() {
                     onClick={() => setSelectedFormation(f)}
                     className="sp-formation-btn"
                   >
-                    <Eye size={15} /> View Details
+                    <Eye size={15} /> {t('services.viewDetails')}
                   </motion.button>
                 </div>
               </motion.div>
@@ -832,7 +834,7 @@ function ServicesPage() {
                         className="fc-btn fc-btn-primary"
                         style={{ flex: 1, justifyContent: "center", padding: "14px 28px", fontSize: 14 }}
                       >
-                        <ShoppingCart size={16} /> ENROLL NOW
+                        <ShoppingCart size={16} /> {t('services.subscribe')}
                       </motion.button>
                     </div>
                   </div>

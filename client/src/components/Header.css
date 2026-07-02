@@ -506,3 +506,22 @@
         height: 48px;
     }
 }
+
+.lang-switcher-btn {
+    background: none;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 6px 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    font-family: inherit;
+    transition: all 0.2s ease;
+}
+
+.lang-switcher-btn:hover {
+    border-color: #2D5A27;
+    background: #f0f7ef;
+}

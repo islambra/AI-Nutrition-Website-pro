@@ -9,9 +9,11 @@ import {
   FiInfo
 } from 'react-icons/fi';
 import { useSafeTimeout } from '../../hooks/useSafeTimeout';
+import { useTranslation } from 'react-i18next';
 import './MyPlans.css';
 
 const PlanDashboard = () => {
+  const { t } = useTranslation();
   const { setTimeoutSafe } = useSafeTimeout();
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -47,10 +49,10 @@ const PlanDashboard = () => {
       if (response.success) {
         setPlans(response.data);
       } else {
-        notify(response.message || 'Failed to load plans', 'error');
+        notify(response.message || t('dashboard.dieteticien.myPlans.loadFailed'), 'error');
       }
     } catch (err) {
-      notify(err.message || 'An error occurred', 'error');
+      notify(err.message || t('dashboard.dieteticien.myPlans.errorOccurred'), 'error');
     } finally {
       setLoading(false);
     }
@@ -215,14 +217,14 @@ const PlanDashboard = () => {
   };
 
   if (!currentUser) {
-    return <div className="dash-error">Please login to view your plans</div>;
+    return <div className="dash-error">{t('common.authRequired')}</div>;
   }
 
   if (loading && plans.length === 0) {
     return (
       <div className="dash-loading">
         <div className="dash-spinner" />
-        <p>Loading your plans...</p>
+        <p>{t('common.loading')}</p>
       </div>
     );
   }
@@ -249,15 +251,15 @@ const PlanDashboard = () => {
         <div className="dash-modal-overlay" onClick={() => setDeleteConfirm(null)}>
           <div className="dash-modal" onClick={e => e.stopPropagation()}>
             <div className="dash-modal-head">
-              <FiAlertCircle /> Delete Plan
+              <FiAlertCircle /> {t('common.delete')}
             </div>
             <div className="dash-modal-body">
-              <p>Are you sure you want to delete <strong>{selectedPlan?.planName}</strong>?</p>
-              <p className="dash-modal-warn">This action cannot be undone.</p>
+              <p>{t('common.delete')} <strong>{selectedPlan?.planName}</strong>?</p>
+              <p className="dash-modal-warn">{t('common.confirm')}</p>
             </div>
             <div className="dash-modal-foot">
-              <button className="dash-modal-cancel" onClick={() => setDeleteConfirm(null)}>Cancel</button>
-              <button className="dash-modal-confirm" onClick={handleDelete}>Delete</button>
+              <button className="dash-modal-cancel" onClick={() => setDeleteConfirm(null)}>{t('common.cancel')}</button>
+              <button className="dash-modal-confirm" onClick={handleDelete}>{t('common.delete')}</button>
             </div>
           </div>
         </div>
@@ -280,7 +282,7 @@ const PlanDashboard = () => {
         </div>
         <div className="dash-topbar-right">
           <span className="dash-plan-count">{plans.length} {plans.length === 1 ? 'Plan' : 'Plans'}</span>
-          <button className="dash-refresh-btn" onClick={fetchPlans} title="Refresh">
+          <button className="dash-refresh-btn" onClick={fetchPlans} title={t('common.refresh')}>
             <FiRefreshCw size={16} />
           </button>
         </div>
@@ -292,15 +294,15 @@ const PlanDashboard = () => {
         {/* Left: Plan List */}
         <div className="dash-plans-panel">
           <div className="dash-plans-header">
-            <h2><FiFolder size={15} /> My Plans</h2>
+            <h2><FiFolder size={15} /> {t('dashboard.dieteticien.createPlan.title')}</h2>
           </div>
           <div className="dash-plans-scroll">
             {plans.length === 0 ? (
               <div className="dash-empty">
                 <div className="dash-empty-icon"><FiFolder size={44} /></div>
-                <p>You haven't created any plans yet.</p>
+                <p>{t('common.noResults')}</p>
                 <button className="dash-empty-btn" onClick={() => window.location.href = '/dieteticien/create-plan'}>
-                  <FiPlus size={16} /> Create Your First Plan
+                  <FiPlus size={16} /> {t('dashboard.dieteticien.createPlan.createPlan')}
                 </button>
               </div>
             ) : (
@@ -335,8 +337,8 @@ const PlanDashboard = () => {
           {!selectedPlan ? (
             <div className="dash-no-selection">
               <FiFolder size={56} />
-              <h3>No Plan Selected</h3>
-              <p>Select a plan from the list to view its details</p>
+              <h3>{t('common.noResults')}</h3>
+              <p>{t('common.noResults')}</p>
             </div>
           ) : isEditing ? (
             /* ── Edit Mode ── */
@@ -346,44 +348,44 @@ const PlanDashboard = () => {
                   <button type="button" className="dash-back-btn" onClick={handleCancelEdit}>
                     <FiArrowLeft size={16} />
                   </button>
-                  <h2>Edit: {selectedPlan.planName}</h2>
+                  <h2>{t('common.edit')}: {selectedPlan.planName}</h2>
                 </div>
                 <div className="dash-edit-actions">
                   <button type="button" className="dash-btn dash-btn-cancel" onClick={handleCancelEdit}>
-                    <FiX size={14} /> Cancel
+                    <FiX size={14} /> {t('common.cancel')}
                   </button>
                   <button type="submit" className="dash-btn dash-btn-save" disabled={updateLoading}>
-                    <FiSave size={14} /> {updateLoading ? 'Saving...' : 'Save Changes'}
+                    <FiSave size={14} /> {updateLoading ? 'Saving...' : t('common.save')}
                   </button>
                 </div>
               </div>
 
               {/* Basic Information */}
               <div className="dash-edit-section">
-                <h4 className="dash-edit-section-title"><FiInfo size={15} /> Basic Information</h4>
+                <h4 className="dash-edit-section-title"><FiInfo size={15} /> {t('dashboard.dieteticien.createPlan.basicInfo')}</h4>
                 <div className="dash-field">
-                  <label>Plan Name *</label>
+                  <label>{t('dashboard.dieteticien.createPlan.planName')} *</label>
                   <input type="text" name="planName" value={formData.planName} onChange={handleInputChange} required />
                 </div>
                 <div className="dash-field-row">
                   <div className="dash-field">
-                    <label>Category *</label>
+                    <label>{t('dashboard.dieteticien.createPlan.planCategory')} *</label>
                     <select name="planCategory" value={formData.planCategory} onChange={handleInputChange} required>
                       <option value="">Select</option>
                       {getPlanCategories().map(cat => <option key={cat} value={cat}>{cat}</option>)}
                     </select>
                   </div>
                   <div className="dash-field">
-                    <label>Target User *</label>
+                    <label>{t('dashboard.dieteticien.createPlan.targetProfile')} *</label>
                     <input type="text" name="targetUserProfile" value={formData.targetUserProfile} onChange={handleInputChange} required />
                   </div>
                 </div>
                 <div className="dash-field">
-                  <label>Description *</label>
+                  <label>{t('dashboard.dieteticien.createPlan.description')} *</label>
                   <textarea name="description" value={formData.description} onChange={handleInputChange} rows="3" required />
                 </div>
                 <div className="dash-field">
-                  <label>Plan Image</label>
+                  <label>{t('dashboard.dieteticien.createPlan.planImage')}</label>
                   <div className="dash-image-upload">
                     {imagePreview ? (
                       <div className="dash-image-preview">
@@ -394,7 +396,7 @@ const PlanDashboard = () => {
                       </div>
                     ) : (
                       <label className="dash-image-label">
-                        <FiImage size={18} /> Click to upload image
+                        <FiImage size={18} /> {t('dashboard.dieteticien.createPlan.imageUpload')}
                         <input type="file" accept="image/*" onChange={handleImageChange} style={{ display: 'none' }} />
                       </label>
                     )}
@@ -402,21 +404,21 @@ const PlanDashboard = () => {
                 </div>
                 <div className="dash-field-row">
                   <div className="dash-field">
-                    <label>Duration (weeks) *</label>
+                    <label>{t('dashboard.dieteticien.createPlan.duration')} *</label>
                     <input type="number" name="duration" value={formData.duration} onChange={handleInputChange} required min="1" />
                   </div>
                   <div className="dash-field">
-                    <label>Price ($) *</label>
+                    <label>{t('dashboard.dieteticien.createPlan.price')} *</label>
                     <input type="number" name="price" value={formData.price} onChange={handleInputChange} required min="0" step="0.01" />
                   </div>
                 </div>
                 <div className="dash-field-row">
                   <div className="dash-field">
-                    <label>Consultations</label>
+                    <label>{t('dashboard.dieteticien.createPlan.consultationsIncluded')}</label>
                     <input type="number" name="consultationIncluded" value={formData.consultationIncluded} onChange={handleInputChange} min="0" />
                   </div>
                   <div className="dash-field">
-                    <label>Follow-up Frequency</label>
+                    <label>{t('dashboard.dieteticien.createPlan.followUpFreq')}</label>
                     <select name="followUpFrequency" value={formData.followUpFrequency} onChange={handleInputChange}>
                       {getFollowUpOptions().map(opt => <option key={opt} value={opt}>{opt}</option>)}
                     </select>
@@ -426,51 +428,51 @@ const PlanDashboard = () => {
 
               {/* Nutrition */}
               <div className="dash-edit-section">
-                <h4 className="dash-edit-section-title"><FiTarget size={15} /> Nutrition Parameters</h4>
+                <h4 className="dash-edit-section-title"><FiTarget size={15} /> {t('dashboard.dieteticien.createPlan.nutritionParams')}</h4>
                 <div className="dash-field-row">
                   <div className="dash-field">
-                    <label>Min Calories</label>
+                    <label>{t('dashboard.dieteticien.createPlan.caloriesMin')}</label>
                     <input type="number" value={formData.dailyCalorieRange.min} onChange={e => handleCalorieChange('min', e.target.value)} />
                   </div>
                   <div className="dash-field">
-                    <label>Max Calories</label>
+                    <label>{t('dashboard.dieteticien.createPlan.caloriesMax')}</label>
                     <input type="number" value={formData.dailyCalorieRange.max} onChange={e => handleCalorieChange('max', e.target.value)} />
                   </div>
                 </div>
                 <div className="dash-field-triple">
                   <div className="dash-field">
-                    <label>Carbs %</label>
+                    <label>{t('dashboard.dieteticien.createPlan.carbsPercent')}</label>
                     <input type="number" value={formData.macronutrientRatio.carbs} onChange={e => handleMacroChange('carbs', e.target.value)} min="0" max="100" />
                   </div>
                   <div className="dash-field">
-                    <label>Protein %</label>
+                    <label>{t('dashboard.dieteticien.createPlan.proteinPercent')}</label>
                     <input type="number" value={formData.macronutrientRatio.protein} onChange={e => handleMacroChange('protein', e.target.value)} min="0" max="100" />
                   </div>
                   <div className="dash-field">
-                    <label>Fat %</label>
+                    <label>{t('dashboard.dieteticien.createPlan.fatPercent')}</label>
                     <input type="number" value={formData.macronutrientRatio.fat} onChange={e => handleMacroChange('fat', e.target.value)} min="0" max="100" />
                   </div>
                 </div>
                 <div className={`dash-macro-total ${getMacroTotal() === 100 ? 'success' : 'error'}`}>
-                  Total: {getMacroTotal()}% {getMacroTotal() === 100 ? '✓ Perfect' : '⚠ Must be 100%'}
+                  {t('dashboard.dieteticien.createPlan.totalPercent', { n: getMacroTotal() })} {getMacroTotal() === 100 ? t('dashboard.dieteticien.createPlan.perfectBalance') : t('dashboard.dieteticien.createPlan.mustBe100')}
                 </div>
                 <div className="dash-field">
-                  <label>Meals per Day</label>
+                  <label>{t('dashboard.dieteticien.createPlan.mealsPerDay')}</label>
                   <input type="number" name="mealsPerDay" value={formData.mealsPerDay} onChange={handleInputChange} min="1" max="6" />
                 </div>
                 <div className="dash-field">
-                  <label>Recommended Foods (comma separated)</label>
+                  <label>{t('dashboard.dieteticien.createPlan.recommendedFoods')} (comma separated)</label>
                   <input type="text" value={formData.recommendedFoods.join(', ')} onChange={e => handleArrayChange('recommendedFoods', e.target.value)} placeholder="e.g. Chicken, Rice, Broccoli" />
                 </div>
                 <div className="dash-field">
-                  <label>Foods to Avoid (comma separated)</label>
+                  <label>{t('dashboard.dieteticien.createPlan.foodsToAvoid')} (comma separated)</label>
                   <input type="text" value={formData.foodsToAvoid.join(', ')} onChange={e => handleArrayChange('foodsToAvoid', e.target.value)} placeholder="e.g. Sugar, Processed foods" />
                 </div>
               </div>
 
               {/* Meal Structure */}
               <div className="dash-edit-section">
-                <h4 className="dash-edit-section-title"><FiCoffee size={15} /> Meal Structure</h4>
+                <h4 className="dash-edit-section-title"><FiCoffee size={15} /> {t('dashboard.dieteticien.createPlan.mealStructure')}</h4>
                 {Object.entries(formData.mealStructure).map(([meal, items]) => (
                   <div key={meal} className="dash-meal-edit">
                     <div className="dash-meal-edit-top">
@@ -483,16 +485,16 @@ const PlanDashboard = () => {
                   </div>
                 ))}
                 <button type="button" className="dash-add-btn" onClick={handleAddMeal}>
-                  <FiPlus size={14} /> Add Meal
+                  <FiPlus size={14} /> {t('dashboard.dieteticien.createPlan.add')}
                 </button>
               </div>
 
               {/* Grocery List */}
               <div className="dash-edit-section">
-                <h4 className="dash-edit-section-title"><FiShoppingBag size={15} /> Weekly Grocery List</h4>
+                <h4 className="dash-edit-section-title"><FiShoppingBag size={15} /> {t('dashboard.dieteticien.createPlan.weeklyGrocery')}</h4>
                 {['protein', 'vegetables', 'carbs', 'fats', 'fruits', 'other'].map(cat => (
                   <div key={cat} className="dash-grocery-field">
-                    <label>{cat.charAt(0).toUpperCase() + cat.slice(1)}</label>
+                    <label>{t('dashboard.dieteticien.createPlan.groceryCategories.' + cat)}</label>
                     <input type="text" value={formData.weeklyGroceryList[cat]?.join(', ') || ''} onChange={e => handleGroceryChange(cat, e.target.value)} placeholder={`${cat} items`} />
                   </div>
                 ))}
@@ -500,9 +502,9 @@ const PlanDashboard = () => {
 
               {/* Supplements & Exercise */}
               <div className="dash-edit-section">
-                <h4 className="dash-edit-section-title"><FiDroplet size={15} /> Supplements & Exercise</h4>
+                <h4 className="dash-edit-section-title"><FiDroplet size={15} /> {t('dashboard.dieteticien.createPlan.supplements')}</h4>
                 <div className="dash-field">
-                  <label>Supplements (comma separated)</label>
+                  <label>{t('dashboard.dieteticien.createPlan.supplements')} (comma separated)</label>
                   <input type="text" value={formData.supplementsSuggested.join(', ')} onChange={e => handleArrayChange('supplementsSuggested', e.target.value)} placeholder="e.g. Vitamin D, Omega-3" />
                 </div>
                 <div className="dash-field">
@@ -521,10 +523,10 @@ const PlanDashboard = () => {
                 </div>
                 <div className="dash-view-actions">
                   <button className="dash-btn dash-btn-edit" onClick={handleStartEdit}>
-                    <FiEdit size={14} /> Update Plan
+                    <FiEdit size={14} /> {t('common.edit')}
                   </button>
                   <button className="dash-btn dash-btn-delete" onClick={() => setDeleteConfirm(true)}>
-                    <FiTrash2 size={14} /> Delete
+                    <FiTrash2 size={14} /> {t('common.delete')}
                   </button>
                 </div>
               </div>
@@ -543,28 +545,28 @@ const PlanDashboard = () => {
                   <div className="dash-stat-icon"><FiCalendar size={18} /></div>
                   <div className="dash-stat-info">
                     <span className="dash-stat-value">{selectedPlan.duration}</span>
-                    <span className="dash-stat-label">Weeks</span>
+                    <span className="dash-stat-label">{t('dashboard.dieteticien.createPlan.duration')}</span>
                   </div>
                 </div>
                 <div className="dash-stat">
                   <div className="dash-stat-icon"><FiDollarSign size={18} /></div>
                   <div className="dash-stat-info">
                     <span className="dash-stat-value">${selectedPlan.price}</span>
-                    <span className="dash-stat-label">Price</span>
+                    <span className="dash-stat-label">{t('dashboard.dieteticien.createPlan.price')}</span>
                   </div>
                 </div>
                 <div className="dash-stat">
                   <div className="dash-stat-icon"><FiTarget size={18} /></div>
                   <div className="dash-stat-info">
                     <span className="dash-stat-value">{selectedPlan.dailyCalorieRange.min}-{selectedPlan.dailyCalorieRange.max}</span>
-                    <span className="dash-stat-label">Calories</span>
+                    <span className="dash-stat-label">{t('dashboard.dieteticien.createPlan.caloriesMin')}</span>
                   </div>
                 </div>
                 <div className="dash-stat">
                   <div className="dash-stat-icon"><FiActivity size={18} /></div>
                   <div className="dash-stat-info">
                     <span className="dash-stat-value">{selectedPlan.mealsPerDay}</span>
-                    <span className="dash-stat-label">Meals/Day</span>
+                    <span className="dash-stat-label">{t('dashboard.dieteticien.createPlan.mealsPerDay')}</span>
                   </div>
                 </div>
               </div>
@@ -572,42 +574,42 @@ const PlanDashboard = () => {
               {/* Info Grid */}
               <div className="dash-info-grid">
                 <div className="dash-info-card">
-                  <h5><FiFolder size={14} /> Category</h5>
+                  <h5><FiFolder size={14} /> {t('dashboard.dieteticien.createPlan.planCategory')}</h5>
                   <p>{selectedPlan.planCategory}</p>
                 </div>
                 <div className="dash-info-card">
-                  <h5><FiUser size={14} /> Target User</h5>
+                  <h5><FiUser size={14} /> {t('dashboard.dieteticien.createPlan.targetProfile')}</h5>
                   <p>{selectedPlan.targetUserProfile}</p>
                 </div>
                 <div className="dash-info-card full">
-                  <h5><FiInfo size={14} /> Description</h5>
+                  <h5><FiInfo size={14} /> {t('dashboard.dieteticien.createPlan.description')}</h5>
                   <p>{selectedPlan.description}</p>
                 </div>
                 <div className="dash-info-card">
-                  <h5><FiClock size={14} /> Consultations</h5>
+                  <h5><FiClock size={14} /> {t('dashboard.dieteticien.createPlan.consultationsIncluded')}</h5>
                   <p>{selectedPlan.consultationIncluded} included</p>
                 </div>
                 <div className="dash-info-card">
-                  <h5><FiCalendar size={14} /> Follow-up</h5>
+                  <h5><FiCalendar size={14} /> {t('dashboard.dieteticien.createPlan.followUpFreq')}</h5>
                   <p>{selectedPlan.followUpFrequency || 'None'}</p>
                 </div>
                 <div className="dash-info-card">
-                  <h5><FiTrendingUp size={14} /> Macronutrients</h5>
+                  <h5><FiTrendingUp size={14} /> {t('dashboard.dieteticien.createPlan.nutritionParams')}</h5>
                   <div className="dash-macro-bars">
                     <div className="dash-macro-row">
-                      <span>Carbs {selectedPlan.macronutrientRatio.carbs}%</span>
+                      <span>{t('dashboard.dieteticien.createPlan.carbsPercent')} {selectedPlan.macronutrientRatio.carbs}%</span>
                       <div className="dash-macro-track">
                         <div className="dash-macro-fill carbs" style={{ width: `${selectedPlan.macronutrientRatio.carbs}%` }} />
                       </div>
                     </div>
                     <div className="dash-macro-row">
-                      <span>Protein {selectedPlan.macronutrientRatio.protein}%</span>
+                      <span>{t('dashboard.dieteticien.createPlan.proteinPercent')} {selectedPlan.macronutrientRatio.protein}%</span>
                       <div className="dash-macro-track">
                         <div className="dash-macro-fill protein" style={{ width: `${selectedPlan.macronutrientRatio.protein}%` }} />
                       </div>
                     </div>
                     <div className="dash-macro-row">
-                      <span>Fat {selectedPlan.macronutrientRatio.fat}%</span>
+                      <span>{t('dashboard.dieteticien.createPlan.fatPercent')} {selectedPlan.macronutrientRatio.fat}%</span>
                       <div className="dash-macro-track">
                         <div className="dash-macro-fill fat" style={{ width: `${selectedPlan.macronutrientRatio.fat}%` }} />
                       </div>
@@ -615,25 +617,25 @@ const PlanDashboard = () => {
                   </div>
                 </div>
                 <div className="dash-info-card full">
-                  <h5><FiHeart size={14} /> Recommended Foods</h5>
+                  <h5><FiHeart size={14} /> {t('dashboard.dieteticien.createPlan.recommendedFoods')}</h5>
                   <div className="dash-tags">
                     {selectedPlan.recommendedFoods.map((food, i) => (
                       <span key={i} className="dash-tag dash-tag-green">{food}</span>
                     ))}
-                    {selectedPlan.recommendedFoods.length === 0 && <p style={{ color: '#9ca3af', fontSize: 13 }}>None specified</p>}
+                    {selectedPlan.recommendedFoods.length === 0 && <p style={{ color: '#9ca3af', fontSize: 13 }}>{t('common.noResults')}</p>}
                   </div>
                 </div>
                 <div className="dash-info-card full">
-                  <h5><FiX size={14} /> Foods to Avoid</h5>
+                  <h5><FiX size={14} /> {t('dashboard.dieteticien.createPlan.foodsToAvoid')}</h5>
                   <div className="dash-tags">
                     {selectedPlan.foodsToAvoid.map((food, i) => (
                       <span key={i} className="dash-tag dash-tag-red">{food}</span>
                     ))}
-                    {selectedPlan.foodsToAvoid.length === 0 && <p style={{ color: '#9ca3af', fontSize: 13 }}>None specified</p>}
+                    {selectedPlan.foodsToAvoid.length === 0 && <p style={{ color: '#9ca3af', fontSize: 13 }}>{t('common.noResults')}</p>}
                   </div>
                 </div>
                 <div className="dash-info-card full">
-                  <h5><FiCoffee size={14} /> Meal Structure</h5>
+                  <h5><FiCoffee size={14} /> {t('dashboard.dieteticien.createPlan.mealStructure')}</h5>
                   {Object.entries(selectedPlan.mealStructure).length > 0 ? (
                     <div className="dash-meals">
                       {Object.entries(selectedPlan.mealStructure).map(([meal, items]) => (
@@ -644,17 +646,17 @@ const PlanDashboard = () => {
                       ))}
                     </div>
                   ) : (
-                    <p style={{ color: '#9ca3af', fontSize: 13 }}>No meals defined</p>
+                    <p style={{ color: '#9ca3af', fontSize: 13 }}>{t('common.noResults')}</p>
                   )}
                 </div>
                 {selectedPlan.weeklyGroceryList && Object.values(selectedPlan.weeklyGroceryList).some(arr => arr?.length) && (
                   <div className="dash-info-card full">
-                    <h5><FiShoppingBag size={14} /> Weekly Grocery List</h5>
+                    <h5><FiShoppingBag size={14} /> {t('dashboard.dieteticien.createPlan.weeklyGrocery')}</h5>
                     <div className="dash-grocery">
                       {Object.entries(selectedPlan.weeklyGroceryList).map(([cat, items]) =>
                         items?.length > 0 ? (
                           <div key={cat} className="dash-grocery-cat">
-                            <h6>{cat}</h6>
+                            <h6>{t('dashboard.dieteticien.createPlan.groceryCategories.' + cat)}</h6>
                             <p>{items.join(', ')}</p>
                           </div>
                         ) : null
@@ -664,7 +666,7 @@ const PlanDashboard = () => {
                 )}
                 {selectedPlan.supplementsSuggested?.length > 0 && (
                   <div className="dash-info-card full">
-                    <h5><FiDroplet size={14} /> Supplements</h5>
+                    <h5><FiDroplet size={14} /> {t('dashboard.dieteticien.createPlan.supplements')}</h5>
                     <div className="dash-tags">
                       {selectedPlan.supplementsSuggested.map((s, i) => (
                         <span key={i} className="dash-tag dash-tag-blue">{s}</span>

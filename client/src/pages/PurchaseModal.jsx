@@ -1,5 +1,6 @@
 // components/PurchaseModal.jsx
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   X, Check, Sparkles, Calendar, MessageCircle, 
@@ -12,6 +13,7 @@ import toast from 'react-hot-toast';
 import './PurchaseModal.css';
 
 function PurchaseModal({ isOpen, onClose, plan, onBuyNow, onViewMyPlan }) {
+  const { t } = useTranslation();
   const [planStatus, setPlanStatus] = useState(null); // null = loading, 'owned', 'not-owned'
   const [loading, setLoading] = useState(false);
 
@@ -31,7 +33,7 @@ function PurchaseModal({ isOpen, onClose, plan, onBuyNow, onViewMyPlan }) {
       const response = await checkPlanOwnership(plan._id);
       setPlanStatus(response.ownsPlan ? 'owned' : 'not-owned');
     } catch (error) {
-      toast.error('Error checking plan status');
+      toast.error(t('common.error'));
       onClose();
     } finally {
       setLoading(false);
@@ -65,7 +67,7 @@ function PurchaseModal({ isOpen, onClose, plan, onBuyNow, onViewMyPlan }) {
           {loading && (
             <div className="PM-Loading">
               <Loader2 size={48} className="PM-Spin" />
-              <p>Checking plan status...</p>
+              <p>{t('common.loading')}</p>
             </div>
           )}
 
@@ -75,30 +77,30 @@ function PurchaseModal({ isOpen, onClose, plan, onBuyNow, onViewMyPlan }) {
               <div className="PM-IconWrapper owned">
                 <Check size={48} />
               </div>
-              <h2>Plan Already Purchased!</h2>
+              <h2>{t('plans.owned')}</h2>
               <div className="PM-PlanInfo">
                 <h3>{plan.planName}</h3>
                 <span className="PM-Category">{plan.planCategory}</span>
               </div>
               <p className="PM-Message">
-                You already own this plan. View it in your plans page to access all details and start your journey.
+                {t('plans.viewMyPlan')}
               </p>
               <div className="PM-Details">
                 <div className="PM-Detail">
                   <Calendar size={16} />
-                  <span>{plan.duration} Days Program</span>
+                  <span>{plan.duration} {t('purchase.daysProgram')}</span>
                 </div>
                 <div className="PM-Detail">
                   <MessageCircle size={16} />
-                  <span>{plan.consultationIncluded} Consultations</span>
+                  <span>{plan.consultationIncluded} {t('purchase.consultations')}</span>
                 </div>
               </div>
               <div className="PM-Actions">
                 <button className="PM-BtnSecondary" onClick={onClose}>
-                  Cancel
+                  {t('common.cancel')}
                 </button>
                 <button className="PM-BtnPrimary" onClick={onViewMyPlan}>
-                  View My Plan
+                  {t('plans.viewMyPlan')}
                   <ArrowRight size={18} />
                 </button>
               </div>
@@ -111,7 +113,7 @@ function PurchaseModal({ isOpen, onClose, plan, onBuyNow, onViewMyPlan }) {
               <div className="PM-IconWrapper not-owned">
                 <Sparkles size={48} />
               </div>
-              <h2>Ready to Start?</h2>
+              <h2>{t('purchase.readyToStart')}</h2>
               <div className="PM-PlanInfo">
                 <h3>{plan.planName}</h3>
                 <span className="PM-Category">{plan.planCategory}</span>
@@ -122,28 +124,28 @@ function PurchaseModal({ isOpen, onClose, plan, onBuyNow, onViewMyPlan }) {
                 <div className="PM-Feature">
                   <Calendar size={18} />
                   <div>
-                    <span className="PM-FeatureLabel">Duration</span>
-                    <span className="PM-FeatureValue">{plan.duration} Days</span>
+                    <span className="PM-FeatureLabel">{t('purchase.duration')}</span>
+                    <span className="PM-FeatureValue">{plan.duration} {t('purchase.days')}</span>
                   </div>
                 </div>
                 <div className="PM-Feature">
                   <MessageCircle size={18} />
                   <div>
-                    <span className="PM-FeatureLabel">Consultations</span>
-                    <span className="PM-FeatureValue">{plan.consultationIncluded} Sessions</span>
+                    <span className="PM-FeatureLabel">{t('purchase.consultations')}</span>
+                    <span className="PM-FeatureValue">{plan.consultationIncluded} {t('purchase.sessions')}</span>
                   </div>
                 </div>
                 <div className="PM-Feature">
                   <Target size={18} />
                   <div>
-                    <span className="PM-FeatureLabel">Target</span>
+                    <span className="PM-FeatureLabel">{t('purchase.target')}</span>
                     <span className="PM-FeatureValue">{plan.targetUserProfile}</span>
                   </div>
                 </div>
                 <div className="PM-Feature">
                   <Clock size={18} />
                   <div>
-                    <span className="PM-FeatureLabel">Follow-up</span>
+                    <span className="PM-FeatureLabel">{t('purchase.followUp')}</span>
                     <span className="PM-FeatureValue">{plan.followUpFrequency}</span>
                   </div>
                 </div>
@@ -156,17 +158,17 @@ function PurchaseModal({ isOpen, onClose, plan, onBuyNow, onViewMyPlan }) {
                 </div>
                 <div className="PM-SecureBadge">
                   <Shield size={14} />
-                  <span>Secure Payment</span>
+                  <span>{t('purchase.securePayment')}</span>
                 </div>
               </div>
 
               <div className="PM-Actions">
                 <button className="PM-BtnSecondary" onClick={onClose}>
-                  Cancel
+                  {t('common.cancel')}
                 </button>
                 <button className="PM-BtnPrimary PM-BuyBtn" onClick={onBuyNow}>
                   <ShoppingCart size={18} />
-                  Buy Now - DZD{plan.price}
+                  {t('plans.buyNow')} - DZD{plan.price}
                   <ArrowRight size={18} />
                 </button>
               </div>
