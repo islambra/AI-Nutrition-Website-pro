@@ -14,7 +14,12 @@
     "logoutDesc": "You'll need to sign back in to access your account.",
     "cancel": "Cancel",
     "brandName": "BiteWise",
-    "brandNameHtml": "Bite<1>Wise</1>"
+    "brandNameHtml": "Bite<1>Wise</1>",
+    "switchLanguage": "Switch language",
+    "toggleMenu": "Toggle navigation menu",
+    "closeMenu": "Close menu",
+    "langEn": "English",
+    "langFr": "Français"
   },
   "auth": {
     "welcomeBack": "Welcome back, {{name}}!",
@@ -1169,7 +1174,25 @@
     "joinZoom": "Join Zoom Meeting",
     "purchased": "Purchased {{date}}",
     "sessionRemaining": "{{count}} session(s) remaining",
-    "consultationsIncluded": "{{count}} consultations"
+    "consultationsIncluded": "{{count}} consultations",
+    "nutritionPlan": "Nutrition Plan",
+    "na": "N/A",
+    "mealsPerDay": "meals/day",
+    "cal": "cal",
+    "planLabel": "Plan:",
+    "macroRatio": "Macronutrient Ratio",
+    "macroCarbs": "Carbs",
+    "macroProtein": "Protein",
+    "macroFat": "Fat",
+    "recommendedFoods": "Recommended Foods",
+    "foodsToAvoid": "Foods to Avoid",
+    "mealStructure": "Meal Structure",
+    "weeklyGroceryList": "Weekly Grocery List",
+    "supplementsSuggested": "Supplements Suggested",
+    "exerciseRecommendation": "Exercise Recommendation",
+    "countdownDays": "{{d}}d {{h}}h {{m}}m",
+    "countdownHours": "{{h}}h {{m}}m {{s}}s",
+    "countdownMinutes": "{{m}}m {{s}}s"
   },
   "nutritionCard": {
     "nutritionPer100g": "Nutrition per 100g",

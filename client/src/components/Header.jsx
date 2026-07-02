@@ -153,7 +153,7 @@ function Header() {
             <button
               className="lang-switcher-btn"
               onClick={() => setShowLangMenu(!showLangMenu)}
-              aria-label="Switch language"
+              aria-label={t('nav.switchLanguage')}
               style={{ background: 'none', border: '1px solid #ddd', borderRadius: '8px', padding: '6px 10px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '13px' }}
             >
               <Globe size={16} />
@@ -162,23 +162,23 @@ function Header() {
             {showLangMenu && (
               <div style={{ position: 'absolute', top: '100%', right: 0, marginTop: '4px', background: 'white', border: '1px solid #e0e0e0', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)', zIndex: 1000, minWidth: '120px' }}>
                 <button onClick={() => changeLanguage('en')} style={{ display: 'block', width: '100%', padding: '10px 16px', border: 'none', background: i18n.language === 'en' ? '#E8F5E9' : 'transparent', cursor: 'pointer', textAlign: 'left', fontSize: '14px', borderRadius: '8px 8px 0 0' }}>
-                  🇬🇧 English
+                  🇬🇧 {t('nav.langEn')}
                 </button>
                 <button onClick={() => changeLanguage('fr')} style={{ display: 'block', width: '100%', padding: '10px 16px', border: 'none', background: i18n.language === 'fr' ? '#E8F5E9' : 'transparent', cursor: 'pointer', textAlign: 'left', fontSize: '14px', borderRadius: '0 0 8px 8px' }}>
-                  🇫🇷 Français
+                  🇫🇷 {t('nav.langFr')}
                 </button>
               </div>
             )}
           </div>
 
-          <button className="menu-icon-btn" onClick={toggleMenu} aria-label="Toggle navigation menu">
+          <button className="menu-icon-btn" onClick={toggleMenu} aria-label={t('nav.toggleMenu')}>
             <Menu size={28} />
           </button>
         </div>
       </div>
 
       <nav className={`mobile-menu ${isMenuOpen ? "is-open" : ""}`}>
-        <button className="mobile-close-btn" onClick={toggleMenu} aria-label="Close menu">
+        <button className="mobile-close-btn" onClick={toggleMenu} aria-label={t('nav.closeMenu')}>
           <X size={28} />
         </button>
         <NavLink to="/" className="mobile-nav-item">{t('nav.home')}</NavLink>

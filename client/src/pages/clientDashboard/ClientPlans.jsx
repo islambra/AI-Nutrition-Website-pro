@@ -143,9 +143,9 @@ function ClientPlans() {
     const h = Math.floor((diff % 86400000) / 3600000);
     const m = Math.floor((diff % 3600000) / 60000);
     const s = Math.floor((diff % 60000) / 1000);
-    if (d > 0) return <span>{d}d {h}h {m}m</span>;
-    if (h > 0) return <span>{h}h {m}m {s}s</span>;
-    return <span>{m}m {s}s</span>;
+    if (d > 0) return <span>{t('clientPlans.countdownDays', { d, h, m })}</span>;
+    if (h > 0) return <span>{t('clientPlans.countdownHours', { h, m, s })}</span>;
+    return <span>{t('clientPlans.countdownMinutes', { m, s })}</span>;
   };
 
   return (
@@ -229,7 +229,7 @@ function ClientPlans() {
                       <div className="aff-plan-body">
                         <div className="aff-plan-header">
                           <div>
-                            <h3 className="aff-plan-name">{plan.planName || "Nutrition Plan"}</h3>
+                            <h3 className="aff-plan-name">{plan.planName || t('clientPlans.nutritionPlan')}</h3>
                             <span className="aff-plan-category">{plan.planCategory}</span>
                           </div>
                           <div className="aff-sessions-badge">
@@ -243,7 +243,7 @@ function ClientPlans() {
                         </p>
                         <div className="aff-plan-meta">
                           <span><Clock size={14} /> {plan.duration || "—"} {t('services.weeks')}</span>
-                          <span><Activity size={14} /> {plan.mealsPerDay || "—"} meals/day</span>
+                          <span><Activity size={14} /> {plan.mealsPerDay || "—"} {t('clientPlans.mealsPerDay')}</span>
                         </div>
                         <div className="aff-plan-footer">
                           <span className="aff-plan-date">
@@ -298,7 +298,7 @@ function ClientPlans() {
                     <div>
                       <h4>{booking.plan?.planName || t('clientPlans.myBookings')}</h4>
                       <span className="aff-booking-category">
-                        {booking.plan?.planCategory || "N/A"}
+                        {booking.plan?.planCategory || t('clientPlans.na')}
                       </span>
                     </div>
                     <span className={`aff-status-badge aff-${booking.status}`}>
@@ -310,7 +310,7 @@ function ClientPlans() {
                     <div className="aff-booking-detail">
                       <Calendar size={14} />
                       <span>
-                        {new Date(booking.requestedDateTime).toLocaleString("en-US", {
+                        {new Date(booking.requestedDateTime).toLocaleString(i18n.language === 'fr' ? 'fr-FR' : 'en-US', {
                           weekday: "short",
                           month: "short",
                           day: "numeric",
@@ -322,7 +322,7 @@ function ClientPlans() {
                     <div className="aff-booking-detail">
                       <ShoppingBag size={14} />
                       <span>
-                        Plan: <strong>{booking.plan?.planName || "N/A"}</strong>
+                        {t('clientPlans.planLabel')} <strong>{booking.plan?.planName || t('clientPlans.na')}</strong>
                       </span>
                     </div>
                     {booking.userPlan?.sessionsRemaining !== undefined && (
@@ -467,12 +467,12 @@ function ClientPlans() {
                         </div>
                         <div className="aff-modal-stat">
                           <Activity size={18} />
-                          <span>{plan.mealsPerDay || "—"} meals/day</span>
+                          <span>{plan.mealsPerDay || "—"} {t('clientPlans.mealsPerDay')}</span>
                         </div>
                         {calRange.min && (
                           <div className="aff-modal-stat">
                             <Zap size={18} />
-                            <span>{calRange.min}-{calRange.max} cal</span>
+                            <span>{calRange.min}-{calRange.max} {t('clientPlans.cal')}</span>
                           </div>
                         )}
                         {plan.followUpFrequency && plan.followUpFrequency !== "None" && (
@@ -500,22 +500,22 @@ function ClientPlans() {
                       {/* Macronutrient Ratio */}
                       {(macro.carbs !== undefined || macro.protein !== undefined || macro.fat !== undefined) && (
                         <div className="aff-modal-macros">
-                          <h4>Macronutrient Ratio</h4>
+                          <h4>{t('clientPlans.macroRatio')}</h4>
                           <div className="aff-modal-macro-bars">
                             <div className="aff-modal-macro">
-                              <span className="aff-modal-macro-label">Carbs {macro.carbs || 0}%</span>
+                              <span className="aff-modal-macro-label">{t('clientPlans.macroCarbs')} {macro.carbs || 0}%</span>
                               <div className="aff-modal-macro-track">
                                 <div className="aff-modal-macro-fill carbs" style={{ width: `${macro.carbs || 0}%` }} />
                               </div>
                             </div>
                             <div className="aff-modal-macro">
-                              <span className="aff-modal-macro-label">Protein {macro.protein || 0}%</span>
+                              <span className="aff-modal-macro-label">{t('clientPlans.macroProtein')} {macro.protein || 0}%</span>
                               <div className="aff-modal-macro-track">
                                 <div className="aff-modal-macro-fill protein" style={{ width: `${macro.protein || 0}%` }} />
                               </div>
                             </div>
                             <div className="aff-modal-macro">
-                              <span className="aff-modal-macro-label">Fat {macro.fat || 0}%</span>
+                              <span className="aff-modal-macro-label">{t('clientPlans.macroFat')} {macro.fat || 0}%</span>
                               <div className="aff-modal-macro-track">
                                 <div className="aff-modal-macro-fill fats" style={{ width: `${macro.fat || 0}%` }} />
                               </div>
@@ -527,7 +527,7 @@ function ClientPlans() {
                       {/* Recommended Foods */}
                       {plan.recommendedFoods?.length > 0 && (
                         <div className="aff-modal-tags">
-                          <h4>Recommended Foods</h4>
+                          <h4>{t('clientPlans.recommendedFoods')}</h4>
                           <div className="aff-tag-list">
                             {plan.recommendedFoods.map((f, i) => (
                               <span key={i} className="aff-tag aff-tag-green">{f}</span>
@@ -539,7 +539,7 @@ function ClientPlans() {
                       {/* Foods to Avoid */}
                       {plan.foodsToAvoid?.length > 0 && (
                         <div className="aff-modal-tags">
-                          <h4>Foods to Avoid</h4>
+                          <h4>{t('clientPlans.foodsToAvoid')}</h4>
                           <div className="aff-tag-list">
                             {plan.foodsToAvoid.map((f, i) => (
                               <span key={i} className="aff-tag aff-tag-red">{f}</span>
@@ -551,7 +551,7 @@ function ClientPlans() {
                       {/* Meal Structure */}
                       {Object.keys(meals).length > 0 && (
                         <div className="aff-modal-meals">
-                          <h4>Meal Structure</h4>
+                          <h4>{t('clientPlans.mealStructure')}</h4>
                           {Object.entries(meals).map(([meal, items]) => (
                             <div key={meal} className="aff-meal-group">
                               <h5><span className="aff-meal-badge">{meal}</span></h5>
@@ -568,7 +568,7 @@ function ClientPlans() {
                       {/* Weekly Grocery List */}
                       {Object.values(grocery).some(arr => arr?.length > 0) && (
                         <div className="aff-modal-grocery">
-                          <h4>Weekly Grocery List</h4>
+                          <h4>{t('clientPlans.weeklyGroceryList')}</h4>
                           <div className="aff-grocery-grid">
                             {Object.entries(grocery).map(([cat, items]) =>
                               items?.length > 0 ? (
@@ -589,7 +589,7 @@ function ClientPlans() {
                       {/* Supplements */}
                       {plan.supplementsSuggested?.length > 0 && (
                         <div className="aff-modal-supplements">
-                          <h4>Supplements Suggested</h4>
+                          <h4>{t('clientPlans.supplementsSuggested')}</h4>
                           <div className="aff-tag-list">
                             {plan.supplementsSuggested.map((s, i) => (
                               <span key={i} className="aff-tag aff-tag-blue">{s}</span>
@@ -601,7 +601,7 @@ function ClientPlans() {
                       {/* Exercise Recommendation */}
                       {plan.exerciseRecommendation && (
                         <div className="aff-modal-exercise">
-                          <h4>Exercise Recommendation</h4>
+                          <h4>{t('clientPlans.exerciseRecommendation')}</h4>
                           <p>{plan.exerciseRecommendation}</p>
                         </div>
                       )}
