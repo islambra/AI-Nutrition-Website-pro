@@ -14,7 +14,7 @@ import './PurchaseModal.css';
 
 function PurchaseModal({ isOpen, onClose, plan, onBuyNow, onViewMyPlan }) {
   const { t } = useTranslation();
-  const [planStatus, setPlanStatus] = useState(null); // null = loading, 'owned', 'not-owned'
+  const [planStatus, setPlanStatus] = useState(null); // null = loading, 'owned', 'not-owned', 'pending'
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -31,7 +31,13 @@ function PurchaseModal({ isOpen, onClose, plan, onBuyNow, onViewMyPlan }) {
     
     try {
       const response = await checkPlanOwnership(plan._id);
-      setPlanStatus(response.ownsPlan ? 'owned' : 'not-owned');
+      if (response.ownsPlan) {
+        setPlanStatus('owned');
+      } else if (response.hasPendingPayment) {
+        setPlanStatus('pending');
+      } else {
+        setPlanStatus('not-owned');
+      }
     } catch (error) {
       toast.error(t('common.error'));
       onClose();
@@ -102,6 +108,28 @@ function PurchaseModal({ isOpen, onClose, plan, onBuyNow, onViewMyPlan }) {
                 <button className="PM-BtnPrimary" onClick={onViewMyPlan}>
                   {t('plans.viewMyPlan')}
                   <ArrowRight size={18} />
+                </button>
+              </div>
+            </div>
+          )}
+
+          {/* Payment Pending */}
+          {planStatus === 'pending' && (
+            <div className="PM-Content">
+              <div className="PM-IconWrapper pending">
+                <Clock size={48} />
+              </div>
+              <h2>{t('purchase.pendingTitle') || 'Payment Pending'}</h2>
+              <div className="PM-PlanInfo">
+                <h3>{plan.planName}</h3>
+                <span className="PM-Category">{plan.planCategory}</span>
+              </div>
+              <p className="PM-Message">
+                {t('purchase.pendingMessage') || 'You already have a pending payment request for this plan. Please wait for the dietitian to confirm your payment.'}
+              </p>
+              <div className="PM-Actions">
+                <button className="PM-BtnPrimary" onClick={onClose}>
+                  {t('common.ok') || 'OK'}
                 </button>
               </div>
             </div>

@@ -165,6 +165,13 @@ function AllPlansPage() {
         });
         return;
       }
+      if (response.success && response.hasPendingPayment) {
+        toast.error(t('plans.pendingPayment') || 'You already have a pending payment request for this plan', {
+          duration: 4000,
+          icon: ' '
+        });
+        return;
+      }
       // If not owned, proceed to checkout
       navigate(`/checkout/plan/${plan._id}`, { state: { plan } });
     } catch (err) {

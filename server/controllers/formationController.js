@@ -1,6 +1,7 @@
 import Formation from "../models/Formation.js";
 import FormationSession from "../models/FormationSession.js";
 import UserFormation from "../models/UserFormation.js";
+import Payment from "../models/Payment.js";
 import { createZoomMeeting } from "../utils/zoom.js";
 import imagekit from "../configs/imageKit.js";
 
@@ -323,7 +324,12 @@ export const getMyPurchasedFormations = async (req, res) => {
 export const checkFormationOwnership = async (req, res) => {
   try {
     const uf = await UserFormation.findOne({ user: req.user.id, formation: req.params.id });
-    res.status(200).json({ success: true, owns: !!uf });
+    const pendingPayment = await Payment.findOne({ user: req.user.id, formation: req.params.id, status: "pending" });
+    res.status(200).json({
+      success: true,
+      owns: !!uf,
+      hasPendingPayment: !!pendingPayment
+    });
   } catch (error) {
     res.status(500).json({ success: false, message: "Error checking formation ownership" });
   }

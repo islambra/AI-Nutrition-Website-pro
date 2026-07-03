@@ -41,6 +41,26 @@ export const initiateOfflinePayment = async (req, res) => {
       return res.status(400).json({ success: false, message: "Service creator not found" });
     }
 
+    if (planId) {
+      const existingPlan = await UserPlan.findOne({ user: userId, plan: planId });
+      if (existingPlan) {
+        return res.status(400).json({ success: false, message: "You already own this plan" });
+      }
+      const pendingPayment = await Payment.findOne({ user: userId, plan: planId, status: "pending" });
+      if (pendingPayment) {
+        return res.status(400).json({ success: false, message: "You already have a pending payment request for this plan" });
+      }
+    } else {
+      const existingFormation = await UserFormation.findOne({ user: userId, formation: formationId });
+      if (existingFormation) {
+        return res.status(400).json({ success: false, message: "You already own this formation" });
+      }
+      const pendingPayment = await Payment.findOne({ user: userId, formation: formationId, status: "pending" });
+      if (pendingPayment) {
+        return res.status(400).json({ success: false, message: "You already have a pending payment request for this formation" });
+      }
+    }
+
     let proofImage = null;
     let proofImageFileId = null;
     if (req.file) {
@@ -235,7 +255,7 @@ export const rejectPayment = async (req, res) => {
   }
 };
 
-// Check if user owns a plan
+// Check if user owns a plan (also returns pending payment status)
 export const checkPlanOwnership = async (req, res) => {
   try {
     const { planId } = req.params;
@@ -246,9 +266,16 @@ export const checkPlanOwnership = async (req, res) => {
       plan: planId
     });
 
+    const pendingPayment = await Payment.findOne({
+      user: userId,
+      plan: planId,
+      status: "pending"
+    });
+
     res.status(200).json({
       success: true,
       ownsPlan: !!userPlan,
+      hasPendingPayment: !!pendingPayment,
       userPlan: userPlan || null
     });
   } catch (error) {
