@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
+import { useTranslation, Trans } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getAllPaymentsAdmin, deletePaymentAdmin } from '../../api/paymentApi';
 import {
@@ -263,7 +263,7 @@ const AdminPayments = () => {
                 <AlertTriangle size={28} />
               </div>
               <h3>{t('admin.deletePayment')}</h3>
-              <p>{t('admin.deletePaymentConfirm', { amount: selectedPaymentAmount?.toLocaleString() })}</p>
+              <p><Trans i18nKey="admin.deletePaymentConfirm" values={{ amount: selectedPaymentAmount?.toLocaleString() }} /></p>
               <p className="ap-modal-warning">{t('admin.deletePaymentWarning')}</p>
               <div className="ap-modal-actions">
                 <button className="ap-btn ap-btn--ghost" onClick={() => setModalOpen(false)}>{t('common.cancel')}</button>

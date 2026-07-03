@@ -38,7 +38,7 @@ import ScrollReveal from '../components/ScrollReveal';
 import "../components/FormationCard.css";
 import { useAuth } from '../context/AuthContext';
 import { getAllPlans } from '../api/planApi';
-import { getAllFormations } from '../api/formationApi';
+import { getAllFormations, checkFormationOwnership } from '../api/formationApi';
 import { getMySubscription } from '../api/courseApi';
 import { useState, useEffect, useRef, useMemo } from 'react';
 import toast from 'react-hot-toast';
@@ -58,6 +58,7 @@ function ServicesPage() {
   const [formations, setFormations] = useState([]);
   const [formationsLoading, setFormationsLoading] = useState(true);
   const [selectedFormation, setSelectedFormation] = useState(null);
+  const [checkingFormationId, setCheckingFormationId] = useState(null);
 
   const ServicesMarquee = () => (
     <div className="ServicesPage-Marquee">
@@ -117,12 +118,24 @@ function ServicesPage() {
     }
   };
 
-  const handlePurchaseFormation = (formation) => {
+  const handlePurchaseFormation = async (formation) => {
     if (!isAuthenticated) {
       toast.error(t('checkout.pleaseLogin'));
       navigate('/login');
       return;
     }
+    setCheckingFormationId(formation._id);
+    try {
+      const res = await checkFormationOwnership(formation._id);
+      if (res.owns) {
+        toast.error(t('checkout.alreadyOwned') || 'You already own this formation');
+        setCheckingFormationId(null);
+        return;
+      }
+    } catch {
+      setCheckingFormationId(null);
+    }
+    setCheckingFormationId(null);
     navigate(`/checkout/formation/${formation._id}`, {
       state: { formation }
     });
@@ -835,8 +848,13 @@ function ServicesPage() {
                         onClick={() => { handlePurchaseFormation(selectedFormation); setSelectedFormation(null); }}
                         className="fc-btn fc-btn-primary"
                         style={{ flex: 1, justifyContent: "center", padding: "14px 28px", fontSize: 14 }}
+                        disabled={checkingFormationId === selectedFormation._id}
                       >
-                        <ShoppingCart size={16} /> {t('services.subscribe')}
+                        {checkingFormationId === selectedFormation._id ? (
+                          <><Loader2 size={16} className="AP-Spin" /> {t('common.loading')}</>
+                        ) : (
+                          <><ShoppingCart size={16} /> {t('services.subscribe')}</>
+                        )}
                       </motion.button>
                     </div>
                   </div>

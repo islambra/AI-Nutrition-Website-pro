@@ -7,7 +7,7 @@ import {
   Upload, Check, CreditCard, Smartphone, FileText, BookOpen, Clock, ExternalLink
 } from 'lucide-react';
 import { initiatePayment, getDieteticienPaymentInfo } from '../api/paymentApi';
-import { getFormationById } from '../api/formationApi';
+import { getFormationById, checkFormationOwnership } from '../api/formationApi';
 import { useAuth } from '../context/AuthContext';
 import { useSafeTimeout } from '../hooks/useSafeTimeout';
 import toast from 'react-hot-toast';
@@ -32,6 +32,8 @@ function FormationCheckoutPage() {
   const [loadingInfo, setLoadingInfo] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [checkingOwnership, setCheckingOwnership] = useState(true);
+  const [alreadyOwned, setAlreadyOwned] = useState(false);
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
@@ -56,6 +58,22 @@ function FormationCheckoutPage() {
     };
     if (formationId) fetchFormation();
   }, [formationId, formation]);
+
+  useEffect(() => {
+    if (formation && !authLoading) {
+      checkFormationOwnership(formation._id)
+        .then(res => {
+          if (res.owns) {
+            setAlreadyOwned(true);
+            toast.error(t('checkout.alreadyOwned') || 'You already own this formation');
+          }
+        })
+        .catch(() => {})
+        .finally(() => setCheckingOwnership(false));
+    } else if (!formation && !authLoading) {
+      setCheckingOwnership(false);
+    }
+  }, [formation, authLoading]);
 
   useEffect(() => {
     if (formation?.createdBy) {
@@ -113,6 +131,36 @@ function FormationCheckoutPage() {
         <Loader2 size={48} className="AP-Spin" />
         <p>{t('common.loading')}</p>
       </div>
+    );
+  }
+
+  if (checkingOwnership) {
+    return (
+      <div className="AP-LoadingContainer">
+        <Loader2 size={48} className="AP-Spin" />
+        <p>{t('common.loading')}</p>
+      </div>
+    );
+  }
+
+  if (alreadyOwned) {
+    return (
+      <PageTransition>
+        <div className="checkout-page">
+          <div className="checkout-container" style={{ maxWidth: '600px', margin: '0 auto', textAlign: 'center', paddingTop: '60px' }}>
+            <motion.div initial={{ scale: 0 }} animate={{ scale: 1 }} style={{ width: 80, height: 80, borderRadius: '50%', background: '#E8F5E9', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
+              <Check size={40} style={{ color: '#2E7D32' }} />
+            </motion.div>
+            <h2>{t('checkout.alreadyOwned') || 'Formation already owned'}</h2>
+            <p style={{ color: '#6B7280', marginTop: 12, lineHeight: 1.6 }}>
+              {t('checkout.alreadyOwnedMessage') || 'You already have access to this formation.'}
+            </p>
+            <button onClick={() => navigate('/services')} className="pay-btn" style={{ marginTop: '24px' }}>
+              {t('common.back') || 'Back to services'}
+            </button>
+          </div>
+        </div>
+      </PageTransition>
     );
   }
 
