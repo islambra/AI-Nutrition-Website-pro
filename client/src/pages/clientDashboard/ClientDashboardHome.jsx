@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { ShoppingBag, ClipboardList, Activity, Sparkles, Users, Heart, Utensils } from "lucide-react";
+import { ShoppingBag, ClipboardList, Activity, Sparkles, Users, Heart, Utensils, Target } from "lucide-react";
 import ScrollReveal from "../../components/ScrollReveal";
 import { useTranslation } from 'react-i18next';
 import "./ClientPlans.css";
@@ -95,6 +95,57 @@ const ClientDashboardHome = () => {
             <p>{t('dashboard.client.browsePlansDesc')}</p>
             <span className="aff-card-link">
               {t('dashboard.client.browseAll')}
+            </span>
+          </motion.div>
+        </ScrollReveal>
+
+        <ScrollReveal direction="left">
+          <motion.div
+            className="aff-card aff-card-secondary"
+            whileHover={{ translateY: -6 }}
+            onClick={() => navigate("/client/food-diary")}
+          >
+            <div className="aff-card-icon">
+              <Utensils size={32} />
+            </div>
+            <h3>{t('dashboard.client.foodDiary')}</h3>
+            <p>{t('dashboard.client.foodDiaryDesc')}</p>
+            <span className="aff-card-link">
+              {t('dashboard.client.goToSubscriptions')}
+            </span>
+          </motion.div>
+        </ScrollReveal>
+
+        <ScrollReveal direction="right">
+          <motion.div
+            className="aff-card aff-card-primary"
+            whileHover={{ translateY: -6 }}
+            onClick={() => navigate("/client/goals")}
+          >
+            <div className="aff-card-icon">
+              <Target size={32} />
+            </div>
+            <h3>{t('dashboard.client.goals')}</h3>
+            <p>{t('dashboard.client.goalsDesc')}</p>
+            <span className="aff-card-link">
+              {t('dashboard.client.goToSubscriptions')}
+            </span>
+          </motion.div>
+        </ScrollReveal>
+
+        <ScrollReveal direction="left">
+          <motion.div
+            className="aff-card aff-card-secondary"
+            whileHover={{ translateY: -6 }}
+            onClick={() => navigate("/client/progress")}
+          >
+            <div className="aff-card-icon">
+              <Activity size={32} />
+            </div>
+            <h3>{t('dashboard.client.progressTracking')}</h3>
+            <p>{t('dashboard.client.progressDesc')}</p>
+            <span className="aff-card-link">
+              {t('dashboard.client.goToSubscriptions')}
             </span>
           </motion.div>
         </ScrollReveal>
