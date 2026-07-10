@@ -6,6 +6,11 @@ const subscriberResourceSchema = new mongoose.Schema({
     ref: "User",
     required: true
   },
+  subscriber: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    default: null
+  },
   title: {
     type: String,
     required: true

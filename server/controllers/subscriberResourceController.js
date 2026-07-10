@@ -4,7 +4,7 @@ import imagekit from "../configs/imageKit.js";
 export const createResource = async (req, res) => {
   let uploadedFileId = null;
   try {
-    const { title, description } = req.body;
+    const { title, description, subscriberId } = req.body;
     const dieteticienId = req.user.id;
 
     if (!title) {
@@ -30,6 +30,7 @@ export const createResource = async (req, res) => {
 
     const resource = await SubscriberResource.create({
       dieteticien: dieteticienId,
+      subscriber: subscriberId || null,
       title,
       description: description || "",
       fileUrl,
@@ -50,6 +51,7 @@ export const getMyResources = async (req, res) => {
   try {
     const resources = await SubscriberResource.find({ dieteticien: req.user.id })
       .sort({ createdAt: -1 })
+      .populate("subscriber", "fullName")
       .lean();
     res.status(200).json({ success: true, data: resources });
   } catch (error) {
@@ -60,8 +62,16 @@ export const getMyResources = async (req, res) => {
 export const getSubscriberResources = async (req, res) => {
   try {
     const { dieteticienId } = req.params;
-    const resources = await SubscriberResource.find({ dieteticien: dieteticienId })
+    const clientId = req.user.id;
+    const resources = await SubscriberResource.find({
+      dieteticien: dieteticienId,
+      $or: [
+        { subscriber: null },
+        { subscriber: clientId }
+      ]
+    })
       .sort({ createdAt: -1 })
+      .populate("subscriber", "fullName")
       .lean();
     res.status(200).json({ success: true, data: resources });
   } catch (error) {

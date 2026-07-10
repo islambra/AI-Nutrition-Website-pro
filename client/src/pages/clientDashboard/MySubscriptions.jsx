@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-import { User, MessageCircle, Video, X, RefreshCw, FileText, Clock, Calendar, Download, CheckCircle, ArrowRight, Lock, Target, Activity } from "lucide-react";
+import { User, MessageCircle, Video, X, RefreshCw, FileText, Clock, Calendar, Download, CheckCircle, ArrowRight, Lock } from "lucide-react";
 import { getMySubscriptions, cancelSubscription, requestZoomSession, renewSubscription } from "../../api/dieteticienSubscriptionApi";
 import { getSubscriberResources } from "../../api/resourceApi";
 import { useChat } from "../../context/ChatContext";
@@ -30,6 +30,7 @@ const MySubscriptions = () => {
   const [submittingZoom, setSubmittingZoom] = useState(false);
   const [resources, setResources] = useState({});
   const [showResources, setShowResources] = useState(null);
+  const [cancelConfirmId, setCancelConfirmId] = useState(null);
   const { openChat } = useChat();
 
   useEffect(() => { fetchSubscriptions(); }, []);
@@ -150,13 +151,7 @@ const MySubscriptions = () => {
               <button className="cd-action-btn resources" onClick={() => loadResources(sub.dieteticien?._id, sub._id)}>
                 <FileText /> {t("dashboard.client.resources")}
               </button>
-              <button className="cd-action-btn goals" onClick={() => navigate("/client/goals")}>
-                <Target /> {t("dashboard.client.goals")}
-              </button>
-              <button className="cd-action-btn progress" onClick={() => navigate("/client/progress")}>
-                <Activity /> {t("dashboard.client.progressTracking")}
-              </button>
-              <button className="cd-action-btn cancel-sub" onClick={() => handleCancel(sub._id)}>
+              <button className="cd-action-btn cancel-sub" onClick={() => setCancelConfirmId(sub._id)}>
                 <X /> {t("dashboard.client.cancelSub")}
               </button>
             </div>
@@ -238,6 +233,27 @@ const MySubscriptions = () => {
               <button className="cd-modal-cancel" onClick={() => setZoomModal(null)}>{t("common.cancel")}</button>
               <button className="cd-modal-submit" onClick={handleZoomRequest} disabled={submittingZoom}>
                 {submittingZoom ? t("common.loading") : t("dashboard.client.sendRequest")}
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Cancel Confirmation Modal */}
+      {cancelConfirmId && (
+        <div className="cd-overlay" onClick={() => setCancelConfirmId(null)}>
+          <motion.div className="cd-modal" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} onClick={e => e.stopPropagation()}>
+            <h3>{t("dashboard.client.cancelSub")}</h3>
+            <p style={{ fontSize: 14, color: "#64748b", margin: "0 0 20px", lineHeight: 1.6 }}>
+              {t("dashboard.client.cancelConfirm") || "Are you sure you want to cancel this subscription? You will lose access to your dietitian."}
+            </p>
+            <div className="cd-modal-actions">
+              <button className="cd-modal-cancel" onClick={() => setCancelConfirmId(null)}>{t("common.cancel")}</button>
+              <button className="cd-modal-submit" style={{ background: "linear-gradient(135deg, #ef4444, #dc2626)" }} onClick={async () => {
+                await handleCancel(cancelConfirmId);
+                setCancelConfirmId(null);
+              }}>
+                {t("dashboard.client.confirmCancel") || "Yes, Cancel"}
               </button>
             </div>
           </motion.div>

@@ -28,7 +28,6 @@ export const dieteticienMenuLinks = [
   { name: "myFormations", path: "/dieteticien/formations", icon: listIcon },
   { name: "consultationRequests", path: "/dieteticien/consultation-requests", icon: Consultation },
   { name: "subscribers", path: "/dieteticien/subscribers", icon: allUsers },
-  { name: "subscriberStats", path: "/dieteticien/subscription-stats", icon: payment },
   { name: "resourceLibrary", path: "/dieteticien/resources", icon: listIcon },
   { name: "sales", path: "/dieteticien/payments", icon: payment },
   { name: "paymentApprovals", path: "/dieteticien/payment-approvals", icon: payment },

@@ -21,8 +21,6 @@ const ClientPlans = lazy(() => import('./pages/clientDashboard/ClientPlans.jsx')
 const ClientRequests = lazy(() => import('./pages/clientDashboard/ClientRequests.jsx'))
 const MySubscriptions = lazy(() => import('./pages/clientDashboard/MySubscriptions.jsx'))
 const FoodDiary = lazy(() => import('./pages/clientDashboard/FoodDiary.jsx'))
-const Goals = lazy(() => import('./pages/clientDashboard/Goals.jsx'))
-const ProgressTracking = lazy(() => import('./pages/clientDashboard/ProgressTracking.jsx'))
 const AllPlansPage = lazy(() => import('./pages/AllPlansPage.jsx'))
 const PlanCheckoutPage = lazy(() => import('./pages/PlanCheckoutPage.jsx'))
 const FormationCheckoutPage = lazy(() => import('./pages/FormationCheckoutPage.jsx'))
@@ -47,11 +45,8 @@ const AdminPayments = lazy(() => import('./pages/AdminDashboard/AdminPayments.js
 const ManageDieteticiens = lazy(() => import('./pages/AdminDashboard/ManageDieteticiens.jsx'))
 const ConsultationRequests = lazy(() => import('./pages/dieteticienDashboard/ConsultationRequests.jsx'))
 const SubscribersList = lazy(() => import('./pages/dieteticienDashboard/SubscribersList.jsx'))
-const SubscriptionStats = lazy(() => import('./pages/dieteticienDashboard/SubscriptionStats.jsx'))
 const ResourceLibrary = lazy(() => import('./pages/dieteticienDashboard/ResourceLibrary.jsx'))
 const SubscriberFoodLogs = lazy(() => import('./pages/dieteticienDashboard/SubscriberFoodLogs.jsx'))
-const SubscriberGoals = lazy(() => import('./pages/dieteticienDashboard/SubscriberGoals.jsx'))
-const SubscriberProgress = lazy(() => import('./pages/dieteticienDashboard/SubscriberProgress.jsx'))
 const DieteticienPayments = lazy(() => import('./pages/dieteticienDashboard/DieteticienPayments.jsx'))
 const PaymentApprovals = lazy(() => import('./pages/dieteticienDashboard/PaymentApprovals.jsx'))
 const CreateCourse = lazy(() => import('./pages/dieteticienDashboard/CreateCourse.jsx'))
@@ -136,8 +131,6 @@ function App() {
               <Route path="my-plans" element={<ClientPlans />} />
               <Route path="my-requests" element={<ClientRequests />} />
               <Route path="food-diary" element={<FoodDiary />} />
-              <Route path="goals" element={<Goals />} />
-              <Route path="progress" element={<ProgressTracking />} />
             </Route>
 
             <Route path="/dieteticien" element={<ProtectedRoute roles={['dieteticien', 'admin']}><Layout /></ProtectedRoute>}>
@@ -156,11 +149,8 @@ function App() {
               <Route path="all-clients" element={<ClientsPage />} />
               <Route path="consultation-requests" element={<ConsultationRequests />} />
               <Route path="subscribers" element={<SubscribersList />} />
-              <Route path="subscription-stats" element={<SubscriptionStats />} />
               <Route path="resources" element={<ResourceLibrary />} />
               <Route path="subscribers/:clientId/food-logs" element={<SubscriberFoodLogs />} />
-              <Route path="subscribers/:clientId/goals" element={<SubscriberGoals />} />
-              <Route path="subscribers/:clientId/progress" element={<SubscriberProgress />} />
             </Route>
 
             <Route path="/student" element={<ProtectedRoute roles={['student']}><StudentLayout /></ProtectedRoute>}>
