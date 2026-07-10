@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useTranslation, Trans } from "react-i18next";
-import { UserCircle, Menu, LogOut, Apple, LayoutDashboard, User, Zap, X, Globe, Search } from "lucide-react";
+import { UserCircle, Menu, LogOut, Apple, LayoutDashboard, User, Zap, X, Globe } from "lucide-react";
 import "./Header.css";
 
 function Header() {
@@ -80,13 +80,10 @@ function Header() {
 
         <nav className="desktop-nav-links">
           <NavLink to="/" className="nav-item">{t('nav.home')}</NavLink>
-          <NavLink to="/find-dietitians" className="nav-item nav-item-accent">
-            <Search size={14} style={{ marginRight: 4 }} />
-            {t('nav.findDietitians')}
-          </NavLink>
           {user?.role !== "admin" && user?.role !== "dieteticien" && (
             <NavLink to="/services" className="nav-item">{t('nav.services')}</NavLink>
           )}
+          <NavLink to="/find-dietitians" className="nav-item">{t('nav.findDietitians')}</NavLink>
           <NavLink to="/blogs" className="nav-item">{t('nav.blogs')}</NavLink>
           <NavLink to="/about" className="nav-item">{t('nav.about')}</NavLink>
           <NavLink to="/contact" className="nav-item">{t('nav.contact')}</NavLink>
@@ -186,13 +183,10 @@ function Header() {
           <X size={28} />
         </button>
         <NavLink to="/" className="mobile-nav-item">{t('nav.home')}</NavLink>
-        <NavLink to="/find-dietitians" className="mobile-nav-item mobile-nav-accent">
-          <Search size={18} />
-          {t('nav.findDietitians')}
-        </NavLink>
         {user?.role !== "admin" && user?.role !== "dieteticien" && (
           <NavLink to="/services" className="mobile-nav-item">{t('nav.services')}</NavLink>
         )}
+        <NavLink to="/find-dietitians" className="mobile-nav-item">{t('nav.findDietitians')}</NavLink>
         <NavLink to="/blogs" className="mobile-nav-item">{t('nav.blogs')}</NavLink>
         <NavLink to="/about" className="mobile-nav-item">{t('nav.about')}</NavLink>
         <NavLink to="/contact" className="mobile-nav-item">{t('nav.contact')}</NavLink>

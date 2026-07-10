@@ -334,13 +334,19 @@
 /* Empty */
 .fdp-empty {
   text-align: center;
-  padding: 80px 20px;
+  padding: 120px 20px;
   color: #9ca3af;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .fdp-empty svg {
   color: #d1d5db;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
+  width: 64px;
+  height: 64px;
 }
 
 .fdp-empty h3 {

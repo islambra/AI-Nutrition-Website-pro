@@ -100,49 +100,6 @@
     opacity: 1;
 }
 
-/* Find Dietitians accent nav item */
-.desktop-nav-links .nav-item-accent {
-    background: linear-gradient(135deg, rgba(34, 197, 94, 0.08), rgba(52, 199, 89, 0.12));
-    padding: 8px 16px;
-    border-radius: 50px;
-    border: 1px solid rgba(34, 197, 94, 0.15);
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    opacity: 1;
-    font-size: 12px;
-    letter-spacing: 0.05em;
-    transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-}
-
-.desktop-nav-links .nav-item-accent::after {
-    display: none;
-}
-
-.desktop-nav-links .nav-item-accent:hover {
-    background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(52, 199, 89, 0.2));
-    border-color: rgba(34, 197, 94, 0.3);
-    color: #059669;
-    transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(34, 197, 94, 0.15);
-}
-
-.desktop-nav-links .nav-item-accent.active {
-    background: linear-gradient(135deg, #059669, #10b981);
-    color: #fff;
-    border-color: transparent;
-    box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
-}
-
-/* Mobile accent nav */
-.mobile-nav-accent {
-    background: linear-gradient(135deg, rgba(34, 197, 94, 0.1), rgba(52, 199, 89, 0.15));
-    padding: 14px 28px !important;
-    border-radius: 50px !important;
-    border: 1px solid rgba(34, 197, 94, 0.2);
-    gap: 10px !important;
-}
-
 .sign-in-btn {
     background: #34C759;
     color: #fff;
