@@ -27,6 +27,9 @@ export const dieteticienMenuLinks = [
   { name: "myBlogs", path: "/dieteticien/MyBlogs", icon: updateIcon },
   { name: "myFormations", path: "/dieteticien/formations", icon: listIcon },
   { name: "consultationRequests", path: "/dieteticien/consultation-requests", icon: Consultation },
+  { name: "subscribers", path: "/dieteticien/subscribers", icon: allUsers },
+  { name: "subscriberStats", path: "/dieteticien/subscription-stats", icon: payment },
+  { name: "resourceLibrary", path: "/dieteticien/resources", icon: listIcon },
   { name: "sales", path: "/dieteticien/payments", icon: payment },
   { name: "paymentApprovals", path: "/dieteticien/payment-approvals", icon: payment },
   { name: "contactMessages", path: "/dieteticien/contact-messages", icon: messagesicon },
@@ -52,6 +55,9 @@ export const studentMenuLinks = [
 ];
 export const clientMenuLinks = [
   { name: "dashboard", path: "/client/dashboard", icon: homeIcon },
+  { name: "dieteticiens", path: "/client/dieteticiens", icon: allUsers },
+  { name: "mySubscriptions", path: "/client/my-subscriptions", icon: payment },
+  { name: "foodDiary", path: "/client/food-diary", icon: listIcon },
   { name: "myPlans", path: "/client/my-plans", icon: listIcon },
   { name: "myRequests", path: "/client/my-requests", icon: clockIcon },
 ];

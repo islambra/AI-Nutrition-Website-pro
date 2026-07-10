@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { ShoppingBag, ClipboardList, ArrowRight, Activity, Sparkles } from "lucide-react";
+import { ShoppingBag, ClipboardList, Activity, Sparkles, Users, Heart, Utensils } from "lucide-react";
 import ScrollReveal from "../../components/ScrollReveal";
 import { useTranslation } from 'react-i18next';
 import "./ClientPlans.css";
@@ -31,6 +31,40 @@ const ClientDashboardHome = () => {
       </ScrollReveal>
 
       <div className="aff-cards-grid">
+        <ScrollReveal direction="left">
+          <motion.div
+            className="aff-card aff-card-primary"
+            whileHover={{ translateY: -6 }}
+            onClick={() => navigate("/client/dieteticiens")}
+          >
+            <div className="aff-card-icon">
+              <Users size={32} />
+            </div>
+            <h3>{t('dashboard.client.findDieteticiens')}</h3>
+            <p>{t('dashboard.client.findDieteticiensDesc')}</p>
+            <span className="aff-card-link">
+              {t('dashboard.client.browseAll')}
+            </span>
+          </motion.div>
+        </ScrollReveal>
+
+        <ScrollReveal direction="right">
+          <motion.div
+            className="aff-card aff-card-secondary"
+            whileHover={{ translateY: -6 }}
+            onClick={() => navigate("/client/my-subscriptions")}
+          >
+            <div className="aff-card-icon">
+              <Heart size={32} />
+            </div>
+            <h3>{t('dashboard.client.mySubscriptions')}</h3>
+            <p>{t('dashboard.client.mySubscriptionsDesc')}</p>
+            <span className="aff-card-link">
+              {t('dashboard.client.goToSubscriptions')}
+            </span>
+          </motion.div>
+        </ScrollReveal>
+
         <ScrollReveal direction="left">
           <motion.div
             className="aff-card aff-card-primary"

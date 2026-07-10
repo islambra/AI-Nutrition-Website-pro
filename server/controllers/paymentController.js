@@ -6,6 +6,7 @@ import UserPlan from "../models/UserPlan.js";
 import UserFormation from "../models/UserFormation.js";
 import Client from "../models/Client.js";
 import ChatRoom from "../models/ChatRoom.js";
+import DieteticienSubscription from "../models/DieteticienSubscription.js";
 import imagekit from "../configs/imageKit.js";
 
 // Initiate offline payment with proof image
@@ -206,6 +207,36 @@ export const approvePayment = async (req, res) => {
             }], { session: mongoSession });
           }
         }
+      }
+    }
+
+    if (payment.dieteticienSubscription) {
+      const now = new Date();
+      const endDate = new Date(now);
+      endDate.setDate(endDate.getDate() + 30);
+
+      await DieteticienSubscription.create([{
+        client: payment.user,
+        dieteticien: payment.dieteticien,
+        hasAccess: true,
+        startDate: now,
+        endDate,
+        payment: payment._id
+      }], { session: mongoSession });
+
+      const existingRoom = await ChatRoom.findOne({
+        "participants.user": { $all: [payment.user, payment.dieteticien] }
+      }).session(mongoSession);
+
+      if (!existingRoom) {
+        await ChatRoom.create([{
+          participants: [
+            { user: payment.user, role: "client" },
+            { user: payment.dieteticien, role: "dieteticien" }
+          ],
+          type: "dieteticien",
+          dieteticienSubscription: payment._id
+        }], { session: mongoSession });
       }
     }
 

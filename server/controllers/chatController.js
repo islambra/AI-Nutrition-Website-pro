@@ -65,7 +65,7 @@ export const getMessages = async (req, res) => {
 
 export const createRoom = async (req, res) => {
   try {
-    const { type, plan, formation, otherUserId, otherUserRole } = req.body;
+    const { type, plan, formation, dieteticienSubscription, otherUserId, otherUserRole } = req.body;
     const userId = req.user._id;
 
     let roomData = { type };
@@ -74,6 +74,8 @@ export const createRoom = async (req, res) => {
       roomData.plan = plan || null;
     } else if (type === "formation") {
       roomData.formation = formation || null;
+    } else if (type === "dieteticien") {
+      roomData.dieteticienSubscription = dieteticienSubscription || null;
     } else {
       return res.status(400).json({ success: false, message: "Invalid room type" });
     }

@@ -22,6 +22,11 @@ import courseRoutes from './routes/courseRoutes.js';
 import formationRoutes from './routes/formationRoutes.js';
 import aiToolRoutes from './routes/aiToolRoutes.js';
 import chatRoutes from './routes/chatRoutes.js';
+import dieteticienSubscriptionRoutes from './routes/dieteticienSubscriptionRoutes.js';
+import foodDiaryRoutes from './routes/foodDiaryRoutes.js';
+import goalRoutes from './routes/goalRoutes.js';
+import progressRoutes from './routes/progressRoutes.js';
+import subscriberResourceRoutes from './routes/subscriberResourceRoutes.js';
 import passwordResetRoutes from './routes/passwordResetRoutes.js';
 import initializeSocket from './socket/socketServer.js';
 
@@ -106,6 +111,11 @@ app.use('/api/dieteticien', dieteticienRoutes);
 app.use('/api/courses', courseRoutes);
 app.use('/api/formations', formationRoutes);
 app.use('/api/chat', chatRoutes);
+app.use('/api/dieteticien-subscriptions', dieteticienSubscriptionRoutes);
+app.use('/api/food-diary', foodDiaryRoutes);
+app.use('/api/goals', goalRoutes);
+app.use('/api/progress', progressRoutes);
+app.use('/api/resources', subscriberResourceRoutes);
 app.use('/api/ai-tool', aiToolRoutes);
 app.use('/api/password-reset', passwordResetRoutes);
 

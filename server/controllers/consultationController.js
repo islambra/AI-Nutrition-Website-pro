@@ -103,7 +103,8 @@ export const acceptConsultation = async (req, res) => {
     if (consultation.status !== "pending") return res.status(400).json({ success: false, message: `Already ${consultation.status}` });
 
     const startTime = new Date(consultation.requestedDateTime).toISOString();
-    const topic = `${consultation.user.fullName} - ${consultation.plan.planName} Consultation`;
+    const planName = consultation.plan?.planName || "Suivi Nutritionnel";
+    const topic = `${consultation.user.fullName} - ${planName} Consultation`;
     const meeting = await createZoomMeeting(topic, startTime, 60);
 
     consultation.status = "accepted";
@@ -131,10 +132,12 @@ export const rejectConsultation = async (req, res) => {
     );
     if (!consultation) return res.status(404).json({ success: false, message: "Request not found or already processed" });
 
-    await UserPlan.findOneAndUpdate(
-      { _id: consultation.userPlan },
-      { $inc: { sessionsRemaining: 1 } }
-    );
+    if (consultation.userPlan) {
+      await UserPlan.findOneAndUpdate(
+        { _id: consultation.userPlan },
+        { $inc: { sessionsRemaining: 1 } }
+      );
+    }
 
     res.status(200).json({ success: true, data: consultation });
   } catch (error) {

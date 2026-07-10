@@ -9,7 +9,12 @@ const consultationSchema = new mongoose.Schema({
   userPlan: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "UserPlan",
-    required: true
+    default: null
+  },
+  dieteticienSubscription: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "DieteticienSubscription",
+    default: null
   },
   nutritionist: {
     type: mongoose.Schema.Types.ObjectId,
