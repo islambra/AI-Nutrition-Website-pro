@@ -31,6 +31,8 @@ const FormationCheckoutPage = lazy(() => import('./pages/FormationCheckoutPage.j
 const CourseSubscriptionCheckout = lazy(() => import('./pages/CourseSubscriptionCheckout.jsx'))
 const AiToolPage = lazy(() => import('./pages/AiToolPage.jsx'))
 const AiToolCheckout = lazy(() => import('./pages/AiToolCheckout.jsx'))
+const FindDietitiansPage = lazy(() => import('./pages/FindDietitiansPage.jsx'))
+const PublicDietitianProfile = lazy(() => import('./pages/PublicDietitianProfile.jsx'))
 
 const CreateBlog = lazy(() => import('./pages/dieteticienDashboard/CreateBlog.jsx'))
 const CreatePlan = lazy(() => import('./pages/dieteticienDashboard/CreatePlan.jsx'))
@@ -126,6 +128,9 @@ function App() {
             <Route path="/checkout/formation/:formationId" element={<LoginGate><PageTransition><FormationCheckoutPage /></PageTransition></LoginGate>} />
             <Route path="/checkout/course-subscription" element={<LoginGate><PageTransition><CourseSubscriptionCheckout /></PageTransition></LoginGate>} />
             <Route path="/checkout/ai-tool" element={<LoginGate><PageTransition><AiToolCheckout /></PageTransition></LoginGate>} />
+
+            <Route path="/find-dietitians" element={<PageTransition><FindDietitiansPage /></PageTransition>} />
+            <Route path="/find-dietitians/:id" element={<PageTransition><PublicDietitianProfile /></PageTransition>} />
 
             <Route path="/client" element={<ProtectedRoute roles={['client']}><ClientLayout /></ProtectedRoute>}>
               <Route path="dashboard" element={<ClientDashboardHome />} />

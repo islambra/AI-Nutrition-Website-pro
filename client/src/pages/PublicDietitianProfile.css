@@ -1,0 +1,735 @@
+/* =====================================
+   PUBLIC DIETITIAN PROFILE PAGE
+   ===================================== */
+.pdp-page {
+  min-height: 100vh;
+  background: #f9fbf9;
+  padding-top: 65px;
+}
+
+/* ---------- LOADING / EMPTY ---------- */
+.pdp-loading,
+.pdp-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.pdp-spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid rgba(16, 185, 129, 0.15);
+  border-top-color: #10b981;
+  border-radius: 50%;
+  animation: pdp-spin 0.8s linear infinite;
+  margin-bottom: 16px;
+}
+
+@keyframes pdp-spin {
+  to { transform: rotate(360deg); }
+}
+
+.pdp-loading p {
+  font-size: 14px;
+  color: #9ca3af;
+}
+
+.pdp-empty svg {
+  color: #d1d5db;
+  margin-bottom: 16px;
+}
+
+.pdp-empty h3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #374151;
+  margin: 0 0 8px;
+}
+
+.pdp-empty p {
+  font-size: 14px;
+  color: #9ca3af;
+  margin: 0 0 24px;
+}
+
+.pdp-back-btn {
+  padding: 10px 24px;
+  border-radius: 50px;
+  border: 1.5px solid #e5e7eb;
+  background: #fff;
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.pdp-back-btn:hover {
+  border-color: #10b981;
+  color: #059669;
+}
+
+/* ---------- HERO ---------- */
+.pdp-hero {
+  position: relative;
+  overflow: hidden;
+  padding: 48px 40px 56px;
+  background: linear-gradient(160deg, #0a1a0a 0%, #1a3a1a 40%, #0d2618 100%);
+}
+
+.pdp-hero-bg {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.pdp-hero-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(80px);
+  opacity: 0.35;
+}
+
+.pdp-hero-orb-1 {
+  width: 350px;
+  height: 350px;
+  background: #059669;
+  top: -100px;
+  right: -60px;
+}
+
+.pdp-hero-orb-2 {
+  width: 250px;
+  height: 250px;
+  background: #10b981;
+  bottom: -80px;
+  left: -40px;
+}
+
+.pdp-hero-content {
+  position: relative;
+  z-index: 1;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+/* Back Link */
+.pdp-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s;
+  margin-bottom: 32px;
+}
+
+.pdp-back-link:hover {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+/* Profile Card */
+.pdp-profile-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 32px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 24px;
+  padding: 36px;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.pdp-avatar-section {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.pdp-avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 24px;
+  background: linear-gradient(135deg, #059669, #10b981);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+}
+
+.pdp-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.pdp-avatar-initials {
+  font-family: 'Outfit', sans-serif;
+  font-size: 36px;
+  font-weight: 800;
+  color: #fff;
+}
+
+.pdp-verified-badge {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  width: 30px;
+  height: 30px;
+  background: linear-gradient(135deg, #059669, #10b981);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  border: 3px solid #0d2618;
+  box-shadow: 0 4px 8px rgba(5, 150, 105, 0.4);
+}
+
+.pdp-profile-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.pdp-name {
+  font-family: 'Outfit', sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  color: #fff;
+  margin: 0 0 8px 0;
+  letter-spacing: -0.02em;
+}
+
+.pdp-specialty {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  color: #34d399;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.pdp-email {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.5);
+  margin-bottom: 12px;
+}
+
+.pdp-rating {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.pdp-star-icon {
+  color: #fbbf24;
+  fill: #fbbf24;
+}
+
+.pdp-rating span {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.4);
+  margin-left: 6px;
+}
+
+/* ---------- CONTENT ---------- */
+.pdp-content {
+  padding: 40px 40px 80px;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.pdp-content-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 28px;
+  align-items: start;
+}
+
+/* About Card */
+.pdp-about-card {
+  background: #fff;
+  border: 1px solid rgba(16, 185, 129, 0.08);
+  border-radius: 20px;
+  padding: 32px;
+}
+
+.pdp-section-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 16px 0;
+}
+
+.pdp-section-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  background: rgba(16, 185, 129, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #10b981;
+}
+
+.pdp-about-text {
+  font-size: 14px;
+  color: #6b7280;
+  line-height: 1.7;
+  margin: 0 0 28px 0;
+}
+
+/* Features */
+.pdp-features {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.pdp-feature {
+  display: flex;
+  gap: 14px;
+  padding: 16px;
+  background: #f9fafb;
+  border-radius: 14px;
+  border: 1px solid rgba(0, 0, 0, 0.03);
+}
+
+.pdp-feature-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background: rgba(16, 185, 129, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #10b981;
+  flex-shrink: 0;
+}
+
+.pdp-feature h4 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 4px 0;
+}
+
+.pdp-feature p {
+  font-size: 12px;
+  color: #9ca3af;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* ---------- SUBSCRIBE CARD ---------- */
+.pdp-subscribe-card {
+  background: #fff;
+  border: 1px solid rgba(16, 185, 129, 0.08);
+  border-radius: 20px;
+  padding: 32px;
+  position: sticky;
+  top: 88px;
+}
+
+/* Pricing */
+.pdp-pricing {
+  text-align: center;
+}
+
+.pdp-pricing-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(16, 185, 129, 0.08);
+  color: #10b981;
+  padding: 6px 16px;
+  border-radius: 50px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 20px;
+}
+
+.pdp-price {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
+.pdp-price-amount {
+  font-family: 'Outfit', sans-serif;
+  font-size: 42px;
+  font-weight: 900;
+  color: #059669;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.pdp-price-currency {
+  font-size: 16px;
+  font-weight: 700;
+  color: #6b7280;
+}
+
+.pdp-price-period {
+  font-size: 14px;
+  color: #9ca3af;
+  margin-bottom: 24px;
+  display: block;
+}
+
+/* Benefits */
+.pdp-benefits {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 28px 0;
+  text-align: left;
+}
+
+.pdp-benefits li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  font-size: 13px;
+  color: #4b5563;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.pdp-benefits li:last-child {
+  border-bottom: none;
+}
+
+.pdp-benefits li svg {
+  color: #10b981;
+  flex-shrink: 0;
+}
+
+/* Subscribe Button */
+.pdp-subscribe-btn {
+  width: 100%;
+  padding: 16px 24px;
+  background: linear-gradient(135deg, #059669, #10b981);
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+  box-shadow: 0 8px 24px rgba(5, 150, 105, 0.3);
+}
+
+.pdp-subscribe-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 32px rgba(5, 150, 105, 0.4);
+}
+
+.pdp-login-hint {
+  margin-top: 12px;
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+.pdp-login-hint span {
+  color: #10b981;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.pdp-login-hint span:hover {
+  text-decoration: underline;
+}
+
+/* Active Subscription */
+.pdp-active-sub {
+  text-align: center;
+  padding: 16px 0;
+}
+
+.pdp-active-sub-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+  color: #059669;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 16px;
+}
+
+.pdp-active-sub h3 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 8px;
+}
+
+.pdp-active-sub p {
+  font-size: 13px;
+  color: #6b7280;
+  margin: 0 0 20px;
+}
+
+.pdp-go-dashboard {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 20px;
+  background: #f0fdf4;
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: 12px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #059669;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.pdp-go-dashboard:hover {
+  background: #ecfdf5;
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+/* ---------- PAYMENT FORM ---------- */
+.pdp-payment-form {
+  text-align: left;
+}
+
+.pdp-form-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 8px;
+}
+
+.pdp-form-amount {
+  font-size: 14px;
+  color: #6b7280;
+  margin-bottom: 24px;
+}
+
+.pdp-form-group {
+  margin-bottom: 18px;
+}
+
+.pdp-form-group label {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+  color: #374151;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.pdp-form-select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 12px;
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  color: #111827;
+  background: #fff;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.pdp-form-select:focus {
+  border-color: #10b981;
+}
+
+.pdp-upload-zone {
+  border: 2px dashed #d1d5db;
+  border-radius: 14px;
+  padding: 20px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.pdp-upload-zone:hover {
+  border-color: #10b981;
+  background: rgba(16, 185, 129, 0.02);
+}
+
+.pdp-upload-active {
+  border-color: #10b981;
+  background: rgba(16, 185, 129, 0.04);
+  border-style: solid;
+}
+
+.pdp-upload-zone svg {
+  color: #9ca3af;
+  margin-bottom: 6px;
+}
+
+.pdp-upload-zone p {
+  font-size: 13px;
+  color: #9ca3af;
+  margin: 0;
+}
+
+.pdp-upload-filename {
+  font-size: 13px;
+  color: #059669;
+  font-weight: 600;
+  margin: 0;
+}
+
+.pdp-form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 24px;
+}
+
+.pdp-cancel-btn {
+  flex: 1;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1.5px solid #e5e7eb;
+  background: #fff;
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.pdp-cancel-btn:hover {
+  background: #f9fafb;
+}
+
+.pdp-confirm-btn {
+  flex: 1;
+  padding: 14px;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(135deg, #059669, #10b981);
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);
+}
+
+.pdp-confirm-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, #047857, #059669);
+}
+
+.pdp-confirm-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 768px) {
+  .pdp-hero {
+    padding: 32px 20px 40px;
+  }
+
+  .pdp-profile-card {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 28px 20px;
+    gap: 20px;
+  }
+
+  .pdp-specialty,
+  .pdp-email {
+    justify-content: center;
+  }
+
+  .pdp-rating {
+    justify-content: center;
+  }
+
+  .pdp-content {
+    padding: 24px 16px 60px;
+  }
+
+  .pdp-content-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .pdp-subscribe-card {
+    position: static;
+  }
+
+  .pdp-about-card {
+    padding: 24px;
+  }
+
+  .pdp-subscribe-card {
+    padding: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pdp-hero {
+    padding: 24px 16px 32px;
+  }
+
+  .pdp-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 20px;
+  }
+
+  .pdp-avatar-initials {
+    font-size: 28px;
+  }
+
+  .pdp-name {
+    font-size: 22px;
+  }
+
+  .pdp-price-amount {
+    font-size: 34px;
+  }
+
+  .pdp-form-actions {
+    flex-direction: column;
+  }
+}

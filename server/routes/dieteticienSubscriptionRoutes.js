@@ -16,6 +16,9 @@ import {
 
 const router = express.Router();
 
+router.get("/public/dieteticiens", getAllDieteticiens);
+router.get("/public/dieteticiens/:id", getDieteticienById);
+
 router.get("/dieteticiens", protect, getAllDieteticiens);
 router.get("/dieteticiens/:id", protect, getDieteticienById);
 router.post("/subscribe", protect, upload.single("proofImage"), subscribe);

@@ -1,5 +1,15 @@
 import axiosInstance from './axiosInstance';
 
+export const getPublicDieteticiens = async () => {
+  const response = await axiosInstance.get('/dieteticien-subscriptions/public/dieteticiens');
+  return response.data;
+};
+
+export const getPublicDieteticienById = async (id) => {
+  const response = await axiosInstance.get(`/dieteticien-subscriptions/public/dieteticiens/${id}`);
+  return response.data;
+};
+
 export const getAllDieteticiens = async () => {
   const response = await axiosInstance.get('/dieteticien-subscriptions/dieteticiens');
   return response.data;
