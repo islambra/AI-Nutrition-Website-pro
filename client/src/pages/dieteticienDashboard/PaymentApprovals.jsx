@@ -66,10 +66,16 @@ const PaymentApprovals = () => {
   const getServiceName = (p) => {
     if (p.plan) return p.plan.planName || 'Plan';
     if (p.formation) return p.formation.title || 'Formation';
+    if (p.dieteticienSubscription) return `Subscription - ${p.user?.fullName || 'Client'}`;
     return 'Unknown';
   };
 
-  const getServiceType = (p) => p.plan ? 'Plan' : 'Formation';
+  const getServiceType = (p) => {
+    if (p.plan) return 'Plan';
+    if (p.formation) return 'Formation';
+    if (p.dieteticienSubscription) return 'Subscription';
+    return 'Unknown';
+  };
 
   if (loading) return (
     <div className="pa-loading">

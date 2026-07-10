@@ -373,6 +373,7 @@
     "plan": "Plan",
     "formation": "Formation",
     "courseSubscription": "Course Subscription",
+    "dieteticien": "Dieteticien Subscription",
     "viewProof": "View Proof",
     "paymentProof": "Payment Proof"
   },
@@ -610,6 +611,7 @@
       "dieteticiens": "Dietitians",
       "mySubscriptions": "My Subscriptions",
       "foodDiary": "Food Diary",
+      "subscriber": "Subscriber",
       "subscribers": "Subscribers",
       "subscriberStats": "Subscriptions Stats",
       "resourceLibrary": "Resources"

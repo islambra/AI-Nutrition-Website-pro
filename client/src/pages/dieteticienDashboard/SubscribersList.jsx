@@ -59,7 +59,7 @@ const SubscribersList = () => {
         <div>
           <h1 className="cp-title">{t('dashboard.sidebar.subscribers')}</h1>
           <p className="cp-subtitle">
-            {subscribers.length} {t('dashboard.client.active')} {t('dashboard.client.subscribers')}
+            {subscribers.length} {t('dashboard.client.active')} {subscribers.length === 1 ? t('dashboard.sidebar.subscriber') : t('dashboard.sidebar.subscribers')}
           </p>
         </div>
       </div>

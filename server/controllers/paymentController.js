@@ -323,6 +323,7 @@ export const getMyRequests = async (req, res) => {
     const payments = await Payment.find({ user: req.user.id })
       .populate("plan", "planName planImage price")
       .populate("formation", "title image price")
+      .populate("dieteticien", "fullName")
       .sort({ createdAt: -1 });
 
     const enriched = payments.map(p => {
@@ -337,6 +338,11 @@ export const getMyRequests = async (req, res) => {
       } else if (p.courseSubscription) {
         serviceType = "course";
         serviceName = "Course Subscription";
+      } else if (p.dieteticienSubscription) {
+        serviceType = "dieteticien";
+        serviceName = p.dieteticien?.fullName
+          ? `Subscription - ${p.dieteticien.fullName}`
+          : "Dieteticien Subscription";
       }
       return {
         _id: p._id,

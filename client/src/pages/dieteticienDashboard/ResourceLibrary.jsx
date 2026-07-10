@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
-import { toast } from "sonner";
+import toast from "react-hot-toast";
 import { getMyResources, createResource, deleteResource } from "../../api/resourceApi";
 import "./ClientsPage.css";
 

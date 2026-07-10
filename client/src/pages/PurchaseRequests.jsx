@@ -6,7 +6,7 @@ import {
   Search, X, Filter, Clock, XCircle, DollarSign, Trash2,
   CreditCard, Package, GraduationCap, BookOpen, Calendar,
   RefreshCw, Sparkles, Eye, Layers, AlertCircle,
-  ArrowUpDown
+  ArrowUpDown, User
 } from 'lucide-react';
 import { getMyRequests, deleteMyRequest } from '../api/paymentApi';
 import toast from 'react-hot-toast';
@@ -119,6 +119,7 @@ const PurchaseRequests = ({ defaultType = 'all' }) => {
     { value: 'plan', label: t('purchaseRequests.plans'), icon: Package },
     { value: 'formation', label: t('purchaseRequests.formations'), icon: GraduationCap },
     { value: 'course', label: t('purchaseRequests.courses'), icon: BookOpen },
+    { value: 'dieteticien', label: t('purchaseRequests.dieteticien'), icon: User },
     { value: 'ai-tool', label: t('purchaseRequests.aiScanner'), icon: Sparkles }
   ];
 
@@ -354,12 +355,13 @@ const PurchaseRequests = ({ defaultType = 'all' }) => {
                         {req.serviceType === 'plan' && <Package size={20} />}
                         {req.serviceType === 'formation' && <GraduationCap size={20} />}
                         {req.serviceType === 'course' && <BookOpen size={20} />}
+                        {req.serviceType === 'dieteticien' && <User size={20} />}
                         {req.serviceType === 'ai-tool' && <Sparkles size={20} />}
                       </div>
                       <div className="pr-service-info">
                         <h3>{req.serviceName}</h3>
                         <span className="pr-service-type">
-                          {req.serviceType === 'plan' ? t('purchaseRequests.plan') : req.serviceType === 'formation' ? t('purchaseRequests.formation') : req.serviceType === 'course' ? t('purchaseRequests.courseSubscription') : t('purchaseRequests.aiScanner')}
+                          {req.serviceType === 'plan' ? t('purchaseRequests.plan') : req.serviceType === 'formation' ? t('purchaseRequests.formation') : req.serviceType === 'course' ? t('purchaseRequests.courseSubscription') : req.serviceType === 'dieteticien' ? t('purchaseRequests.dieteticien') : t('purchaseRequests.aiScanner')}
                         </span>
                       </div>
                     </div>

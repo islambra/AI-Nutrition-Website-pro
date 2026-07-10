@@ -77,7 +77,7 @@ const SubscriptionStats = () => {
       <div className="cp-header">
         <div>
           <h1 className="cp-title">{t('dashboard.sidebar.subscriberStats')}</h1>
-          <p className="cp-subtitle">{t('dashboard.client.mySubscriptionsDesc')}</p>
+          <p className="cp-subtitle">{t('dashboard.client.activeSubscribers')}</p>
         </div>
       </div>
 
