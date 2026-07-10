@@ -17,6 +17,7 @@ import {
   Sparkles,
   ArrowLeft,
   AlertTriangle,
+  Plus,
 } from "lucide-react";
 import { useTranslation } from 'react-i18next';
 import "./CreateCourse.css";
@@ -40,17 +41,16 @@ const CreateCourse = () => {
   const formRef = useRef(null);
 
   const [loading, setLoading] = useState(false);
-  const [previewPdf, setPreviewPdf] = useState(null);
-  const [materialType, setMaterialType] = useState("pdf");
   const [step, setStep] = useState(1);
   const [dragOver, setDragOver] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
+  const fileInputRef = useRef(null);
 
   const [formData, setFormData] = useState({
     title: "",
     level: "",
     semester: "",
-    pdfFile: null,
+    pdfFiles: [],
     url: "",
   });
 
@@ -59,12 +59,20 @@ const CreateCourse = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const addFiles = (files) => {
+    const validFiles = Array.from(files).filter(
+      (f) => f.type === "application/pdf" && f.size <= 10 * 1024 * 1024
+    );
+    if (validFiles.length === 0) return;
+    setFormData((prev) => ({
+      ...prev,
+      pdfFiles: [...prev.pdfFiles, ...validFiles],
+    }));
+  };
+
   const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    if (file.type !== "application/pdf" || file.size > 10 * 1024 * 1024) return;
-    setFormData((prev) => ({ ...prev, pdfFile: file }));
-    setPreviewPdf(URL.createObjectURL(file));
+    addFiles(e.target.files);
+    e.target.value = "";
   };
 
   const handleDragOver = (e) => {
@@ -77,24 +85,20 @@ const CreateCourse = () => {
   const handleDrop = (e) => {
     e.preventDefault();
     setDragOver(false);
-    const file = e.dataTransfer.files[0];
-    if (!file) return;
-    if (file.type !== "application/pdf" || file.size > 10 * 1024 * 1024) return;
-    setFormData((prev) => ({ ...prev, pdfFile: file }));
-    setPreviewPdf(URL.createObjectURL(file));
+    addFiles(e.dataTransfer.files);
   };
 
-  const removeFile = () => {
-    if (previewPdf) URL.revokeObjectURL(previewPdf);
-    setPreviewPdf(null);
-    setFormData((prev) => ({ ...prev, pdfFile: null }));
+  const removeFile = (index) => {
+    setFormData((prev) => ({
+      ...prev,
+      pdfFiles: prev.pdfFiles.filter((_, i) => i !== index),
+    }));
   };
 
   const canGoNext = () => {
     if (step === 1) return formData.title.trim() && formData.level && formData.semester;
     if (step === 2) {
-      if (materialType === "pdf") return formData.pdfFile !== null;
-      return formData.url.trim() !== "";
+      return formData.pdfFiles.length > 0 || formData.url.trim() !== "";
     }
     return true;
   };
@@ -111,7 +115,7 @@ const CreateCourse = () => {
     if (!formData.title.trim()) return false;
     if (!formData.level) return false;
     if (!formData.semester) return false;
-    if (materialType === "url" && !formData.url.trim()) return false;
+    if (formData.pdfFiles.length === 0 && !formData.url.trim()) return false;
     return true;
   };
 
@@ -122,8 +126,8 @@ const CreateCourse = () => {
 
     const payload = {
       ...formData,
-      url: materialType === "url" ? formData.url : "",
-      pdfFile: materialType === "pdf" ? formData.pdfFile : null,
+      url: formData.url,
+      pdfFiles: formData.pdfFiles,
     };
 
     setLoading(true);
@@ -241,89 +245,79 @@ const CreateCourse = () => {
         </div>
       </div>
 
-      <div className="cc-toggle-group">
-        <button
-          type="button"
-          className={`cc-toggle-option ${materialType === "pdf" ? "active" : ""}`}
-          onClick={() => setMaterialType("pdf")}
-        >
-          <Upload size={18} />
-          <div>
-            <strong>{t('dashboard.dieteticien.createCourse.uploadPdf')}</strong>
-          </div>
-        </button>
-        <button
-          type="button"
-          className={`cc-toggle-option ${materialType === "url" ? "active" : ""}`}
-          onClick={() => setMaterialType("url")}
-        >
-          <Link size={18} />
-          <div>
-            <strong>{t('dashboard.dieteticien.createCourse.driveLink')}</strong>
-          </div>
-        </button>
-      </div>
+      <div className="cc-panel visible">
+        <div className="cc-panel-label">
+          <Upload size={16} />
+          <span>{t('dashboard.dieteticien.createCourse.uploadPdf')}</span>
+        </div>
 
-      <div className={`cc-panel ${materialType === "pdf" ? "visible" : ""}`}>
-        {materialType === "pdf" && (
-          previewPdf ? (
-            <div className="cc-file-card">
-              <div className="cc-file-card-info">
-                <FileText size={28} />
-                <div>
-                  <span className="cc-file-name">{formData.pdfFile?.name}</span>
-                  <span className="cc-file-size">
-                    {formData.pdfFile
-                      ? `${(formData.pdfFile.size / 1024 / 1024).toFixed(2)} MB`
-                      : ""}
-                  </span>
+        {formData.pdfFiles.length > 0 && (
+          <div className="cc-file-list">
+            {formData.pdfFiles.map((file, index) => (
+              <div key={index} className="cc-file-card">
+                <div className="cc-file-card-info">
+                  <FileText size={24} />
+                  <div>
+                    <span className="cc-file-name">{file.name}</span>
+                    <span className="cc-file-size">
+                      {(file.size / 1024 / 1024).toFixed(2)} MB
+                    </span>
+                  </div>
                 </div>
+                <button type="button" className="cc-file-remove" onClick={() => removeFile(index)}>
+                  <X size={18} />
+                </button>
               </div>
-              <button type="button" className="cc-file-remove" onClick={removeFile}>
-                <X size={18} />
-              </button>
-            </div>
-          ) : (
-            <label
-              className={`cc-drop-zone ${dragOver ? "drag-over" : ""}`}
-              onDragOver={handleDragOver}
-              onDragLeave={handleDragLeave}
-              onDrop={handleDrop}
-            >
-              <div className="cc-drop-content">
-                <Upload size={36} />
-                <span className="cc-drop-title">{t('dashboard.dieteticien.createCourse.dropPdf')}</span>
-                <span className="cc-drop-hint">{t('dashboard.dieteticien.createCourse.pdfOnly')}</span>
-              </div>
-              <input
-                type="file"
-                accept=".pdf,application/pdf"
-                onChange={handleFileChange}
-                style={{ display: "none" }}
-              />
-            </label>
-          )
-        )}
-      </div>
-
-      <div className={`cc-panel ${materialType === "url" ? "visible" : ""}`}>
-        {materialType === "url" && (
-          <div className="cc-url-section">
-            <div className="cc-url-field">
-              <Link size={20} className="cc-url-icon" />
-              <input
-                type="url"
-                name="url"
-                value={formData.url}
-                onChange={handleChange}
-                placeholder={t('dashboard.dieteticien.createCourse.drivePlaceholder')}
-              />
-            </div>
-            <p className="cc-url-hint">
-              <ExternalLink size={12} /> {t('dashboard.dieteticien.createCourse.driveHint')}
-            </p>
+            ))}
           </div>
         )}
+
+        <label
+          className={`cc-drop-zone ${dragOver ? "drag-over" : ""}`}
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+        >
+          <div className="cc-drop-content">
+            <Upload size={36} />
+            <span className="cc-drop-title">
+              {formData.pdfFiles.length > 0
+                ? t('dashboard.dieteticien.createCourse.addMorePdf')
+                : t('dashboard.dieteticien.createCourse.dropPdf')}
+            </span>
+            <span className="cc-drop-hint">{t('dashboard.dieteticien.createCourse.pdfOnly')}</span>
+          </div>
+          <input
+            ref={fileInputRef}
+            type="file"
+            multiple
+            accept=".pdf,application/pdf"
+            onChange={handleFileChange}
+            style={{ display: "none" }}
+          />
+        </label>
+      </div>
+
+      <div className="cc-panel visible">
+        <div className="cc-panel-label">
+          <Link size={16} />
+          <span>{t('dashboard.dieteticien.createCourse.driveLink')}</span>
+        </div>
+        <div className="cc-url-section">
+          <div className="cc-url-field">
+            <Link size={20} className="cc-url-icon" />
+            <input
+              type="url"
+              name="url"
+              value={formData.url}
+              onChange={handleChange}
+              placeholder={t('dashboard.dieteticien.createCourse.drivePlaceholder')}
+            />
+          </div>
+          <p className="cc-url-hint">
+            <ExternalLink size={12} /> {t('dashboard.dieteticien.createCourse.driveHint')}
+          </p>
+        </div>
       </div>
     </div>
   );
@@ -357,13 +351,19 @@ const CreateCourse = () => {
           </span>
         </div>
         <div className="cc-review-row">
-          <span className="cc-review-label">{t('dashboard.dieteticien.createCourse.reviewMaterial')}</span>
+          <span className="cc-review-label">{t('dashboard.dieteticien.createCourse.reviewPdfs')}</span>
           <span className="cc-review-value">
-            {materialType === "pdf"
-              ? formData.pdfFile?.name || t('dashboard.dieteticien.createCourse.noFile')
-              : formData.url || t('dashboard.dieteticien.createCourse.noLink')}
+            {formData.pdfFiles.length > 0
+              ? `${formData.pdfFiles.length} PDF(s)`
+              : t('dashboard.dieteticien.createCourse.noFile')}
           </span>
         </div>
+        {formData.url && (
+          <div className="cc-review-row">
+            <span className="cc-review-label">{t('dashboard.dieteticien.createCourse.reviewLink')}</span>
+            <span className="cc-review-value cc-review-url">{formData.url}</span>
+          </div>
+        )}
       </div>
     </div>
   );

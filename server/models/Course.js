@@ -16,14 +16,11 @@ const courseSchema = new mongoose.Schema({
     required: true,
     enum: [1, 2]
   },
-  pdfUrl: {
-    type: String,
-    default: null
-  },
-  pdfFileId: {
-    type: String,
-    default: null
-  },
+  pdfs: [{
+    url: { type: String, required: true },
+    fileId: { type: String, required: true },
+    fileName: { type: String, default: '' }
+  }],
   url: {
     type: String,
     default: null

@@ -380,11 +380,36 @@
 /* ── Panels ── */
 
 .cc-panel {
-  display: none;
   animation: fadeUp 0.3s ease-out;
 }
 
-.cc-panel.visible { display: block; }
+.cc-panel + .cc-panel {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--cc-gray-100);
+}
+
+.cc-panel-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--cc-gray-600);
+  margin-bottom: 0.75rem;
+}
+
+.cc-panel-label svg {
+  color: var(--cc-primary);
+  flex-shrink: 0;
+}
+
+.cc-file-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
 
 /* ── Drop Zone ── */
 
@@ -585,6 +610,14 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.cc-review-url {
+  font-weight: 500;
+  color: var(--cc-primary-dark);
+  font-size: 0.8125rem;
+  max-width: 300px;
+  word-break: break-all;
 }
 
 /* ── Messages ── */

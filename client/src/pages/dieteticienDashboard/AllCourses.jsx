@@ -329,11 +329,11 @@ const AllCourses = () => {
                       Sem {course.semester}
                     </span>
                     <div className="ac-card-type-icon">
-                      {course.pdfUrl ? (
+                      {course.pdfs?.length > 0 ? (
                         <FileText size={14} />
-                      ) : (
+                      ) : course.url ? (
                         <ExternalLink size={14} />
-                      )}
+                      ) : null}
                     </div>
                   </div>
 
@@ -369,18 +369,19 @@ const AllCourses = () => {
                         <span>Drive</span>
                       </a>
                     )}
-                    {course.pdfUrl && (
+                    {course.pdfs?.map((pdf, i) => (
                       <a
-                        href={course.pdfUrl}
+                        key={pdf.fileId || i}
+                        href={pdf.url}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="ac-action-btn pdf"
-                        title="View PDF"
+                        title={pdf.fileName || `PDF ${i + 1}`}
                       >
                         <FileText size={15} />
-                        <span>PDF</span>
+                        <span>PDF {course.pdfs.length > 1 ? i + 1 : ''}</span>
                       </a>
-                    )}
+                    ))}
                     {user &&
                       (course.createdBy === user._id ||
                         user.role === "admin") && (

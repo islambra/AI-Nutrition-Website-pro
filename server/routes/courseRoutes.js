@@ -1,6 +1,6 @@
 import express from 'express';
 import { protect, authorize } from '../middleware/auth.js';
-import uploadPdf from '../middleware/multerPdf.js';
+import { uploadMultiplePdf } from '../middleware/multerPdf.js';
 import upload from '../middleware/multer.js';
 import {
   createCourse,
@@ -21,7 +21,7 @@ router.get('/platform-payment-info', getPlatformPaymentInfo);
 
 router.use(protect);
 
-router.post('/', authorize('admin', 'dieteticien'), uploadPdf.single('pdfFile'), validateCourse, createCourse);
+router.post('/', authorize('admin', 'dieteticien'), uploadMultiplePdf, validateCourse, createCourse);
 router.get('/', getAllCourses);
 router.get('/level/:level', getCoursesByLevel);
 router.delete('/:id', deleteCourse);

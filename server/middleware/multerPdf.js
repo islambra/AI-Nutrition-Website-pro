@@ -23,4 +23,6 @@ const uploadPdf = multer({
   }
 });
 
+export const uploadMultiplePdf = uploadPdf.array('pdfFiles', 10);
+
 export default uploadPdf;

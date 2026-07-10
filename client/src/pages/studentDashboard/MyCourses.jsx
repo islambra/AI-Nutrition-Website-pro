@@ -318,11 +318,11 @@ const MyCourses = () => {
                       {t('common.all')} {course.semester}
                     </span>
                     <div className="mc-card-type-icon">
-                      {course.pdfUrl ? (
+                      {course.pdfs?.length > 0 ? (
                         <FileText size={14} />
-                      ) : (
+                      ) : course.url ? (
                         <ExternalLink size={14} />
-                      )}
+                      ) : null}
                     </div>
                   </div>
 
@@ -358,18 +358,19 @@ const MyCourses = () => {
                         <span>{t('dashboard.student.drive')}</span>
                       </a>
                     )}
-                    {course.pdfUrl && (
+                    {course.pdfs?.map((pdf, i) => (
                       <a
-                        href={course.pdfUrl}
+                        key={pdf.fileId || i}
+                        href={pdf.url}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="mc-action-btn pdf"
-                        title="View PDF"
+                        title={pdf.fileName || `PDF ${i + 1}`}
                       >
                         <FileText size={15} />
-                        <span>{t('dashboard.student.pdf')}</span>
+                        <span>{t('dashboard.student.pdf')} {course.pdfs.length > 1 ? i + 1 : ''}</span>
                       </a>
-                    )}
+                    ))}
                   </div>
                 </motion.div>
               ))}

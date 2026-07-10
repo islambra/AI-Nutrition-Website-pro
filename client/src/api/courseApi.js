@@ -8,8 +8,10 @@ export const createCourse = async (courseData) => {
   if (courseData.url) {
     formData.append('url', courseData.url);
   }
-  if (courseData.pdfFile) {
-    formData.append('pdfFile', courseData.pdfFile);
+  if (courseData.pdfFiles && courseData.pdfFiles.length > 0) {
+    courseData.pdfFiles.forEach((file) => {
+      formData.append('pdfFiles', file);
+    });
   }
 
   const response = await axiosInstance.post("/courses", formData, {

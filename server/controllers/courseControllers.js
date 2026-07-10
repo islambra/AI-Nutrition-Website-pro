@@ -20,20 +20,24 @@ export const createCourse = async (req, res) => {
       return res.status(404).json({ success: false, message: "User not found" });
     }
 
-    let pdfUrl = null;
-    let pdfFileId = null;
-    if (req.file) {
-      try {
-        const base64File = req.file.buffer.toString("base64");
-        const uploadResponse = await imagekit.upload({
-          file: base64File,
-          fileName: `course-${Date.now()}-${req.file.originalname}`,
-          folder: "/courses",
-        });
-        pdfUrl = uploadResponse.url;
-        pdfFileId = uploadResponse.fileId;
-      } catch (uploadError) {
-        return res.status(400).json({ success: false, message: "Failed to upload PDF file" });
+    const pdfs = [];
+    if (req.files && req.files.length > 0) {
+      for (const file of req.files) {
+        try {
+          const base64File = file.buffer.toString("base64");
+          const uploadResponse = await imagekit.upload({
+            file: base64File,
+            fileName: `course-${Date.now()}-${file.originalname}`,
+            folder: "/courses",
+          });
+          pdfs.push({
+            url: uploadResponse.url,
+            fileId: uploadResponse.fileId,
+            fileName: file.originalname,
+          });
+        } catch (uploadError) {
+          return res.status(400).json({ success: false, message: "Failed to upload one or more PDF files" });
+        }
       }
     }
 
@@ -41,8 +45,7 @@ export const createCourse = async (req, res) => {
       title: title.trim(),
       level: parseInt(level),
       semester: parseInt(semester),
-      pdfUrl,
-      pdfFileId,
+      pdfs,
       url: url || undefined,
       createdBy: user._id,
       creatorInfo: {
@@ -97,8 +100,10 @@ export const deleteCourse = async (req, res) => {
       return res.status(403).json({ success: false, message: "Not authorized to delete this course" });
     }
 
-    if (course.pdfFileId) {
-      try { await imagekit.deleteFile(course.pdfFileId); } catch (_) {}
+    if (course.pdfs && course.pdfs.length > 0) {
+      for (const pdf of course.pdfs) {
+        try { await imagekit.deleteFile(pdf.fileId); } catch (_) {}
+      }
     }
 
     await Course.findByIdAndDelete(id);
