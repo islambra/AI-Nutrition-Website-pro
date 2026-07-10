@@ -1,6 +1,6 @@
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import { ShoppingBag, ClipboardList, Sparkles, Heart, Utensils } from "lucide-react";
+import { ShoppingBag, ClipboardList, Sparkles, Heart, Utensils, Activity } from "lucide-react";
 import ScrollReveal from "../../components/ScrollReveal";
 import { useTranslation } from 'react-i18next';
 import "./ClientPlans.css";

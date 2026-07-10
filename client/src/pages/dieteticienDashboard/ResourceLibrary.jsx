@@ -154,7 +154,7 @@ const ResourceLibrary = () => {
                 ) : (
                   <>
                     <div className="rl-upload-icon"><Upload /></div>
-                    <p className="rl-upload-text">{t("dashboard.client.clickToUpload")}</p>
+                    <p className="rl-upload-text">{t("dashboard.client.clickToUploadResource")}</p>
                     <p className="rl-upload-hint">PDF, DOC, XLS, PPT, TXT, JPG, PNG</p>
                   </>
                 )}
