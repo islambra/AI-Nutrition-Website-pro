@@ -1,22 +1,19 @@
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { Search, Calendar, Clock, MessageCircle, Utensils, Target, Activity, Users, X } from "lucide-react";
 import { getSubscribers } from "../../api/dieteticienSubscriptionApi";
 import { useChat } from "../../context/ChatContext";
-import "./ClientsPage.css";
+import "./SubscribersList.css";
 
-const Icons = {
-  User: () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>,
-  Mail: () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 7L2 7"/></svg>,
-  Calendar: () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>,
-  MessageCircle: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>,
-  Clock: () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
-  Search: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>,
-  Utensils: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2v0a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7"/></svg>,
-  Target: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>,
-  Activity: () => <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>,
-  Users: () => <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>,
+const cardVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: (i) => ({
+    opacity: 1,
+    y: 0,
+    transition: { delay: i * 0.06, duration: 0.45, ease: [0.23, 1, 0.32, 1] },
+  }),
 };
 
 const SubscribersList = () => {
@@ -41,111 +38,196 @@ const SubscribersList = () => {
     fetch();
   }, []);
 
-  const filtered = subscribers.filter(s =>
+  const filtered = subscribers.filter((s) =>
     s.client?.fullName?.toLowerCase().includes(search.toLowerCase())
   );
 
+  const getInitials = (name) => {
+    if (!name) return "?";
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
+  const getDaysClass = (days) => {
+    if (days > 14) return "ok";
+    if (days > 5) return "warn";
+    return "danger";
+  };
+
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[40vh]">
-        <div className="w-10 h-10 border-2 border-emerald-200 border-t-emerald-500 rounded-full animate-spin" />
+      <div className="sub-list-page">
+        <div className="sub-list-loading">
+          <div className="sub-list-spinner" />
+          <p>{t("dashboard.client.loading")}</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="cp-page">
-      <div className="cp-header">
-        <div>
-          <h1 className="cp-title">{t('dashboard.sidebar.subscribers')}</h1>
-          <p className="cp-subtitle">
-            {subscribers.length} {t('dashboard.client.active')} {subscribers.length === 1 ? t('dashboard.sidebar.subscriber') : t('dashboard.sidebar.subscribers')}
-          </p>
+    <motion.div
+      className="sub-list-page"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+    >
+      {/* Header */}
+      <div className="sub-list-header">
+        <div className="sub-list-header-left">
+          <div className="sub-list-icon-wrap">
+            <Users />
+          </div>
+          <div>
+            <h1 className="sub-list-title">{t("dashboard.sidebar.subscribers")}</h1>
+            <p className="sub-list-subtitle">
+              {subscribers.length} {t("dashboard.client.active")}{" "}
+              {subscribers.length === 1
+                ? t("dashboard.sidebar.subscriber")
+                : t("dashboard.sidebar.subscribers")}
+            </p>
+          </div>
         </div>
+        {subscribers.length > 0 && (
+          <div className="sub-list-count-badge">
+            <Users size={16} />
+            {subscribers.length}
+          </div>
+        )}
       </div>
 
+      {/* Search */}
       {subscribers.length > 0 && (
-        <div className="cp-search">
-          <Icons.Search />
-          <input type="text" value={search} onChange={e => setSearch(e.target.value)}
-            placeholder={t('dashboard.client.searchDieteticiens')} />
+        <div className="sub-list-search">
+          <Search />
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder={t("dashboard.client.searchDieteticiens")}
+          />
+          {search && (
+            <button className="sub-list-search-clear" onClick={() => setSearch("")}>
+              <X size={14} />
+            </button>
+          )}
         </div>
       )}
 
-      {filtered.length === 0 ? (
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-          style={{
-            textAlign: "center", padding: "4rem 2rem",
-            background: "#f9fafb", borderRadius: 20,
-            border: "1.5px dashed #e5e7eb"
-          }}>
-          <div style={{
-            width: 80, height: 80, borderRadius: 28,
-            background: "linear-gradient(135deg, #d1fae5, #a7f3d0)",
-            display: "flex", alignItems: "center", justifyContent: "center",
-            margin: "0 auto 20px", color: "#059669"
-          }}>
-            <Icons.Users />
+      {/* Empty */}
+      {filtered.length === 0 && (
+        <motion.div
+          className="sub-list-empty"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <div className="sub-list-empty-icon">
+            <Users />
           </div>
-          <h3 style={{ fontSize: 18, fontWeight: 600, color: "#374151", margin: "0 0 6px" }}>
-            {search ? t('common.noResults') : t('dashboard.client.noSubscriptions')}
+          <h3>
+            {search ? t("common.noResults") : t("dashboard.client.noSubscriptions")}
           </h3>
-            <p style={{ fontSize: 14, color: "#9ca3af", maxWidth: 400, margin: "0 auto 20px" }}>
-              {search
-                ? t('dashboard.client.searchDieteticiens')
-                : t('dashboard.client.findDieteticiensDesc')}
+          <p>
+            {search
+              ? t("dashboard.client.searchDieteticiens")
+              : t("dashboard.client.findDieteticiensDesc")}
           </p>
         </motion.div>
-      ) : (
-        <div className="cp-grid">
-          {filtered.map((sub, i) => (
-            <motion.div
-              key={sub._id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.05 }}
-              className="cp-card"
-              whileHover={{ translateY: -4, boxShadow: "0 12px 30px rgba(0,0,0,0.1)" }}
-            >
-              <div className="cp-card-header">
-                <div className="cp-avatar">
-                  {sub.client?.photo ? (
-                    <img src={sub.client.photo} alt="" />
-                  ) : (
-                    <Icons.User />
-                  )}
+      )}
+
+      {/* Grid */}
+      {filtered.length > 0 && (
+        <div className="sub-list-grid">
+          <AnimatePresence>
+            {filtered.map((sub, i) => (
+              <motion.div
+                key={sub._id}
+                className="sub-list-card"
+                custom={i}
+                variants={cardVariants}
+                initial="hidden"
+                animate="visible"
+                layout
+              >
+                <div className="sub-list-card-bar" />
+                <div className="sub-list-card-body">
+                  {/* Top: Avatar + Info + Status */}
+                  <div className="sub-list-card-top">
+                    <div className="sub-list-avatar">
+                      {sub.client?.photo ? (
+                        <img src={sub.client.photo} alt="" />
+                      ) : (
+                        <div className="sub-list-avatar-fallback">
+                          {getInitials(sub.client?.fullName)}
+                        </div>
+                      )}
+                    </div>
+                    <div className="sub-list-card-info">
+                      <h3 className="sub-list-card-name">
+                        {sub.client?.fullName || "Client"}
+                      </h3>
+                      <p className="sub-list-card-email">
+                        {sub.client?.email}
+                      </p>
+                    </div>
+                    <div className="sub-list-status-dot" title={t("dashboard.client.active")} />
+                  </div>
+
+                  {/* Details */}
+                  <div className="sub-list-card-details">
+                    <div className="sub-list-detail">
+                      <Calendar />
+                      <span>
+                        <strong>{t("dashboard.client.expiresOn")}</strong>{" "}
+                        {new Date(sub.endDate).toLocaleDateString()}
+                      </span>
+                    </div>
+                    <div className={`sub-list-days-badge ${getDaysClass(sub.remainingDays)}`}>
+                      <Clock size={12} />
+                      {sub.remainingDays} {t("dashboard.client.daysRemaining")}
+                    </div>
+                  </div>
+
+                  {/* Actions */}
+                  <div className="sub-list-card-actions">
+                    <button
+                      className="sub-list-action-btn primary"
+                      onClick={() => openChat(sub.client?._id)}
+                    >
+                      <MessageCircle /> {t("dashboard.client.chat")}
+                    </button>
+                    <button
+                      className="sub-list-action-btn"
+                      onClick={() =>
+                        navigate(`/dieteticien/subscribers/${sub.client?._id}/food-logs`)
+                      }
+                    >
+                      <Utensils /> {t("dashboard.client.foodDiary")}
+                    </button>
+                    <button
+                      className="sub-list-action-btn"
+                      onClick={() =>
+                        navigate(`/dieteticien/subscribers/${sub.client?._id}/goals`)
+                      }
+                    >
+                      <Target /> {t("dashboard.client.goals")}
+                    </button>
+                    <button
+                      className="sub-list-action-btn"
+                      onClick={() =>
+                        navigate(`/dieteticien/subscribers/${sub.client?._id}/progress`)
+                      }
+                    >
+                      <Activity /> {t("dashboard.client.progress")}
+                    </button>
+                  </div>
                 </div>
-                <div className="cp-client-info">
-                  <h3>{sub.client?.fullName || "Client"}</h3>
-                  <span><Icons.Mail /> {sub.client?.email}</span>
-                </div>
-              </div>
-              <div className="cp-card-details">
-                <div className="cp-detail-item">
-                  <Icons.Calendar />
-                  <span>{t('dashboard.client.expiresOn')} {new Date(sub.endDate).toLocaleDateString()}</span>
-                </div>
-                <div className="cp-detail-item">
-                  <Icons.Clock />
-                  <span>{sub.remainingDays} {t('dashboard.client.daysRemaining')}</span>
-                </div>
-              </div>
-              <div className="cp-card-actions">
-                <button onClick={() => openChat(sub.client?._id)} className="cp-action-btn">
-                  <Icons.MessageCircle /> {t('dashboard.client.chat')}
-                </button>
-                <button onClick={() => navigate(`/dieteticien/subscribers/${sub.client?._id}/food-logs`)} className="cp-action-btn">
-                  <Icons.Utensils /> {t('dashboard.client.foodDiary')}
-                </button>
-                <button onClick={() => navigate(`/dieteticien/subscribers/${sub.client?._id}/goals`)} className="cp-action-btn">
-                  <Icons.Target /> {t('dashboard.client.goals')}
-                </button>
-                <button onClick={() => navigate(`/dieteticien/subscribers/${sub.client?._id}/progress`)} className="cp-action-btn">
-                  <Icons.Activity /> {t('dashboard.client.progress')}
-                </button>
-              </div>
-            </motion.div>
-          ))}
+              </motion.div>
+            ))}
+          </AnimatePresence>
         </div>
       )}
     </motion.div>
