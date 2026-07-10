@@ -72,6 +72,33 @@ export const subscribe = async (req, res) => {
       return res.status(404).json({ success: false, message: "Dieteticien not found" });
     }
 
+    // Check if client already has ANY active subscription with ANY dietitian
+    const anyActiveSub = await DieteticienSubscription.findOne({
+      client: clientId,
+      hasAccess: true,
+      endDate: { $gte: new Date() },
+      cancelledAt: null
+    });
+    if (anyActiveSub) {
+      return res.status(400).json({
+        success: false,
+        message: "You already have an active subscription. You can only subscribe to one dietitian at a time."
+      });
+    }
+
+    // Check if client already has ANY pending subscription payment with ANY dietitian
+    const anyPendingPayment = await Payment.findOne({
+      user: clientId,
+      dieteticienSubscription: true,
+      status: "pending"
+    });
+    if (anyPendingPayment) {
+      return res.status(400).json({
+        success: false,
+        message: "You already have a pending subscription request. You can only subscribe to one dietitian at a time."
+      });
+    }
+
     const activeSub = await DieteticienSubscription.findOne({
       client: clientId,
       dieteticien: dieteticienId,

@@ -1,18 +1,15 @@
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { useParams } from "react-router-dom";
+import { motion, AnimatePresence } from "framer-motion";
+import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
+import { ArrowLeft, Utensils, Calendar, Send } from "lucide-react";
 import { getSubscriberEntries, addFeedback } from "../../api/foodDiaryApi";
-import "./ClientsPage.css";
-
-const Icons = {
-  MessageSquare: () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>,
-  Send: () => <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>,
-};
+import "./SubscribersList.css";
 
 const SubscriberFoodLogs = () => {
   const { clientId } = useParams();
+  const navigate = useNavigate();
   const { t } = useTranslation();
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -50,8 +47,11 @@ const SubscriberFoodLogs = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[40vh]">
-        <div className="w-10 h-10 border-2 border-emerald-200 border-t-emerald-500 rounded-full animate-spin" />
+      <div className="sub-detail-page">
+        <div className="sub-detail-loading">
+          <div className="sub-detail-spinner" />
+          <p>{t("dashboard.client.loading")}</p>
+        </div>
       </div>
     );
   }
@@ -64,62 +64,84 @@ const SubscriberFoodLogs = () => {
   }, {});
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="cp-page">
-      <div className="cp-header">
-        <h1 className="cp-title">{t('dashboard.client.foodDiary')}</h1>
-        <p className="cp-subtitle">{entries[0]?.client?.fullName || "Client"}</p>
+    <motion.div className="sub-detail-page" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+      {/* Header */}
+      <div className="sub-detail-header">
+        <button className="sub-detail-back" onClick={() => navigate("/dieteticien/subscribers")}>
+          <ArrowLeft />
+        </button>
+        <div className="sub-detail-icon-wrap food">
+          <Utensils />
+        </div>
+        <div>
+          <h1 className="sub-detail-title">{t("dashboard.client.foodDiary")}</h1>
+          <p className="sub-detail-subtitle">{entries[0]?.client?.fullName || "Client"}</p>
+        </div>
       </div>
 
-      {Object.entries(grouped).sort(([a], [b]) => b.localeCompare(a)).map(([dateKey, dayEntries]) => (
-        <div key={dateKey} style={{ marginBottom: 16 }}>
-          <h3 style={{ fontSize: 15, fontWeight: 600, margin: "0 0 8px", color: "#374151" }}>
-            {new Date(dateKey).toLocaleDateString()}
-          </h3>
-          {dayEntries.map(e => (
-            <div key={e._id} className="cp-card" style={{ padding: "1rem", marginBottom: 8 }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-                <span style={{
-                  padding: "2px 10px", borderRadius: 12, fontSize: 11, fontWeight: 600,
-                  background: e.mealType === "breakfast" ? "#fef3c7" : e.mealType === "lunch" ? "#dbeafe" : e.mealType === "dinner" ? "#fce7f3" : "#e0e7ff",
-                  color: e.mealType === "breakfast" ? "#d97706" : e.mealType === "lunch" ? "#2563eb" : e.mealType === "dinner" ? "#db2777" : "#4338ca"
-                }}>
-                  {t(`dashboard.client.${e.mealType}`)}
-                </span>
-              </div>
-              <p style={{ margin: 0, fontSize: 14, color: "#374151" }}>{e.description}</p>
-              {e.notes && <p style={{ margin: "4px 0", fontSize: 12, color: "#6b7280", fontStyle: "italic" }}>{e.notes}</p>}
-
-              {e.dieteticienFeedback ? (
-                <div style={{ marginTop: 8, padding: "8px 12px", background: "#ecfdf5", borderRadius: 8, borderLeft: "3px solid #10b981" }}>
-                  <p style={{ margin: 0, fontSize: 12, fontWeight: 600, color: "#059669" }}>{t('dashboard.client.yourFeedback')}:</p>
-                  <p style={{ margin: "2px 0 0", fontSize: 13, color: "#047857" }}>{e.dieteticienFeedback}</p>
-                </div>
-              ) : (
-                <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
-                  <input type="text" value={feedback[e._id] || ""}
-                    onChange={val => setFeedback(prev => ({ ...prev, [e._id]: val.target.value }))}
-                    placeholder={t('dashboard.client.addFeedback')}
-                    style={{ flex: 1, padding: "8px 12px", borderRadius: 8, border: "1.5px solid #e5e7eb", fontSize: 13 }} />
-                  <button onClick={() => handleFeedback(e._id)}
-                    style={{
-                      padding: "8px 16px", borderRadius: 8, border: "none",
-                      background: "#10b981", color: "#fff", cursor: "pointer",
-                      display: "flex", alignItems: "center", gap: 4, fontSize: 13
-                    }}>
-                    <Icons.Send /> {t('dashboard.client.send')}
-                  </button>
-                </div>
-              )}
-            </div>
-          ))}
-        </div>
-      ))}
-
+      {/* Empty */}
       {Object.keys(grouped).length === 0 && (
-        <p style={{ textAlign: "center", color: "#9ca3af", padding: "3rem 0" }}>
-          {t('dashboard.client.noEntries')}
-        </p>
+        <motion.div className="sub-detail-empty" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+          <div className="sub-detail-empty-icon food">
+            <Utensils />
+          </div>
+          <h3>{t("dashboard.client.noEntries")}</h3>
+          <p>{t("dashboard.client.findDieteticiensDesc")}</p>
+        </motion.div>
       )}
+
+      {/* Grouped by Date */}
+      <AnimatePresence>
+        {Object.entries(grouped)
+          .sort(([a], [b]) => b.localeCompare(a))
+          .map(([dateKey, dayEntries]) => (
+            <motion.div
+              key={dateKey}
+              className="food-date-group"
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+            >
+              <div className="food-date-header">
+                <Calendar />
+                <h3>{new Date(dateKey).toLocaleDateString()}</h3>
+                <span className="food-date-count">{dayEntries.length}</span>
+              </div>
+
+              {dayEntries.map(entry => (
+                <div key={entry._id} className="food-entry">
+                  <div className="food-entry-top">
+                    <span className={`food-meal-badge ${entry.mealType}`}>
+                      {t(`dashboard.client.${entry.mealType}`)}
+                    </span>
+                  </div>
+                  <p className="food-entry-desc">{entry.description}</p>
+                  {entry.notes && <p className="food-entry-notes">{entry.notes}</p>}
+
+                  {entry.dieteticienFeedback ? (
+                    <div className="food-feedback-existing">
+                      <p className="food-feedback-label">{t("dashboard.client.yourFeedback")}:</p>
+                      <p className="food-feedback-text">{entry.dieteticienFeedback}</p>
+                    </div>
+                  ) : (
+                    <div className="food-feedback-form">
+                      <input
+                        type="text"
+                        className="food-feedback-input"
+                        value={feedback[entry._id] || ""}
+                        onChange={(e) => setFeedback(prev => ({ ...prev, [entry._id]: e.target.value }))}
+                        placeholder={t("dashboard.client.addFeedback")}
+                      />
+                      <button className="food-feedback-btn" onClick={() => handleFeedback(entry._id)}>
+                        <Send />
+                        {t("dashboard.client.send")}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </motion.div>
+          ))}
+      </AnimatePresence>
     </motion.div>
   );
 };

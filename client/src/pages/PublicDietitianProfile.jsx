@@ -79,6 +79,7 @@ const PublicDietitianProfile = () => {
         toast.success(t("findDietitiansProfile.subscriptionSent"));
         setShowPaymentForm(false);
         setProofImage(null);
+        navigate("/client/my-requests");
       }
     } catch (err) {
       toast.error(err.response?.data?.message || t("findDietitiansProfile.subscriptionError"));

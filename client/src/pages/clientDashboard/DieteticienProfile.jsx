@@ -69,6 +69,7 @@ const DieteticienProfile = () => {
         toast.success(t('dashboard.client.subscriptionSent'));
         setShowPaymentForm(false);
         setProofImage(null);
+        navigate("/client/my-requests");
       }
     } catch (err) {
       toast.error(err.response?.data?.message || t('dashboard.client.subscriptionError'));

@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
+import { ArrowLeft, Activity, Calendar, TrendingUp } from "lucide-react";
 import { getSubscriberProgress } from "../../api/progressApi";
-import "./ClientsPage.css";
+import "./SubscribersList.css";
 
 const SubscriberProgress = () => {
   const { clientId } = useParams();
+  const navigate = useNavigate();
   const { t } = useTranslation();
   const [entries, setEntries] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -27,8 +29,11 @@ const SubscriberProgress = () => {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-[40vh]">
-        <div className="w-10 h-10 border-2 border-emerald-200 border-t-emerald-500 rounded-full animate-spin" />
+      <div className="sub-detail-page">
+        <div className="sub-detail-loading">
+          <div className="sub-detail-spinner" />
+          <p>{t("dashboard.client.loading")}</p>
+        </div>
       </div>
     );
   }
@@ -36,40 +41,78 @@ const SubscriberProgress = () => {
   const sorted = [...entries].sort((a, b) => new Date(b.date) - new Date(a.date));
 
   return (
-    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="cp-page">
-      <div className="cp-header">
-        <h1 className="cp-title">{t('dashboard.client.progressTracking')}</h1>
-        <p className="cp-subtitle">{entries[0]?.client?.fullName || "Client"}</p>
+    <motion.div className="sub-detail-page" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+      {/* Header */}
+      <div className="sub-detail-header">
+        <button className="sub-detail-back" onClick={() => navigate("/dieteticien/subscribers")}>
+          <ArrowLeft />
+        </button>
+        <div className="sub-detail-icon-wrap progress">
+          <Activity />
+        </div>
+        <div>
+          <h1 className="sub-detail-title">{t("dashboard.client.progressTracking")}</h1>
+          <p className="sub-detail-subtitle">{entries[0]?.client?.fullName || "Client"}</p>
+        </div>
       </div>
 
-      {sorted.length === 0 ? (
-        <p style={{ textAlign: "center", color: "#9ca3af", padding: "3rem 0" }}>
-          {t('dashboard.client.noProgress')}
-        </p>
-      ) : (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-          <div style={{ overflowX: "auto" }}>
-            <table style={{ width: "100%", borderCollapse: "collapse", fontSize: 14 }}>
-              <thead>
-                <tr style={{ background: "#f9fafb" }}>
-                  <th style={{ padding: "10px 12px", textAlign: "left", fontWeight: 600, color: "#374151", borderBottom: "2px solid #e5e7eb" }}>{t('dashboard.client.date')}</th>
-                  <th style={{ padding: "10px 12px", textAlign: "left", fontWeight: 600, color: "#374151", borderBottom: "2px solid #e5e7eb" }}>{t('dashboard.client.weight')} (kg)</th>
-                  <th style={{ padding: "10px 12px", textAlign: "left", fontWeight: 600, color: "#374151", borderBottom: "2px solid #e5e7eb" }}>{t('dashboard.client.waist')} (cm)</th>
-                  <th style={{ padding: "10px 12px", textAlign: "left", fontWeight: 600, color: "#374151", borderBottom: "2px solid #e5e7eb" }}>{t('dashboard.client.bodyFat')} (%)</th>
-                </tr>
-              </thead>
-              <tbody>
-                {sorted.map(e => (
-                  <tr key={e._id} style={{ borderBottom: "1px solid #f3f4f6" }}>
-                    <td style={{ padding: "10px 12px", color: "#6b7280" }}>{new Date(e.date).toLocaleDateString()}</td>
-                    <td style={{ padding: "10px 12px", fontWeight: 600 }}>{e.weight}</td>
-                    <td style={{ padding: "10px 12px", color: "#6b7280" }}>{e.waist || "-"}</td>
-                    <td style={{ padding: "10px 12px", color: "#6b7280" }}>{e.bodyFat || "-"}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+      {/* Empty */}
+      {sorted.length === 0 && (
+        <motion.div className="sub-detail-empty" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+          <div className="sub-detail-empty-icon progress">
+            <TrendingUp />
           </div>
+          <h3>{t("dashboard.client.noProgress")}</h3>
+          <p>{t("dashboard.client.findDieteticiensDesc")}</p>
+        </motion.div>
+      )}
+
+      {/* Table */}
+      {sorted.length > 0 && (
+        <motion.div
+          className="progress-table-wrap"
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <table className="progress-table">
+            <thead>
+              <tr>
+                <th>{t("dashboard.client.date")}</th>
+                <th>{t("dashboard.client.weight")} (kg)</th>
+                <th>{t("dashboard.client.waist")} (cm)</th>
+                <th>{t("dashboard.client.bodyFat")} (%)</th>
+              </tr>
+            </thead>
+            <tbody>
+              {sorted.map(entry => (
+                <tr key={entry._id}>
+                  <td>
+                    <span className="progress-cell-date">
+                      <Calendar />
+                      {new Date(entry.date).toLocaleDateString()}
+                    </span>
+                  </td>
+                  <td>
+                    <span className="progress-cell-value">{entry.weight}</span>
+                  </td>
+                  <td>
+                    {entry.waist ? (
+                      <span className="progress-cell-value">{entry.waist}</span>
+                    ) : (
+                      <span className="progress-cell-na">—</span>
+                    )}
+                  </td>
+                  <td>
+                    {entry.bodyFat ? (
+                      <span className="progress-cell-value">{entry.bodyFat}</span>
+                    ) : (
+                      <span className="progress-cell-na">—</span>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </motion.div>
       )}
     </motion.div>

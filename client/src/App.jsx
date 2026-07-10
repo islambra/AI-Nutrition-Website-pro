@@ -19,8 +19,6 @@ const ClientLayout = lazy(() => import('./pages/clientDashboard/ClientLayout.jsx
 const ClientDashboardHome = lazy(() => import('./pages/clientDashboard/ClientDashboardHome.jsx'))
 const ClientPlans = lazy(() => import('./pages/clientDashboard/ClientPlans.jsx'))
 const ClientRequests = lazy(() => import('./pages/clientDashboard/ClientRequests.jsx'))
-const AllDieteticiens = lazy(() => import('./pages/clientDashboard/AllDieteticiens.jsx'))
-const DieteticienProfile = lazy(() => import('./pages/clientDashboard/DieteticienProfile.jsx'))
 const MySubscriptions = lazy(() => import('./pages/clientDashboard/MySubscriptions.jsx'))
 const FoodDiary = lazy(() => import('./pages/clientDashboard/FoodDiary.jsx'))
 const Goals = lazy(() => import('./pages/clientDashboard/Goals.jsx'))
@@ -134,8 +132,6 @@ function App() {
 
             <Route path="/client" element={<ProtectedRoute roles={['client']}><ClientLayout /></ProtectedRoute>}>
               <Route path="dashboard" element={<ClientDashboardHome />} />
-              <Route path="dieteticiens" element={<AllDieteticiens />} />
-              <Route path="dieteticiens/:id" element={<DieteticienProfile />} />
               <Route path="my-subscriptions" element={<MySubscriptions />} />
               <Route path="my-plans" element={<ClientPlans />} />
               <Route path="my-requests" element={<ClientRequests />} />

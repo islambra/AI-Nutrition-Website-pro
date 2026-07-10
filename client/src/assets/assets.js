@@ -55,7 +55,6 @@ export const studentMenuLinks = [
 ];
 export const clientMenuLinks = [
   { name: "dashboard", path: "/client/dashboard", icon: homeIcon },
-  { name: "dieteticiens", path: "/client/dieteticiens", icon: allUsers },
   { name: "mySubscriptions", path: "/client/my-subscriptions", icon: payment },
   { name: "foodDiary", path: "/client/food-diary", icon: listIcon },
   { name: "myPlans", path: "/client/my-plans", icon: listIcon },
