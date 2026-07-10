@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import { Target, Plus, Trash, Calendar, Lock, ArrowRight, CheckCircle } from "lucide-react";
+import { Target, Plus, Trash, Calendar, Lock, ArrowRight, CheckCircle, Minus, ListChecks } from "lucide-react";
 import { getMyGoals, createGoal, updateGoal, deleteGoal } from "../../api/goalsApi";
 import { getMySubscriptions } from "../../api/dieteticienSubscriptionApi";
 import "./ClientDashboard.css";
@@ -49,10 +49,11 @@ const Goals = () => {
   };
 
   const handleProgress = async (goal, newProgress) => {
+    const clamped = Math.max(0, Math.min(100, newProgress));
     try {
-      const status = newProgress >= 100 ? "completed" : goal.status;
-      const res = await updateGoal(goal._id, { progress: newProgress, status });
-      if (res.success) setGoals(prev => prev.map(g => g._id === goal._id ? { ...g, progress: newProgress, status } : g));
+      const status = clamped >= 100 ? "completed" : goal.status;
+      const res = await updateGoal(goal._id, { progress: clamped, status });
+      if (res.success) setGoals(prev => prev.map(g => g._id === goal._id ? { ...g, progress: clamped, status } : g));
     } catch (err) { toast.error("Error updating progress"); }
   };
 
@@ -69,8 +70,12 @@ const Goals = () => {
     );
   }
 
+  const activeGoals = goals.filter(g => g.status === "active");
+  const completedGoals = goals.filter(g => g.status === "completed");
+
   return (
     <motion.div className="cd-page" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
+      {/* Header */}
       <div className="cd-header">
         <div className="cd-header-icon amber"><Target /></div>
         <div>
@@ -91,9 +96,40 @@ const Goals = () => {
         </motion.div>
       ) : (
         <>
-          {/* Toggle Form Button */}
+          {/* Summary Bar */}
+          {goals.length > 0 && (
+            <motion.div className="cd-summary-bar" initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}>
+              <div className="cd-summary-item">
+                <div className="cd-summary-icon amber"><ListChecks /></div>
+                <div>
+                  <p className="cd-summary-value">{goals.length}</p>
+                  <p className="cd-summary-label">{t("dashboard.client.goals")}</p>
+                </div>
+              </div>
+              <div className="cd-summary-divider" />
+              <div className="cd-summary-item">
+                <div className="cd-summary-icon blue"><Target /></div>
+                <div>
+                  <p className="cd-summary-value">{activeGoals.length}</p>
+                  <p className="cd-summary-label">{t("dashboard.client.active")}</p>
+                </div>
+              </div>
+              <div className="cd-summary-divider" />
+              <div className="cd-summary-item">
+                <div className="cd-summary-icon green"><CheckCircle /></div>
+                <div>
+                  <p className="cd-summary-value">{completedGoals.length}</p>
+                  <p className="cd-summary-label">{t("dashboard.client.completed")}</p>
+                </div>
+              </div>
+            </motion.div>
+          )}
+
+          {/* Section Header + Toggle */}
           <div className="cd-section-header">
-            <h2 className="cd-section-title">{goals.length > 0 ? `${goals.length} ${t("dashboard.client.goals")}` : ""}</h2>
+            <h2 className="cd-section-title">
+              {activeGoals.length > 0 ? `${activeGoals.length} ${t("dashboard.client.active")}` : ""}
+            </h2>
             <button className={`cd-toggle-btn ${showForm ? "cancel" : "add"}`} onClick={() => setShowForm(!showForm)}>
               <Plus style={{ transform: showForm ? "rotate(45deg)" : "none", transition: "transform 0.2s" }} />
               {showForm ? t("common.cancel") : t("dashboard.client.addGoal")}
@@ -108,76 +144,99 @@ const Goals = () => {
                   <label>{t("dashboard.client.title")} <span className="required">*</span></label>
                   <input type="text" value={title} onChange={e => setTitle(e.target.value)} placeholder={t("dashboard.client.title")} />
                 </div>
-                <div className="cd-field" style={{ marginTop: 14 }}>
+                <div className="cd-field cd-field-mt">
                   <label>{t("dashboard.client.description")}</label>
                   <textarea value={description} onChange={e => setDescription(e.target.value)} rows={2} placeholder={t("dashboard.client.description")} />
                 </div>
-                <div className="cd-field" style={{ marginTop: 14 }}>
+                <div className="cd-field cd-field-mt">
                   <label>{t("dashboard.client.targetDate")}</label>
                   <input type="date" value={targetDate} onChange={e => setTargetDate(e.target.value)} />
                 </div>
-                <button className="cd-btn-primary" style={{ marginTop: 16 }} onClick={handleCreate} disabled={submitting}>
+                <button className="cd-btn-primary cd-btn-mt" onClick={handleCreate} disabled={submitting}>
                   {submitting ? t("common.loading") : t("dashboard.client.addGoal")}
                 </button>
               </motion.div>
             )}
           </AnimatePresence>
 
-          {/* Empty */}
+          {/* Empty State */}
           {goals.length === 0 && !showForm && (
             <div className="cd-empty">
               <div className="cd-empty-icon amber"><Target /></div>
               <h3>{t("dashboard.client.noGoals")}</h3>
-              <button className="cd-lock-btn" onClick={() => setShowForm(true)} style={{ background: "linear-gradient(135deg, #10b981, #059669)" }}>
+              <button className="cd-lock-btn" onClick={() => setShowForm(true)}>
                 <Plus /> {t("dashboard.client.addGoal")}
               </button>
             </div>
           )}
 
-          {/* Goal Cards */}
+          {/* Active Goals */}
           <AnimatePresence>
-            {goals.map((goal, i) => (
+            {activeGoals.map((goal, i) => (
               <motion.div key={goal._id} className="cd-card" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0, transition: { delay: i * 0.06 } }}>
                 <div className="cd-goal-top">
-                  <div className={`cd-goal-icon ${goal.status === "completed" ? "completed" : "active"}`}>
-                    {goal.status === "completed" ? <CheckCircle /> : <Target />}
-                  </div>
+                  <div className="cd-goal-icon active"><Target /></div>
                   <div className="cd-goal-info">
-                    <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8 }}>
+                    <div className="cd-goal-header">
                       <h3 className="cd-goal-title">{goal.title}</h3>
                       <button className="cd-delete-btn" onClick={() => handleDelete(goal._id)}><Trash /></button>
                     </div>
                     {goal.description && <p className="cd-goal-desc">{goal.description}</p>}
                     {goal.targetDate && (
                       <p className="cd-goal-date">
-                        <Calendar /> {t("dashboard.client.targetDate")}: {new Date(goal.targetDate).toLocaleDateString()}
+                        <Calendar size={14} /> {t("dashboard.client.targetDate")}: {new Date(goal.targetDate).toLocaleDateString()}
                       </p>
                     )}
                     <div className="cd-goal-progress">
                       <div className="cd-goal-track">
-                        <div className={`cd-goal-fill ${goal.status === "completed" ? "completed" : "active"}`} style={{ width: `${goal.progress}%` }} />
+                        <div className="cd-goal-fill active" style={{ width: `${goal.progress}%` }} />
                       </div>
                       <span className="cd-goal-pct">{goal.progress}%</span>
                     </div>
-                    {goal.status === "active" && (
-                      <div className="cd-goal-btns">
-                        {[25, 50, 75, 100].map(pct => (
-                          <button key={pct} className={`cd-goal-btn ${goal.progress >= pct ? "reached" : ""}`} onClick={() => handleProgress(goal, pct)}>
-                            {pct}%
-                          </button>
-                        ))}
-                      </div>
-                    )}
-                    {goal.status === "completed" && (
-                      <div className="cd-completed-badge">
-                        <CheckCircle /> {t("dashboard.client.completed")}
-                      </div>
-                    )}
+                    {/* Stepper */}
+                    <div className="cd-stepper">
+                      <button className="cd-stepper-btn" onClick={() => handleProgress(goal, goal.progress - 25)} disabled={goal.progress <= 0}>
+                        <Minus size={14} />
+                      </button>
+                      <span className="cd-stepper-value">{goal.progress}%</span>
+                      <button className="cd-stepper-btn" onClick={() => handleProgress(goal, goal.progress + 25)} disabled={goal.progress >= 100}>
+                        <Plus size={14} />
+                      </button>
+                    </div>
                   </div>
                 </div>
               </motion.div>
             ))}
           </AnimatePresence>
+
+          {/* Completed Goals */}
+          {completedGoals.length > 0 && (
+            <>
+              <h2 className="cd-section-title cd-section-mt">{t("dashboard.client.completed")}</h2>
+              {completedGoals.map((goal, i) => (
+                <motion.div key={goal._id} className="cd-card cd-card-completed" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0, transition: { delay: i * 0.06 } }}>
+                  <div className="cd-goal-top">
+                    <div className="cd-goal-icon completed"><CheckCircle /></div>
+                    <div className="cd-goal-info">
+                      <div className="cd-goal-header">
+                        <h3 className="cd-goal-title">{goal.title}</h3>
+                        <button className="cd-delete-btn" onClick={() => handleDelete(goal._id)}><Trash /></button>
+                      </div>
+                      <div className="cd-goal-progress">
+                        <div className="cd-goal-track">
+                          <div className="cd-goal-fill completed" style={{ width: "100%" }} />
+                        </div>
+                        <span className="cd-goal-pct completed-text">100%</span>
+                      </div>
+                      <div className="cd-completed-badge">
+                        <CheckCircle size={14} /> {t("dashboard.client.completed")}
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </>
+          )}
         </>
       )}
     </motion.div>

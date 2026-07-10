@@ -1091,6 +1091,202 @@
   cursor: not-allowed;
 }
 
+/* ── Summary Bar ── */
+.cd-summary-bar {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: #fff;
+  border-radius: 18px;
+  border: 1.5px solid #e2e8f0;
+  padding: 18px 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  flex-wrap: wrap;
+}
+
+.cd-summary-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cd-summary-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.cd-summary-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.cd-summary-icon.amber { background: #fef3c7; color: #d97706; }
+.cd-summary-icon.blue { background: #dbeafe; color: #2563eb; }
+.cd-summary-icon.green { background: #d1fae5; color: #059669; }
+.cd-summary-icon.purple { background: #ede9fe; color: #7c3aed; }
+.cd-summary-icon.red { background: #fee2e2; color: #dc2626; }
+
+.cd-summary-value {
+  font-family: 'Outfit', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0;
+  line-height: 1.1;
+}
+
+.cd-summary-value small {
+  font-size: 13px;
+  font-weight: 500;
+  color: #94a3b8;
+}
+
+.cd-summary-value.green-text { color: #059669; }
+.cd-summary-value.red-text { color: #dc2626; }
+
+.cd-summary-label {
+  font-size: 12px;
+  color: #94a3b8;
+  font-weight: 500;
+  margin: 2px 0 0;
+}
+
+.cd-summary-divider {
+  width: 1px;
+  height: 36px;
+  background: #e2e8f0;
+  flex-shrink: 0;
+}
+
+/* ── Stepper (Goals) ── */
+.cd-stepper {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-top: 14px;
+  background: #f8fafc;
+  border-radius: 12px;
+  border: 1.5px solid #e2e8f0;
+  overflow: hidden;
+  width: fit-content;
+}
+
+.cd-stepper-btn {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.cd-stepper-btn:hover:not(:disabled) {
+  background: #e2e8f0;
+  color: #1e293b;
+}
+
+.cd-stepper-btn:disabled {
+  color: #cbd5e1;
+  cursor: not-allowed;
+}
+
+.cd-stepper-value {
+  font-family: 'Outfit', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  color: #1e293b;
+  min-width: 56px;
+  text-align: center;
+  padding: 0 4px;
+}
+
+/* ── Goal Header ── */
+.cd-goal-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+/* ── Card Completed ── */
+.cd-card-completed {
+  opacity: 0.75;
+  border-color: #d1fae5;
+}
+
+.cd-card-completed:hover {
+  opacity: 1;
+}
+
+/* ── Completed Text ── */
+.cd-completed-text {
+  color: #059669;
+}
+
+/* ── Section Margin ── */
+.cd-section-mt {
+  margin-top: 32px;
+  margin-bottom: 16px;
+}
+
+/* ── Field Margin ── */
+.cd-field-mt {
+  margin-top: 14px;
+}
+
+/* ── Button Margin ── */
+.cd-btn-mt {
+  margin-top: 16px;
+}
+
+/* ── Table Date ── */
+.cd-table-date {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+  color: #1e293b;
+}
+
+.cd-table-date-icon {
+  color: #8b5cf6;
+}
+
+/* ── Table Actions Column ── */
+.cd-table-actions {
+  text-align: center;
+  width: 60px;
+}
+
+/* ── Action Buttons: Goals & Progress ── */
+.cd-action-btn.goals {
+  border-color: #f59e0b;
+  color: #d97706;
+}
+.cd-action-btn.goals:hover {
+  background: #fffbeb;
+  transform: translateY(-1px);
+}
+
+.cd-action-btn.progress {
+  border-color: #3b82f6;
+  color: #2563eb;
+}
+.cd-action-btn.progress:hover {
+  background: #eff6ff;
+  transform: translateY(-1px);
+}
+
 /* ── Responsive ── */
 @media (max-width: 768px) {
   .cd-page {
@@ -1133,5 +1329,23 @@
 
   .cd-goal-btns {
     flex-wrap: wrap;
+  }
+
+  .cd-summary-bar {
+    gap: 14px;
+    padding: 14px 18px;
+  }
+
+  .cd-summary-divider {
+    display: none;
+  }
+
+  .cd-summary-value {
+    font-size: 17px;
+  }
+
+  .cd-stepper {
+    width: 100%;
+    justify-content: center;
   }
 }

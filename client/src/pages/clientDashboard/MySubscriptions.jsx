@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
-import { User, MessageCircle, Video, X, RefreshCw, FileText, Clock, Calendar, Download, CheckCircle, ArrowRight, Lock } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { User, MessageCircle, Video, X, RefreshCw, FileText, Clock, Calendar, Download, CheckCircle, ArrowRight, Lock, Target, Activity } from "lucide-react";
 import { getMySubscriptions, cancelSubscription, requestZoomSession, renewSubscription } from "../../api/dieteticienSubscriptionApi";
 import { getSubscriberResources } from "../../api/resourceApi";
 import { useChat } from "../../context/ChatContext";
@@ -19,6 +20,7 @@ const cardVariants = {
 
 const MySubscriptions = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const [subscriptions, setSubscriptions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [zoomModal, setZoomModal] = useState(null);
@@ -147,6 +149,12 @@ const MySubscriptions = () => {
               </button>
               <button className="cd-action-btn resources" onClick={() => loadResources(sub.dieteticien?._id, sub._id)}>
                 <FileText /> {t("dashboard.client.resources")}
+              </button>
+              <button className="cd-action-btn goals" onClick={() => navigate("/client/goals")}>
+                <Target /> {t("dashboard.client.goals")}
+              </button>
+              <button className="cd-action-btn progress" onClick={() => navigate("/client/progress")}>
+                <Activity /> {t("dashboard.client.progressTracking")}
               </button>
               <button className="cd-action-btn cancel-sub" onClick={() => handleCancel(sub._id)}>
                 <X /> {t("dashboard.client.cancelSub")}

@@ -689,6 +689,8 @@
       "noEntries": "No entries yet. Start logging your meals!",
       "noGoals": "No goals yet. Create your first goal!",
       "noProgress": "No progress entries yet. Start tracking!",
+      "entries": "Entries",
+      "latestWeight": "Latest",
       "targetDate": "Target Date",
       "completed": "Completed",
       "yourFeedback": "Your feedback",
