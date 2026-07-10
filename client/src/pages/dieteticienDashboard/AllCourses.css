@@ -112,12 +112,13 @@
   font-size: 0.9rem;
   cursor: pointer;
   box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
-  transition: box-shadow 0.2s;
+  transition: all 0.2s;
   white-space: nowrap;
 }
 
 .ac-add-btn:hover {
   box-shadow: 0 6px 20px rgba(16, 185, 129, 0.35);
+  transform: translateY(-1px);
 }
 
 /* ---- Stats Row ---- */
@@ -154,16 +155,6 @@
 .ac-stat-icon.courses {
   background: #ecfdf5;
   color: #059669;
-}
-
-.ac-stat-icon.levels {
-  background: #eff6ff;
-  color: #2563eb;
-}
-
-.ac-stat-icon.instructors {
-  background: #fef3c7;
-  color: #d97706;
 }
 
 .ac-stat-value {
@@ -538,7 +529,8 @@
 
 .ac-card-actions {
   display: flex;
-  gap: 0.4rem;
+  flex-wrap: wrap;
+  gap: 0.35rem;
   padding: 0.65rem 1rem 0.85rem;
   border-top: 1px solid #e5e7eb;
 }
@@ -547,7 +539,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.3rem;
-  padding: 0.4rem 0.65rem;
+  padding: 0.4rem 0.6rem;
   border-radius: 8px;
   font-size: 0.78rem;
   font-weight: 600;
@@ -556,10 +548,11 @@
   text-decoration: none;
   border: 1px solid transparent;
   min-height: 32px;
+  white-space: nowrap;
 }
 
 .ac-action-btn span {
-  font-size: 0.75rem;
+  font-size: 0.72rem;
 }
 
 .ac-action-btn.pdf {
@@ -570,6 +563,7 @@
 
 .ac-action-btn.pdf:hover {
   background: #d1fae5;
+  border-color: #6ee7b7;
 }
 
 .ac-action-btn.drive {
@@ -580,6 +574,7 @@
 
 .ac-action-btn.drive:hover {
   background: #dbeafe;
+  border-color: #93c5fd;
 }
 
 .ac-action-btn.delete {
@@ -591,6 +586,7 @@
 
 .ac-action-btn.delete:hover {
   background: #fee2e2;
+  border-color: #fca5a5;
 }
 
 .ac-action-btn:active {
@@ -736,7 +732,7 @@
   font-weight: 600;
   border: none;
   cursor: pointer;
-  transition: box-shadow 0.2s;
+  transition: all 0.2s;
   min-height: 44px;
 }
 
@@ -871,6 +867,16 @@
     grid-template-columns: 1fr;
     gap: 0.875rem;
   }
+
+  .ac-card-actions {
+    gap: 0.4rem;
+  }
+
+  .ac-action-btn {
+    flex: 1;
+    justify-content: center;
+    padding: 0.45rem 0.5rem;
+  }
 }
 
 /* Phone */
@@ -1003,7 +1009,6 @@
     width: 34px;
     height: 34px;
     border-radius: 8px;
-    margin-bottom: 0.1rem;
   }
 
   .ac-card-icon svg {
@@ -1018,19 +1023,18 @@
   .ac-card-actions {
     padding: 0.5rem 0.875rem 0.75rem;
     gap: 0.35rem;
-    flex-wrap: wrap;
   }
 
   .ac-action-btn {
-    padding: 0.4rem 0.6rem;
-    font-size: 0.75rem;
-    min-height: 36px;
+    padding: 0.4rem 0.5rem;
+    font-size: 0.72rem;
+    min-height: 34px;
     flex: 1;
     justify-content: center;
   }
 
   .ac-action-btn span {
-    font-size: 0.7rem;
+    font-size: 0.68rem;
   }
 
   .ac-action-btn.delete {
@@ -1092,10 +1096,6 @@
     gap: 0.5rem;
   }
 
-  .ac-level {
-    gap: 0.75rem;
-  }
-
   .ac-level-section {
     border-radius: 10px;
   }
@@ -1141,9 +1141,9 @@
   }
 
   .ac-action-btn {
-    font-size: 0.7rem;
-    padding: 0.35rem 0.5rem;
-    min-height: 32px;
+    font-size: 0.68rem;
+    padding: 0.35rem 0.45rem;
+    min-height: 30px;
   }
 
   .ac-action-btn span {
