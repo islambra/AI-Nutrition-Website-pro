@@ -2,22 +2,10 @@ import { useState, useEffect, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { Search, Filter, ChevronRight, User, Stethoscope, ArrowUpDown, Sparkles, Star, Shield } from "lucide-react";
+import { Search, ChevronRight, User, Stethoscope, ArrowUpDown, Sparkles, Star, Shield } from "lucide-react";
 import { getPublicDieteticiens } from "../api/dieteticienSubscriptionApi";
 import ScrollReveal from "../components/ScrollReveal";
 import "./FindDietitiansPage.css";
-
-const SPECIALTIES = [
-  "all",
-  "Sports Nutrition",
-  "Clinical Dietetics",
-  "Pediatric Nutrition",
-  "Weight Management",
-  "Diabetes Management",
-  "Cardiovascular Nutrition",
-  "Vegetarian & Vegan",
-  "General Nutrition",
-];
 
 const containerVariants = {
   hidden: {},
@@ -41,7 +29,6 @@ const FindDietitiansPage = () => {
   const navigate = useNavigate();
   const [dieteticiens, setDieteticiens] = useState([]);
   const [search, setSearch] = useState("");
-  const [activeFilter, setActiveFilter] = useState("all");
   const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState("newest");
 
@@ -61,27 +48,16 @@ const FindDietitiansPage = () => {
 
   const filtered = useMemo(() => {
     let result = dieteticiens.filter((d) => {
-      const matchesSearch =
-        d.fullName?.toLowerCase().includes(search.toLowerCase()) ||
-        d.specialty?.toLowerCase().includes(search.toLowerCase());
-      const matchesFilter =
-        activeFilter === "all" || d.specialty?.toLowerCase().includes(activeFilter.toLowerCase());
-      return matchesSearch && matchesFilter;
+      const matchesSearch = d.fullName?.toLowerCase().includes(search.toLowerCase());
+      return matchesSearch;
     });
 
     if (sortBy === "name") {
       result.sort((a, b) => (a.fullName || "").localeCompare(b.fullName || ""));
-    } else if (sortBy === "specialty") {
-      result.sort((a, b) => (a.specialty || "").localeCompare(b.specialty || ""));
     }
 
     return result;
-  }, [dieteticiens, search, activeFilter, sortBy]);
-
-  const uniqueSpecialties = useMemo(() => {
-    const specs = [...new Set(dieteticiens.map((d) => d.specialty).filter(Boolean))];
-    return ["all", ...specs];
-  }, [dieteticiens]);
+  }, [dieteticiens, search, sortBy]);
 
   const getInitials = (name) => {
     if (!name) return "?";
@@ -178,11 +154,6 @@ const FindDietitiansPage = () => {
             </div>
             <div className="fdp-stat-divider" />
             <div className="fdp-stat">
-              <span className="fdp-stat-number">{uniqueSpecialties.length - 1}</span>
-              <span className="fdp-stat-label">{t("findDietitians.specialties")}</span>
-            </div>
-            <div className="fdp-stat-divider" />
-            <div className="fdp-stat">
               <span className="fdp-stat-number">4,000</span>
               <span className="fdp-stat-label">{t("findDietitians.dzdMonth")}</span>
             </div>
@@ -193,30 +164,6 @@ const FindDietitiansPage = () => {
       {/* Filters & Results */}
       <section className="fdp-content">
         <div className="fdp-content-inner">
-          {/* Filter Chips */}
-          <motion.div
-            className="fdp-filters"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-          >
-            <div className="fdp-filter-label">
-              <Filter size={14} />
-              <span>{t("findDietitians.filter")}</span>
-            </div>
-            <div className="fdp-filter-chips">
-              {uniqueSpecialties.map((spec) => (
-                <button
-                  key={spec}
-                  className={`fdp-chip ${activeFilter === spec ? "fdp-chip-active" : ""}`}
-                  onClick={() => setActiveFilter(spec)}
-                >
-                  {spec === "all" ? t("findDietitians.allSpecialties") : spec}
-                </button>
-              ))}
-            </div>
-          </motion.div>
-
           {/* Sort + Results Count */}
           <div className="fdp-results-header">
             <span className="fdp-results-count">
@@ -231,7 +178,6 @@ const FindDietitiansPage = () => {
               >
                 <option value="newest">{t("findDietitians.newest")}</option>
                 <option value="name">{t("findDietitians.nameAZ")}</option>
-                <option value="specialty">{t("findDietitians.bySpecialty")}</option>
               </select>
             </div>
           </div>
@@ -256,10 +202,7 @@ const FindDietitiansPage = () => {
               <p>{t("findDietitians.noResultsDesc")}</p>
               <button
                 className="fdp-empty-reset"
-                onClick={() => {
-                  setSearch("");
-                  setActiveFilter("all");
-                }}
+                onClick={() => setSearch("")}
               >
                 {t("findDietitians.clearFilters")}
               </button>
