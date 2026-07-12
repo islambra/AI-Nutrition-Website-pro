@@ -139,8 +139,8 @@ const ResourceLibrary = () => {
               </div>
             </div>
             <div className="rl-field rl-field-mt">
-              <label>{t("dashboard.client.description")}</label>
-              <textarea value={description} onChange={e => setDescription(e.target.value)} rows={2} placeholder={t("dashboard.client.description")} />
+              <label>{t("dashboard.client.resourceDescription")}</label>
+              <textarea value={description} onChange={e => setDescription(e.target.value)} rows={2} placeholder={t("dashboard.client.resourceDescription")} />
             </div>
             <div className="rl-field rl-field-mt">
               <label>{t("dashboard.client.file")}</label>
