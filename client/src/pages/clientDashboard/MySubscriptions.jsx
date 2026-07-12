@@ -3,10 +3,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
-import { User, MessageCircle, Video, X, RefreshCw, FileText, Clock, Calendar, Download, CheckCircle, ArrowRight, Lock, VideoOff, Trash2 } from "lucide-react";
+import { User, MessageCircle, Video, X, RefreshCw, FileText, Clock, Calendar, Download, CheckCircle, ArrowRight, Lock, VideoOff, Trash2, ExternalLink } from "lucide-react";
 import { getMySubscriptions, cancelSubscription, deleteSubscription, requestZoomSession, renewSubscription } from "../../api/dieteticienSubscriptionApi";
 import { getSubscriberResources } from "../../api/resourceApi";
+import { getUserConsultations, cancelConsultation } from "../../api/consultationApi";
 import { useChat } from "../../context/ChatContext";
+import CountdownTimer from "../../components/CountdownTimer";
 import "./ClientDashboard.css";
 
 const cardVariants = {
@@ -18,10 +20,23 @@ const cardVariants = {
   }),
 };
 
+const statusBadge = (status, t) => {
+  const map = {
+    pending:   { cls: "cd-status-pending",   label: t("dashboard.client.pending") },
+    accepted:  { cls: "cd-status-accepted",  label: t("dashboard.client.accepted") },
+    rejected:  { cls: "cd-status-rejected",  label: t("dashboard.client.rejected") },
+    completed: { cls: "cd-status-completed", label: t("dashboard.client.completed") },
+    cancelled: { cls: "cd-status-cancelled", label: t("dashboard.client.sessionCancelled") },
+  };
+  const s = map[status] || map.pending;
+  return <span className={`cd-status-badge ${s.cls}`}>{s.label}</span>;
+};
+
 const MySubscriptions = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [subscriptions, setSubscriptions] = useState([]);
+  const [consultations, setConsultations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [zoomModal, setZoomModal] = useState(null);
   const [zoomDate, setZoomDate] = useState("");
@@ -33,14 +48,22 @@ const MySubscriptions = () => {
   const [cancelConfirmId, setCancelConfirmId] = useState(null);
   const [deleteConfirmId, setDeleteConfirmId] = useState(null);
   const [deleting, setDeleting] = useState(false);
+  const [now, setNow] = useState(Date.now());
+  const [cancelBookingId, setCancelBookingId] = useState(null);
   const { openChat } = useChat();
 
-  useEffect(() => { fetchSubscriptions(); }, []);
+  useEffect(() => { fetchData(); }, []);
 
-  const fetchSubscriptions = async () => {
+  useEffect(() => {
+    const id = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, []);
+
+  const fetchData = async () => {
     try {
-      const res = await getMySubscriptions();
-      if (res.success) setSubscriptions(res.data);
+      const [subRes, consultRes] = await Promise.all([getMySubscriptions(), getUserConsultations()]);
+      if (subRes.success) setSubscriptions(subRes.data);
+      if (consultRes.success) setConsultations(consultRes.data);
     } catch (err) { console.error(err); }
     finally { setLoading(false); }
   };
@@ -48,7 +71,7 @@ const MySubscriptions = () => {
   const handleCancel = async (id) => {
     try {
       const res = await cancelSubscription(id);
-      if (res.success) { toast.success(t("dashboard.client.subscriptionCancelled")); fetchSubscriptions(); }
+      if (res.success) { toast.success(t("dashboard.client.subscriptionCancelled")); fetchData(); }
     } catch (err) { toast.error(err.response?.data?.message || "Error"); }
   };
 
@@ -58,7 +81,7 @@ const MySubscriptions = () => {
       const res = await deleteSubscription(id);
       if (res.success) {
         toast.success("Subscription and all related data deleted");
-        fetchSubscriptions();
+        fetchData();
       }
     } catch (err) { toast.error(err.response?.data?.message || "Error"); }
     finally { setDeleting(false); setDeleteConfirmId(null); }
@@ -73,9 +96,21 @@ const MySubscriptions = () => {
       if (res.success) {
         toast.success(t("dashboard.client.zoomRequested"));
         setZoomModal(null); setZoomDate(""); setZoomTime(""); setZoomNote("");
+        fetchData();
       }
     } catch (err) { toast.error(err.response?.data?.message || "Error"); }
     finally { setSubmittingZoom(false); }
+  };
+
+  const handleCancelBooking = async (id) => {
+    try {
+      const res = await cancelConsultation(id);
+      if (res.success) {
+        toast.success(t("dashboard.client.sessionCancelled"));
+        setCancelBookingId(null);
+        fetchData();
+      }
+    } catch (err) { toast.error(err.response?.data?.message || "Error"); }
   };
 
   const handleRenew = async (sub) => {
@@ -83,7 +118,7 @@ const MySubscriptions = () => {
       const formData = new FormData();
       formData.append("paymentMethod", "ccp");
       const res = await renewSubscription(sub._id, formData);
-      if (res.success) { toast.success(t("dashboard.client.renewalSent")); fetchSubscriptions(); }
+      if (res.success) { toast.success(t("dashboard.client.renewalSent")); fetchData(); }
     } catch (err) { toast.error(err.response?.data?.message || "Error"); }
   };
 
@@ -127,7 +162,12 @@ const MySubscriptions = () => {
 
       {/* Active Subscriptions */}
       <AnimatePresence>
-        {activeSubs.map((sub, i) => (
+        {activeSubs.map((sub, i) => {
+          const subConsultations = consultations.filter(
+            c => c.dieteticienSubscription?._id === sub._id || c.dieteticienSubscription === sub._id
+          );
+
+          return (
           <motion.div key={sub._id} className="cd-card" custom={i} variants={cardVariants} initial="hidden" animate="visible">
             <div className="cd-sub-header">
               <div className="cd-sub-left">
@@ -175,6 +215,56 @@ const MySubscriptions = () => {
                   {sub.zoomRemaining > 0 && ` (${sub.zoomRemaining} remaining)`}
                   {sub.zoomRemaining === 0 && " - Limit reached"}
                 </span>
+              </div>
+            )}
+
+            {/* Session Requests */}
+            {subConsultations.length > 0 && (
+              <div className="cd-sessions-section">
+                <h4 className="cd-sessions-title">
+                  <Video size={14} /> {t("dashboard.client.zoomSessions")}
+                </h4>
+                <div className="cd-sessions-list">
+                  {subConsultations.map(c => (
+                    <div key={c._id} className="cd-session-item">
+                      <div className="cd-session-info">
+                        <div className="cd-session-date">
+                          <Calendar size={13} />
+                          {new Date(c.requestedDateTime).toLocaleDateString(undefined, {
+                            month: "short", day: "numeric", year: "numeric",
+                          })}
+                          {" "}
+                          {new Date(c.requestedDateTime).toLocaleTimeString(undefined, {
+                            hour: "2-digit", minute: "2-digit",
+                          })}
+                        </div>
+                        {c.note && <p className="cd-session-note">{c.note}</p>}
+                      </div>
+                      <div className="cd-session-right">
+                        {statusBadge(c.status, t)}
+
+                        {c.status === "accepted" && (
+                          <div className="cd-session-countdown">
+                            <Clock size={12} />
+                            <CountdownTimer targetDate={c.requestedDateTime} />
+                          </div>
+                        )}
+
+                        {c.status === "accepted" && c.zoomLink && now >= new Date(c.requestedDateTime).getTime() && (
+                          <a href={c.zoomLink} target="_blank" rel="noreferrer" className="cd-session-join">
+                            <Video size={13} /> {t("dashboard.client.joinZoom")}
+                          </a>
+                        )}
+
+                        {c.status === "pending" && (
+                          <button className="cd-session-cancel" onClick={() => setCancelBookingId(c._id)}>
+                            <Trash2 size={12} />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
 
@@ -228,7 +318,8 @@ const MySubscriptions = () => {
               )}
             </AnimatePresence>
           </motion.div>
-        ))}
+          );
+        })}
       </AnimatePresence>
 
       {/* Past Subscriptions */}
@@ -302,6 +393,24 @@ const MySubscriptions = () => {
                 await handleCancel(cancelConfirmId);
                 setCancelConfirmId(null);
               }}>
+                {t("dashboard.client.confirmCancel") || "Yes, Cancel"}
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Cancel Booking Confirmation Modal */}
+      {cancelBookingId && (
+        <div className="cd-overlay" onClick={() => setCancelBookingId(null)}>
+          <motion.div className="cd-modal" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} onClick={e => e.stopPropagation()}>
+            <h3>{t("dashboard.client.cancelBookingTitle") || "Cancel Session"}</h3>
+            <p style={{ fontSize: 14, color: "#64748b", margin: "0 0 20px", lineHeight: 1.6 }}>
+              {t("dashboard.client.cancelSessionConfirm")}
+            </p>
+            <div className="cd-modal-actions">
+              <button className="cd-modal-cancel" onClick={() => setCancelBookingId(null)}>{t("common.cancel")}</button>
+              <button className="cd-modal-submit" style={{ background: "linear-gradient(135deg, #ef4444, #dc2626)" }} onClick={() => handleCancelBooking(cancelBookingId)}>
                 {t("dashboard.client.confirmCancel") || "Yes, Cancel"}
               </button>
             </div>
