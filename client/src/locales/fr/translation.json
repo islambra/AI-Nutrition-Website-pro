@@ -1342,7 +1342,13 @@
     "verifiedProfessional": "Professionnel Vérifié",
     "month": "mois",
     "expertsAvailable": "Experts Disponibles",
-    "dzdMonth": "DZD / Mois"
+    "dzdMonth": "DZD / Mois",
+    "subPrice": "4 000 DZD",
+    "subDuration": "mois",
+    "benefitZoom": "x4 Zoom",
+    "benefitChat": "Chat",
+    "benefitDiary": "Journal",
+    "benefitResources": "Ressources"
   },
   "findDietitiansProfile": {
     "loading": "Chargement du profil...",

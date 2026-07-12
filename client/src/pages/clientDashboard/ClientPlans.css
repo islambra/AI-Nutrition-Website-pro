@@ -118,6 +118,176 @@
   color: #22C55E;
 }
 
+/* ---------- DIETITIAN CARDS ---------- */
+.aff-card-dieteticien {
+  padding: 24px;
+  cursor: pointer;
+  background: #fff;
+  border: 1px solid rgba(34,197,94,0.15);
+  border-radius: 20px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+}
+
+.aff-card-dieteticien:hover {
+  border-color: rgba(34,197,94,0.3);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.06);
+}
+
+.aff-diet-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.aff-diet-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  overflow: hidden;
+  background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.aff-diet-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.aff-diet-avatar-fallback {
+  color: #059669;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.aff-diet-avatar-fallback svg {
+  width: 28px;
+  height: 28px;
+}
+
+.aff-diet-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.aff-diet-name {
+  font-family: 'Outfit', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: #0A140A;
+  margin: 0 0 4px;
+  line-height: 1.2;
+}
+
+.aff-diet-specialty {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 13px;
+  color: #6b7280;
+}
+
+.aff-diet-specialty svg {
+  flex-shrink: 0;
+  color: #059669;
+}
+
+.aff-verified-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #22C55E;
+  margin-left: 2px;
+}
+
+.aff-verified-badge svg {
+  width: 15px;
+  height: 15px;
+}
+
+/* Price Badge */
+.aff-diet-price {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 2px;
+  background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+  border: 1px solid #a7f3d0;
+  border-radius: 100px;
+  padding: 5px 14px;
+  margin-bottom: 14px;
+}
+
+.aff-price-amount {
+  font-family: 'Outfit', sans-serif;
+  font-size: 14px;
+  font-weight: 800;
+  color: #059669;
+}
+
+.aff-price-period {
+  font-size: 11px;
+  font-weight: 600;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+/* Benefits Strip */
+.aff-benefits-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 18px;
+}
+
+.aff-benefit-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #475569;
+  background: #f1f5f9;
+  padding: 5px 10px;
+  border-radius: 8px;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.aff-benefit-item svg {
+  color: #059669;
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+}
+
+.aff-card-dieteticien:hover .aff-benefit-item {
+  background: #e2e8f0;
+}
+
+/* Action Row */
+.aff-diet-action {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #22C55E;
+  padding-top: 14px;
+  border-top: 1px solid #f1f5f9;
+  transition: gap 0.2s ease;
+}
+
+.aff-card-dieteticien:hover .aff-diet-action {
+  gap: 10px;
+}
+
 .aff-insight {
   display: flex;
   align-items: center;
