@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
-import { BarChart3, Users, Clock, DollarSign, TrendingUp, ArrowUp } from "lucide-react";
+import { BarChart3, Users, Clock, DollarSign, TrendingUp, ArrowUp, AlertTriangle, CheckCircle } from "lucide-react";
 import { getSubscriberStats } from "../../api/dieteticienSubscriptionApi";
 import "./SubscriptionStats.css";
 
@@ -35,33 +35,9 @@ const SubscriptionStats = () => {
     );
   }
 
-  const expiringPct = stats?.activeSubscribers
-    ? Math.min(100, (stats.expiringThisWeek / stats.activeSubscribers) * 100)
-    : 0;
-
-  const kpis = [
-    {
-      icon: <Users />,
-      value: stats?.activeSubscribers || 0,
-      label: t("dashboard.client.activeSubscribers"),
-      color: "green",
-      barPct: "100%",
-    },
-    {
-      icon: <Clock />,
-      value: stats?.expiringThisWeek || 0,
-      label: t("dashboard.client.expiringThisWeek"),
-      color: "amber",
-      barPct: `${expiringPct}%`,
-    },
-    {
-      icon: <DollarSign />,
-      value: `${(stats?.monthlyRevenue || 0).toLocaleString()} DZD`,
-      label: t("dashboard.client.monthlyRevenue"),
-      color: "blue",
-      barPct: "100%",
-    },
-  ];
+  const expiringCount = stats?.expiringThisWeek || 0;
+  const activeCount = stats?.activeSubscribers || 0;
+  const hasExpiring = expiringCount > 0;
 
   return (
     <motion.div className="ss-page" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
@@ -78,33 +54,90 @@ const SubscriptionStats = () => {
 
       {/* KPI Cards */}
       <div className="ss-kpi-grid">
-        {kpis.map((kpi, i) => (
-          <motion.div
-            key={i}
-            className="ss-kpi-card"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.08 }}
-          >
-            <div className="ss-kpi-top">
-              <div className={`ss-kpi-icon ${kpi.color}`}>
-                {kpi.icon}
-              </div>
-              <div>
-                <p className={`ss-kpi-value ${kpi.color}`}>{kpi.value}</p>
-                <p className="ss-kpi-label">{kpi.label}</p>
-              </div>
+        {/* Active Subscribers */}
+        <motion.div
+          className="ss-kpi-card"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.08 }}
+        >
+          <div className="ss-kpi-top">
+            <div className="ss-kpi-icon green">
+              <Users />
             </div>
+            <div>
+              <p className="ss-kpi-value green">{activeCount}</p>
+              <p className="ss-kpi-label">{t("dashboard.client.activeSubscribers")}</p>
+            </div>
+          </div>
+          <div className="ss-bar-track">
+            <motion.div
+              className="ss-bar-fill green"
+              initial={{ width: 0 }}
+              animate={{ width: "100%" }}
+              transition={{ delay: 0.3, duration: 0.6, ease: "easeOut" }}
+            />
+          </div>
+        </motion.div>
+
+        {/* Expiring This Week */}
+        <motion.div
+          className={`ss-kpi-card ${hasExpiring ? "ss-kpi-card--warning" : "ss-kpi-card--safe"}`}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.16 }}
+        >
+          <div className="ss-kpi-top">
+            <div className={`ss-kpi-icon ${hasExpiring ? "amber" : "gray"}`}>
+              {hasExpiring ? <Clock /> : <CheckCircle />}
+            </div>
+            <div>
+              <p className={`ss-kpi-value ${hasExpiring ? "amber" : "gray"}`}>{expiringCount}</p>
+              <p className="ss-kpi-label">{t("dashboard.client.expiringThisWeek")}</p>
+            </div>
+          </div>
+          {hasExpiring ? (
             <div className="ss-bar-track">
               <motion.div
-                className={`ss-bar-fill ${kpi.color}`}
+                className="ss-bar-fill amber"
                 initial={{ width: 0 }}
-                animate={{ width: kpi.barPct }}
-                transition={{ delay: 0.3 + i * 0.08, duration: 0.6, ease: "easeOut" }}
+                animate={{ width: `${Math.min(100, (expiringCount / Math.max(activeCount, 1)) * 100)}%` }}
+                transition={{ delay: 0.38, duration: 0.6, ease: "easeOut" }}
               />
             </div>
-          </motion.div>
-        ))}
+          ) : (
+            <div className="ss-safe-msg">
+              <CheckCircle size={14} />
+              <span>All subscriptions are healthy this week</span>
+            </div>
+          )}
+        </motion.div>
+
+        {/* Monthly Revenue */}
+        <motion.div
+          className="ss-kpi-card"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.24 }}
+        >
+          <div className="ss-kpi-top">
+            <div className="ss-kpi-icon blue">
+              <DollarSign />
+            </div>
+            <div>
+              <p className="ss-kpi-value blue">{(stats?.monthlyRevenue || 0).toLocaleString()} DZD</p>
+              <p className="ss-kpi-label">{t("dashboard.client.monthlyRevenue")}</p>
+            </div>
+          </div>
+          <div className="ss-bar-track">
+            <motion.div
+              className="ss-bar-fill blue"
+              initial={{ width: 0 }}
+              animate={{ width: "100%" }}
+              transition={{ delay: 0.46, duration: 0.6, ease: "easeOut" }}
+            />
+          </div>
+        </motion.div>
       </div>
 
       {/* Revenue Insight */}
@@ -126,7 +159,7 @@ const SubscriptionStats = () => {
         </div>
         <div className="ss-revenue-badge">
           <ArrowUp />
-          {stats?.activeSubscribers || 0} {t("dashboard.client.active")}
+          {activeCount} {t("dashboard.client.active")}
         </div>
       </motion.div>
     </motion.div>

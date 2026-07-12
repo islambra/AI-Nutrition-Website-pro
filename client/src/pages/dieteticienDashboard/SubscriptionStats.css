@@ -109,6 +109,11 @@
   color: #2563eb;
 }
 
+.ss-kpi-icon.gray {
+  background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+  color: #64748b;
+}
+
 .ss-kpi-value {
   font-size: 2rem;
   font-weight: 700;
@@ -119,6 +124,29 @@
 .ss-kpi-value.green { color: #059669; }
 .ss-kpi-value.amber { color: #d97706; }
 .ss-kpi-value.blue { color: #2563eb; }
+
+.ss-kpi-value.gray { color: #64748b; }
+
+/* Expiring card states */
+.ss-kpi-card--warning {
+  border-color: #fcd34d;
+  background: linear-gradient(180deg, #fffbeb 0%, #ffffff 100%);
+}
+
+.ss-kpi-card--safe {
+  border-color: #86efac;
+  background: linear-gradient(180deg, #f0fdf4 0%, #ffffff 100%);
+}
+
+.ss-safe-msg {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #16a34a;
+  font-size: 0.75rem;
+  font-weight: 500;
+  padding: 6px 0 0;
+}
 
 .ss-kpi-label {
   font-size: 0.8125rem;
