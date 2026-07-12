@@ -10,6 +10,7 @@ import {
   getSubscriberStats,
   renewSubscription,
   cancelSubscription,
+  deleteSubscription,
   requestZoomSession,
   checkSubscriptionStatus
 } from "../controllers/dieteticienSubscriptionController.js";
@@ -27,6 +28,7 @@ router.get("/subscribers", protect, getSubscribers);
 router.get("/stats", protect, getSubscriberStats);
 router.post("/:id/renew", protect, upload.single("proofImage"), renewSubscription);
 router.patch("/:id/cancel", protect, cancelSubscription);
+router.delete("/:id", protect, deleteSubscription);
 router.post("/:id/zoom-request", protect, requestZoomSession);
 router.get("/check/:dieteticienId", protect, checkSubscriptionStatus);
 

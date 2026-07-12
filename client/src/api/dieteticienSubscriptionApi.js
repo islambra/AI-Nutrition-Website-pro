@@ -54,6 +54,11 @@ export const cancelSubscription = async (id) => {
   return response.data;
 };
 
+export const deleteSubscription = async (id) => {
+  const response = await axiosInstance.delete(`/dieteticien-subscriptions/${id}`);
+  return response.data;
+};
+
 export const requestZoomSession = async (id, data) => {
   const response = await axiosInstance.post(`/dieteticien-subscriptions/${id}/zoom-request`, data);
   return response.data;

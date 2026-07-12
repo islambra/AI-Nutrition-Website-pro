@@ -5,6 +5,9 @@ import User from "../models/User.js";
 import Payment from "../models/Payment.js";
 import Consultation from "../models/Consultation.js";
 import ChatRoom from "../models/ChatRoom.js";
+import Message from "../models/Message.js";
+import FoodDiaryEntry from "../models/FoodDiaryEntry.js";
+import SubscriberResource from "../models/SubscriberResource.js";
 import imagekit from "../configs/imageKit.js";
 
 const SUBSCRIPTION_PRICE = 4000;
@@ -345,6 +348,46 @@ export const cancelSubscription = async (req, res) => {
     res.status(200).json({ success: true, message: "Subscription cancelled" });
   } catch (error) {
     res.status(500).json({ success: false, message: "Error cancelling subscription" });
+  }
+};
+
+export const deleteSubscription = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const sub = await DieteticienSubscription.findById(id);
+    if (!sub) {
+      return res.status(404).json({ success: false, message: "Subscription not found" });
+    }
+
+    if (sub.client.toString() !== req.user.id && sub.dieteticien.toString() !== req.user.id && req.user.role !== "admin") {
+      return res.status(403).json({ success: false, message: "Not authorized" });
+    }
+
+    const chatRoom = await ChatRoom.findOne({ dieteticienSubscription: sub._id });
+    if (chatRoom) {
+      await Message.deleteMany({ room: chatRoom._id });
+      await ChatRoom.findByIdAndDelete(chatRoom._id);
+    }
+
+    await Consultation.deleteMany({ dieteticienSubscription: sub._id });
+
+    if (sub.payment) {
+      const payment = await Payment.findById(sub.payment);
+      if (payment && payment.proofImageFileId) {
+        try { await imagekit.deleteFile(payment.proofImageFileId); } catch (_) {}
+      }
+      await Payment.findByIdAndDelete(sub.payment);
+    }
+
+    await FoodDiaryEntry.deleteMany({ client: sub.client, dieteticien: sub.dieteticien });
+
+    await SubscriberResource.deleteMany({ subscriber: sub.client, dieteticien: sub.dieteticien });
+
+    await DieteticienSubscription.findByIdAndDelete(id);
+
+    res.status(200).json({ success: true, message: "Subscription and all related data deleted" });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Error deleting subscription" });
   }
 };
 

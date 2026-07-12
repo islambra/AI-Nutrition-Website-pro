@@ -3,8 +3,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-import { User, MessageCircle, Video, X, RefreshCw, FileText, Clock, Calendar, Download, CheckCircle, ArrowRight, Lock, VideoOff } from "lucide-react";
-import { getMySubscriptions, cancelSubscription, requestZoomSession, renewSubscription } from "../../api/dieteticienSubscriptionApi";
+import { User, MessageCircle, Video, X, RefreshCw, FileText, Clock, Calendar, Download, CheckCircle, ArrowRight, Lock, VideoOff, Trash2 } from "lucide-react";
+import { getMySubscriptions, cancelSubscription, deleteSubscription, requestZoomSession, renewSubscription } from "../../api/dieteticienSubscriptionApi";
 import { getSubscriberResources } from "../../api/resourceApi";
 import { useChat } from "../../context/ChatContext";
 import "./ClientDashboard.css";
@@ -31,6 +31,8 @@ const MySubscriptions = () => {
   const [resources, setResources] = useState({});
   const [showResources, setShowResources] = useState(null);
   const [cancelConfirmId, setCancelConfirmId] = useState(null);
+  const [deleteConfirmId, setDeleteConfirmId] = useState(null);
+  const [deleting, setDeleting] = useState(false);
   const { openChat } = useChat();
 
   useEffect(() => { fetchSubscriptions(); }, []);
@@ -48,6 +50,18 @@ const MySubscriptions = () => {
       const res = await cancelSubscription(id);
       if (res.success) { toast.success(t("dashboard.client.subscriptionCancelled")); fetchSubscriptions(); }
     } catch (err) { toast.error(err.response?.data?.message || "Error"); }
+  };
+
+  const handleDelete = async (id) => {
+    setDeleting(true);
+    try {
+      const res = await deleteSubscription(id);
+      if (res.success) {
+        toast.success("Subscription and all related data deleted");
+        fetchSubscriptions();
+      }
+    } catch (err) { toast.error(err.response?.data?.message || "Error"); }
+    finally { setDeleting(false); setDeleteConfirmId(null); }
   };
 
   const handleZoomRequest = async () => {
@@ -183,6 +197,9 @@ const MySubscriptions = () => {
               <button className="cd-action-btn cancel-sub" onClick={() => setCancelConfirmId(sub._id)}>
                 <X /> {t("dashboard.client.cancelSub")}
               </button>
+              <button className="cd-action-btn delete-sub" onClick={() => setDeleteConfirmId(sub._id)} style={{ background: "linear-gradient(135deg, #dc2626, #b91c1c)", color: "#fff" }}>
+                <Trash2 /> Delete
+              </button>
             </div>
 
             {/* Resources Panel */}
@@ -234,6 +251,9 @@ const MySubscriptions = () => {
                   <RefreshCw /> {t("dashboard.client.renew")}
                 </button>
               )}
+              <button className="cd-action-btn delete-sub" onClick={() => setDeleteConfirmId(sub._id)} style={{ background: "linear-gradient(135deg, #dc2626, #b91c1c)", color: "#fff", marginLeft: 8 }}>
+                <Trash2 size={14} /> Delete
+              </button>
             </div>
           ))}
         </>
@@ -283,6 +303,24 @@ const MySubscriptions = () => {
                 setCancelConfirmId(null);
               }}>
                 {t("dashboard.client.confirmCancel") || "Yes, Cancel"}
+              </button>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      {deleteConfirmId && (
+        <div className="cd-overlay" onClick={() => !deleting && setDeleteConfirmId(null)}>
+          <motion.div className="cd-modal" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} onClick={e => e.stopPropagation()}>
+            <h3>Delete Subscription</h3>
+            <p style={{ fontSize: 14, color: "#64748b", margin: "0 0 20px", lineHeight: 1.6 }}>
+              This will permanently delete this subscription and ALL related data including chat messages, food diary entries, sessions, payments, and resources. This action cannot be undone.
+            </p>
+            <div className="cd-modal-actions">
+              <button className="cd-modal-cancel" onClick={() => setDeleteConfirmId(null)} disabled={deleting}>{t("common.cancel")}</button>
+              <button className="cd-modal-submit" style={{ background: "linear-gradient(135deg, #dc2626, #b91c1c)" }} onClick={() => handleDelete(deleteConfirmId)} disabled={deleting}>
+                {deleting ? "Deleting..." : "Yes, Delete Everything"}
               </button>
             </div>
           </motion.div>
