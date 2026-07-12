@@ -1,6 +1,3 @@
-// utils/zoom.js
-import axios from "axios";
-
 let accessToken = null;
 let tokenExpiry = 0;
 
@@ -13,52 +10,54 @@ async function getAccessToken() {
     `${process.env.ZOOM_CLIENT_ID}:${process.env.ZOOM_CLIENT_SECRET}`
   ).toString("base64");
 
-  const response = await axios.post(
+  const response = await fetch(
     `https://zoom.us/oauth/token?grant_type=account_credentials&account_id=${process.env.ZOOM_ACCOUNT_ID}`,
-    {},
     {
+      method: "POST",
       headers: {
         Authorization: `Basic ${credentials}`,
       },
     }
   );
 
-  accessToken = response.data.access_token;
-  // refresh 1 minute before actual expiry
-  tokenExpiry = Date.now() + response.data.expires_in * 1000 - 60000;
+  const data = await response.json();
+  accessToken = data.access_token;
+  tokenExpiry = Date.now() + data.expires_in * 1000 - 60000;
   return accessToken;
 }
 
 export async function createZoomMeeting(topic, startTime, duration = 60) {
   const token = await getAccessToken();
 
-  const response = await axios.post(
+  const response = await fetch(
     "https://api.zoom.us/v2/users/me/meetings",
     {
-      topic,
-      type: 2,                     // scheduled meeting
-      start_time: startTime,       // ISO 8601, e.g. "2025-01-01T10:00:00Z"
-      duration,
-      timezone: "UTC",
-      settings: {
-        host_video: true,
-        participant_video: true,
-        join_before_host: false,
-        waiting_room: true,
-      },
-    },
-    {
+      method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
+      body: JSON.stringify({
+        topic,
+        type: 2,
+        start_time: startTime,
+        duration,
+        timezone: "UTC",
+        settings: {
+          host_video: true,
+          participant_video: true,
+          join_before_host: false,
+          waiting_room: true,
+        },
+      }),
     }
   );
 
+  const data = await response.json();
   return {
-    zoomMeetingId: response.data.id,
-    joinUrl: response.data.join_url,     // for the client
-    startUrl: response.data.start_url,   // for the host (nutritionist)
-    password: response.data.password,
+    zoomMeetingId: data.id,
+    joinUrl: data.join_url,
+    startUrl: data.start_url,
+    password: data.password,
   };
 }

@@ -435,7 +435,7 @@ const PurchaseRequests = ({ defaultType = 'all' }) => {
               onClick={e => e.stopPropagation()}
             >
               <button className="pr-modal-close" onClick={() => setPreviewImage(null)}>×</button>
-              <img src={previewImage} alt={t('purchaseRequests.paymentProof')} />
+              <img src={previewImage} alt={t('purchaseRequests.paymentProof')} loading="lazy" />
             </motion.div>
           </motion.div>
         )}

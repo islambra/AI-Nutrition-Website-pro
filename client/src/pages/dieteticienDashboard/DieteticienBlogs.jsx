@@ -208,7 +208,7 @@ const DieteticienBlogs = () => {
             <div key={blog._id} className="blog-card">
               {blog.photo && (
                 <div className="card-image">
-                  <img src={blog.photo} alt={blog.title} />
+                  <img src={blog.photo} alt={blog.title} loading="lazy" />
                 </div>
               )}
               <div className="card-content">
@@ -279,7 +279,7 @@ const DieteticienBlogs = () => {
                 <div className="image-upload-area">
                   {imagePreview ? (
                     <div className="image-preview">
-                      <img src={imagePreview} alt="Preview" />
+                      <img src={imagePreview} alt="Preview" loading="lazy" />
                       <button type="button" className="remove-image" onClick={() => { setImagePreview(null); setImageFile(null); }}>
                         <X size={16} />
                       </button>

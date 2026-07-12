@@ -134,7 +134,7 @@ const PaymentApprovals = () => {
                   <div className="pa-client-section">
                     <div className="pa-client-avatar">
                       {payment.user?.photo ? (
-                        <img src={payment.user.photo} alt="" className="pa-avatar-img" />
+                        <img src={payment.user.photo} alt="" className="pa-avatar-img" loading="lazy" />
                       ) : (
                         <User size={22} />
                       )}
@@ -226,7 +226,7 @@ const PaymentApprovals = () => {
               onClick={e => e.stopPropagation()}
             >
               <button className="pa-image-close" onClick={() => setPreviewImage(null)}>×</button>
-              <img src={previewImage} alt="Proof full size" className="pa-proof-image" />
+              <img src={previewImage} alt="Proof full size" className="pa-proof-image" loading="lazy" />
             </motion.div>
           </motion.div>
         )}

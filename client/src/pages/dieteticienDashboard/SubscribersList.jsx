@@ -164,7 +164,7 @@ const SubscribersList = () => {
                   <div className="sub-list-card-top">
                     <div className="sub-list-avatar">
                       {sub.client?.photo ? (
-                        <img src={sub.client.photo} alt="" />
+                        <img src={sub.client.photo} alt="" loading="lazy" />
                       ) : (
                         <div className="sub-list-avatar-fallback">{getInitials(sub.client?.fullName)}</div>
                       )}

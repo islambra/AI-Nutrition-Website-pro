@@ -10,7 +10,9 @@ const formationSessionSchema = new mongoose.Schema({
   zoomStartUrl: { type: String, default: null },
   meetingId: { type: String, default: null },
   meetingPassword: { type: String, default: null },
-  order: { type: Number, default: 0 }
+  order: { type: Number, default: 0 },
+  videoUrl: { type: String, default: null },
+  isPreview: { type: Boolean, default: false }
 }, { timestamps: true });
 
 formationSessionSchema.index({ formation: 1, order: 1 });

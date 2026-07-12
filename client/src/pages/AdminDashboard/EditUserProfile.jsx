@@ -308,7 +308,7 @@ const EditUserProfile = () => {
             <div className="photo-upload">
               <div className="current-photo">
                 {photoPreview ? (
-                  <img src={photoPreview} alt={t('admin.profilePhoto')} />
+                  <img src={photoPreview} alt={t('admin.profilePhoto')} loading="lazy" />
                 ) : (
                   <div className="photo-placeholder">
                     <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">

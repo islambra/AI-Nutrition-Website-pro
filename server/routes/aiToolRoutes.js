@@ -8,10 +8,11 @@ import {
   getMySubscription
 } from '../controllers/aiToolController.js';
 import { validatePayment } from '../middleware/validate.js';
+import { cacheMiddleware } from '../middleware/cache.js';
 
 const router = express.Router();
 
-router.get('/platform-payment-info', getPlatformPaymentInfo);
+router.get('/platform-payment-info', cacheMiddleware(300000), getPlatformPaymentInfo);
 
 router.use(protect);
 

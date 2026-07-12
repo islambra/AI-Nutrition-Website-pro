@@ -220,7 +220,7 @@ function ClientPlans() {
                   >
                     <div className="aff-plan-card-inner" onClick={() => setSelectedPlan(userPlan)}>
                       {plan.planImage ? (
-                        <img src={plan.planImage} alt={plan.planName} className="aff-plan-image" />
+                        <img src={plan.planImage} alt={plan.planName} className="aff-plan-image" loading="lazy" />
                       ) : (
                         <div className="aff-plan-image-placeholder">
                           <ShoppingBag size={36} />
@@ -416,7 +416,7 @@ function ClientPlans() {
                   <>
                     <div className="aff-modal-hero">
                       {plan.planImage ? (
-                        <img src={plan.planImage} alt={plan.planName} className="aff-modal-img" />
+                        <img src={plan.planImage} alt={plan.planName} className="aff-modal-img" loading="lazy" />
                       ) : (
                         <div className="aff-modal-img-placeholder">
                           <ShoppingBag size={48} />
@@ -443,7 +443,7 @@ function ClientPlans() {
                       {creator.fullName && (
                         <div className="aff-modal-creator">
                           {creator.photo ? (
-                            <img src={creator.photo} alt={creator.fullName} className="aff-creator-avatar" />
+                            <img src={creator.photo} alt={creator.fullName} className="aff-creator-avatar" loading="lazy" />
                           ) : (
                             <div className="aff-creator-avatar-placeholder"><User size={16} /></div>
                           )}

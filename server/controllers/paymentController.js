@@ -105,16 +105,21 @@ export const initiateOfflinePayment = async (req, res) => {
 // Get pending payments for the logged-in dieteticien
 export const getPendingPayments = async (req, res) => {
   try {
-    const payments = await Payment.find({
-      dieteticien: req.user.id,
-      status: "pending"
-    })
-      .populate("user", "fullName email photo")
-      .populate("plan", "planName price")
-      .populate("formation", "title price")
-      .sort({ createdAt: -1 });
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const skip = (page - 1) * limit;
 
-    res.status(200).json({ success: true, data: payments });
+    const query = { dieteticien: req.user.id, status: "pending" };
+    const [payments, total] = await Promise.all([
+      Payment.find(query)
+        .populate("user", "fullName email photo")
+        .populate("plan", "planName price")
+        .populate("formation", "title price")
+        .sort({ createdAt: -1 }).skip(skip).limit(limit),
+      Payment.countDocuments(query)
+    ]);
+
+    res.status(200).json({ success: true, data: payments, total, page, pages: Math.ceil(total / limit) });
   } catch (error) {
     res.status(500).json({ success: false, message: "Error fetching payments" });
   }
@@ -320,11 +325,19 @@ export const checkPlanOwnership = async (req, res) => {
 // Get all payment requests for the logged-in user
 export const getMyRequests = async (req, res) => {
   try {
-    const payments = await Payment.find({ user: req.user.id })
-      .populate("plan", "planName planImage price")
-      .populate("formation", "title image price")
-      .populate("dieteticien", "fullName")
-      .sort({ createdAt: -1 });
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const skip = (page - 1) * limit;
+
+    const query = { user: req.user.id };
+    const [payments, total] = await Promise.all([
+      Payment.find(query)
+        .populate("plan", "planName planImage price")
+        .populate("formation", "title image price")
+        .populate("dieteticien", "fullName")
+        .sort({ createdAt: -1 }).skip(skip).limit(limit),
+      Payment.countDocuments(query)
+    ]);
 
     const enriched = payments.map(p => {
       let serviceType = "ai-tool";
@@ -358,7 +371,7 @@ export const getMyRequests = async (req, res) => {
       };
     });
 
-    res.status(200).json({ success: true, data: enriched });
+    res.status(200).json({ success: true, data: enriched, total, page, pages: Math.ceil(total / limit) });
   } catch (error) {
     res.status(500).json({ success: false, message: "Error fetching requests" });
   }

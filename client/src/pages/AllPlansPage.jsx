@@ -329,21 +329,21 @@ function AllPlansPage() {
                     <div className="AP-FilterGroup">
                         <label>{t('common.search')}</label>
                         <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
-                          <option value="newest">{t('common.pending')}</option>
-                          <option value="oldest">{t('common.approved')}</option>
-                          <option value="price-low">{t('profile.healthMetrics')}</option>
-                          <option value="price-high">{t('profile.healthMetrics')}</option>
+                          <option value="newest">{t('plans.sortNewest')}</option>
+                          <option value="oldest">{t('plans.sortOldest')}</option>
+                          <option value="price-low">{t('plans.sortPriceLow')}</option>
+                          <option value="price-high">{t('plans.sortPriceHigh')}</option>
                           <option value="duration">{t('signup.durationWeeks')}</option>
-                          <option value="name">{t('common.search')}</option>
+                          <option value="name">{t('plans.sortName')}</option>
                       </select>
                     </div>
                   </div>
                   <div className="AP-FilterActions">
                     <button onClick={clearFilters} className="AP-ClearFiltersBtn">
-                      <X size={16} /> {t('common.noResults')}
+                      <X size={16} /> {t('common.clearFilters')}
                     </button>
                     <span className="AP-ResultsCount">
-                      {t('common.noResults')}
+                      {filteredPlans.length} {filteredPlans.length === 1 ? t('common.result') : t('common.results')}
                     </span>
                   </div>
                 </motion.div>
@@ -379,7 +379,7 @@ function AllPlansPage() {
                   >
                     <div className="AP-CardImage">
                       {plan.planImage ? (
-                        <img src={plan.planImage} alt={plan.planName} />
+                        <img src={plan.planImage} alt={plan.planName} loading="lazy" />
                       ) : (
                         <div className="AP-CardImagePlaceholder">
                           <Target size={40} />
@@ -402,7 +402,7 @@ function AllPlansPage() {
                       <div className="AP-CardFooter">
                         <div className="AP-CreatorInfo">
                           {plan.creatorInfo?.photo ? (
-                            <img src={plan.creatorInfo.photo} alt={plan.creatorInfo.fullName} className="AP-CreatorAvatar" />
+                            <img src={plan.creatorInfo.photo} alt={plan.creatorInfo.fullName} className="AP-CreatorAvatar" loading="lazy" />
                           ) : (
                             <div className="AP-CreatorAvatarFallback">
                               {plan.creatorInfo?.fullName?.charAt(0)?.toUpperCase() || 'U'}
@@ -436,7 +436,7 @@ function AllPlansPage() {
                   <motion.div className="AP-ListItem" whileHover={{ x: 4 }}>
                     <div className="AP-ListItemImage">
                       {plan.planImage ? (
-                        <img src={plan.planImage} alt={plan.planName} />
+                        <img src={plan.planImage} alt={plan.planName} loading="lazy" />
                       ) : (
                         <div className="AP-CardImagePlaceholder"><Target size={28} /></div>
                       )}
@@ -461,7 +461,7 @@ function AllPlansPage() {
                     <div className="AP-ListItemActions">
                       <div className="AP-ListCreatorInfo">
                         {plan.creatorInfo?.photo ? (
-                          <img src={plan.creatorInfo.photo} alt={plan.creatorInfo.fullName} className="AP-CreatorAvatar" />
+                          <img src={plan.creatorInfo.photo} alt={plan.creatorInfo.fullName} className="AP-CreatorAvatar" loading="lazy" />
                         ) : (
                           <div className="AP-CreatorAvatarFallback">
                             {plan.creatorInfo?.fullName?.charAt(0)?.toUpperCase() || 'U'}

@@ -202,7 +202,7 @@ const ManageDieteticiens = () => {
         <div className="manage-diet-modal" onClick={() => setPreviewImg(null)}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
             <button className="modal-close" onClick={() => setPreviewImg(null)}>&times;</button>
-            <img src={previewImg} alt={t('admin.diplomaFull')} className="modal-image" />
+            <img src={previewImg} alt={t('admin.diplomaFull')} className="modal-image" loading="lazy" />
           </div>
         </div>
       )}

@@ -4,7 +4,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { toast } from "sonner";
+import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import { clsx } from 'clsx';
 import { Mail, Lock, ArrowRight, ChevronLeft } from 'lucide-react';
@@ -141,7 +141,7 @@ function LoginPage() {
             <div className="input-group-stripe">
               <div className="label-flex-stripe">
                 <label>{t('auth.password')}</label>
-                <NavLink to="/forgot-password" className="forgot-link-stripe">{t('auth.forgotPassword')}</NavLink>
+                <NavLink to="/login" className="forgot-link-stripe">{t('auth.forgotPassword')}</NavLink>
               </div>
               <div className={clsx("input-container-stripe", errors.password && "error")}>
                 <Lock className="input-icon-stripe" size={18} />

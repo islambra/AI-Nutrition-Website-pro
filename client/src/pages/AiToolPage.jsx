@@ -13,7 +13,7 @@ import './AiToolPage.css';
 
 function AiToolPage() {
   const { t } = useTranslation();
-  const { isAuthenticated, authLoading } = useAuth();
+  const { isAuthenticated, loading: authLoading } = useAuth();
   const navigate = useNavigate();
   const [accessLoading, setAccessLoading] = useState(true);
   const [hasAccess, setHasAccess] = useState(false);

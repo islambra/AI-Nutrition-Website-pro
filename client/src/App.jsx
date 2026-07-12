@@ -1,7 +1,6 @@
 import { lazy, Suspense } from 'react'
 import { Routes, Route, useLocation, Navigate } from 'react-router-dom'
-import { Toaster } from 'sonner'
-import { Toaster as HotToaster } from 'react-hot-toast'
+import { Toaster } from 'react-hot-toast'
 import { AnimatePresence } from 'framer-motion'
 
 const PAGE_TRANSITION_DURATION = 0.15
@@ -64,16 +63,17 @@ const ManageAiToolSubscriptions = lazy(() => import('./pages/AdminDashboard/Mana
 const PlatformPaymentSettings = lazy(() => import('./pages/AdminDashboard/PlatformPaymentSettings.jsx'))
 
 import Header from './components/Header.jsx'
-import CustomCursor from './components/CustomCursor.jsx'
 import ScrollToTop from './utils/ScrollToTop.jsx'
 import PageTransition from './components/PageTransition.jsx'
 import ProgressBar from './components/ProgressBar.jsx'
-import SmoothScroll from './components/SmoothScroll.jsx'
 import LoginGate from './components/LoginGate.jsx'
 import ProtectedRoute from './components/ProtectedRoute.jsx'
 import ErrorBoundary from './components/ErrorBoundary.jsx'
-import ChatBubble from './components/chat/ChatBubble.jsx'
 import { useChat } from './context/ChatContext.jsx'
+
+const CustomCursor = lazy(() => import('./components/CustomCursor.jsx'))
+const SmoothScroll = lazy(() => import('./components/SmoothScroll.jsx'))
+const ChatBubble = lazy(() => import('./components/chat/ChatBubble.jsx'))
 
 import './App.css'
 
@@ -96,12 +96,13 @@ function App() {
 
   return (
     <ErrorBoundary>
-      <CustomCursor />
-      <SmoothScroll />
+      <Suspense fallback={null}>
+        <CustomCursor />
+        <SmoothScroll />
+      </Suspense>
       <ProgressBar />
       <ScrollToTop />
-      <Toaster position="top-center" richColors closeButton />
-      <HotToaster position="top-center" toastOptions={{ duration: 4000 }} />
+      <Toaster position="top-center" toastOptions={{ duration: 4000 }} />
       {(!isLoginRoute && !isSignupRoute && !chatOpen) && <Header />}
       <AnimatePresence mode="sync">
         <Suspense fallback={<PageLoader />}>
@@ -190,7 +191,9 @@ function App() {
           </Routes>
         </Suspense>
       </AnimatePresence>
-      <ChatBubble />
+      <Suspense fallback={null}>
+        <ChatBubble />
+      </Suspense>
     </ErrorBoundary>
   )
 }

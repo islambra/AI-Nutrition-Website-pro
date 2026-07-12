@@ -112,5 +112,5 @@ export const toggleLike = async (blogId, currentLikedStatus) => {
 // Get blog with full details (including likes and comments)
 export const getBlogWithDetails = async (blogId) => {
   const response = await getBlogById(blogId);
-  return response.data;
+  return response;
 };

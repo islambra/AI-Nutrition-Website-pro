@@ -443,7 +443,7 @@ const AllUsers = () => {
                 <div className="user-card-header">
                   <div className="user-avatar">
                     {user.photo ? (
-                      <img src={user.photo} alt={getDisplayName(user)} />
+                      <img src={user.photo} alt={getDisplayName(user)} loading="lazy" />
                     ) : (
                       <div className="avatar-placeholder">
                         {getInitials(user.fullName)}

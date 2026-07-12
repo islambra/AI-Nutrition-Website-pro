@@ -15,10 +15,16 @@ const SUBSCRIPTION_DURATION_DAYS = 30;
 
 export const getAllDieteticiens = async (req, res) => {
   try {
-    const dieteticiens = await Dieteticien.find({ isApproved: true })
-      .populate("user", "fullName email photo")
-      .sort({ createdAt: -1 })
-      .lean();
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const skip = (page - 1) * limit;
+
+    const [dieteticiens, total] = await Promise.all([
+      Dieteticien.find({ isApproved: true })
+        .populate("user", "fullName email photo")
+        .sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
+      Dieteticien.countDocuments({ isApproved: true })
+    ]);
 
     const data = dieteticiens.map(d => ({
       _id: d.user._id,
@@ -29,7 +35,7 @@ export const getAllDieteticiens = async (req, res) => {
       dieteticienProfileId: d._id
     }));
 
-    res.status(200).json({ success: true, data });
+    res.status(200).json({ success: true, data, total, page, pages: Math.ceil(total / limit) });
   } catch (error) {
     res.status(500).json({ success: false, message: "Error fetching dieteticiens" });
   }
@@ -163,11 +169,17 @@ export const subscribe = async (req, res) => {
 
 export const getMySubscriptions = async (req, res) => {
   try {
-    const subs = await DieteticienSubscription.find({ client: req.user.id })
-      .populate("dieteticien", "fullName email photo")
-      .populate("payment")
-      .sort({ createdAt: -1 })
-      .lean();
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const skip = (page - 1) * limit;
+
+    const [subs, total] = await Promise.all([
+      DieteticienSubscription.find({ client: req.user.id })
+        .populate("dieteticien", "fullName email photo")
+        .populate("payment")
+        .sort({ createdAt: -1 }).skip(skip).limit(limit).lean(),
+      DieteticienSubscription.countDocuments({ client: req.user.id })
+    ]);
 
     const now = new Date();
     const data = subs.map(sub => {
@@ -186,7 +198,7 @@ export const getMySubscriptions = async (req, res) => {
       return { ...sub, isActive, remainingDays, zoomUsed, zoomLimit: ZOOM_SESSIONS_PER_MONTH, zoomRemaining };
     });
 
-    res.status(200).json({ success: true, data });
+    res.status(200).json({ success: true, data, total, page, pages: Math.ceil(total / limit) });
   } catch (error) {
     res.status(500).json({ success: false, message: "Error fetching subscriptions" });
   }

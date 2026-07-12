@@ -318,7 +318,7 @@ function ProfilePage() {
               <ScrollReveal direction="left" className="VXPR-ProfileCard">
                 <div className="VXPR-AvatarContainer">
                   {getAvatar() ? (
-                    <img src={getAvatar()} alt="Profile" className="VXPR-AvatarImage" />
+                    <img src={getAvatar()} alt="Profile" className="VXPR-AvatarImage" loading="lazy" />
                   ) : (
                     <div className="VXPR-AvatarFallback">
                       <Fingerprint size={80} strokeWidth={1.5} />

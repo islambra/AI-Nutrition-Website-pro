@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
-import { toast } from "sonner";
+import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { User, MessageCircle, Video, X, RefreshCw, FileText, Clock, Calendar, Download, CheckCircle, ArrowRight, Lock, VideoOff, Trash2 } from "lucide-react";
 import { getMySubscriptions, cancelSubscription, deleteSubscription, requestZoomSession, renewSubscription } from "../../api/dieteticienSubscriptionApi";
@@ -133,7 +133,7 @@ const MySubscriptions = () => {
               <div className="cd-sub-left">
                 <div className="cd-sub-avatar">
                   {sub.dieteticien?.photo ? (
-                    <img src={sub.dieteticien.photo} alt="" />
+                    <img src={sub.dieteticien.photo} alt="" loading="lazy" />
                   ) : (
                     <div className="cd-sub-avatar-fallback"><User /></div>
                   )}

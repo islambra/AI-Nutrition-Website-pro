@@ -28,6 +28,8 @@ const CustomCursor = () => {
   const [isHovered, setIsHovered] = useState(false);
 
   useEffect(() => {
+    const timeouts = new Set();
+
     const handleMove = (e) => {
       mouseX.set(e.clientX);
       mouseY.set(e.clientY);
@@ -35,9 +37,11 @@ const CustomCursor = () => {
       if (Math.random() > 0.85) {
         const id = Math.random();
         setTrail(prev => [...prev.slice(-10), { id, x: e.clientX, y: e.clientY }]);
-        setTimeout(() => {
+        const tid = setTimeout(() => {
           setTrail(prev => prev.filter(t => t.id !== id));
+          timeouts.delete(tid);
         }, 1200);
+        timeouts.add(tid);
       }
     };
 
@@ -49,6 +53,8 @@ const CustomCursor = () => {
     window.addEventListener('mousemove', handleMove);
     window.addEventListener('mouseover', handleOver);
     return () => {
+      timeouts.forEach(clearTimeout);
+      timeouts.clear();
       window.removeEventListener('mousemove', handleMove);
       window.removeEventListener('mouseover', handleOver);
     };

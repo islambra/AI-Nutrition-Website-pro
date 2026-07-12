@@ -10,6 +10,7 @@ import { getPlatformPaymentInfo, initiateCourseSubscription } from '../api/cours
 import { useAuth } from '../context/AuthContext';
 import { useSafeTimeout } from '../hooks/useSafeTimeout';
 import toast from 'react-hot-toast';
+import { PRICING, CURRENCY } from '../utils/pricing';
 import PageTransition from '../components/PageTransition';
 import './CheckoutPage.css';
 
@@ -17,7 +18,7 @@ function CourseSubscriptionCheckout() {
   const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, isAuthenticated, authLoading } = useAuth();
+  const { user, isAuthenticated, loading: authLoading } = useAuth();
   const { setTimeoutSafe } = useSafeTimeout();
 
   const [paymentMethod, setPaymentMethod] = useState('ccp');
@@ -28,7 +29,7 @@ function CourseSubscriptionCheckout() {
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  const PRICE = 2499.99;
+  const PRICE = PRICING.COURSE_SUBSCRIPTION;
 
   useEffect(() => {
     if (!authLoading && !isAuthenticated) {
@@ -222,7 +223,7 @@ function CourseSubscriptionCheckout() {
                   <input id="proof-input" type="file" accept="image/*" onChange={handleFileChange} style={{ display: 'none' }} />
                   {proofPreview ? (
                     <div style={{ position: 'relative', display: 'inline-block', width: '100%' }}>
-                      <img src={proofPreview} alt="Proof preview" style={{ width: '100%', maxHeight: '180px', objectFit: 'cover', borderRadius: '8px', display: 'block' }} />
+                      <img src={proofPreview} alt="Proof preview" loading="lazy" style={{ width: '100%', maxHeight: '180px', objectFit: 'cover', borderRadius: '8px', display: 'block' }} />
                       <div style={{ position: 'absolute', inset: 0, background: 'rgba(0,0,0,0.3)', borderRadius: '8px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '6px', color: '#fff', transition: 'background 0.2s' }}
                         onMouseEnter={(e) => e.currentTarget.style.background = 'rgba(0,0,0,0.45)'}
                         onMouseLeave={(e) => e.currentTarget.style.background = 'rgba(0,0,0,0.3)'}
@@ -236,8 +237,8 @@ function CourseSubscriptionCheckout() {
                       <div style={{ width: 56, height: 56, borderRadius: '50%', background: '#E8F5E9', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                         <Upload size={24} style={{ color: '#059669' }} />
                       </div>
-                      <p style={{ fontWeight: 600, color: '#374151', margin: 0 }}>{t('checkout.uploadReceipt')}</p>
-                      <p style={{ fontSize: '12px', color: '#9CA3AF', margin: 0 }}>{t('checkout.uploadReceipt')}</p>
+                      <p style={{ fontWeight: 600, color: '#374151', margin: 0 }}>{t('checkout.clickToUpload')}</p>
+                      <p style={{ fontSize: '12px', color: '#9CA3AF', margin: 0 }}>{t('checkout.screenshotOrReceipt')}</p>
                     </div>
                   )}
                 </div>

@@ -112,7 +112,7 @@ export default function MessageList({ messages, room, onSendMessage, typingUser,
                   className="w-9 h-9 rounded-full bg-gradient-to-br from-emerald-100 to-emerald-200 flex items-center justify-center overflow-hidden ring-2 ring-gray-200 shrink-0 mt-0.5 shadow-lg shadow-gray-200/50 hover:ring-emerald-300 transition-all duration-200"
                 >
                   {(isOwn ? user?.photo : sender.photo) ? (
-                    <img src={isOwn ? user?.photo : sender.photo} alt="" className="w-full h-full object-cover" />
+                    <img src={isOwn ? user?.photo : sender.photo} alt="" className="w-full h-full object-cover" loading="lazy" />
                   ) : (
                     <span className="text-emerald-600 font-semibold text-xs">
                       {(isOwn ? user?.fullName : sender.fullName)?.charAt(0)?.toUpperCase() || '?'}
@@ -140,7 +140,7 @@ export default function MessageList({ messages, room, onSendMessage, typingUser,
           <div className="flex gap-3 mb-4">
             <div className="w-9 h-9 rounded-full bg-gradient-to-br from-emerald-100 to-emerald-200 flex items-center justify-center overflow-hidden ring-2 ring-gray-200 shrink-0 mt-0.5 shadow-lg shadow-gray-200/50">
               {otherParticipant?.photo ? (
-                <img src={otherParticipant.photo} alt="" className="w-full h-full object-cover" />
+                <img src={otherParticipant.photo} alt="" className="w-full h-full object-cover" loading="lazy" />
               ) : (
                 <span className="text-emerald-600 font-semibold text-xs">
                   {otherParticipant?.fullName?.charAt(0)?.toUpperCase() || '?'}

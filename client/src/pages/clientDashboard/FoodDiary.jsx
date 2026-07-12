@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
-import { toast } from "sonner";
+import toast from "react-hot-toast";
 import { Utensils, Plus, Trash, Calendar, Lock, ArrowRight, MessageSquare } from "lucide-react";
 import { getMyEntries, createEntry, deleteEntry } from "../../api/foodDiaryApi";
 import { getMySubscriptions } from "../../api/dieteticienSubscriptionApi";

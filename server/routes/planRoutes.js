@@ -12,6 +12,7 @@ import {
 } from "../controllers/planControllers.js";
 import { protect, authorize } from "../middleware/auth.js";
 import { validatePlan, validateQueryParams } from "../middleware/validate.js";
+import { cacheMiddleware } from "../middleware/cache.js";
 
 const planRouter = express.Router();
 
@@ -28,8 +29,8 @@ const upload = multer({
   }
 });
 
-// Public routes
-planRouter.get("/", validateQueryParams, getAllPlans);
+// Public routes with caching
+planRouter.get("/", validateQueryParams, cacheMiddleware(30000), getAllPlans);
 
 // Protected routes (dieteticien/admin only)
 planRouter.get("/my-plans/list", protect, getMyPlans);
@@ -37,6 +38,6 @@ planRouter.post("/", protect, authorize('dieteticien', 'admin'), upload.single("
 planRouter.put("/:id", protect, authorize('dieteticien', 'admin'), upload.single("planImage"), updatePlan);
 planRouter.delete("/:id", protect, authorize('dieteticien', 'admin'), deletePlan);
 
-planRouter.get("/:id", getPlanById);
+planRouter.get("/:id", cacheMiddleware(60000), getPlanById);
 
 export default planRouter;

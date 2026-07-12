@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { toast } from "sonner";
+import toast from "react-hot-toast";
 import { getDieteticienById, subscribe, checkSubscriptionStatus } from "../../api/dieteticienSubscriptionApi";
 
 import ScrollReveal from "../../components/ScrollReveal";
@@ -118,7 +118,7 @@ const DieteticienProfile = () => {
             margin: "0 auto 1.5rem"
           }}>
             {dieteticien.photo ? (
-              <img src={dieteticien.photo} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+              <img src={dieteticien.photo} alt="" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             ) : (
               <span style={{ color: "#059669", transform: "scale(2)" }}><Icons.Stethoscope /></span>
             )}

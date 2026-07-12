@@ -463,7 +463,7 @@ function ServicesPage() {
                             {plan.badge && <div className="ServicesPage-Plan-Badge">{plan.badge}</div>}
                             <div className="ServicesPage-Plan-Image-Container">
                               {plan.planImage ? (
-                                <img src={plan.planImage} alt={plan.planName} className="ServicesPage-Plan-Image" />
+                                <img src={plan.planImage} alt={plan.planName} className="ServicesPage-Plan-Image" loading="lazy" />
                               ) : (
                                 <div className="ServicesPage-Plan-Icon-Fallback">{plan.icon}</div>
                               )}
@@ -618,7 +618,7 @@ function ServicesPage() {
                             {plan.badge && <div className="ServicesPage-Plan-Badge">{plan.badge}</div>}
                             <div className="ServicesPage-Plan-Image-Container">
                               {plan.planImage ? (
-                                <img src={plan.planImage} alt={plan.planName} className="ServicesPage-Plan-Image" />
+                                <img src={plan.planImage} alt={plan.planName} className="ServicesPage-Plan-Image" loading="lazy" />
                               ) : (
                                 <div className="ServicesPage-Plan-Icon-Fallback">{plan.icon}</div>
                               )}
@@ -720,7 +720,7 @@ function ServicesPage() {
               >
                 <div className="sp-formation-img-wrap">
                   {f.image ? (
-                    <img src={f.image} alt={f.title} className="sp-formation-img" />
+                    <img src={f.image} alt={f.title} className="sp-formation-img" loading="lazy" />
                   ) : (
                     <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", background: "var(--health-mint)" }}>
                       <Video size={36} style={{ color: "var(--health-green)", opacity: 0.3 }} />
@@ -741,7 +741,7 @@ function ServicesPage() {
                   {f.creatorInfo && (
                     <div className="sp-formation-creator">
                       {f.creatorInfo.photo ? (
-                        <img src={f.creatorInfo.photo} alt={f.creatorInfo.fullName} className="sp-formation-avatar" />
+                        <img src={f.creatorInfo.photo} alt={f.creatorInfo.fullName} className="sp-formation-avatar" loading="lazy" />
                       ) : (
                         <div className="sp-formation-avatar sp-formation-avatar-fallback">
                           <User size={14} />
@@ -793,6 +793,7 @@ function ServicesPage() {
                       <img
                         src={selectedFormation.image}
                         alt={selectedFormation.title}
+                        loading="lazy"
                         style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "20px 0 0 20px" }}
                       />
                       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, transparent 60%, rgba(255,255,255,0.95))", pointerEvents: "none" }} />
@@ -818,7 +819,7 @@ function ServicesPage() {
                     {selectedFormation.creatorInfo && (
                       <div className="fc-creator-row" style={{ marginTop: 0, paddingTop: 12 }}>
                         {selectedFormation.creatorInfo.photo ? (
-                          <img src={selectedFormation.creatorInfo.photo} alt={selectedFormation.creatorInfo.fullName} className="fc-creator-avatar" />
+                          <img src={selectedFormation.creatorInfo.photo} alt={selectedFormation.creatorInfo.fullName} className="fc-creator-avatar" loading="lazy" />
                         ) : (
                           <div className="fc-creator-avatar-fallback">
                             <User size={16} />

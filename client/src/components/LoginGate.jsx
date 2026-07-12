@@ -55,15 +55,15 @@ const LoginGate = ({ children }) => {
           <div className="logingate-features">
             <div className="logingate-feature">
               <span className="logingate-feature-dot" />
-              Personalized nutrition plans &amp; AI tracking
+              {t('auth.featureNutrition')}
             </div>
             <div className="logingate-feature">
               <span className="logingate-feature-dot" />
-              Course materials &amp; progress tracking
+              {t('auth.featureCourses')}
             </div>
             <div className="logingate-feature">
               <span className="logingate-feature-dot" />
-              Consultations &amp; stay connected
+              {t('auth.featureConsultations')}
             </div>
           </div>
         </div>

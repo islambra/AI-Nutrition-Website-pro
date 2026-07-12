@@ -2,8 +2,10 @@ import Course from "../models/Course.js";
 import User from "../models/User.js";
 import Payment from "../models/Payment.js";
 import CourseSubscription from "../models/CourseSubscription.js";
-import PlatformPayment from "../models/PlatformPayment.js";
+import { getPlatformPaymentInfo } from "./sharedPlatformPaymentController.js";
 import imagekit from "../configs/imageKit.js";
+
+export { getPlatformPaymentInfo };
 
 const COURSE_SUBSCRIPTION_PRICE = 2499.99;
 
@@ -70,8 +72,16 @@ export const createCourse = async (req, res) => {
 
 export const getAllCourses = async (req, res) => {
   try {
-    const courses = await Course.find().sort({ level: 1, semester: 1, createdAt: -1 });
-    res.status(200).json({ success: true, courses });
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const skip = (page - 1) * limit;
+
+    const [courses, total] = await Promise.all([
+      Course.find().sort({ level: 1, semester: 1, createdAt: -1 }).skip(skip).limit(limit),
+      Course.countDocuments()
+    ]);
+
+    res.status(200).json({ success: true, courses, total, page, pages: Math.ceil(total / limit) });
   } catch (error) {
     res.status(500).json({ success: false, message: "Failed to fetch courses" });
   }
@@ -110,30 +120,6 @@ export const deleteCourse = async (req, res) => {
     res.status(200).json({ success: true, message: "Course deleted successfully" });
   } catch (error) {
     res.status(500).json({ success: false, message: "Failed to delete course" });
-  }
-};
-
-// Get platform payment info for course subscriptions
-export const getPlatformPaymentInfo = async (req, res) => {
-  try {
-    let config = await PlatformPayment.findOne();
-    if (!config) {
-      config = await PlatformPayment.create({
-        ccpNumber: process.env.PLATFORM_CCP_NUMBER || null,
-        ccpKey: process.env.PLATFORM_CCP_KEY || null,
-        baridiMob: process.env.PLATFORM_BARIDI_MOB || null,
-      });
-    }
-    res.status(200).json({
-      success: true,
-      data: {
-        ccpNumber: config.ccpNumber,
-        ccpKey: config.ccpKey,
-        baridiMob: config.baridiMob,
-      }
-    });
-  } catch (error) {
-    res.status(500).json({ success: false, message: "Error fetching payment info" });
   }
 };
 

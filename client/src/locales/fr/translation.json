@@ -45,7 +45,10 @@
     "roleAdmin": "Administrateur",
     "roleDieteticien": "Diététicien",
     "roleClient": "Client",
-    "roleStudent": "Étudiant"
+    "roleStudent": "Étudiant",
+    "featureNutrition": "Plans de nutrition personnalisés et suivi IA",
+    "featureCourses": "Supports de cours et suivi de progression",
+    "featureConsultations": "Consultations et restez connecté"
   },
   "signup": {
     "backToHome": "Retour à l'accueil",
@@ -335,7 +338,12 @@
     "buyNow": "Acheter",
     "viewMyPlan": "Voir mon plan",
     "owned": "Possédé",
-    "notOwned": "Non possédé"
+    "notOwned": "Non possédé",
+    "sortNewest": "Plus récent",
+    "sortOldest": "Plus ancien",
+    "sortPriceLow": "Prix : croissant",
+    "sortPriceHigh": "Prix : décroissant",
+    "sortName": "Nom (A-Z)"
   },
   "purchase": {
     "daysProgram": "Programme en jours",
@@ -581,7 +589,10 @@
     "whyLogin": "Pourquoi se connecter ?",
     "signIn": "Se connecter",
     "createAccount": "Créer un compte",
-    "share": "Partager"
+    "share": "Partager",
+    "clearFilters": "Effacer les filtres",
+    "result": "résultat",
+    "results": "résultats"
   },
   "dashboard": {
     "sidebar": {

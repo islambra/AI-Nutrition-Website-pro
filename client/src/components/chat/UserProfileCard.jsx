@@ -45,7 +45,7 @@ export default function UserProfileCard({ user, onClose }) {
       <div className="flex justify-center -mt-10">
         <div className="w-20 h-20 rounded-full bg-gradient-to-br from-emerald-100 to-emerald-200 flex items-center justify-center overflow-hidden ring-4 ring-white ring-offset-2 ring-offset-white shadow-xl shadow-emerald-500/10">
           {displayData.photo ? (
-            <img src={displayData.photo} alt="" className="w-full h-full object-cover" />
+            <img src={displayData.photo} alt="" className="w-full h-full object-cover" loading="lazy" />
           ) : (
             <span className="text-emerald-600 font-bold text-2xl">
               {displayData.fullName?.charAt(0)?.toUpperCase() || '?'}

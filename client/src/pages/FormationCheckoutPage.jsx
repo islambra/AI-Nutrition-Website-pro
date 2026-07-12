@@ -19,7 +19,7 @@ function FormationCheckoutPage() {
   const { formationId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, isAuthenticated, authLoading } = useAuth();
+  const { user, isAuthenticated, loading: authLoading } = useAuth();
   const { setTimeoutSafe } = useSafeTimeout();
 
   const [formation, setFormation] = useState(location.state?.formation || null);
@@ -208,7 +208,7 @@ function FormationCheckoutPage() {
             <h2>{t('checkout.completePurchase')}</h2>
             <div className="plan-summary-card">
               {formation.image ? (
-                <img src={formation.image} alt={formation.title} />
+                <img src={formation.image} alt={formation.title} loading="lazy" />
               ) : (
                 <div className="plan-placeholder" style={{ height: '150px', background: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '12px', marginBottom: '15px' }}>
                   <BookOpen size={48} color="#ccc" />
@@ -300,7 +300,7 @@ function FormationCheckoutPage() {
                   {proofPreview ? (
                     <div style={{ width: '100%' }}>
                       <div className="upload-preview">
-                        <img src={proofPreview} alt="Proof preview" />
+                        <img src={proofPreview} alt="Proof preview" loading="lazy" />
                         <div className="upload-preview-overlay">
                           <Upload size={28} />
                           <span>{t('checkout.changeFile')}</span>
@@ -315,8 +315,8 @@ function FormationCheckoutPage() {
                       <div className="upload-zone-icon-wrapper">
                         <Upload size={24} />
                       </div>
-                      <p>{t('checkout.uploadReceipt')}</p>
-                      <p>{t('checkout.uploadReceipt')}</p>
+                      <p>{t('checkout.clickToUpload')}</p>
+                      <p>{t('checkout.screenshotOrReceipt')}</p>
                     </div>
                   )}
                 </div>

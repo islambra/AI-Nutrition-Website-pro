@@ -20,7 +20,7 @@ function PlanCheckoutPage() {
   const { planId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, isAuthenticated, authLoading } = useAuth();
+  const { user, isAuthenticated, loading: authLoading } = useAuth();
 
   const [plan, setPlan] = useState(location.state?.plan || null);
   const [loadingPlan, setLoadingPlan] = useState(!location.state?.plan);
@@ -208,7 +208,7 @@ function PlanCheckoutPage() {
             <h2>{t('checkout.completePurchase')}</h2>
             <div className="plan-summary-card">
               {plan.planImage ? (
-                <img src={plan.planImage} alt={plan.planName} />
+                <img src={plan.planImage} alt={plan.planName} loading="lazy" />
               ) : (
                 <div className="plan-placeholder" style={{ height: '150px', background: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '12px', marginBottom: '15px' }}>
                   <Calendar size={48} color="#ccc" />
@@ -303,7 +303,7 @@ function PlanCheckoutPage() {
                   {proofPreview ? (
                     <div style={{ width: '100%' }}>
                       <div className="upload-preview">
-                        <img src={proofPreview} alt="Proof preview" />
+                        <img src={proofPreview} alt="Proof preview" loading="lazy" />
                         <div className="upload-preview-overlay">
                           <Upload size={28} />
                           <span>{t('checkout.changeFile')}</span>
@@ -318,8 +318,8 @@ function PlanCheckoutPage() {
                       <div className="upload-zone-icon-wrapper">
                         <Upload size={24} />
                       </div>
-                      <p>{t('checkout.uploadReceipt')}</p>
-                      <p>{t('checkout.uploadReceipt')}</p>
+                      <p>{t('checkout.clickToUpload')}</p>
+                      <p>{t('checkout.screenshotOrReceipt')}</p>
                     </div>
                   )}
                 </div>

@@ -70,7 +70,7 @@ export default function RoomList({ rooms, onSelectRoom, typingUsers, onShowProfi
                     className="w-12 h-12 rounded-full bg-gradient-to-br from-emerald-100 to-emerald-200 flex items-center justify-center overflow-hidden ring-2 ring-gray-200 hover:ring-emerald-300 transition-all duration-300"
                   >
                     {other.photo ? (
-                      <img src={other.photo} alt="" className="w-full h-full object-cover" />
+                      <img src={other.photo} alt="" className="w-full h-full object-cover" loading="lazy" />
                     ) : (
                       <span className="text-emerald-600 font-semibold text-base">
                         {other.fullName?.charAt(0)?.toUpperCase() || '?'}

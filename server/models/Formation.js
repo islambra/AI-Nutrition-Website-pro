@@ -15,6 +15,7 @@ const formationSchema = new mongoose.Schema({
   sessionsCount: { type: Number, default: 0 },
   durationWeeks: { type: Number, required: true },
   startDate: { type: Date, required: true },
+  endDate: { type: Date, default: null },
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   creatorInfo: {
     fullName: String,

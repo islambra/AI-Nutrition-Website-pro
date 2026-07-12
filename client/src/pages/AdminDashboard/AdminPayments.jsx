@@ -417,7 +417,7 @@ const AdminPayments = () => {
                       style={{ background: typeCfg.gradient, color: typeCfg.color }}
                     >
                       {p.user?.photo ? (
-                        <img src={p.user.photo} alt="" className="ap-avatar-img" />
+                        <img src={p.user.photo} alt="" className="ap-avatar-img" loading="lazy" />
                       ) : (
                         <span>{initials}</span>
                       )}

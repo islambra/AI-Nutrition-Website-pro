@@ -239,13 +239,13 @@ function BlogsPage() {
               return (
                 <motion.article key={post._id} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: index * 0.05 }} onClick={() => handleReadMore(post._id)} className="BlogsPage-Card">
                   <div className="BlogsPage-Card-Image-Wrapper">
-                    {post.photo ? <img src={post.photo} alt={post.title} className="BlogsPage-Card-Image" /> : <div className="BlogsPage-Card-Placeholder"><Leaf size={60} strokeWidth={1} /></div>}
+                    {post.photo ? <img src={post.photo} alt={post.title} className="BlogsPage-Card-Image" loading="lazy" /> : <div className="BlogsPage-Card-Placeholder"><Leaf size={60} strokeWidth={1} /></div>}
                     <div className="BlogsPage-Card-Tag">{getTypeIcon(post.type)}<span>{post.type.toUpperCase()}</span></div>
                   </div>
                   <div className="BlogsPage-Card-Body">
                     <div className="BlogsPage-Card-Meta">
                       <div className="BlogsPage-Author">
-                        {authorPhoto ? <img src={authorPhoto} alt={authorName} className="BlogsPage-Author-Image" referrerPolicy="no-referrer" /> : <div className="BlogsPage-Author-Placeholder"><User size={12} /></div>}
+                        {authorPhoto ? <img src={authorPhoto} alt={authorName} className="BlogsPage-Author-Image" referrerPolicy="no-referrer" loading="lazy" /> : <div className="BlogsPage-Author-Placeholder"><User size={12} /></div>}
                         <span>{authorName}</span>
                       </div>
                       <div className="BlogsPage-Date"><Clock size={14} /><span>{formatDate(post.createdAt)}</span></div>

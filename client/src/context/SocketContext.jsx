@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useRef, useState, useCallback } from 'react';
+import { createContext, useContext, useEffect, useRef, useState, useCallback, useMemo } from 'react';
 import { io } from 'socket.io-client';
 import { useAuth } from './AuthContext';
 import { getRooms as fetchRooms } from '../api/chatApi';
@@ -173,7 +173,7 @@ export const SocketProvider = ({ children }) => {
     });
   }, []);
 
-  const value = {
+  const value = useMemo(() => ({
     connected,
     rooms,
     messages,
@@ -187,7 +187,7 @@ export const SocketProvider = ({ children }) => {
     emitStopTyping,
     setRoomMessages,
     removeRoom
-  };
+  }), [connected, rooms, messages, typingUsers, activeRoomId, loadRooms, joinRoom, leaveRoom, sendMessage, emitTyping, emitStopTyping, setRoomMessages, removeRoom]);
 
   return (
     <SocketContext.Provider value={value}>

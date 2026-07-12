@@ -128,7 +128,7 @@ const ManageCourseSubscriptions = () => {
               onClick={(e) => e.stopPropagation()}
             >
               <button className="mcs-image-close" onClick={() => setPreviewImage(null)}>×</button>
-              <img src={previewImage} alt={t('admin.paymentProof')} className="mcs-proof-image" />
+              <img src={previewImage} alt={t('admin.paymentProof')} className="mcs-proof-image" loading="lazy" />
             </motion.div>
           </motion.div>
         )}
@@ -254,7 +254,7 @@ const ManageCourseSubscriptions = () => {
                   <div className="mcs-card-user">
                     <div className="mcs-avatar">
                       {payment.user?.photo ? (
-                        <img src={payment.user.photo} alt="" className="mcs-avatar-img" />
+                        <img src={payment.user.photo} alt="" className="mcs-avatar-img" loading="lazy" />
                       ) : (
                         <span>{initials}</span>
                       )}

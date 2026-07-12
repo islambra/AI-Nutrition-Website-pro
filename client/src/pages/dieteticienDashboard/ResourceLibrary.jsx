@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
-import { toast } from "sonner";
+import toast from "react-hot-toast";
 import { FileText, Plus, Trash, Download, Upload, FolderOpen, Users, X, ChevronDown } from "lucide-react";
 import { getMyResources, createResource, deleteResource } from "../../api/resourceApi";
 import { getSubscribers } from "../../api/dieteticienSubscriptionApi";

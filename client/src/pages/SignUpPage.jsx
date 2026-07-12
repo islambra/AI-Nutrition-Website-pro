@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { toast } from 'sonner';
+import toast from 'react-hot-toast';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
 import {
@@ -507,7 +507,7 @@ function SignUpPage() {
                     />
                     {diplomaPreview ? (
                       <div className="diploma-preview-wrapper">
-                        <img src={diplomaPreview} alt="Diploma preview" className="diploma-preview-img" />
+                        <img src={diplomaPreview} alt="Diploma preview" className="diploma-preview-img" loading="lazy" />
                         <div className="diploma-file-info">
                           <FileText size={16} />
                           <span>{diplomaFile?.name}</span>

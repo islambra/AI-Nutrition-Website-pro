@@ -7,5 +7,8 @@ const userFormationSchema = new mongoose.Schema({
   purchasedAt: { type: Date, default: Date.now }
 });
 
+userFormationSchema.index({ user: 1 });
+userFormationSchema.index({ formation: 1 });
+
 const UserFormation = mongoose.model("UserFormation", userFormationSchema);
 export default UserFormation;

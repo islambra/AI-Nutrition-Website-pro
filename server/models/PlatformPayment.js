@@ -17,6 +17,8 @@ const platformPaymentSchema = new mongoose.Schema({
   },
 }, { timestamps: true });
 
+platformPaymentSchema.index({ createdAt: -1 });
+
 const PlatformPayment = mongoose.model('PlatformPayment', platformPaymentSchema);
 
 export default PlatformPayment;

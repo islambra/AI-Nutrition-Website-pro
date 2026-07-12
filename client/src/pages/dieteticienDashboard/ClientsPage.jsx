@@ -341,7 +341,7 @@ const PatientCard = ({ patient, onClick, getBMIColor, getActivityLabel }) => {
       <div className="card-header">
         <div className="patient-avatar">
           {patient.photo ? (
-            <img src={patient.photo} alt={patient.fullName} className="avatar-img" />
+            <img src={patient.photo} alt={patient.fullName} className="avatar-img" loading="lazy" />
           ) : (
             <div className="avatar-placeholder" style={{ background: `linear-gradient(135deg, ${bmiColor}, ${bmiColor}dd)` }}>
               {patient.fullName?.charAt(0).toUpperCase()}
@@ -411,7 +411,7 @@ const StudentCard = ({ patient, onClick }) => {
       <div className="student-card-top">
         <div className="student-avatar">
           {patient.photo ? (
-            <img src={patient.photo} alt={patient.fullName} className="avatar-img" />
+            <img src={patient.photo} alt={patient.fullName} className="avatar-img" loading="lazy" />
           ) : (
             <div className="avatar-placeholder" style={{ background: 'linear-gradient(135deg, #10b981, #059669)' }}>
               {patient.fullName?.charAt(0).toUpperCase()}
@@ -460,7 +460,7 @@ const StudentModal = ({ patient, onClose }) => {
         <div className="student-modal-hero">
           <div className="hero-avatar-wrapper">
             {patient.photo ? (
-              <img src={patient.photo} alt={patient.fullName} className="hero-avatar" />
+              <img src={patient.photo} alt={patient.fullName} className="hero-avatar" loading="lazy" />
             ) : (
               <div className="hero-avatar-placeholder" style={{ background: 'linear-gradient(135deg, #10b981, #059669)' }}>
                 {patient.fullName?.charAt(0).toUpperCase()}
@@ -537,7 +537,7 @@ const ModernPatientModal = ({ patient, onClose, getBMIColor, getBMIGradient, get
         <div className="modern-modal-hero" style={{ background: bmiGradient }}>
           <div className="hero-avatar-wrapper">
             {patient.photo ? (
-              <img src={patient.photo} alt={patient.fullName} className="hero-avatar" />
+              <img src={patient.photo} alt={patient.fullName} className="hero-avatar" loading="lazy" />
             ) : (
               <div className="hero-avatar-placeholder">
                 {patient.fullName?.charAt(0).toUpperCase()}

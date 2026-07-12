@@ -3,12 +3,14 @@ import express from "express";
 import cors from "cors";
 import helmet from "helmet";
 import hpp from "hpp";
+import compression from "compression";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import mongoose from "mongoose";
 import connectDB from "./configs/db.js";
 import { globalLimiter, authLimiter, apiLimiter } from "./middleware/rateLimiter.js";
 import { errorHandler } from "./middleware/errorHandler.js";
+import { cacheMiddleware } from "./middleware/cache.js";
 
 import userRouter from "./routes/userRoutes.js";
 import blogRouter from "./routes/blogRoutes.js";
@@ -33,6 +35,8 @@ await connectDB();
 const app = express();
 
 const NODE_ENV = process.env.NODE_ENV || 'development';
+
+app.use(compression());
 
 app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" },
@@ -138,7 +142,10 @@ const io = new Server(httpServer, {
     origin: allowedOrigins,
     methods: ["GET", "POST"],
     credentials: true
-  }
+  },
+  maxHttpBufferSize: 1e6,
+  pingTimeout: 60000,
+  pingInterval: 25000
 });
 
 initializeSocket(io);

@@ -98,7 +98,7 @@ const MyFormations = () => {
             >
               <div className="fc-image-wrapper">
                 {f.image ? (
-                  <img src={f.image} alt={f.title} className="fc-image" />
+                  <img src={f.image} alt={f.title} className="fc-image" loading="lazy" />
                 ) : (
                   <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", background: "var(--health-mint)" }}>
                     <Video size={48} style={{ color: "var(--health-green)", opacity: 0.3 }} />
@@ -124,7 +124,7 @@ const MyFormations = () => {
                 {f.creatorInfo && (
                   <div className="fc-creator-row">
                     {f.creatorInfo.photo ? (
-                      <img src={f.creatorInfo.photo} alt={f.creatorInfo.fullName} className="fc-creator-avatar" />
+                      <img src={f.creatorInfo.photo} alt={f.creatorInfo.fullName} className="fc-creator-avatar" loading="lazy" />
                     ) : (
                       <div className="fc-creator-avatar-fallback">
                         <User size={16} />

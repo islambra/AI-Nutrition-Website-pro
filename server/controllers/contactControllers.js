@@ -31,11 +31,21 @@ export const submitContact = async (req, res) => {
 
 export const getAllContacts = async (req, res) => {
     try {
-        const contacts = await Contact.find().sort({ createdAt: -1 });
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 20;
+        const skip = (page - 1) * limit;
+
+        const [contacts, total] = await Promise.all([
+            Contact.find().sort({ createdAt: -1 }).skip(skip).limit(limit),
+            Contact.countDocuments()
+        ]);
 
         res.status(200).json({
             success: true,
             count: contacts.length,
+            total,
+            page,
+            pages: Math.ceil(total / limit),
             contacts,
         });
 

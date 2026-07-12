@@ -235,7 +235,7 @@ const FindDietitiansPage = () => {
                           style={{ background: getGradient(i) }}
                         >
                           {d.photo ? (
-                            <img src={d.photo} alt={d.fullName} />
+                            <img src={d.photo} alt={d.fullName} loading="lazy" />
                           ) : (
                             <span className="fdp-card-initials">
                               {getInitials(d.fullName)}

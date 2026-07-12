@@ -78,12 +78,12 @@ export const registerUser = async (req, res) => {
     } = req.body;
 
     if (!["client", "student"].includes(role)) {
-      return res.status(400).json({ message: 'Role must be "client" or "student"' });
+      return res.status(400).json({ success: false, message: 'Role must be "client" or "student"' });
     }
 
     const existingUser = await User.findOne({ email: email.toLowerCase().trim() });
     if (existingUser) {
-      return res.status(400).json({ message: "User already exists with this email" });
+      return res.status(400).json({ success: false, message: "User already exists with this email" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 12);
@@ -123,7 +123,7 @@ export const registerUser = async (req, res) => {
     } else if (role === "student") {
       if (!studentCardNumber) {
         await User.findByIdAndDelete(newUser._id);
-        return res.status(400).json({ message: "Student card number is required" });
+        return res.status(400).json({ success: false, message: "Student card number is required" });
       }
       studentProfile = new Student({
         user: newUser._id,
@@ -218,7 +218,7 @@ export const createStaffUser = async (req, res) => {
 
     const existingUser = await User.findOne({ email: email.toLowerCase().trim() });
     if (existingUser) {
-      return res.status(400).json({ message: "User already exists with this email" });
+      return res.status(400).json({ success: false, message: "User already exists with this email" });
     }
 
     const hashedPassword = await bcrypt.hash(password, 12);
@@ -337,7 +337,7 @@ export const getCurrentUser = async (req, res) => {
     const user = await User.findById(req.user.id).select("-password");
 
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ success: false, message: "User not found" });
     }
 
     let profile = null;
@@ -350,13 +350,16 @@ export const getCurrentUser = async (req, res) => {
     }
 
     res.status(200).json({
-      ...user.toObject(),
-      clientProfile: user.role === "client" ? profile : null,
-      studentProfile: user.role === "student" ? profile : null,
-      dieteticienProfile: user.role === "dieteticien" ? profile : null
+      success: true,
+      data: {
+        ...user.toObject(),
+        clientProfile: user.role === "client" ? profile : null,
+        studentProfile: user.role === "student" ? profile : null,
+        dieteticienProfile: user.role === "dieteticien" ? profile : null
+      }
     });
   } catch (error) {
-    res.status(500).json({ success: false, message: "Error updating user" });
+    res.status(500).json({ success: false, message: "Error fetching current user" });
   }
 };
 
@@ -365,7 +368,7 @@ export const getUserPublicProfile = async (req, res) => {
     const { id } = req.params;
     const user = await User.findById(id).select("fullName email photo role");
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({ success: false, message: "User not found" });
     }
 
     let specialty = null;
@@ -375,8 +378,11 @@ export const getUserPublicProfile = async (req, res) => {
     }
 
     res.status(200).json({
-      ...user.toObject(),
-      specialty
+      success: true,
+      data: {
+        ...user.toObject(),
+        specialty
+      }
     });
   } catch (error) {
     res.status(500).json({ success: false, message: "Error fetching profile" });

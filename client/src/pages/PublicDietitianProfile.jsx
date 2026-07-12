@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
-import { toast } from "sonner";
+import toast from "react-hot-toast";
 import {
   ArrowLeft,
   Mail,
@@ -155,7 +155,7 @@ const PublicDietitianProfile = () => {
             <div className="pdp-avatar-section">
               <div className="pdp-avatar">
                 {dieteticien.photo ? (
-                  <img src={dieteticien.photo} alt={dieteticien.fullName} />
+                  <img src={dieteticien.photo} alt={dieteticien.fullName} loading="lazy" />
                 ) : (
                   <span className="pdp-avatar-initials">
                     {dieteticien.fullName

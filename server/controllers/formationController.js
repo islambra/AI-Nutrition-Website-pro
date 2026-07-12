@@ -89,8 +89,16 @@ export const createFormation = async (req, res) => {
 
 export const getFormations = async (req, res) => {
   try {
-    const formations = await Formation.find({ status: "active" }).sort({ createdAt: -1 });
-    res.status(200).json({ success: true, data: formations });
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const skip = (page - 1) * limit;
+
+    const [formations, total] = await Promise.all([
+      Formation.find({ status: "active" }).sort({ createdAt: -1 }).skip(skip).limit(limit),
+      Formation.countDocuments({ status: "active" })
+    ]);
+
+    res.status(200).json({ success: true, data: formations, total, page, pages: Math.ceil(total / limit) });
   } catch (error) {
     res.status(500).json({ success: false, message: "Error fetching formations" });
   }
@@ -113,6 +121,8 @@ export const updateFormation = async (req, res) => {
     if (formation.createdBy.toString() !== req.user.id && req.user.role !== "admin") {
       return res.status(403).json({ success: false, message: "Not authorized" });
     }
+
+    const { title, description, price, files, sessionsCount, durationWeeks, startDate, endDate } = req.body;
 
     const imageFile = req.files?.find(f => f.fieldname === "image");
     if (imageFile) {
@@ -160,6 +170,8 @@ export const updateFormation = async (req, res) => {
     if (price !== undefined) formation.price = Number(price);
     if (sessionsCount !== undefined) formation.sessionsCount = Number(sessionsCount);
     if (durationWeeks !== undefined) formation.durationWeeks = Number(durationWeeks);
+    if (startDate !== undefined) formation.startDate = startDate;
+    if (endDate !== undefined) formation.endDate = endDate;
     await formation.save();
     res.status(200).json({ success: true, data: formation });
   } catch (error) {
@@ -194,8 +206,16 @@ export const deleteFormation = async (req, res) => {
 
 export const getMyFormations = async (req, res) => {
   try {
-    const formations = await Formation.find({ createdBy: req.user.id }).sort({ createdAt: -1 });
-    res.status(200).json({ success: true, data: formations });
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const skip = (page - 1) * limit;
+
+    const [formations, total] = await Promise.all([
+      Formation.find({ createdBy: req.user.id }).sort({ createdAt: -1 }).skip(skip).limit(limit),
+      Formation.countDocuments({ createdBy: req.user.id })
+    ]);
+
+    res.status(200).json({ success: true, data: formations, total, page, pages: Math.ceil(total / limit) });
   } catch (error) {
     res.status(500).json({ success: false, message: "Error fetching formations" });
   }

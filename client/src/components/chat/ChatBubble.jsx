@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAuth } from '../../context/AuthContext';
 import { useSocket } from '../../context/SocketContext';
@@ -11,10 +12,10 @@ export default function ChatBubble() {
 
   if (!isAuthenticated || isAdmin) return null;
 
-  const totalUnread = rooms?.filter(r => {
+  const totalUnread = useMemo(() => rooms?.filter(r => {
     const lastMsg = r.lastMessage;
     return lastMsg && lastMsg.sender && lastMsg.sender !== r.participants?.[0]?.user?._id;
-  }).length || 0;
+  }).length || 0, [rooms]);
 
   return (
     <>

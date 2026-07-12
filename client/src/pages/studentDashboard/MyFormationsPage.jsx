@@ -120,7 +120,7 @@ const MyFormationsPage = () => {
                 >
                   <div className="fc-card-image">
                     {f.image ? (
-                      <img src={f.image} alt={f.title} />
+                      <img src={f.image} alt={f.title} loading="lazy" />
                     ) : (
                       <div className="fc-card-image-placeholder">
                         <BookOpen size={40} />
@@ -131,7 +131,7 @@ const MyFormationsPage = () => {
                     <h3 className="fc-card-title">{f.title}</h3>
                     <div className="fc-card-creator">
                       {f.creatorInfo?.photo ? (
-                        <img src={f.creatorInfo.photo} alt="" className="fc-creator-avatar" />
+                        <img src={f.creatorInfo.photo} alt="" className="fc-creator-avatar" loading="lazy" />
                       ) : (
                         <div className="fc-creator-avatar fc-creator-avatar-fallback">
                           {(f.creatorInfo?.fullName || "U").charAt(0)}
@@ -173,12 +173,12 @@ const MyFormationsPage = () => {
           </button>
 
           <div className="fc-detail-hero">
-            {f.image && <img src={f.image} alt={f.title} className="fc-detail-hero-img" />}
+            {f.image && <img src={f.image} alt={f.title} className="fc-detail-hero-img" loading="lazy" />}
             <div className="fc-detail-hero-overlay">
               <h1 className="fc-detail-title">{f.title}</h1>
               <div className="fc-detail-creator">
                 {f.creatorInfo?.photo ? (
-                  <img src={f.creatorInfo.photo} alt="" className="fc-detail-creator-avatar" />
+                  <img src={f.creatorInfo.photo} alt="" className="fc-detail-creator-avatar" loading="lazy" />
                 ) : (
                   <div className="fc-detail-creator-avatar fc-detail-creator-avatar-fallback">
                     {(f.creatorInfo?.fullName || "U").charAt(0)}

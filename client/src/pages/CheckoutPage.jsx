@@ -133,7 +133,7 @@ function CheckoutPage() {
             
             <div className="plan-summary-card">
               {plan.planImage ? (
-                <img src={plan.planImage} alt={plan.planName} />
+                <img src={plan.planImage} alt={plan.planName} loading="lazy" />
               ) : (
                 <div className="plan-placeholder" style={{ height: '150px', background: '#f0f0f0', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '12px', marginBottom: '15px' }}>
                   <Calendar size={48} color="#ccc" />

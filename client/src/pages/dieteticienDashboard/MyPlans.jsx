@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { getMyPlans, updatePlan, deletePlan, getPlanCategories, getFollowUpOptions, validateMacronutrients } from '../../api/planApi';
 import {
   FiPlus, FiEdit, FiSave, FiX, FiTrash2, FiCalendar,
@@ -14,6 +15,7 @@ import './MyPlans.css';
 
 const PlanDashboard = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { setTimeoutSafe } = useSafeTimeout();
   const [plans, setPlans] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -270,7 +272,7 @@ const PlanDashboard = () => {
         <div className="dash-topbar-left">
           <div className="dash-avatar">
             {currentUser.photo ? (
-              <img src={currentUser.photo} alt={currentUser.fullName} />
+              <img src={currentUser.photo} alt={currentUser.fullName} loading="lazy" />
             ) : (
               currentUser.fullName?.charAt(0).toUpperCase() || <FiUser size={18} />
             )}
@@ -301,7 +303,7 @@ const PlanDashboard = () => {
               <div className="dash-empty">
                 <div className="dash-empty-icon"><FiFolder size={44} /></div>
                 <p>{t('common.noResults')}</p>
-                <button className="dash-empty-btn" onClick={() => window.location.href = '/dieteticien/create-plan'}>
+                <button className="dash-empty-btn" onClick={() => navigate('/dieteticien/create-plan')}>
                   <FiPlus size={16} /> {t('dashboard.dieteticien.createPlan.createPlan')}
                 </button>
               </div>
@@ -313,7 +315,7 @@ const PlanDashboard = () => {
                   onClick={() => handleSelectPlan(plan)}
                 >
                   {plan.planImage ? (
-                    <img src={plan.planImage} alt={plan.planName} className="dash-plan-card-img" />
+                    <img src={plan.planImage} alt={plan.planName} className="dash-plan-card-img" loading="lazy" />
                   ) : (
                     <div className="dash-plan-card-img-placeholder"><FiImage size={18} /></div>
                   )}
@@ -389,7 +391,7 @@ const PlanDashboard = () => {
                   <div className="dash-image-upload">
                     {imagePreview ? (
                       <div className="dash-image-preview">
-                        <img src={imagePreview} alt="Preview" />
+                        <img src={imagePreview} alt="Preview" loading="lazy" />
                         <button type="button" className="dash-image-remove" onClick={() => { setImagePreview(null); setImageFile(null); setFormData(prev => ({ ...prev, planImage: null })); }}>
                           <FiX size={10} />
                         </button>
@@ -508,7 +510,7 @@ const PlanDashboard = () => {
                   <input type="text" value={formData.supplementsSuggested.join(', ')} onChange={e => handleArrayChange('supplementsSuggested', e.target.value)} placeholder="e.g. Vitamin D, Omega-3" />
                 </div>
                 <div className="dash-field">
-                  <label>Exercise Recommendation</label>
+                  <label>{t('dashboard.dieteticien.createPlan.exerciseRecommendation')}</label>
                   <textarea name="exerciseRecommendation" value={formData.exerciseRecommendation || ''} onChange={handleInputChange} rows="2" placeholder="e.g. 30 min cardio daily" />
                 </div>
               </div>
@@ -534,7 +536,7 @@ const PlanDashboard = () => {
               {/* Hero Image */}
               {selectedPlan.planImage && (
                 <div className="dash-hero">
-                  <img src={selectedPlan.planImage} alt={selectedPlan.planName} />
+                  <img src={selectedPlan.planImage} alt={selectedPlan.planName} loading="lazy" />
                   <div className="dash-hero-overlay" />
                 </div>
               )}
@@ -676,7 +678,7 @@ const PlanDashboard = () => {
                 )}
                 {selectedPlan.exerciseRecommendation && (
                   <div className="dash-info-card full">
-                    <h5><FiActivity size={14} /> Exercise</h5>
+                    <h5><FiActivity size={14} /> {t('dashboard.dieteticien.createPlan.exerciseRecommendation')}</h5>
                     <p>{selectedPlan.exerciseRecommendation}</p>
                   </div>
                 )}

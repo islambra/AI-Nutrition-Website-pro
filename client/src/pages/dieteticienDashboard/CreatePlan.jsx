@@ -437,7 +437,7 @@ const CreatePlan = () => {
           <div className="image-upload-area">
             {previewImage ? (
               <div className="image-preview">
-                <img src={previewImage} alt="Plan preview" />
+                <img src={previewImage} alt="Plan preview" loading="lazy" />
                 <button
                   type="button"
                   className="remove-image-btn"

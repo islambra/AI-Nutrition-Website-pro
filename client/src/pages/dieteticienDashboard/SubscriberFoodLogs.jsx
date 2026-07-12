@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useParams, useNavigate } from "react-router-dom";
 import { useTranslation } from "react-i18next";
-import { toast } from "sonner";
+import toast from "react-hot-toast";
 import { ArrowLeft, Utensils, Calendar, Send } from "lucide-react";
 import { getSubscriberEntries, addFeedback } from "../../api/foodDiaryApi";
 import "./SubscribersList.css";

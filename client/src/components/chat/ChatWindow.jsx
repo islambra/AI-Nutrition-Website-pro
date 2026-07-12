@@ -132,7 +132,7 @@ export default function ChatWindow() {
                       className="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-100 to-emerald-200 flex items-center justify-center overflow-hidden ring-2 ring-gray-200 shrink-0 hover:ring-emerald-300 transition-all duration-200 relative"
                     >
                       {otherParticipant.photo ? (
-                        <img src={otherParticipant.photo} alt="" className="w-full h-full object-cover" />
+                        <img src={otherParticipant.photo} alt="" className="w-full h-full object-cover" loading="lazy" />
                       ) : (
                           <span className="text-emerald-600 font-semibold text-sm">
                           {otherParticipant.fullName?.charAt(0)?.toUpperCase() || '?'}

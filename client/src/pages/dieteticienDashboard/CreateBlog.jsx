@@ -335,7 +335,7 @@ const CreateBlog = () => {
               </div>
             ) : imagePreview ? (
               <div className="upload-preview">
-                <img src={imagePreview} alt="Preview" />
+                <img src={imagePreview} alt="Preview" loading="lazy" />
                 <button
                   type="button"
                   className="preview-remove"

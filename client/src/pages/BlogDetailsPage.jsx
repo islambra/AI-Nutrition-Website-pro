@@ -245,7 +245,7 @@ function BlogDetailsPage() {
                 <div className="blog-author-info">
                   <div className="author-avatar">
                     {blog.author?.photo ? (
-                      <img src={blog.author.photo} alt={blog.author.fullName} />
+                      <img src={blog.author.photo} alt={blog.author.fullName} loading="lazy" />
                     ) : (
                       <div className="avatar-placeholder">
                         {blog.author?.fullName?.charAt(0) || 'U'}
@@ -261,7 +261,7 @@ function BlogDetailsPage() {
 
               {blog.photo && (
                 <div className="blog-featured-image">
-                  <img src={blog.photo} alt={blog.title} />
+                  <img src={blog.photo} alt={blog.title} loading="lazy" />
                 </div>
               )}
 
@@ -342,7 +342,7 @@ function BlogDetailsPage() {
                     <div key={comment._id} className="comment-item">
                       <div className="comment-avatar">
                         {comment.author?.photo ? (
-                          <img src={comment.author.photo} alt={comment.author.fullName} />
+                          <img src={comment.author.photo} alt={comment.author.fullName} loading="lazy" />
                         ) : (
                           <div className="avatar-placeholder-small">
                             {comment.author?.fullName?.charAt(0) || 'U'}

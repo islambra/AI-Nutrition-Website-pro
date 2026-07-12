@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Upload, Camera, Image, Zap, RefreshCw, AlertCircle, FileImage } from 'lucide-react';
@@ -78,6 +78,12 @@ const FoodScanner = () => {
   const [error, setError] = useState('');
   const [dragOver, setDragOver] = useState(false);
   const fileInputRef = useRef(null);
+
+  useEffect(() => {
+    return () => {
+      if (previewUrl) URL.revokeObjectURL(previewUrl);
+    };
+  }, [previewUrl]);
 
   const reset = useCallback(() => {
     if (previewUrl) URL.revokeObjectURL(previewUrl);

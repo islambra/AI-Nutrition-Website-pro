@@ -48,12 +48,20 @@ export const bookConsultation = async (req, res) => {
 // Get user's consultations (unchanged)
 export const getUserConsultations = async (req, res) => {
   try {
-    const consultations = await Consultation.find({ user: req.user.id })
-      .populate("userPlan")
-      .populate("nutritionist", "fullName email")
-      .populate("plan", "planName planCategory")
-      .sort({ createdAt: -1 });
-    res.status(200).json({ success: true, data: consultations });
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const skip = (page - 1) * limit;
+
+    const [consultations, total] = await Promise.all([
+      Consultation.find({ user: req.user.id })
+        .populate("userPlan")
+        .populate("nutritionist", "fullName email")
+        .populate("plan", "planName planCategory")
+        .sort({ createdAt: -1 }).skip(skip).limit(limit),
+      Consultation.countDocuments({ user: req.user.id })
+    ]);
+
+    res.status(200).json({ success: true, data: consultations, total, page, pages: Math.ceil(total / limit) });
   } catch (error) {
     res.status(500).json({ success: false, message: "Error fetching consultations" });
   }
@@ -76,15 +84,21 @@ export const getConsultationsByUserPlan = async (req, res) => {
 // Nutritionist: Get pending requests (unchanged)
 export const getNutritionistRequests = async (req, res) => {
   try {
-    const consultations = await Consultation.find({
-      nutritionist: req.user.id,
-      status: { $in: ["pending", "accepted"] }
-    })
-      .populate("user", "fullName email")
-      .populate("plan", "planName")
-      .populate("userPlan")
-      .sort({ requestedDateTime: 1 });
-    res.status(200).json({ success: true, data: consultations });
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 20;
+    const skip = (page - 1) * limit;
+
+    const query = { nutritionist: req.user.id, status: { $in: ["pending", "accepted"] } };
+    const [consultations, total] = await Promise.all([
+      Consultation.find(query)
+        .populate("user", "fullName email")
+        .populate("plan", "planName")
+        .populate("userPlan")
+        .sort({ requestedDateTime: 1 }).skip(skip).limit(limit),
+      Consultation.countDocuments(query)
+    ]);
+
+    res.status(200).json({ success: true, data: consultations, total, page, pages: Math.ceil(total / limit) });
   } catch (error) {
     res.status(500).json({ success: false, message: "Error fetching requests" });
   }

@@ -251,7 +251,7 @@ const CreateFormation = () => {
             <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageChange} style={{ display: "none" }} />
             {imagePreview ? (
               <div className="cf-image-zone">
-                <img src={imagePreview} alt="Preview" className="cf-image-preview" />
+                <img src={imagePreview} alt="Preview" className="cf-image-preview" loading="lazy" />
                 <button type="button" onClick={handleRemoveImage} className="cf-image-remove-btn">
                   <X size={16} />
                 </button>
