@@ -1348,7 +1348,18 @@
     "benefitZoom": "x4 Zoom",
     "benefitChat": "Chat",
     "benefitDiary": "Journal",
-    "benefitResources": "Ressources"
+    "benefitResources": "Ressources",
+    "whatIncluded": "Ce qui est inclus",
+    "includedZoom": "Jusqu'à 4 sessions Zoom / Mois",
+    "includedZoomDesc": "Consultations vidéo pour des conseils personnalisés",
+    "includedChat": "Messagerie Directe",
+    "includedChatDesc": "Chat en temps réel avec votre diététicien",
+    "includedDiary": "Journal Alimentaire",
+    "includedDiaryDesc": "Enregistrez vos repas et recevez des retours professionnels",
+    "includedResources": "Ressources Partagées",
+    "includedResourcesDesc": "Accédez aux PDF, documents et guides nutritionnels",
+    "includedTracking": "Suivi des Progrès",
+    "includedTrackingDesc": "Suivez vos objectifs avec des ajustements de plan"
   },
   "findDietitiansProfile": {
     "loading": "Chargement du profil...",

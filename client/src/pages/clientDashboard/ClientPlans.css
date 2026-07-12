@@ -238,37 +238,86 @@
   letter-spacing: 0.3px;
 }
 
-/* Benefits Strip */
-.aff-benefits-strip {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin-bottom: 18px;
+/* Grid override: fewer columns since cards are richer */
+.aff-diet-grid {
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
 }
 
-.aff-benefit-item {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 11px;
-  font-weight: 600;
+/* What's Included Section */
+.aff-diet-included {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.aff-diet-included-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
   color: #475569;
-  background: #f1f5f9;
-  padding: 5px 10px;
-  border-radius: 8px;
-  white-space: nowrap;
+  margin: 0 0 14px;
+}
+
+.aff-diet-benefits {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.aff-diet-benefit {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.aff-diet-benefit-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: #059669;
   transition: all 0.2s ease;
 }
 
-.aff-benefit-item svg {
-  color: #059669;
-  width: 13px;
-  height: 13px;
-  flex-shrink: 0;
+.aff-card-dieteticien:hover .aff-diet-benefit-icon {
+  background: #ecfdf5;
+  border-color: #a7f3d0;
 }
 
-.aff-card-dieteticien:hover .aff-benefit-item {
-  background: #e2e8f0;
+.aff-diet-benefit-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.aff-diet-benefit-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.aff-diet-benefit-text strong {
+  display: block;
+  font-family: 'Outfit', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 2px;
+  line-height: 1.3;
+}
+
+.aff-diet-benefit-text span {
+  display: block;
+  font-size: 11px;
+  color: #94a3b8;
+  line-height: 1.4;
 }
 
 /* Action Row */
