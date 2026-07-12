@@ -28,6 +28,22 @@ const foodDiaryEntrySchema = new mongoose.Schema({
     type: String,
     default: ""
   },
+  calories: {
+    type: Number,
+    default: null
+  },
+  protein: {
+    type: Number,
+    default: null
+  },
+  carbs: {
+    type: Number,
+    default: null
+  },
+  fat: {
+    type: Number,
+    default: null
+  },
   dieteticienFeedback: {
     type: String,
     default: null

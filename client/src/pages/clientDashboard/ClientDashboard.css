@@ -1146,3 +1146,11 @@
     justify-content: center;
   }
 }
+
+/* ── Nutrition Progress Responsive ── */
+@media (max-width: 768px) {
+  .cd-zoom-usage {
+    flex-wrap: wrap;
+    font-size: 12px !important;
+  }
+}

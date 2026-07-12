@@ -18,7 +18,9 @@ export const getAllPayments = async (req, res) => {
 
     const enrichedPayments = await Promise.all(payments.map(async (payment) => {
       let type = 'Unknown';
-      if (payment.plan) {
+      if (payment.dieteticienSubscription) {
+        type = 'Dieteticien Subscription';
+      } else if (payment.plan) {
         type = 'Plan';
       } else if (payment.formation) {
         type = 'Formation';

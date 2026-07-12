@@ -21,6 +21,10 @@ const FoodDiary = () => {
   const [notes, setNotes] = useState("");
   const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
   const [submitting, setSubmitting] = useState(false);
+  const [calories, setCalories] = useState("");
+  const [protein, setProtein] = useState("");
+  const [carbs, setCarbs] = useState("");
+  const [fat, setFat] = useState("");
 
   useEffect(() => {
     const fetch = async () => {
@@ -39,10 +43,21 @@ const FoodDiary = () => {
     if (!activeSub) { toast.error(t("dashboard.client.needSubscription")); return; }
     setSubmitting(true);
     try {
-      const res = await createEntry({ dieteticienId: activeSub.dieteticien._id, date, mealType, description, notes });
+      const data = {
+        dieteticienId: activeSub.dieteticien._id,
+        date,
+        mealType,
+        description,
+        notes,
+        calories: calories ? Number(calories) : undefined,
+        protein: protein ? Number(protein) : undefined,
+        carbs: carbs ? Number(carbs) : undefined,
+        fat: fat ? Number(fat) : undefined
+      };
+      const res = await createEntry(data);
       if (res.success) {
         toast.success("Entry added");
-        setDescription(""); setNotes("");
+        setDescription(""); setNotes(""); setCalories(""); setProtein(""); setCarbs(""); setFat("");
         const updated = await getMyEntries();
         if (updated.success) setEntries(updated.data);
       }
@@ -116,6 +131,24 @@ const FoodDiary = () => {
               <label>{t("dashboard.client.notes")}</label>
               <input type="text" value={notes} onChange={e => setNotes(e.target.value)} placeholder={t("dashboard.client.notes")} />
             </div>
+            <div className="cd-form-grid cols-4" style={{ marginTop: 14, gridTemplateColumns: "repeat(4, 1fr)", gap: 10 }}>
+              <div className="cd-field">
+                <label>Calories (kcal)</label>
+                <input type="number" value={calories} onChange={e => setCalories(e.target.value)} placeholder="0" min="0" />
+              </div>
+              <div className="cd-field">
+                <label>Protein (g)</label>
+                <input type="number" value={protein} onChange={e => setProtein(e.target.value)} placeholder="0" min="0" />
+              </div>
+              <div className="cd-field">
+                <label>Carbs (g)</label>
+                <input type="number" value={carbs} onChange={e => setCarbs(e.target.value)} placeholder="0" min="0" />
+              </div>
+              <div className="cd-field">
+                <label>Fat (g)</label>
+                <input type="number" value={fat} onChange={e => setFat(e.target.value)} placeholder="0" min="0" />
+              </div>
+            </div>
             <button className="cd-btn-primary" style={{ marginTop: 16 }} onClick={handleSubmit} disabled={submitting}>
               {submitting ? t("common.loading") : t("dashboard.client.addEntry")}
             </button>
@@ -138,6 +171,19 @@ const FoodDiary = () => {
                       <span className={`cd-meal-badge ${e.mealType}`}>{t(`dashboard.client.${e.mealType}`)}</span>
                       <p className="cd-entry-desc">{e.description}</p>
                       {e.notes && <p className="cd-entry-notes">{e.notes}</p>}
+                      {(e.calories || e.protein || e.carbs || e.fat) && (
+                        <div style={{
+                          display: "flex",
+                          gap: 12,
+                          marginTop: 8,
+                          flexWrap: "wrap"
+                        }}>
+                          {e.calories && <span style={{ fontSize: 12, color: "#64748b", background: "#f1f5f9", padding: "3px 8px", borderRadius: 6 }}>{e.calories} kcal</span>}
+                          {e.protein && <span style={{ fontSize: 12, color: "#0369a1", background: "#e0f2fe", padding: "3px 8px", borderRadius: 6 }}>{e.protein}g protein</span>}
+                          {e.carbs && <span style={{ fontSize: 12, color: "#92400e", background: "#fef3c7", padding: "3px 8px", borderRadius: 6 }}>{e.carbs}g carbs</span>}
+                          {e.fat && <span style={{ fontSize: 12, color: "#7c3aed", background: "#ede9fe", padding: "3px 8px", borderRadius: 6 }}>{e.fat}g fat</span>}
+                        </div>
+                      )}
                       {e.dieteticienFeedback && (
                         <div className="cd-entry-feedback">
                           <strong>{t("dashboard.client.dieteticienFeedback")}:</strong>

@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-import { User, MessageCircle, Video, X, RefreshCw, FileText, Clock, Calendar, Download, CheckCircle, ArrowRight, Lock } from "lucide-react";
+import { User, MessageCircle, Video, X, RefreshCw, FileText, Clock, Calendar, Download, CheckCircle, ArrowRight, Lock, VideoOff } from "lucide-react";
 import { getMySubscriptions, cancelSubscription, requestZoomSession, renewSubscription } from "../../api/dieteticienSubscriptionApi";
 import { getSubscriberResources } from "../../api/resourceApi";
 import { useChat } from "../../context/ChatContext";
@@ -141,11 +141,40 @@ const MySubscriptions = () => {
               <span className="cd-progress-label">{sub.remainingDays}/30 days</span>
             </div>
 
+            {sub.zoomLimit && (
+              <div className="cd-zoom-usage" style={{
+                display: "flex",
+                alignItems: "center",
+                gap: 8,
+                padding: "10px 14px",
+                background: sub.zoomRemaining === 0 ? "#fef2f2" : "#f0fdf4",
+                borderRadius: 10,
+                marginBottom: 14,
+                fontSize: 13,
+                fontWeight: 500,
+                color: sub.zoomRemaining === 0 ? "#dc2626" : "#166534",
+                border: `1px solid ${sub.zoomRemaining === 0 ? "#fecaca" : "#bbf7d0"}`
+              }}>
+                {sub.zoomRemaining === 0 ? <VideoOff size={16} /> : <Video size={16} />}
+                <span>
+                  Zoom sessions: {sub.zoomUsed}/{sub.zoomLimit} this month
+                  {sub.zoomRemaining > 0 && ` (${sub.zoomRemaining} remaining)`}
+                  {sub.zoomRemaining === 0 && " - Limit reached"}
+                </span>
+              </div>
+            )}
+
             <div className="cd-actions">
               <button className="cd-action-btn chat" onClick={() => openChat(sub.dieteticien?._id)}>
                 <MessageCircle /> {t("dashboard.client.chat")}
               </button>
-              <button className="cd-action-btn zoom" onClick={() => setZoomModal(sub._id)}>
+              <button
+                className={`cd-action-btn zoom ${sub.zoomRemaining === 0 ? 'disabled' : ''}`}
+                onClick={() => setZoomModal(sub._id)}
+                disabled={sub.zoomRemaining === 0}
+                title={sub.zoomRemaining === 0 ? "Monthly zoom session limit reached" : "Request Zoom Session"}
+                style={sub.zoomRemaining === 0 ? { opacity: 0.5, cursor: "not-allowed" } : {}}
+              >
                 <Video /> {t("dashboard.client.requestZoom")}
               </button>
               <button className="cd-action-btn resources" onClick={() => loadResources(sub.dieteticien?._id, sub._id)}>

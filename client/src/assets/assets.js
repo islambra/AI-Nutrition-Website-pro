@@ -56,6 +56,7 @@ export const clientMenuLinks = [
   { name: "dashboard", path: "/client/dashboard", icon: homeIcon },
   { name: "mySubscriptions", path: "/client/my-subscriptions", icon: payment },
   { name: "foodDiary", path: "/client/food-diary", icon: listIcon },
+  { name: "nutritionProgress", path: "/client/nutrition-progress", icon: listIcon },
   { name: "myPlans", path: "/client/my-plans", icon: listIcon },
   { name: "myRequests", path: "/client/my-requests", icon: clockIcon },
 ];

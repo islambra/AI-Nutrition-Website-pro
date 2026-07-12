@@ -21,6 +21,7 @@ const ClientPlans = lazy(() => import('./pages/clientDashboard/ClientPlans.jsx')
 const ClientRequests = lazy(() => import('./pages/clientDashboard/ClientRequests.jsx'))
 const MySubscriptions = lazy(() => import('./pages/clientDashboard/MySubscriptions.jsx'))
 const FoodDiary = lazy(() => import('./pages/clientDashboard/FoodDiary.jsx'))
+const NutritionProgress = lazy(() => import('./pages/clientDashboard/NutritionProgress.jsx'))
 const AllPlansPage = lazy(() => import('./pages/AllPlansPage.jsx'))
 const PlanCheckoutPage = lazy(() => import('./pages/PlanCheckoutPage.jsx'))
 const FormationCheckoutPage = lazy(() => import('./pages/FormationCheckoutPage.jsx'))
@@ -131,6 +132,7 @@ function App() {
               <Route path="my-plans" element={<ClientPlans />} />
               <Route path="my-requests" element={<ClientRequests />} />
               <Route path="food-diary" element={<FoodDiary />} />
+              <Route path="nutrition-progress" element={<NutritionProgress />} />
             </Route>
 
             <Route path="/dieteticien" element={<ProtectedRoute roles={['dieteticien', 'admin']}><Layout /></ProtectedRoute>}>

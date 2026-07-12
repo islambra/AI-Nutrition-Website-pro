@@ -24,3 +24,8 @@ export const addFeedback = async (entryId, feedback) => {
   const response = await axiosInstance.patch(`/food-diary/entries/${entryId}/feedback`, { feedback });
   return response.data;
 };
+
+export const getNutritionSummary = async (params = {}) => {
+  const response = await axiosInstance.get('/food-diary/summary', { params });
+  return response.data;
+};

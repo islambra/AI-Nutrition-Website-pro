@@ -5,7 +5,8 @@ import {
   getMyEntries,
   deleteEntry,
   getSubscriberEntries,
-  addFeedback
+  addFeedback,
+  getNutritionSummary
 } from "../controllers/foodDiaryController.js";
 
 const router = express.Router();
@@ -15,5 +16,6 @@ router.get("/entries", protect, getMyEntries);
 router.delete("/entries/:id", protect, deleteEntry);
 router.get("/subscribers/:clientId/entries", protect, getSubscriberEntries);
 router.patch("/entries/:id/feedback", protect, addFeedback);
+router.get("/summary", protect, getNutritionSummary);
 
 export default router;

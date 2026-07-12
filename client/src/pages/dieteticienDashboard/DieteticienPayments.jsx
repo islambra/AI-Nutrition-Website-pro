@@ -75,7 +75,8 @@ const DieteticienPayments = () => {
     const revenue = payments.reduce((s, p) => s + (p.amount || 0), 0);
     const plans = payments.filter(p => p.serviceType === 'Plan').length;
     const formations = payments.filter(p => p.serviceType === 'Formation').length;
-    return { total, revenue, plans, formations };
+    const subscriptions = payments.filter(p => p.serviceType === 'Subscription').length;
+    return { total, revenue, plans, formations, subscriptions };
   }, [payments]);
 
   const formatDate = (date) => new Date(date).toLocaleDateString('en-US', {
@@ -183,6 +184,15 @@ const DieteticienPayments = () => {
           </div>
         </div>
         <div className="sp-stat-card">
+          <div className="sp-stat-icon" style={{ background: '#ecfdf5', color: '#059669' }}>
+            <Users size={22} />
+          </div>
+          <div className="sp-stat-info">
+            <span className="sp-stat-value">{stats.subscriptions}</span>
+            <span className="sp-stat-label">Subscriptions</span>
+          </div>
+        </div>
+        <div className="sp-stat-card">
           <div className="sp-stat-icon sp-revenue-icon">
             <DollarSign size={22} />
           </div>
@@ -235,13 +245,13 @@ const DieteticienPayments = () => {
               <div className="sp-filter-group">
                 <label>Service Type</label>
                 <div className="sp-filter-chips">
-                  {['all', 'plan', 'formation'].map(type => (
+                  {['all', 'plan', 'formation', 'subscription'].map(type => (
                     <button
                       key={type}
                       className={`sp-chip ${typeFilter === type ? 'active' : ''}`}
                       onClick={() => setTypeFilter(type)}
                     >
-                      {type === 'all' ? t("common.all") : t("dashboard.dieteticien.payments." + type)}
+                      {type === 'all' ? t("common.all") : type === 'subscription' ? 'Subscription' : t("dashboard.dieteticien.payments." + type)}
                     </button>
                   ))}
                 </div>
@@ -333,7 +343,9 @@ const DieteticienPayments = () => {
                       <span className="sp-client-email">{payment.clientEmail}</span>
                     </div>
                     <span className={`sp-type-badge ${payment.serviceType.toLowerCase()}`}>
-                      {payment.serviceType === 'Plan' ? <Package size={12} /> : <GraduationCap size={12} />}
+                      {payment.serviceType === 'Plan' && <Package size={12} />}
+                      {payment.serviceType === 'Formation' && <GraduationCap size={12} />}
+                      {payment.serviceType === 'Subscription' && <Users size={12} />}
                       {payment.serviceType}
                     </span>
                   </div>

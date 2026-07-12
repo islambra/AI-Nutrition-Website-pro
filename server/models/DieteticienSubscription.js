@@ -35,6 +35,14 @@ const dieteticienSubscriptionSchema = new mongoose.Schema({
   cancelledAt: {
     type: Date,
     default: null
+  },
+  zoomSessionsUsedThisMonth: {
+    type: Number,
+    default: 0
+  },
+  zoomMonthResetDate: {
+    type: Date,
+    default: null
   }
 }, {
   timestamps: true

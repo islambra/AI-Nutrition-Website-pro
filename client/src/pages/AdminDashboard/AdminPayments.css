@@ -166,7 +166,7 @@
 /* ---------- Stats ---------- */
 .ap-stats {
   display: grid;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
   gap: 8px;
   margin-bottom: 24px;
 }
@@ -233,6 +233,11 @@
 .ap-stat-icon.transactions-stat {
   background: #f3e8ff;
   color: #7c3aed;
+}
+
+.ap-stat-icon.subscription-stat {
+  background: #ecfdf5;
+  color: #059669;
 }
 
 .ap-stat-info {

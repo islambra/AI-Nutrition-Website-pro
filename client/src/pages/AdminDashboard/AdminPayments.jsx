@@ -6,7 +6,7 @@ import {
   Trash2, Search, Filter, Package, CreditCard, DollarSign,
   X, AlertTriangle, CheckCircle, XCircle,
   BookOpen, Calendar, ChevronDown, Wallet, ArrowUpRight,
-  GraduationCap
+  GraduationCap, Users
 } from 'lucide-react';
 import { useSafeTimeout } from '../../hooks/useSafeTimeout';
 import './AdminPayments.css';
@@ -17,6 +17,12 @@ const TYPE_CONFIG = {
     color: '#0369a1',
     bg: '#e0f2fe',
     gradient: 'linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%)',
+  },
+  'Dieteticien Subscription': {
+    icon: Users,
+    color: '#15803d',
+    bg: '#dcfce7',
+    gradient: 'linear-gradient(135deg, #dcfce7 0%, #bbf7d0 100%)',
   },
   'AI Tracker': {
     icon: CreditCard,
@@ -161,10 +167,12 @@ const AdminPayments = () => {
   const formationCount = filteredPayments.filter(p => p.type === 'Formation').length;
   const aiCount = filteredPayments.filter(p => p.type === 'AI Tracker').length;
   const courseSubCount = filteredPayments.filter(p => p.type === 'Course Subscription').length;
+  const subscriptionCount = filteredPayments.filter(p => p.type === 'Dieteticien Subscription').length;
   const planRevenue = filteredPayments.filter(p => p.type === 'Plan').reduce((sum, p) => sum + p.amount, 0);
   const formationRevenue = filteredPayments.filter(p => p.type === 'Formation').reduce((sum, p) => sum + p.amount, 0);
   const aiRevenue = filteredPayments.filter(p => p.type === 'AI Tracker').reduce((sum, p) => sum + p.amount, 0);
   const courseSubRevenue = filteredPayments.filter(p => p.type === 'Course Subscription').reduce((sum, p) => sum + p.amount, 0);
+  const subscriptionRevenue = filteredPayments.filter(p => p.type === 'Dieteticien Subscription').reduce((sum, p) => sum + p.amount, 0);
 
   const statCards = [
     {
@@ -196,6 +204,12 @@ const AdminPayments = () => {
       value: `${courseSubCount} · ${courseSubRevenue.toLocaleString()} DZD`,
       icon: BookOpen,
       cssClass: 'course-stat',
+    },
+    {
+      label: 'Dieteticien Subscriptions',
+      value: `${subscriptionCount} · ${subscriptionRevenue.toLocaleString()} DZD`,
+      icon: Users,
+      cssClass: 'subscription-stat',
     },
     {
       label: t('admin.totalTransactions'),
@@ -322,6 +336,7 @@ const AdminPayments = () => {
                   <option value="Formation">{t('admin.formationType')}</option>
                   <option value="AI Tracker">{t('admin.aiTrackerType')}</option>
                   <option value="Course Subscription">{t('admin.courseSubType')}</option>
+                  <option value="Dieteticien Subscription">Dieteticien Subscription</option>
                 </select>
               </div>
               <div className="ap-filter-group">

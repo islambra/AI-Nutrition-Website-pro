@@ -170,7 +170,17 @@ export const getMySubscriptions = async (req, res) => {
     const data = subs.map(sub => {
       const isActive = sub.hasAccess && sub.endDate && new Date(sub.endDate) >= now && !sub.cancelledAt;
       const remainingDays = isActive ? Math.ceil((new Date(sub.endDate) - now) / (1000 * 60 * 60 * 24)) : 0;
-      return { ...sub, isActive, remainingDays };
+
+      const currentMonth = now.getMonth();
+      const currentYear = now.getFullYear();
+      const resetDate = sub.zoomMonthResetDate;
+      const needsReset = !resetDate ||
+        resetDate.getMonth() !== currentMonth ||
+        resetDate.getFullYear() !== currentYear;
+      const zoomUsed = needsReset ? 0 : (sub.zoomSessionsUsedThisMonth || 0);
+      const zoomRemaining = Math.max(0, ZOOM_SESSIONS_PER_MONTH - zoomUsed);
+
+      return { ...sub, isActive, remainingDays, zoomUsed, zoomLimit: ZOOM_SESSIONS_PER_MONTH, zoomRemaining };
     });
 
     res.status(200).json({ success: true, data });
@@ -338,6 +348,8 @@ export const cancelSubscription = async (req, res) => {
   }
 };
 
+const ZOOM_SESSIONS_PER_MONTH = 4;
+
 export const requestZoomSession = async (req, res) => {
   try {
     const { id } = req.params;
@@ -358,6 +370,30 @@ export const requestZoomSession = async (req, res) => {
       return res.status(400).json({ success: false, message: "Date must be in the future" });
     }
 
+    const now = new Date();
+    const currentMonth = now.getMonth();
+    const currentYear = now.getFullYear();
+    const resetDate = sub.zoomMonthResetDate;
+
+    const needsReset = !resetDate ||
+      resetDate.getMonth() !== currentMonth ||
+      resetDate.getFullYear() !== currentYear;
+
+    if (needsReset) {
+      sub.zoomSessionsUsedThisMonth = 0;
+      sub.zoomMonthResetDate = new Date(currentYear, currentMonth, 1);
+    }
+
+    if (sub.zoomSessionsUsedThisMonth >= ZOOM_SESSIONS_PER_MONTH) {
+      return res.status(400).json({
+        success: false,
+        message: `Monthly Zoom session limit reached (${ZOOM_SESSIONS_PER_MONTH}/month). Limit resets next month.`
+      });
+    }
+
+    sub.zoomSessionsUsedThisMonth += 1;
+    await sub.save();
+
     const consultation = await Consultation.create({
       user: clientId,
       nutritionist: sub.dieteticien,
@@ -366,7 +402,16 @@ export const requestZoomSession = async (req, res) => {
       note: note || ""
     });
 
-    res.status(201).json({ success: true, message: "Zoom session requested", data: consultation });
+    res.status(201).json({
+      success: true,
+      message: "Zoom session requested",
+      data: consultation,
+      zoomUsage: {
+        used: sub.zoomSessionsUsedThisMonth,
+        limit: ZOOM_SESSIONS_PER_MONTH,
+        remaining: ZOOM_SESSIONS_PER_MONTH - sub.zoomSessionsUsedThisMonth
+      }
+    });
   } catch (error) {
     res.status(500).json({ success: false, message: "Error requesting zoom session" });
   }
