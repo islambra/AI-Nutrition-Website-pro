@@ -61,6 +61,7 @@ const StudentRequests = lazy(() => import('./pages/studentDashboard/StudentReque
 const ManageCourseSubscriptions = lazy(() => import('./pages/AdminDashboard/ManageCourseSubscriptions.jsx'))
 const ManageAiToolSubscriptions = lazy(() => import('./pages/AdminDashboard/ManageAiToolSubscriptions.jsx'))
 const PlatformPaymentSettings = lazy(() => import('./pages/AdminDashboard/PlatformPaymentSettings.jsx'))
+const ManageContent = lazy(() => import('./pages/AdminDashboard/ManageContent.jsx'))
 
 import Header from './components/Header.jsx'
 import ScrollToTop from './utils/ScrollToTop.jsx'
@@ -174,6 +175,7 @@ function App() {
               <Route path="course-subscriptions" element={<ManageCourseSubscriptions />} />
               <Route path="ai-tool-subscriptions" element={<ManageAiToolSubscriptions />} />
               <Route path="platform-payment-settings" element={<PlatformPaymentSettings />} />
+              <Route path="manage-content" element={<ManageContent />} />
               <Route path="my-Profile" element={<EditUserProfile />} />
             </Route>
 

@@ -44,6 +44,7 @@ export const adminMenuLinks = [
   { name: "allCourses", path: "/admin/all-courses", icon: listIcon },
   { name: "courseSubscriptions", path: "/admin/course-subscriptions", icon: payment },
   { name: "aiToolSubscriptions", path: "/admin/ai-tool-subscriptions", icon: payment },
+  { name: "manageContent", path: "/admin/manage-content", icon: listIcon },
   { name: "paymentSettings", path: "/admin/platform-payment-settings", icon: payment },
   { name: "myProfile", path: "/admin/my-Profile", icon: userInfo },
 ];

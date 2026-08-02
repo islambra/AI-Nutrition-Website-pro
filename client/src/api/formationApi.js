@@ -5,6 +5,11 @@ export const getAllFormations = async () => {
   return response.data;
 };
 
+export const getAllFormationsAdmin = async () => {
+  const response = await axiosInstance.get("/admin/content/formations");
+  return response.data;
+};
+
 export const getFormationById = async (id) => {
   const response = await axiosInstance.get(`/formations/${id}`);
   return response.data;

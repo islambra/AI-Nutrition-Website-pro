@@ -20,6 +20,7 @@ import {
   getPlatformPaymentInfo,
   updatePlatformPaymentInfo
 } from '../controllers/adminPlatformPaymentController.js';
+import { getAllFormationsAdmin } from '../controllers/formationController.js';
 
 const router = express.Router();
 router.use(protect);
@@ -45,5 +46,8 @@ router.post('/ai-tool-subscriptions/reject/:id', rejectAiToolSubscription);
 // Platform payment info management
 router.get('/platform-payment-info', getPlatformPaymentInfo);
 router.put('/platform-payment-info', updatePlatformPaymentInfo);
+
+// Content management (all formations regardless of status)
+router.get('/content/formations', getAllFormationsAdmin);
 
 export default router;

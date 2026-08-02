@@ -114,6 +114,23 @@ export const getFormationById = async (req, res) => {
   }
 };
 
+export const getAllFormationsAdmin = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 100;
+    const skip = (page - 1) * limit;
+
+    const [formations, total] = await Promise.all([
+      Formation.find({}).sort({ createdAt: -1 }).skip(skip).limit(limit),
+      Formation.countDocuments({})
+    ]);
+
+    res.status(200).json({ success: true, data: formations, total, page, pages: Math.ceil(total / limit) });
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Error fetching formations" });
+  }
+};
+
 export const updateFormation = async (req, res) => {
   try {
     const formation = await Formation.findById(req.params.id);
