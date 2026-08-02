@@ -137,7 +137,16 @@ export const isAuthenticated = () => {
 
 export const getCurrentUserFromStorage = () => {
   const user = localStorage.getItem("user");
-  return user ? JSON.parse(user) : null;
+  if (!user) return null;
+  try {
+    const parsed = JSON.parse(user);
+    if (parsed && typeof parsed === "object" && !parsed.role && parsed.data && typeof parsed.data === "object") {
+      return parsed.data;
+    }
+    return parsed;
+  } catch {
+    return null;
+  }
 };
 
 // Get current user from API
@@ -146,8 +155,9 @@ export const getCurrentUser = async (options = {}) => {
     const response = await axiosInstance.get("/user/me", {
       signal: options.signal || undefined
     });
-    localStorage.setItem("user", JSON.stringify(response.data));
-    return { success: true, user: response.data };
+    const user = response.data?.data || response.data?.user || response.data;
+    localStorage.setItem("user", JSON.stringify(user));
+    return { success: true, user };
   } catch (error) {
     if (error.name === 'CanceledError' || error.code === 'ERR_CANCELED') {
       return { success: false, error: 'Request cancelled' };
