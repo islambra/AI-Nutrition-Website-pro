@@ -153,7 +153,7 @@ export const registerUser = async (req, res) => {
 };
 
 export const registerDieteticien = async (req, res) => {
-  let uploadedFileId = null;
+  let uploadedFileIds = [];
   try {
     const { fullName, email, password, age, gender, specialty, ccpNumber, ccpKey, baridiMob } = req.body;
 
@@ -167,14 +167,21 @@ export const registerDieteticien = async (req, res) => {
       return res.status(400).json({ message: "A pending request already exists for this email" });
     }
 
+    const diplomaFile = req.files?.diploma?.[0];
+    const paymentProofFile = req.files?.paymentProof?.[0];
+
+    if (!paymentProofFile) {
+      return res.status(400).json({ success: false, message: "Payment proof is required" });
+    }
+
     const hashedPassword = await bcrypt.hash(password, 12);
 
     let diplomaUrl = null;
     let diplomaFileId = null;
-    if (req.file) {
-      const ext = req.file.originalname.split('.').pop();
+    if (diplomaFile) {
+      const ext = diplomaFile.originalname.split('.').pop();
       const safeFilename = `diploma-${Date.now()}-${crypto.randomBytes(8).toString('hex')}.${ext}`;
-      const base64 = req.file.buffer.toString("base64");
+      const base64 = diplomaFile.buffer.toString("base64");
       const upload = await imagekit.upload({
         file: base64,
         fileName: safeFilename,
@@ -182,7 +189,23 @@ export const registerDieteticien = async (req, res) => {
       });
       diplomaUrl = upload.url;
       diplomaFileId = upload.fileId;
-      uploadedFileId = upload.fileId;
+      uploadedFileIds.push(upload.fileId);
+    }
+
+    let paymentProofUrl = null;
+    let paymentProofFileId = null;
+    if (paymentProofFile) {
+      const ext = paymentProofFile.originalname.split('.').pop();
+      const safeFilename = `payment-proof-${Date.now()}-${crypto.randomBytes(8).toString('hex')}.${ext}`;
+      const base64 = paymentProofFile.buffer.toString("base64");
+      const upload = await imagekit.upload({
+        file: base64,
+        fileName: safeFilename,
+        folder: "/payment-proofs",
+      });
+      paymentProofUrl = upload.url;
+      paymentProofFileId = upload.fileId;
+      uploadedFileIds.push(upload.fileId);
     }
 
     const pending = new PendingDieteticien({
@@ -193,6 +216,8 @@ export const registerDieteticien = async (req, res) => {
       specialty: specialty.trim(),
       diplomaUrl,
       diplomaFileId,
+      paymentProofUrl,
+      paymentProofFileId,
       ccpNumber: ccpNumber || null,
       ccpKey: ccpKey || null,
       baridiMob: baridiMob ? Number(baridiMob) : null,
@@ -205,8 +230,8 @@ export const registerDieteticien = async (req, res) => {
       data: { id: pending._id, status: "pending" }
     });
   } catch (error) {
-    if (uploadedFileId) {
-      try { await imagekit.deleteFile(uploadedFileId); } catch (_) {}
+    for (const fileId of uploadedFileIds) {
+      try { await imagekit.deleteFile(fileId); } catch (_) {}
     }
     res.status(500).json({ success: false, message: "Registration failed. Please try again." });
   }

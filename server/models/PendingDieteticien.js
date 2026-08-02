@@ -38,6 +38,14 @@ const pendingDieteticienSchema = new mongoose.Schema({
     type: String,
     default: null
   },
+  paymentProofUrl: {
+    type: String,
+    default: null
+  },
+  paymentProofFileId: {
+    type: String,
+    default: null
+  },
   status: {
     type: String,
     enum: ["pending", "approved", "rejected"],

@@ -444,6 +444,13 @@
   border-radius: 8px;
 }
 
+.modal-title {
+  margin: 0 0 12px;
+  font-size: 16px;
+  color: #1a1a1a;
+  text-align: center;
+}
+
 .confirm-modal {
   text-align: center;
   padding: 32px 40px;

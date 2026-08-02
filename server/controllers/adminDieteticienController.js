@@ -44,6 +44,8 @@ export const approveDieteticien = async (req, res) => {
       specialty: pending.specialty,
       diplomaUrl: pending.diplomaUrl,
       diplomaFileId: pending.diplomaFileId,
+      paymentProofUrl: pending.paymentProofUrl || null,
+      paymentProofFileId: pending.paymentProofFileId || null,
       isApproved: true,
       ccpNumber: pending.ccpNumber || null,
       ccpKey: pending.ccpKey || null,
@@ -79,6 +81,10 @@ export const rejectDieteticien = async (req, res) => {
 
     if (pending.diplomaFileId) {
       try { await imagekit.deleteFile(pending.diplomaFileId); } catch (_) {}
+    }
+
+    if (pending.paymentProofFileId) {
+      try { await imagekit.deleteFile(pending.paymentProofFileId); } catch (_) {}
     }
 
     sendRejectionEmail(pending.email, pending.fullName).catch(err =>

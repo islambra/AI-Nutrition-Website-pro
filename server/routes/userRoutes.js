@@ -18,6 +18,7 @@ import {
 } from "../controllers/userControllers.js";
 import upload from "../middleware/multer.js";
 import { protect, authorize } from "../middleware/auth.js";
+import { getPlatformPaymentInfo } from "../controllers/sharedPlatformPaymentController.js";
 import {
   validateRegister,
   validateLogin,
@@ -31,8 +32,9 @@ const userRouter = express.Router();
 // Public routes (no authentication required)
 userRouter.post("/register-client", validateRegister, registerClient);
 userRouter.post("/register", validateRegister, registerUser);
-userRouter.post("/register-dieteticien", upload.single("diploma"), validateDieteticienRegister, registerDieteticien);
+userRouter.post("/register-dieteticien", upload.fields([{ name: "diploma", maxCount: 1 }, { name: "paymentProof", maxCount: 1 }]), validateDieteticienRegister, registerDieteticien);
 userRouter.post("/login", validateLogin, loginUser);
+userRouter.get("/platform-payment-info", getPlatformPaymentInfo);
 
 // Protected routes (authentication required)
 userRouter.get("/me", protect, getCurrentUser);

@@ -19,6 +19,12 @@ export const registerDieteticien = async (formData) => {
   return response.data;
 };
 
+// Platform payment info (CCP / BaridiMob) for dieteticien registration fee
+export const getPlatformPaymentInfo = async () => {
+  const response = await axiosInstance.get("/user/platform-payment-info");
+  return response.data;
+};
+
 // Register staff (Admin or Dieteticien)
 export const createStaffUser = async (userData) => {
   const response = await axiosInstance.post("/user/create-staff", userData);

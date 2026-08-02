@@ -7,10 +7,10 @@ import confetti from 'canvas-confetti';
 import {
   User, Mail, Lock, Scale, Ruler, ArrowRight, ChevronLeft,
   Activity, AlertCircle, Target, Heart, Brain, GraduationCap,
-  Stethoscope, Upload, FileText
+  Stethoscope, Upload, FileText, Wallet, Loader2
 } from 'lucide-react';
 import { clsx } from 'clsx';
-import { registerUser, registerDieteticien } from "../api/userApi";
+import { registerUser, registerDieteticien, getPlatformPaymentInfo } from "../api/userApi";
 import { useSafeTimeout } from '../hooks/useSafeTimeout';
 import { useTranslation } from 'react-i18next';
 import './SignUpPage.css';
@@ -25,6 +25,10 @@ function SignUpPage() {
   const [previewMetrics, setPreviewMetrics] = useState(null);
   const [diplomaFile, setDiplomaFile] = useState(null);
   const [diplomaPreview, setDiplomaPreview] = useState(null);
+  const [paymentProofFile, setPaymentProofFile] = useState(null);
+  const [paymentProofPreview, setPaymentProofPreview] = useState(null);
+  const [platformInfo, setPlatformInfo] = useState(null);
+  const [loadingPlatformInfo, setLoadingPlatformInfo] = useState(false);
   const navigate = useNavigate();
 
   const {
@@ -113,6 +117,25 @@ function SignUpPage() {
     }
   };
 
+  useEffect(() => {
+    if (mode !== "dieteticien") return;
+    let cancelled = false;
+    setLoadingPlatformInfo(true);
+    getPlatformPaymentInfo()
+      .then((res) => { if (!cancelled) setPlatformInfo(res.data); })
+      .catch(() => { if (!cancelled) setPlatformInfo(null); })
+      .finally(() => { if (!cancelled) setLoadingPlatformInfo(false); });
+    return () => { cancelled = true; };
+  }, [mode]);
+
+  const handlePaymentProofChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setPaymentProofFile(file);
+      setPaymentProofPreview(URL.createObjectURL(file));
+    }
+  };
+
   const activityOptions = [
     { value: "Sedentary", label: t('signup.sedentary'), multiplier: "1.2" },
     { value: "Lightly Active", label: t('signup.lightlyActive'), multiplier: "1.375" },
@@ -143,6 +166,7 @@ function SignUpPage() {
     } else {
       if (!values.specialty?.trim()) errors.specialty = t('signup.errors.specialtyRequired');
       if (!diplomaFile) errors.diploma = t('signup.errors.diplomaRequired');
+      if (!paymentProofFile) errors.paymentProof = t('signup.errors.paymentProofRequired');
     }
     return errors;
   };
@@ -196,6 +220,7 @@ function SignUpPage() {
         if (values.ccpKey) formData.append('ccpKey', values.ccpKey);
         if (values.baridiMob) formData.append('baridiMob', Number(values.baridiMob));
         if (diplomaFile) formData.append('diploma', diplomaFile);
+        if (paymentProofFile) formData.append('paymentProof', paymentProofFile);
 
         await registerDieteticien(formData);
 
@@ -524,6 +549,101 @@ function SignUpPage() {
                     )}
                   </div>
                   {errors.diploma && <span className="error-message-stripe">{t('signup.diplomaRequired')}</span>}
+                </div>
+
+                <div className="form-section-title required">{t('signup.joinFeeTitle')} *</div>
+                <div style={{ fontSize: '13px', color: '#6B7280', marginBottom: '12px' }}>
+                  {t('signup.joinFeeDesc')}
+                </div>
+
+                <div style={{ background: 'linear-gradient(135deg, #0F172A, #1E293B)', color: '#fff', borderRadius: '12px', padding: '16px', marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '12px' }}>
+                  <Wallet size={22} style={{ color: '#34D399', flexShrink: 0 }} />
+                  <div>
+                    <div style={{ fontSize: '12px', opacity: 0.85 }}>{t('signup.joinFeeLabel')}</div>
+                    <div style={{ fontSize: '22px', fontWeight: 800 }}>{t('signup.joinFeeAmount')}</div>
+                  </div>
+                </div>
+
+                {loadingPlatformInfo ? (
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: '#6B7280', fontSize: 13, marginBottom: '16px' }}>
+                    <Loader2 size={16} style={{ animation: 'spin 1s linear infinite' }} /> {t('signup.loadingPaymentInfo')}
+                  </div>
+                ) : platformInfo && (platformInfo.ccpNumber || platformInfo.baridiMob) ? (
+                  <div className="payment-info-card" style={{ background: '#F0FDF4', borderRadius: '12px', padding: '16px', border: '1px solid #BBF7D0', marginBottom: '16px' }}>
+                    <div style={{ fontSize: '13px', fontWeight: 700, color: '#166534', marginBottom: '8px' }}>{t('signup.transferTo')}</div>
+                    {platformInfo.ccpNumber && (
+                      <>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid #DCFCE7' }}>
+                          <span style={{ color: '#374151' }}>{t('signup.ccpNumber')}</span>
+                          <span style={{ fontWeight: 700, color: '#166534' }}>{platformInfo.ccpNumber}</span>
+                        </div>
+                        {platformInfo.ccpKey && (
+                          <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid #DCFCE7' }}>
+                            <span style={{ color: '#374151' }}>{t('signup.ccpKey')}</span>
+                            <span style={{ fontWeight: 700, color: '#166534' }}>{platformInfo.ccpKey}</span>
+                          </div>
+                        )}
+                      </>
+                    )}
+                    {platformInfo.baridiMob && (
+                      <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0' }}>
+                        <span style={{ color: '#374151' }}>{t('signup.baridiMobNumber')}</span>
+                        <span style={{ fontWeight: 700, color: '#166534' }}>{platformInfo.baridiMob}</span>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div style={{ color: '#EF4444', fontSize: 13, marginBottom: '16px' }}>{t('signup.paymentInfoNotAvailable')}</div>
+                )}
+
+                <div className="input-group-stripe">
+                  <label>{t('signup.uploadPaymentProof')} *</label>
+                  <div
+                    className={clsx("diploma-upload-zone", errors.paymentProof && "error", paymentProofFile && "has-file")}
+                    onDragOver={(e) => { e.preventDefault(); e.currentTarget.classList.add('dragover'); }}
+                    onDragLeave={(e) => { e.currentTarget.classList.remove('dragover'); }}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      e.currentTarget.classList.remove('dragover');
+                      const file = e.dataTransfer.files[0];
+                      if (file) {
+                        const input = document.getElementById('payment-proof-input');
+                        const dt = new DataTransfer();
+                        dt.items.add(file);
+                        input.files = dt.files;
+                        const event = new Event('change', { bubbles: true });
+                        input.dispatchEvent(event);
+                      }
+                    }}
+                    onClick={() => document.getElementById('payment-proof-input')?.click()}
+                  >
+                    <input
+                      id="payment-proof-input"
+                      type="file"
+                      accept="image/*,.pdf"
+                      onChange={handlePaymentProofChange}
+                      disabled={loading}
+                      style={{ display: 'none' }}
+                    />
+                    {paymentProofPreview ? (
+                      <div className="diploma-preview-wrapper">
+                        <img src={paymentProofPreview} alt={t('signup.uploadPaymentProof')} className="diploma-preview-img" loading="lazy" />
+                        <div className="diploma-file-info">
+                          <FileText size={16} />
+                          <span>{paymentProofFile?.name}</span>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="diploma-upload-placeholder">
+                        <div className="upload-icon-circle">
+                          <Upload size={28} />
+                        </div>
+                        <p className="upload-text"><strong>{t('signup.clickToUpload')}</strong> {t('signup.dragAndDrop')}</p>
+                        <p className="upload-hint">{t('signup.pdfOrImage')}</p>
+                      </div>
+                    )}
+                  </div>
+                  {errors.paymentProof && <span className="error-message-stripe">{t('signup.paymentProofRequired')}</span>}
                 </div>
 
                 <div className="form-section-title">{t('signup.paymentInfo')}</div>

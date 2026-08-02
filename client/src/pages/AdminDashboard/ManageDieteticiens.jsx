@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getPendingDieteticiens, approveDieteticien, rejectDieteticien } from '../../api/userApi';
-import { Check, X, Eye, Loader, Clock, Shield, Mail, User, Stethoscope, GraduationCap, FileText } from 'lucide-react';
+import { Check, X, Eye, Loader, Clock, Shield, Mail, User, Stethoscope, GraduationCap, FileText, Wallet } from 'lucide-react';
 import { useSafeTimeout } from '../../hooks/useSafeTimeout';
 import { useTranslation } from 'react-i18next';
 import './ManageDieteticiens.css';
@@ -13,6 +13,7 @@ const ManageDieteticiens = () => {
   const [actionLoading, setActionLoading] = useState(null);
   const [confirmAction, setConfirmAction] = useState(null);
   const [previewImg, setPreviewImg] = useState(null);
+  const [previewLabel, setPreviewLabel] = useState('');
   const [notification, setNotification] = useState(null);
   const showNotification = (message, type = 'success') => {
     setNotification({ message, type });
@@ -140,7 +141,16 @@ const ManageDieteticiens = () => {
                     <div className="card-diploma">
                       <FileText size={14} />
                       <span>{t('admin.diplomaUploaded')}</span>
-                      <button className="view-diploma-btn" onClick={() => setPreviewImg(item.diplomaUrl)}>
+                      <button className="view-diploma-btn" onClick={() => { setPreviewImg(item.diplomaUrl); setPreviewLabel(t('admin.diplomaUploaded')); }}>
+                        <Eye size={14} /> {t('admin.view')}
+                      </button>
+                    </div>
+                  )}
+                  {item.paymentProofUrl && (
+                    <div className="card-diploma">
+                      <Wallet size={14} />
+                      <span>{t('admin.paymentProofUploaded')} · {t('admin.proofAmount')}</span>
+                      <button className="view-diploma-btn" onClick={() => { setPreviewImg(item.paymentProofUrl); setPreviewLabel(t('admin.paymentProofUploaded')); }}>
                         <Eye size={14} /> {t('admin.view')}
                       </button>
                     </div>
@@ -202,7 +212,8 @@ const ManageDieteticiens = () => {
         <div className="manage-diet-modal" onClick={() => setPreviewImg(null)}>
           <div className="modal-content" onClick={e => e.stopPropagation()}>
             <button className="modal-close" onClick={() => setPreviewImg(null)}>&times;</button>
-            <img src={previewImg} alt={t('admin.diplomaFull')} className="modal-image" loading="lazy" />
+            {previewLabel && <h3 className="modal-title">{previewLabel}</h3>}
+            <img src={previewImg} alt={previewLabel} className="modal-image" loading="lazy" />
           </div>
         </div>
       )}

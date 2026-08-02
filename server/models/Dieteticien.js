@@ -20,6 +20,14 @@ const dieteticienSchema = new mongoose.Schema({
     type: String,
     default: null
   },
+  paymentProofUrl: {
+    type: String,
+    default: null
+  },
+  paymentProofFileId: {
+    type: String,
+    default: null
+  },
   isApproved: {
     type: Boolean,
     default: true
