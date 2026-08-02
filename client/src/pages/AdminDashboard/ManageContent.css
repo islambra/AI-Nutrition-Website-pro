@@ -632,22 +632,21 @@
 /* ===== Detail modal ===== */
 .mc-detail-overlay {
   z-index: 1400;
-  padding: 0;
-  background: #f8fafc;
+  padding: 24px;
+  background: rgba(15, 23, 42, 0.92);
   backdrop-filter: none;
 }
 
 .mc-detail-modal {
   position: relative;
-  width: 100%;
-  height: 100%;
-  max-height: none;
+  width: min(760px, 100%);
+  max-height: min(88vh, 880px);
   background: #fff;
-  border-radius: 0;
+  border-radius: 20px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  box-shadow: none;
+  box-shadow: 0 34px 80px -26px rgba(15, 23, 42, 0.6);
 }
 
 .mc-detail-topbar {
@@ -666,20 +665,20 @@
   align-items: center;
   gap: 8px;
   border: none;
-  background: rgba(15, 23, 42, 0.05);
-  color: #334155;
+  background: var(--mc-accent);
+  color: #fff;
   font: inherit;
   font-size: 13px;
   font-weight: 700;
-  padding: 8px 14px;
+  padding: 9px 16px;
   border-radius: 10px;
   cursor: pointer;
   transition: 0.2s;
+  box-shadow: 0 8px 18px -8px var(--mc-accent);
 }
 
 .mc-detail-back:hover {
-  background: rgba(15, 23, 42, 0.1);
-  color: #0f172a;
+  filter: brightness(0.92);
 }
 
 .mc-detail-accent {
@@ -717,7 +716,7 @@
   flex: 1;
   min-height: 0;
   overflow-y: auto;
-  padding: 28px 32px 40px;
+  padding: 24px;
   -webkit-overflow-scrolling: touch;
   background: #fff;
 }
@@ -1053,6 +1052,19 @@
 
   .mc-search {
     max-width: none;
+  }
+
+  .mc-detail-overlay {
+    padding: 12px;
+  }
+
+  .mc-detail-modal {
+    width: 100%;
+    max-height: 92vh;
+  }
+
+  .mc-detail-topbar-left {
+    gap: 10px;
   }
 
   .mc-detail-hero {
