@@ -1297,7 +1297,26 @@
       "refresh": "Refresh",
       "statusActive": "Active",
       "statusCompleted": "Completed",
-      "statusCancelled": "Cancelled"
+      "statusCancelled": "Cancelled",
+      "viewDetails": "View details",
+      "price": "Price",
+      "detailContent": "Content",
+      "detailTags": "Tags",
+      "detailDescription": "Description",
+      "detailFiles": "Attached Files",
+      "detailProfile": "Target Profile",
+      "detailMacros": "Macronutrient Ratio",
+      "detailRecommended": "Recommended Foods",
+      "detailAvoid": "Foods to Avoid",
+      "detailMeals": "Meal Structure",
+      "detailGrocery": "Weekly Grocery List",
+      "detailSupplements": "Supplements",
+      "detailExercise": "Exercise Recommendation",
+      "detailNotSpecified": "Not specified",
+      "detailMeal": "Meal {{n}}",
+      "macroProteins": "Proteins",
+      "macroCarbohydrates": "Carbohydrates",
+      "macroFats": "Fats"
     }
   },
   "clientPlans": {

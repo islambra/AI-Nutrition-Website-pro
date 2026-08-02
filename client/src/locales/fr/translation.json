@@ -1297,7 +1297,26 @@
       "refresh": "Actualiser",
       "statusActive": "Actif",
       "statusCompleted": "Terminé",
-      "statusCancelled": "Annulé"
+      "statusCancelled": "Annulé",
+      "viewDetails": "Voir les détails",
+      "price": "Prix",
+      "detailContent": "Contenu",
+      "detailTags": "Étiquettes",
+      "detailDescription": "Description",
+      "detailFiles": "Fichiers joints",
+      "detailProfile": "Profil cible",
+      "detailMacros": "Répartition des macronutriments",
+      "detailRecommended": "Aliments recommandés",
+      "detailAvoid": "Aliments à éviter",
+      "detailMeals": "Structure des repas",
+      "detailGrocery": "Liste de courses hebdomadaire",
+      "detailSupplements": "Compléments",
+      "detailExercise": "Recommandation d'exercice",
+      "detailNotSpecified": "Non spécifié",
+      "detailMeal": "Repas {{n}}",
+      "macroProteins": "Protéines",
+      "macroCarbohydrates": "Glucides",
+      "macroFats": "Lipides"
     }
   },
   "clientPlans": {
