@@ -630,11 +630,16 @@
 }
 
 /* ===== Detail modal ===== */
+body.mc-detail-open .navbar,
+body.mc-detail-open .sidebar {
+  display: none;
+}
+
 .mc-detail-overlay {
   z-index: 1400;
   padding: 24px;
-  background: rgba(15, 23, 42, 0.92);
-  backdrop-filter: none;
+  background: rgba(248, 250, 252, 0.92);
+  backdrop-filter: blur(6px);
 }
 
 .mc-detail-modal {
@@ -643,10 +648,11 @@
   max-height: min(88vh, 880px);
   background: #fff;
   border-radius: 20px;
+  border: 1px solid rgba(15, 23, 42, 0.08);
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  box-shadow: 0 34px 80px -26px rgba(15, 23, 42, 0.6);
+  box-shadow: 0 34px 80px -26px rgba(15, 23, 42, 0.28);
 }
 
 .mc-detail-topbar {

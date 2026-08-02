@@ -72,8 +72,10 @@ const ManageContent = () => {
     if (detailItem) {
       const prevOverflow = document.body.style.overflow;
       document.body.style.overflow = "hidden";
+      document.body.classList.add("mc-detail-open");
       return () => {
         document.body.style.overflow = prevOverflow;
+        document.body.classList.remove("mc-detail-open");
       };
     }
   }, [detailItem]);
