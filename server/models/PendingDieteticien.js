@@ -62,8 +62,10 @@ const pendingDieteticienSchema = new mongoose.Schema({
     trim: true
   },
   baridiMob: {
-    type: Number,
-    default: null
+    type: String,
+    default: null,
+    trim: true,
+    match: [/^\d{20}$/, "BaridiMob must be exactly 20 digits"]
   },
   createdAt: {
     type: Date,

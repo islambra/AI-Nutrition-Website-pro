@@ -12,8 +12,10 @@ const platformPaymentSchema = new mongoose.Schema({
     trim: true,
   },
   baridiMob: {
-    type: Number,
+    type: String,
     default: null,
+    trim: true,
+    match: [/^\d{20}$/, "BaridiMob must be exactly 20 digits"],
   },
 }, { timestamps: true });
 

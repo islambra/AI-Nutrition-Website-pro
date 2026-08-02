@@ -140,6 +140,10 @@ const EditUserProfile = () => {
         newErrors.confirmPassword = t('admin.passwordsDoNotMatch');
       }
     }
+
+    if (userRole === "dieteticien" && formData.baridiMob && !/^\d{20}$/.test(formData.baridiMob.trim())) {
+      newErrors.baridiMob = t('validation.baridiMobInvalid');
+    }
     
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -183,7 +187,7 @@ const EditUserProfile = () => {
       if (userRole === "dieteticien") {
         userData.ccpNumber = formData.ccpNumber || undefined;
         userData.ccpKey = formData.ccpKey || undefined;
-        userData.baridiMob = formData.baridiMob ? Number(formData.baridiMob) : undefined;
+        userData.baridiMob = formData.baridiMob || undefined;
       }
       
       const response = await updateUser(userId, userData, formData.photo);
@@ -202,7 +206,7 @@ const EditUserProfile = () => {
           updatedUserData.dieteticienProfile = currentUser.dieteticienProfile || {};
           if (formData.ccpNumber !== undefined) updatedUserData.dieteticienProfile.ccpNumber = formData.ccpNumber;
           if (formData.ccpKey !== undefined) updatedUserData.dieteticienProfile.ccpKey = formData.ccpKey;
-          if (formData.baridiMob !== undefined) updatedUserData.dieteticienProfile.baridiMob = formData.baridiMob ? Number(formData.baridiMob) : null;
+          if (formData.baridiMob !== undefined) updatedUserData.dieteticienProfile.baridiMob = formData.baridiMob || null;
         }
         if (formData.photo && photoPreview) {
           updatedUserData.photo = photoPreview;
@@ -520,12 +524,15 @@ const EditUserProfile = () => {
                 <label>{t('admin.baridiMobNumber')}</label>
                 <div className="input-wrapper">
                   <input
-                    type="number"
+                    type="text"
+                    inputMode="numeric"
                     name="baridiMob"
                     value={formData.baridiMob}
                     onChange={handleChange}
                     placeholder={t('admin.baridiMobPlaceholder')}
+                    maxLength={20}
                   />
+                  {errors.baridiMob && <span className="error-text">{errors.baridiMob}</span>}
                   {formData.baridiMob !== originalData.baridiMob && (
                     <div className="input-status changed">
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">

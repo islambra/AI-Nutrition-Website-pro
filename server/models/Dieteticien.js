@@ -44,8 +44,10 @@ const dieteticienSchema = new mongoose.Schema({
     match: [/^\d{2}$/, "CCP key must be exactly 2 digits"]
   },
   baridiMob: {
-    type: Number,
-    default: null
+    type: String,
+    default: null,
+    trim: true,
+    match: [/^\d{20}$/, "BaridiMob must be exactly 20 digits"]
   }
 }, { timestamps: true });
 

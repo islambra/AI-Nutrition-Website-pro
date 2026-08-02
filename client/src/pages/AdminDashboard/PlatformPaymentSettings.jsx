@@ -50,10 +50,16 @@ const PlatformPaymentSettings = () => {
     e.preventDefault();
     setLoading(true);
     try {
+      const baridiMob = formData.baridiMob.trim();
+      if (baridiMob && !/^\d{20}$/.test(baridiMob)) {
+        showNotification(t("validation.baridiMobInvalid"), "error");
+        setLoading(false);
+        return;
+      }
       const res = await updatePlatformPaymentSettings({
         ccpNumber: formData.ccpNumber.trim() || null,
         ccpKey: formData.ccpKey.trim() || null,
-        baridiMob: formData.baridiMob.trim() || null,
+        baridiMob: baridiMob || null,
       });
       if (res.success) {
         showNotification(t("admin.paymentSettingsUpdated"), "success");
@@ -179,10 +185,12 @@ const PlatformPaymentSettings = () => {
                 <input
                   id="baridiMob"
                   type="text"
+                  inputMode="numeric"
                   name="baridiMob"
                   value={formData.baridiMob}
                   onChange={handleChange}
                   placeholder={t("admin.baridiMobPlaceholder")}
+                  maxLength={20}
                 />
               </div>
             </div>

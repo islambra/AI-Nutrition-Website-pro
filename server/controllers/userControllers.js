@@ -220,7 +220,7 @@ export const registerDieteticien = async (req, res) => {
       paymentProofFileId,
       ccpNumber: ccpNumber || null,
       ccpKey: ccpKey || null,
-      baridiMob: baridiMob ? Number(baridiMob) : null,
+      baridiMob: baridiMob ? String(baridiMob).trim() : null,
       status: "pending"
     });
     await pending.save();
@@ -264,7 +264,7 @@ export const createStaffUser = async (req, res) => {
         isApproved: true,
         ccpNumber: ccpNumber || null,
         ccpKey: ccpKey || null,
-        baridiMob: baridiMob ? Number(baridiMob) : null
+        baridiMob: baridiMob ? String(baridiMob).trim() : null
       });
     }
 

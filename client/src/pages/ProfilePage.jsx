@@ -150,6 +150,10 @@ function ProfilePage() {
         return false;
       }
     }
+    if (user?.role === "dieteticien" && formData.baridiMob && !/^\d{20}$/.test(formData.baridiMob.trim())) {
+      toast.error(t('validation.baridiMobInvalid'));
+      return false;
+    }
     return true;
   };
 
@@ -183,7 +187,7 @@ function ProfilePage() {
           .filter(s => s),
         ccpNumber: formData.ccpNumber || undefined,
         ccpKey: formData.ccpKey || undefined,
-        baridiMob: formData.baridiMob ? Number(formData.baridiMob) : undefined,
+        baridiMob: formData.baridiMob || undefined,
         studentCardNumber: formData.studentCardNumber || undefined
       };
 
@@ -769,8 +773,10 @@ function ProfilePage() {
                             <label htmlFor="baridiMob">{t('profile.baridiMob')}</label>
                             <div className="VXPR-InputWrapper">
                               <input 
-                                type="number" 
+                                type="text" 
+                                inputMode="numeric"
                                 id="baridiMob" 
+                                maxLength={20}
                                 value={formData.baridiMob} 
                                 onChange={handleChange} 
                                 disabled={!isEditing || isSaving} 

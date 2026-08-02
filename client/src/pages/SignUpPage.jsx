@@ -167,6 +167,7 @@ function SignUpPage() {
       if (!values.specialty?.trim()) errors.specialty = t('signup.errors.specialtyRequired');
       if (!diplomaFile) errors.diploma = t('signup.errors.diplomaRequired');
       if (!paymentProofFile) errors.paymentProof = t('signup.errors.paymentProofRequired');
+      if (values.baridiMob && !/^\d{20}$/.test(values.baridiMob.trim())) errors.baridiMob = t('validation.baridiMobInvalid');
     }
     return errors;
   };
@@ -218,7 +219,7 @@ function SignUpPage() {
         formData.append('specialty', values.specialty);
         if (values.ccpNumber) formData.append('ccpNumber', values.ccpNumber);
         if (values.ccpKey) formData.append('ccpKey', values.ccpKey);
-        if (values.baridiMob) formData.append('baridiMob', Number(values.baridiMob));
+        if (values.baridiMob) formData.append('baridiMob', values.baridiMob.trim());
         if (diplomaFile) formData.append('diploma', diplomaFile);
         if (paymentProofFile) formData.append('paymentProof', paymentProofFile);
 
@@ -669,7 +670,7 @@ function SignUpPage() {
                 <div className="input-group-stripe">
                   <label>{t('signup.baridiMob')}</label>
                   <div className={clsx("input-container-stripe")}>
-                    <input type="number" {...register("baridiMob")} placeholder={t('signup.baridiMobPlaceholder')} disabled={loading} />
+                    <input type="text" inputMode="numeric" {...register("baridiMob")} placeholder={t('signup.baridiMobPlaceholder')} maxLength={20} disabled={loading} />
                   </div>
                 </div>
 

@@ -72,6 +72,7 @@
     "emailPlaceholder": "you@example.com",
     "password": "Password",
     "confirmPassword": "Confirm Password",
+    "passwordPlaceholder": "Min. 8 characters",
     "personalInfo": "Personal Info",
     "age": "Age",
     "agePlaceholder": "25",
@@ -1102,7 +1103,8 @@
   },
   "validation": {
     "emailRequired": "Please enter a valid email address",
-    "passwordRequired": "Password is required"
+    "passwordRequired": "Password is required",
+    "baridiMobInvalid": "BaridiMob number must be exactly 20 digits"
   },
   "admin": {
     "failedToLoadUsers": "Failed to load users",
