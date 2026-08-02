@@ -30,6 +30,7 @@ import {
   Eye,
   Utensils,
   ExternalLink,
+  ArrowLeft,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import { useTranslation } from "react-i18next";
@@ -66,6 +67,27 @@ const ManageContent = () => {
   useEffect(() => {
     fetchAll();
   }, []);
+
+  useEffect(() => {
+    if (detailItem) {
+      const prevOverflow = document.body.style.overflow;
+      document.body.style.overflow = "hidden";
+      return () => {
+        document.body.style.overflow = prevOverflow;
+      };
+    }
+  }, [detailItem]);
+
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === "Escape") {
+        if (detailItem) closeDetail();
+        else if (deleteTarget) setDeleteTarget(null);
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [detailItem, deleteTarget]);
 
   const fetchAll = async () => {
     setLoading(true);
@@ -772,9 +794,19 @@ const ManageContent = () => {
               aria-label={t("admin.content.viewDetails")}
             >
               <div className="mc-detail-topbar">
-                <div className="mc-detail-accent">
-                  <span className="mc-detail-accent-dot" />
-                  {t(`admin.content.${detailItem.kind}Tab`)}
+                <div className="mc-detail-topbar-left">
+                  <button
+                    type="button"
+                    className="mc-detail-back"
+                    onClick={closeDetail}
+                  >
+                    <ArrowLeft size={15} />
+                    {t("admin.content.backToContent")}
+                  </button>
+                  <div className="mc-detail-accent">
+                    <span className="mc-detail-accent-dot" />
+                    {t(`admin.content.${detailItem.kind}Tab`)}
+                  </div>
                 </div>
                 <button
                   type="button"
