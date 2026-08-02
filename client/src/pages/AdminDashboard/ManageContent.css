@@ -631,7 +631,8 @@
 
 /* ===== Detail modal ===== */
 body.mc-detail-open .navbar,
-body.mc-detail-open .sidebar {
+body.mc-detail-open .sidebar,
+body.mc-detail-open .header-container {
   display: none;
 }
 
