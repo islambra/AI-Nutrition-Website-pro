@@ -263,7 +263,7 @@ const FindDietitiansPage = () => {
 
                       <div className="fdp-card-footer">
                         <div className="fdp-card-price">
-                          <span className="fdp-price-amount">4,000</span>
+                          <span className="fdp-price-amount">3,000</span>
                           <span className="fdp-price-currency">DZD / {t("findDietitians.month")}</span>
                         </div>
                         <button className="fdp-card-btn">
