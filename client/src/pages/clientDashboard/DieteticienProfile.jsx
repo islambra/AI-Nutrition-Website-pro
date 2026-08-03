@@ -157,7 +157,7 @@ const DieteticienProfile = () => {
             !showPaymentForm ? (
               <div>
                 <p style={{ fontSize: 24, fontWeight: 700, color: "#059669", marginBottom: 16 }}>
-                  4,000 DZD <span style={{ fontSize: 14, fontWeight: 400, color: "#6b7280" }}>/ {t('dashboard.client.month')}</span>
+                  2,999 DZD <span style={{ fontSize: 14, fontWeight: 400, color: "#6b7280" }}>/ {t('dashboard.client.month')}</span>
                 </p>
                 <motion.button
                   whileHover={{ scale: 1.02 }}
@@ -177,7 +177,7 @@ const DieteticienProfile = () => {
                 <div style={{ background: "#f9fafb", borderRadius: 16, padding: "1.5rem", border: "1.5px solid #e5e7eb" }}>
                   <h3 style={{ margin: "0 0 16px", fontSize: 16, fontWeight: 600 }}>{t('dashboard.client.paymentDetails')}</h3>
                   <p style={{ fontSize: 14, color: "#374151", marginBottom: 12 }}>
-                    {t('dashboard.client.amount')}: <strong>4,000 DZD</strong>
+                    {t('dashboard.client.amount')}: <strong>2,999 DZD</strong>
                   </p>
                   <div style={{ marginBottom: 16 }}>
                     <label style={{ display: "block", fontSize: 13, fontWeight: 500, marginBottom: 6, color: "#374151" }}>

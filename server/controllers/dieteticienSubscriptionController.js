@@ -10,7 +10,7 @@ import FoodDiaryEntry from "../models/FoodDiaryEntry.js";
 import SubscriberResource from "../models/SubscriberResource.js";
 import imagekit from "../configs/imageKit.js";
 
-const SUBSCRIPTION_PRICE = 4000;
+const SUBSCRIPTION_PRICE = 2999;
 const SUBSCRIPTION_DURATION_DAYS = 30;
 
 export const getAllDieteticiens = async (req, res) => {

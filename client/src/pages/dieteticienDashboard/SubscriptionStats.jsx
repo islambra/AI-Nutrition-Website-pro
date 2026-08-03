@@ -118,7 +118,7 @@ const SubscriptionStats = () => {
         <div className="ss-revenue-info">
           <span className="ss-revenue-price">
             {t("dashboard.client.pricePerSubscription")}:{" "}
-            <strong>{stats?.pricePerSubscription?.toLocaleString() || 4000} DZD</strong>
+            <strong>{stats?.pricePerSubscription?.toLocaleString() || 2999} DZD</strong>
           </span>
           <span className="ss-revenue-period">/ {t("dashboard.client.month")}</span>
         </div>

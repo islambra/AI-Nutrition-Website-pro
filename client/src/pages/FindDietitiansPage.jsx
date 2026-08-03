@@ -154,7 +154,7 @@ const FindDietitiansPage = () => {
             </div>
             <div className="fdp-stat-divider" />
             <div className="fdp-stat">
-              <span className="fdp-stat-number">4,000</span>
+              <span className="fdp-stat-number">2,999</span>
               <span className="fdp-stat-label">{t("findDietitians.dzdMonth")}</span>
             </div>
           </motion.div>
@@ -263,7 +263,7 @@ const FindDietitiansPage = () => {
 
                       <div className="fdp-card-footer">
                         <div className="fdp-card-price">
-                          <span className="fdp-price-amount">4,000</span>
+                          <span className="fdp-price-amount">2,999</span>
                           <span className="fdp-price-currency">DZD / {t("findDietitians.month")}</span>
                         </div>
                         <button className="fdp-card-btn">
