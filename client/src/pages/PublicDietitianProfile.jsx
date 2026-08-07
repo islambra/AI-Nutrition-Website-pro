@@ -279,7 +279,7 @@ const PublicDietitianProfile = () => {
                     <span>{t("findDietitiansProfile.subscription")}</span>
                   </div>
                   <div className="pdp-price">
-                    <span className="pdp-price-amount">2,999</span>
+                    <span className="pdp-price-amount">3,000</span>
                     <span className="pdp-price-currency">DZD</span>
                   </div>
                   <span className="pdp-price-period">/ {t("findDietitiansProfile.month")}</span>
@@ -326,7 +326,7 @@ const PublicDietitianProfile = () => {
                 <div className="pdp-payment-form">
                   <h3 className="pdp-form-title">{t("findDietitiansProfile.paymentDetails")}</h3>
                   <div className="pdp-form-amount">
-                    {t("findDietitiansProfile.amount")}: <strong>2,999 DZD</strong>
+                    {t("findDietitiansProfile.amount")}: <strong>3,000 DZD</strong>
                   </div>
 
                   <div className="pdp-form-group">

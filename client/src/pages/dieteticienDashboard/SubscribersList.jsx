@@ -121,7 +121,7 @@ const SubscribersList = () => {
         <div className="sub-list-revenue-icon"><TrendingUp /></div>
         <div className="sub-list-revenue-info">
           <span className="sub-list-revenue-price">
-            {t("dashboard.client.pricePerSubscription")}: <strong>{stats?.pricePerSubscription?.toLocaleString() || 2999} DZD</strong>
+            {t("dashboard.client.pricePerSubscription")}: <strong>{stats?.pricePerSubscription?.toLocaleString() || 3000} DZD</strong>
           </span>
           <span className="sub-list-revenue-period">/ {t("dashboard.client.month")}</span>
         </div>
